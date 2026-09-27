@@ -1,0 +1,157 @@
+(* BM_Gatekeeper_Compromise.pv
+   Tests whether a single compromised gatekeeper can determine which
+   device produced which content.
+
+   g1_sk (the gatekeeper's own relay-terminus key) and g1_sign_sk
+   (its own countersignature key) are leaked to the adversary, giving
+   it PacketHash, the validator's signature, BlindShare_key, and C's
+   signature in the clear, exactly as this gatekeeper would
+   legitimately hold them. v_token_sk and v_sign_sk (the validator's
+   two separate keys, A3) and c_device_sk (the credential processor's
+   relay-terminus key) stay private, so the device's token and C's own
+   decryption of the credential bundle remain opaque to a compromised
+   gatekeeper.
+
+   C still generates BlindShare_key and wraps PacketHash into it
+   itself: C is the party that later has to unwrap and verify it, so
+   C has to be the one holding the key from the start, not receiving
+   it pre-generated from the device. The validator signs only on
+   approval, over a literal "APPROVED" tag concatenated with the
+   wrapped value C sent it (A2).
+
+   This is the single-gatekeeper case: only g1 is modeled, and there
+   is no quorum, no match board, and no second or third gatekeeper.
+   Reaching quorum, and what a compromised gatekeeper needs in order
+   to forge one, is a different, correspondence-query question
+   already tested in BM_Quorum_Forgery.pv and BM_Quorum_Collusion.pv.
+   This model asks only what one compromised gatekeeper's own,
+   legitimate view reveals about device-content correlation.
+
+   c_sign_sk (C's signing key) is modeled here as an ordinary
+   signature, not the ring signature specified in Section 3.3. The
+   ring signature's unlinkability is an empirical claim, tested and
+   measured separately (Appendix D: identity-guessing among
+   candidates falls from 28% to under 2% once adopted). What this
+   model tests is different and orthogonal: whether the gatekeeper's
+   own compromise, independent of whichever scheme protects C's
+   identity, yields device-content correlation on its own.
+   c_sign_sk stays private in both cases, so the answer does not
+   depend on which signature scheme it belongs to.
+
+   Result: observational equivalence holds. A compromised gatekeeper,
+   holding PacketHash, the validator's signature, BlindShare_key, and
+   C's signature all in the clear, gains no information about device
+   identity. *)
+
+type skey.
+type pkey.
+type key.
+
+fun pk(skey): pkey.
+fun aenc(bitstring, pkey, bitstring): bitstring.
+reduc forall m: bitstring, sk: skey, rnd: bitstring; adec(aenc(m, pk(sk), rnd), sk) = m.
+
+fun senc(bitstring, key): bitstring.
+reduc forall m: bitstring, k: key; sdec(senc(m, k), k) = m.
+
+fun sign(bitstring, skey): bitstring.
+reduc forall m: bitstring, sk: skey; checksign(sign(m, sk), pk(sk)) = m.
+
+fun hash(bitstring): bitstring.
+
+free pub: channel.
+free c_to_val: channel [private].
+free val_to_c: channel [private].
+
+free v_token_sk: skey [private]. letfun v_token_pk = pk(v_token_sk).
+free v_sign_sk: skey [private]. letfun v_sign_pk = pk(v_sign_sk).
+free c_device_sk: skey [private]. letfun c_device_pk = pk(c_device_sk).
+free c_sign_sk: skey [private]. letfun c_sign_pk = pk(c_sign_sk).
+free f_device_sk: skey [private]. letfun f_device_pk = pk(f_device_sk).
+free g1_sk: skey [private].
+free g1_sign_sk: skey [private].
+
+free v_ok: bitstring.
+free v_no: bitstring.
+free tag_approved: bitstring.
+free no_sig: bitstring.
+
+free T1: bitstring [private].
+free T2: bitstring [private].
+free imgX: bitstring.
+free imgY: bitstring.
+
+let device(token: bitstring, content: bitstring) =
+    let h = hash(content) in
+    new n: bitstring;
+    let packethash = hash((h, n)) in
+    new rnd_token: bitstring;
+    let enc_token = aenc(token, v_token_pk, rnd_token) in
+    new rnd_bundle: bitstring;
+    let enc_bundle = aenc((enc_token, packethash), c_device_pk, rnd_bundle) in
+    new rnd_content: bitstring;
+    let enc_content = aenc((h, n), f_device_pk, rnd_content) in
+    out(pub, enc_content);
+    out(pub, enc_bundle).
+
+let credential_processor =
+    !
+    in(pub, enc_bundle_in: bitstring);
+    let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
+    new blindshare_key: key;
+    let wrapped = senc(packethash_in, blindshare_key) in
+    out(c_to_val, (enc_token_in, wrapped));
+    in(val_to_c, (decision: bitstring, sig_in: bitstring));
+    if decision = v_ok then
+    (
+        let (tag_checked: bitstring, wrapped_checked: bitstring) = checksign(sig_in, v_sign_pk) in
+        if tag_checked = tag_approved then
+        (
+            let packethash_confirmed = sdec(wrapped_checked, blindshare_key) in
+            if packethash_confirmed = packethash_in then
+            (
+                let c_signed = sign(packethash_in, c_sign_sk) in
+                new rnd_g1: bitstring;
+                let pkt_g1 = aenc((packethash_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+                out(pub, pkt_g1)
+            )
+        )
+    ).
+
+let validator =
+    !
+    in(c_to_val, (enc_token_in: bitstring, wrapped_in: bitstring));
+    let token_in = adec(enc_token_in, v_token_sk) in
+    if (token_in = T1) || (token_in = T2) then
+        out(val_to_c, (v_ok, sign((tag_approved, wrapped_in), v_sign_sk)))
+    else
+        out(val_to_c, (v_no, no_sig)).
+
+let gatekeeper_1 =
+    !
+    in(pub, pkt_in: bitstring);
+    let (p: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g1_sk) in
+    let (tag_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, v_sign_pk) in
+    if tag_checked = tag_approved then
+    (
+        let p_confirmed = sdec(wrapped_checked, k) in
+        let c_checked = checksign(c_sig, c_sign_pk) in
+        if (p_confirmed = p) && (c_checked = p) then
+            out(pub, sign(c_sig, g1_sign_sk))
+    ).
+
+process
+    out(pub, v_token_pk);
+    out(pub, v_sign_pk);
+    out(pub, c_device_pk);
+    out(pub, c_sign_pk);
+    out(pub, f_device_pk);
+    out(pub, g1_sk);
+    out(pub, g1_sign_sk);
+    (
+        device(choice[T1,T2], imgX)
+        | device(choice[T2,T1], imgY)
+        | credential_processor
+        | validator
+        | gatekeeper_1
+    )

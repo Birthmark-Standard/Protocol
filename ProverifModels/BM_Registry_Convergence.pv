@@ -4,15 +4,21 @@
    registry.
 
    Design modeled here: each content-channel server signs its
-   registry submission with its own per-server identity key (the same
-   key that protects its content-channel relay terminus), and the
-   registry requires two matching submissions signed by two distinct
-   server identities before finalizing a record.
+   registry submission with its own registry-signing key (f_id_sk,
+   i_id_sk), separate from the relay-terminus key that protects its
+   content-channel decryption (f_device_sk, i_device_sk, A3b). This
+   model tests only the signing key, since the relay-terminus key has
+   no bearing on whether a server can produce the second signature the
+   registry requires -- that question is orthogonal to what a server
+   can decrypt, and is tested separately (BM_ContentServer_Compromise.pv).
+   The registry requires two matching submissions signed by two
+   distinct servers' registry-signing keys before finalizing a
+   record.
 
-   f_device_sk is leaked, representing full compromise of one server.
-   i_device_sk, the other server's key, stays private. The query asks
-   whether the adversary, holding only the first key, can derive the
-   second.
+   f_id_sk is leaked, representing full compromise of one server's
+   signing capability. i_id_sk, the other server's signing key, stays
+   private. The query asks whether the adversary, holding only the
+   first key, can derive the second.
 
    Result: the second server's key never becomes derivable. One
    compromised server can produce only its own signature, never the
@@ -27,22 +33,22 @@ reduc forall m: bitstring, sk: skey; checksign(sign(m, sk), pk(sk)) = m.
 
 free pub: channel.
 
-free f_device_sk: skey [private].
-free i_device_sk: skey [private].
+free f_id_sk: skey [private].
+free i_id_sk: skey [private].
 
 free content_hash: bitstring.
 
-query attacker(i_device_sk).
+query attacker(i_id_sk).
 
 let content_server(sk: skey) =
     !
     out(pub, sign(content_hash, sk)).
 
 process
-    out(pub, pk(f_device_sk));
-    out(pub, pk(i_device_sk));
-    out(pub, f_device_sk);
+    out(pub, pk(f_id_sk));
+    out(pub, pk(i_id_sk));
+    out(pub, f_id_sk);
     (
-        content_server(f_device_sk)
-        | content_server(i_device_sk)
+        content_server(f_id_sk)
+        | content_server(i_id_sk)
     )

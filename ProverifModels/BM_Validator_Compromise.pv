@@ -1,26 +1,37 @@
 (* BM_Validator_Compromise.pv
    Tests whether a compromised credential validator can determine
-   which device produced a piece of content.
+   which device produced which content.
 
-   v_token_sk, the validator's key, is leaked to the adversary,
-   letting it decrypt the device's token directly. c_device_sk (the
-   credential processor's key) stays private. PacketHash reaches the
-   validator only wrapped under a one-time symmetric key the
-   credential processor generates fresh per transaction and never
-   shares, so decrypting the token gives the validator a device
-   identity with nothing to check it against.
+   Both of the validator's keys are leaked together: v_token_sk (used
+   to decrypt the token) and v_sign_sk (used to sign approval, A3).
+   These are modeled as two separate keys, not one key doing both
+   jobs, and both are tested compromised at once, since a real
+   "compromised validator" most plausibly means the whole server, not
+   one isolated key recovered in isolation. c_device_sk (the
+   credential processor's key) stays private.
+
+   C still generates BlindShare_key and wraps PacketHash into it
+   itself, exactly as before. The validator, even holding both its
+   own keys, never holds BlindShare_key: that key is generated and
+   kept by the credential processor, in a path the validator never
+   sees. Decrypting the token gives the validator a device identity
+   directly, and forging an approval signature over any wrapped value
+   it chooses, but the wrapped value stays opaque without
+   BlindShare_key to open it, so neither compromised key gives the
+   validator anything to check a recovered device identity against.
 
    Companion to BM_CredentialProcessor_Compromise.pv, which tests the
    reverse single-component compromise. Compromising both the
    validator and the credential processor together is not modeled
    here; combining their views trivially yields correlation, since
    the validator would then hold a readable device identity and the
-   credential processor already holds PacketHash for the same
-   transaction.
+   credential processor already holds PacketHash and BlindShare_key
+   for the same transaction.
 
    Result: observational equivalence holds. A compromised validator,
-   even holding the device's identity in the clear, gains no way to
-   link it to specific content. *)
+   even holding the device's identity in the clear and able to forge
+   its own approval signature, gains no way to link either to specific
+   content. *)
 
 type skey.
 type pkey.
@@ -41,8 +52,11 @@ fun hash(bitstring): bitstring.
 free pub: channel.
 
 free v_token_sk: skey [private].
+free v_sign_sk: skey [private].
 free c_device_sk: skey [private].
 free f_device_sk: skey [private].
+
+free tag_approved: bitstring.
 
 free T1: bitstring [private].
 free T2: bitstring [private].
@@ -75,11 +89,12 @@ let validator =
     in(pub, (enc_token_in: bitstring, wrapped_in: bitstring));
     let token_in = adec(enc_token_in, v_token_sk) in
     if (token_in = T1) || (token_in = T2) then
-        out(pub, sign(wrapped_in, v_token_sk)).
+        out(pub, sign((tag_approved, wrapped_in), v_sign_sk)).
 
 process
     out(pub, pk(c_device_sk));
     out(pub, v_token_sk);
+    out(pub, v_sign_sk);
     out(pub, pk(f_device_sk));
     (
         device(choice[T1,T2], imgX)

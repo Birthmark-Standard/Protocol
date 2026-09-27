@@ -1,12 +1,18 @@
 (* BM_Posting_Forgery.pv
    Tests whether anyone other than the credential validator can
-   produce a signature the match board would accept over a posted
-   record hash.
+   produce a signature the match board would accept over an approved
+   wrapped value.
 
-   v_token_sk (the validator's signing key) stays private throughout;
-   nothing is leaked. The validator process is unboundedly replicated,
+   v_sign_sk (the validator's signing key, separate from v_token_sk,
+   its token-decryption key, per A3) stays private throughout; nothing
+   is leaked. The validator process is unboundedly replicated,
    modeling arbitrarily many signing operations rather than just one.
-   The query asks whether the attacker can ever derive v_token_sk.
+   The query asks whether the attacker can ever derive v_sign_sk.
+
+   The signed message is `(tag_approved, wrapped)`, matching the
+   validator's actual signing operation elsewhere (A2): the validator
+   signs only on approval, over a literal "APPROVED" tag concatenated
+   with the wrapped value, never on rejection.
 
    Result: the key never becomes derivable. No party -- not a
    gatekeeper, not the credential processor, not a content-channel
@@ -25,14 +31,15 @@ fun sign(bitstring, skey): bitstring.
 reduc forall m:bitstring, sk:skey; checksign(sign(m, sk), pk(sk)) = m.
 
 free pub: channel.
-free v_token_sk: skey [private]. letfun v_token_pk = pk(v_token_sk).
-free enc_packethash: bitstring [private].
+free v_sign_sk: skey [private]. letfun v_sign_pk = pk(v_sign_sk).
+free tag_approved: bitstring.
+free wrapped: bitstring [private].
 
 let validator =
-    out(pub, sign(enc_packethash, v_token_sk)).
+    out(pub, sign((tag_approved, wrapped), v_sign_sk)).
 
-query attacker(v_token_sk).
+query attacker(v_sign_sk).
 
 process
-    out(pub, v_token_pk);
+    out(pub, v_sign_pk);
     (!validator)

@@ -19,6 +19,14 @@
    only after seeing genuine validator approval, the same discipline
    it already applies.
 
+   C still generates BlindShare_key and wraps PacketHash into it
+   itself: C is the party that later has to unwrap and verify it, so
+   C has to be the one holding the key from the start, not receiving
+   it pre-generated from the device. The validator signs only on
+   approval, over a literal "APPROVED" tag concatenated with the
+   wrapped value C sent it (A2), using its own signing key v_sign_sk,
+   separate from v_token_sk, its token-decryption key (A3).
+
    With two boards already fully attacker-controlled, reaching quorum
    is trivial for the attacker on its own two boards -- the real
    question is whether it can do so for a value C never actually
@@ -46,8 +54,11 @@ free match_board_3: channel [private].
 free quorum_out: channel [private].
 free v_ok: bitstring.
 free v_no: bitstring.
+free tag_approved: bitstring.
+free no_sig: bitstring.
 
 free v_token_sk: skey [private]. letfun v_token_pk = pk(v_token_sk).
+free v_sign_sk: skey [private]. letfun v_sign_pk = pk(v_sign_sk).
 free c_device_sk: skey [private]. letfun c_device_pk = pk(c_device_sk).
 free c_sign_sk: skey [private]. letfun c_sign_pk = pk(c_sign_sk).
 free g1_sk: skey [private].
@@ -81,20 +92,26 @@ let credential_processor =
     new blindshare_key: key;
     let wrapped = senc(packethash_in, blindshare_key) in
     out(c_to_val, (enc_token_in, wrapped));
-    in(val_to_c, (decision: bitstring, wrapped_signed: bitstring));
-    let wrapped_checked = checksign(wrapped_signed, v_token_pk) in
-    let packethash_confirmed = sdec(wrapped_checked, blindshare_key) in
-    if (decision = v_ok) && (packethash_confirmed = packethash_in) then
+    in(val_to_c, (decision: bitstring, sig_in: bitstring));
+    if decision = v_ok then
     (
-        event validator_approved(packethash_in);
-        let c_signed = sign(packethash_in, c_sign_sk) in
-        new rnd_g1: bitstring;
-        let pkt_g1 = aenc((packethash_in, wrapped_signed, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
-        new rnd_g2: bitstring;
-        let pkt_g2 = aenc((packethash_in, wrapped_signed, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
-        new rnd_g3: bitstring;
-        let pkt_g3 = aenc((packethash_in, wrapped_signed, blindshare_key, c_signed), g3_pk, rnd_g3) in
-        ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
+        let (tag_checked: bitstring, wrapped_checked: bitstring) = checksign(sig_in, v_sign_pk) in
+        if tag_checked = tag_approved then
+        (
+            let packethash_confirmed = sdec(wrapped_checked, blindshare_key) in
+            if packethash_confirmed = packethash_in then
+            (
+                event validator_approved(packethash_in);
+                let c_signed = sign(packethash_in, c_sign_sk) in
+                new rnd_g1: bitstring;
+                let pkt_g1 = aenc((packethash_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+                new rnd_g2: bitstring;
+                let pkt_g2 = aenc((packethash_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
+                new rnd_g3: bitstring;
+                let pkt_g3 = aenc((packethash_in, sig_in, blindshare_key, c_signed), g3_pk, rnd_g3) in
+                ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
+            )
+        )
     ).
 
 let validator =
@@ -102,21 +119,24 @@ let validator =
     in(c_to_val, (enc_token_in: bitstring, wrapped_in: bitstring));
     let token_in = adec(enc_token_in, v_token_sk) in
     if (token_in = T1) || (token_in = T2) then
-        out(val_to_c, (v_ok, sign(wrapped_in, v_token_sk)))
+        out(val_to_c, (v_ok, sign((tag_approved, wrapped_in), v_sign_sk)))
     else
-        out(val_to_c, (v_no, sign(wrapped_in, v_token_sk))).
+        out(val_to_c, (v_no, no_sig)).
 
 let gatekeeper_3 =
     !
     in(pub, pkt_in: bitstring);
     let (p: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g3_sk) in
-    let sig_checked = checksign(sig, v_token_pk) in
-    let p_confirmed = sdec(sig_checked, k) in
-    let c_checked = checksign(c_sig, c_sign_pk) in
-    if (p_confirmed = p) && (c_checked = p) then
+    let (tag_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, v_sign_pk) in
+    if tag_checked = tag_approved then
     (
-        let g3_signed = sign(c_sig, g3_sign_sk) in
-        ( out(match_board_3, g3_signed) | out(match_board_3, g3_signed) )
+        let p_confirmed = sdec(wrapped_checked, k) in
+        let c_checked = checksign(c_sig, c_sign_pk) in
+        if (p_confirmed = p) && (c_checked = p) then
+        (
+            let g3_signed = sign(c_sig, g3_sign_sk) in
+            ( out(match_board_3, g3_signed) | out(match_board_3, g3_signed) )
+        )
     ).
 
 let quorum_12 =
@@ -155,7 +175,7 @@ let quorum_23 =
 query p: bitstring; event(quorum_reached(p)) ==> event(validator_approved(p)).
 
 process
-    out(pub, v_token_pk); out(pub, c_device_pk); out(pub, c_sign_pk);
+    out(pub, v_token_pk); out(pub, v_sign_pk); out(pub, c_device_pk); out(pub, c_sign_pk);
     out(pub, g1_sk); out(pub, g1_sign_sk); out(pub, g2_sk); out(pub, g2_sign_sk);
     out(pub, g3_pk); out(pub, g3_sign_pk);
     (
