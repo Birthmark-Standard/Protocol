@@ -3,11 +3,16 @@
    which device produced a piece of content it has received.
 
    f_device_sk, the content-channel server's own relay-terminus key,
-   is leaked to the adversary. c_device_sk (the credential
-   processor's key) and v_token_sk (the validator's key) stay
+   is leaked to the adversary. v_token_sk and c_device_sk stay
    private -- the credential channel, which carries the device's
-   encrypted token, never reaches the content-channel server at
-   all, so its compromise has no bearing on the token's secrecy.
+   encrypted token, never reaches the content-channel server at all,
+   so its compromise has no bearing on the token's secrecy.
+
+   The device's credential-bundle construction here matches every
+   other model for consistency, even though no party in this model
+   ever decrypts or processes enc_bundle: it is output purely as the
+   same background traffic an observer would also see, exactly as
+   before.
 
    Result: observational equivalence holds. A compromised
    content-channel server can read ContentHash and the nonce and
@@ -16,10 +21,14 @@
 
 type skey.
 type pkey.
+type key.
 
 fun pk(skey): pkey.
 fun aenc(bitstring, pkey, bitstring): bitstring.
 reduc forall m: bitstring, sk: skey, rnd: bitstring; adec(aenc(m, pk(sk), rnd), sk) = m.
+
+fun senc(bitstring, key): bitstring.
+reduc forall m: bitstring, k: key; sdec(senc(m, k), k) = m.
 
 fun hash(bitstring): bitstring.
 
