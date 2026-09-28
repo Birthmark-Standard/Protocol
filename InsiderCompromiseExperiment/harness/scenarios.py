@@ -79,10 +79,52 @@ def compute(run, pools, lik, models, scenarios, rnd, L, base, run_id):
             dec = E.decide(res, groups, ccol_sub, sub, ctrue)
             recs[name] = R._record(res, dec, groups, sub, keep)
     if "N" in scenarios and cfg.devices <= NB_MAIN_MAX_DEVICES:
-        from birthmark_l3 import attack as A
-        o = A.attack_run(run, lik, pools, rng_seed=run_id, diagnostics=False)
-        sc = np.nonzero(keep)[0]
-        recs["Nb.main"] = dict(sub=sc.astype(np.int32), correct=o["main"]["correct"], gap=o["main"]["gap"],
-                               post=o["main"]["post"], seq_dense_correct=o["seq"]["correct"],
-                               chance_correct=o["chance_correct"])
+        recs["Nb.main"] = nb_main(run, lik, pools, keep)
     return recs
+
+
+def nb_main(run, lik, pools, keep):
+    """The published main attack (attack.attack_run): Stage 1 chain reconstruction unchanged, then
+    Stage 2 (origin-time pairing of credential and content chains) scored banded, because the
+    origin likelihood is -inf beyond origin_max, and solved with the sparse optimal assignment. Same
+    scores and objective as the dense published version; its dense matrix does not fit in memory
+    over a 3-hour window at L = 40."""
+    from birthmark_l3 import attack as A
+    ev, subs, cfg = run.events, run.subs, run.cfg
+    sig = A.signature_mask(ev, cfg.attacker_reads_record_type, pools.tls13_overhead)
+    s1 = A.stage1(ev, sig, lik)
+    cred, cont, _ = A.build_chains(ev, sig, s1)
+    S = subs["t0"].shape[0]
+    leg, sub_of = ev["leg"], ev["sub"]
+    oc = np.where(cred["ok"], ev["t_arr"][np.maximum(cred["origin_ev"], 0)], np.nan)
+    ox = ev["t_arr"][cont["origin_ev"]]
+    order = np.argsort(ox, kind="stable")
+    ox_s = ox[order]
+    cont_term_sub = np.where(np.isin(leg[cont["term"]], [FS.CA3, FS.CB3]), sub_of[cont["term"]], -1)[order]
+    om = lik.origin_max
+
+    def fn(r, c):
+        d = oc[r] - ox_s[c]
+        return np.where(np.abs(d) < om, lik.origin(np.clip(d, -om, om)), -np.inf)
+    ok = np.isfinite(oc)
+    t_lo = np.where(ok, oc - om, np.inf)
+    t_hi = np.where(ok, oc + om, np.inf)
+    row_is_cred3 = leg[cred["term"]] == FS.CRED3
+    row_sub = np.where(row_is_cred3, sub_of[cred["term"]], -1)
+    from .roles import answers_of
+    res = E.score_rows(t_lo, t_hi, ox_s, fn, answers_of(cont_term_sub, S)[np.maximum(row_sub, 0)] *
+                       (row_sub >= 0)[:, None] - (row_sub < 0)[:, None])
+    pick = E.joint_assign(oc.shape[0], res["edges"], np.zeros(oc.shape[0], int))
+    pred = np.where(pick >= 0, cont_term_sub[np.maximum(pick, 0)], -1)
+    sc = np.nonzero(keep)[0]
+    row_of_sub = np.full(S, -1, np.int64)
+    row_of_sub[row_sub[row_is_cred3]] = np.nonzero(row_is_cred3)[0]
+    r = row_of_sub[sc]
+    has = r >= 0
+    correct = has & (np.where(has, pred[np.maximum(r, 0)], -2) == sc)
+    top1 = np.where(has, res["top1"][np.maximum(r, 0)], -np.inf)
+    top2 = np.where(has, res["top2"][np.maximum(r, 0)], -np.inf)
+    with np.errstate(invalid="ignore"):
+        gap = np.where(np.isfinite(top1), top1 - top2, np.nan)
+    return dict(sub=sc.astype(np.int32), correct=correct.astype(np.int8), gap=gap.astype(np.float32),
+                detected=has.astype(np.int8))
