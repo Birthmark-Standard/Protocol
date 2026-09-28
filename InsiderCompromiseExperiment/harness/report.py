@@ -41,7 +41,8 @@ SUMMARY_COLS = ["cell", "round", "L", "variant", "share", "nodes", "window_min",
                 "ece", "posterior_yield_coverage_at_p50", "posterior_best_precision_cov1",
                 "minus_N_a", "minus_N_a_lo", "minus_N_a_hi", "minus_Nb_seq", "minus_Nb_seq_lo", "minus_Nb_seq_hi",
                 "minus_Nb_main", "minus_Nb_main_lo", "minus_Nb_main_hi",
-                "shuffled_accuracy", "shuffled_lo", "shuffled_hi", "shuffled_auc", "shuffled_auc_lo", "shuffled_auc_hi"]
+                "shuffled_accuracy", "shuffled_lo", "shuffled_hi", "shuffled_auc", "shuffled_auc_lo", "shuffled_auc_hi",
+                "outcome_shuffle_auc", "outcome_shuffle_auc_lo", "outcome_shuffle_auc_hi", "outcome_shuffle_best_precision_cov1"]
 
 
 def _records_in(out, key):

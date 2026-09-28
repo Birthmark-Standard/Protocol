@@ -54,3 +54,9 @@ def test_wire_trace_unchanged_under_spec_raw_sizes(spec_sizes, monkeypatch):
         a, b = runs[("sim", rules)], runs[("spec", rules)]
         for k in ("t_send", "t_arr", "src", "dst", "size", "rtype"):
             assert np.array_equal(a[k], b[k]), (rules, k)
+
+
+def test_no_crypto_tables_equal_the_measurement():
+    """--no-crypto (BIRTHMARK_NO_CRYPTO) uses stored raw sizes; they must equal a fresh real-crypto build."""
+    assert X.measure_raw_sizes() == F.MEASURED_RAW
+    assert X.ring_gk_raw_size() == F.MEASURED_RING_GK

@@ -1,0 +1,9 @@
+# Pinned; every package ships binary wheels for Windows, macOS and Linux (CPython 3.11-3.13).
+numpy==2.4.6
+scipy==1.17.1
+matplotlib==3.11.2
+# Real-crypto leg construction (tests, currency check, unpadded controls). Not needed with --no-crypto.
+cryptography==50.0.1
+# Ring signature construction (tests only; the simulator uses its measured size).
+pynacl==1.6.2
+pytest==9.1.1

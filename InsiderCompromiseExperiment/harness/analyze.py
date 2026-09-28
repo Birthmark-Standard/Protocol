@@ -233,6 +233,18 @@ def metrics(records, L, rng, with_curves=False):
     out["shuffled_accuracy"], out["shuffled_lo"], out["shuffled_hi"] = cluster_boot(ns, den, rng)
     a = auc_clustered(conf_post, sh.astype(int), t["run"])
     out["shuffled_auc"], out["shuffled_auc_lo"], out["shuffled_auc_hi"] = a["auc"], a["auc"] - Z95 * a["se"], a["auc"] + Z95 * a["se"]
+    # post-hoc negative control (analysis code): outcome labels permuted within each run, so
+    # confidence cannot carry information about them; AUC must be ~0.5 and precision at every
+    # coverage ~ the overall accuracy
+    perm = correct.copy()
+    for rid in np.unique(t["run"]):
+        m = np.nonzero(t["run"] == rid)[0]
+        perm[m] = correct[m][rng.permutation(m.size)]
+    a = auc_clustered(conf_post, perm.astype(int), t["run"])
+    out["outcome_shuffle_auc"], out["outcome_shuffle_auc_lo"], out["outcome_shuffle_auc_hi"] = \
+        a["auc"], a["auc"] - Z95 * a["se"], a["auc"] + Z95 * a["se"]
+    _, _, best_perm = precision_coverage(conf_post, perm)
+    out["outcome_shuffle_best_precision_cov1"] = best_perm
     if with_curves:
         curves["correct"] = correct
         curves["reliability"] = rel

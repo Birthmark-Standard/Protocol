@@ -18,7 +18,6 @@ import numpy as np
 
 from . import lottery as LT
 from . import params as P
-from .crypto_legs import raw_size_table, ring_gk_raw_size
 from .wire_pools import Pools
 
 EXT = 99                 # every external host (device or background client) as the GPA labels it
@@ -38,11 +37,41 @@ K_BIRTHMARK, K_BLEND, K_BULK, K_KEEPALIVE = 0, 1, 2, 3
 _RAW = None
 
 
+# Measured raw sizes (crypto_legs.measure_raw_sizes and ring_gk_raw_size, real keys). Used when
+# the cryptography packages are absent or BIRTHMARK_NO_CRYPTO is set; only unpadded (positive
+# control) runs read raw sizes at all.
+MEASURED_RAW = {"Cred-1": 235, "Cred-2": 235, "Cred-3": 219, "ContA-1": 162, "ContA-2": 162,
+                "ContA-3": 146, "GK": 289, "CV-1": 178, "CV-2": 165, "Reg": 96}
+MEASURED_RING_GK = 801
+
+
+def _no_crypto():
+    import os
+    return bool(os.environ.get("BIRTHMARK_NO_CRYPTO"))
+
+
 def raw_sizes():
     global _RAW
     if _RAW is None:
-        _RAW = raw_size_table()
+        if _no_crypto():
+            _RAW = dict(MEASURED_RAW)
+        else:
+            try:
+                from .crypto_legs import raw_size_table
+                _RAW = raw_size_table()
+            except ImportError:
+                _RAW = dict(MEASURED_RAW)
     return _RAW
+
+
+def ring_gk_raw_size():
+    if _no_crypto():
+        return MEASURED_RING_GK
+    try:
+        from .crypto_legs import ring_gk_raw_size as measure
+        return measure()
+    except ImportError:
+        return MEASURED_RING_GK
 
 
 class _Events:

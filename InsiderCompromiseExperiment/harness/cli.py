@@ -38,6 +38,7 @@ def _plan_args(p, runs_default=20):
     p.add_argument("--share", nargs="*", type=float, help="validator 0's share of devices (V scenario)")
     p.add_argument("--nodes", type=int, default=20, help="pool size")
     p.add_argument("--window", type=float, default=180.0, help="scored window, minutes")
+    p.add_argument("--no-crypto", action="store_true", help="use the measured size tables; no crypto packages needed")
 
 
 def main(argv=None):
@@ -63,6 +64,9 @@ def main(argv=None):
     v.add_argument("--out", default=str(ROOT / "results" / "equivalence"))
     v.add_argument("--workers", default="auto")
     a = ap.parse_args(argv)
+    if getattr(a, "no_crypto", False):
+        import os
+        os.environ["BIRTHMARK_NO_CRYPTO"] = "1"      # inherited by worker processes
 
     if a.cmd == "run":
         from .tool import run_cells
