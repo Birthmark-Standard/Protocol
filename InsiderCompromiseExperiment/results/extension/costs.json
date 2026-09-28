@@ -1,0 +1,68 @@
+{
+ "r3_L4": {
+  "L": 4.0,
+  "scenarios": [
+   "N",
+   "A",
+   "C",
+   "D",
+   "F",
+   "V",
+   "GK"
+  ],
+  "round": 3,
+  "nodes": 20,
+  "window": 180.0,
+  "sec_per_run": 4.4605642557144165,
+  "runs": 40
+ },
+ "r2_L4": {
+  "L": 4.0,
+  "scenarios": [
+   "N",
+   "A",
+   "C",
+   "D",
+   "F",
+   "V",
+   "GK"
+  ],
+  "round": 2,
+  "nodes": 20,
+  "window": 180.0,
+  "sec_per_run": 4.498745322227478,
+  "runs": 40
+ },
+ "r1_L4": {
+  "L": 4.0,
+  "scenarios": [
+   "N",
+   "A",
+   "C",
+   "D",
+   "F"
+  ],
+  "round": 1,
+  "nodes": 20,
+  "window": 180.0,
+  "sec_per_run": 5.072873115539551,
+  "runs": 40
+ },
+ "r3_L4_positive": {
+  "L": 4.0,
+  "scenarios": [
+   "N",
+   "A",
+   "C",
+   "D",
+   "F",
+   "V",
+   "GK"
+  ],
+  "round": 3,
+  "nodes": 20,
+  "window": 180.0,
+  "sec_per_run": 42.971827268600464,
+  "runs": 40
+ }
+}
