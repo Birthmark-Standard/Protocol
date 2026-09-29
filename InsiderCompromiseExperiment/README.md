@@ -14,6 +14,13 @@ Results are in [`RESULTS.md`](RESULTS.md).
 The GPA experiment ([`../GPAExperiment/`](../GPAExperiment/)) tests an adversary
 with no keys. This one holds one node's keys.
 
+An extension covers every single compromised element (A, C, D, F, V and a gatekeeper), the null
+case with no compromise, whether the adversary can tell its own successes, and scale up to L = 1000.
+It runs as a command-line tool, `harness/`, on a laptop (see below). Its plan is
+[`ANALYSIS_PLAN.md`](ANALYSIS_PLAN.md), its results are the last section of
+[`RESULTS.md`](RESULTS.md), and [`PAPER_TABLE.md`](PAPER_TABLE.md) and
+[`CATALOG_UPDATE.md`](CATALOG_UPDATE.md) carry its outputs for the paper and the workbook.
+
 ## Layout
 
 | Path | What it is |
@@ -25,8 +32,10 @@ with no keys. This one holds one node's keys.
 | `insider/clock_check.py` | Direct measurement that the gatekeeper hold clocks are independent |
 | `insider/control.py` | Isolating control for the gatekeeper hold (every other lottery hold off) |
 | `tests/test_insider.py` | Role rules, gatekeeper exclusion, ring signature, model fit, positive controls, hold clock independence |
+| `harness/` | The extension tool: `cli.py` (commands), `roles.py` and `scenarios.py` (attacks per role), `engine.py` (banded scoring and optimal assignment), `analyze.py` and `report.py` (metrics), `figures.py`, `publish.py`, `regress.py` and `equivalence.py` (reproduction checks), `round1.py` (the Round 1 attack, restored) |
+| `tests/test_harness.py` | The tool: exact banded scoring, optimal assignment, AUC, determinism across worker counts, recovery from an interrupted write |
 
-The shared code lives in `../GPAExperiment/level3/birthmark_l3`, and this experiment imports it:
+The shared code lives in `../GPAExperiment/birthmark_l3`, and this experiment imports it:
 - the simulator, lottery and clock mechanics, and padding;
 - the measured TLS/DNS pools;
 - the observation model;
@@ -35,15 +44,69 @@ The shared code lives in `../GPAExperiment/level3/birthmark_l3`, and this experi
 
 ## Running
 
+Rounds 2 and 3:
+
 ```
-pip install -r ../GPAExperiment/level3/requirements.txt
-python -m pytest -q tests                  # ~45 s
+pip install -r requirements.txt
+python -m pytest -q tests                  # ~3 min
 python -m insider.run                      # ~2 h on 4 cores (four configurations)
 python -m insider.gpa_check                # ~3 min per configuration
 python -m insider.clock_check
 python -m insider.control
 python -m insider.report
 ```
+
+## The extension tool
+
+CPU only, no cloud. Windows PowerShell first; the same commands work in a macOS or Linux shell
+(with `source .venv/bin/activate` in place of the activation line).
+
+```
+cd InsiderCompromiseExperiment
+py -3.11 -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install --only-binary=:all: -r requirements.txt
+
+python -m harness quick                    # smoke test, about 15 s
+python -m harness regress                  # reproduces the published Round 1 and Round 3 results
+python -m harness estimate --round 3 --L 4 8 24 40 200 --runs 20 --workers 4
+python -m harness run --scenario N A C D F V GK --round 3 --L 4 8 --runs 20 --out results\extension
+python -m harness analyze --in results\extension --publish
+```
+
+`estimate` prints the expected runtime from measured per-run costs (`harness/costs_default.json`,
+or `--costs` with a `costs.json` from your own run). For the plan above:
+
+```
+  r3_L4        4.5 s/run x 20 runs =    0.02 core-hours
+  r3_L8        6.8 s/run x 20 runs =    0.04 core-hours
+  r3_L24      30.1 s/run x 20 runs =    0.17 core-hours
+  r3_L40      74.6 s/run x 20 runs =    0.41 core-hours
+  r3_L200    572.2 s/run x 20 runs =    3.18 core-hours
+total 3.82 core-hours; on 4 workers about 0.96 hours wall-clock
+```
+
+Measured on 4 cores: L = 1000 (Round 3, every role, 40-minute window) costs 2.4 core-hours and
+about 2 GB per run.
+
+**Commands and options.**
+- `run`: `--scenario` (any of N A C D F V GK), `--round` (1 2 3), `--L`, `--runs`,
+  `--workers auto`, `--seed`, `--out`. Also `--variant positive` (lottery and gatekeeper hold off),
+  `--share` (validator 0's share of devices), `--nodes` (pool size), `--window` (scored minutes)
+  and `--no-crypto` (measured size tables; no crypto packages needed).
+- `analyze`: metrics from the stored decisions; never re-simulates. `--publish` also writes the
+  tables and figures under `results/`.
+- `quick`, `regress`, `equivalence`, `estimate`, `publish`.
+
+**Determinism and resuming.** A run's traffic seed depends only on the base seed, L, run id and pool
+size, so results do not depend on the number of workers, and every scenario and round reads the same
+traffic. Each finished run is appended to `<out>/raw/`; a restart skips finished runs, so an
+interrupted job loses at most the runs in flight, one per worker. Progress and an ETA are printed.
+
+**What each command reads and writes.** `<out>/raw/` holds one record per run and scenario (every
+decision's pick, top two scores, true answer's score and rank, and log-sum-exp at 21
+temperatures); `<out>/models/` caches the attacker's Monte Carlo models; `analyze` writes
+`summary.csv`, `confidence_*.csv` and `figures/`.
 
 ## Configuration
 

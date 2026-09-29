@@ -167,7 +167,7 @@ def content_scenario(run, pools, lik, model: InsiderModel, role: str, X: int, rn
     # Without the ring signature, the board record names C, so candidates are restricted to C's
     # own validator replies. With it, X does not learn C and searches every candidate's sender.
     ring = run.cfg.ring_sig
-    lo, hi = P.PAD_GK_RING if ring else (P.PAD_MIN, P.PAD_MAX)
+    lo, hi = P.gk_class(ring)
     gk_mask = (ev["size"] >= lo + pools.tls13_overhead) & (ev["size"] <= hi + pools.tls13_overhead)
     if run.cfg.attacker_reads_record_type:
         gk_mask &= ev["rtype"] == P.RT_APPDATA

@@ -9,3 +9,9 @@ results/raw_first_run/
 results/run_v2.log
 results/raw_prev/
 results/run_v3.log
+results/*/raw/
+results/*/models/
+results/*/*.tmp
+results/*/cells.json
+results/*/costs.json
+results/*/figures/

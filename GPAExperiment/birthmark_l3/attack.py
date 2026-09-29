@@ -36,7 +36,7 @@ from scipy.optimize import linear_sum_assignment
 from . import lottery as LT
 from . import params as P
 from .fastsim import (CA3, CB3, CRED3, CV2, EXT, K_BIRTHMARK, K_BLEND, K_BULK, K_KEEPALIVE,
-                      REG_F_ORIGIN, REG_I_ORIGIN, VAL0)
+                      REG_F_ORIGIN, REG_I_ORIGIN)
 
 BIG = 1e9
 GRID_TOL_S = 0.004
@@ -182,7 +182,7 @@ def stage1(ev, sig, lik: Likelihoods, max_iter=4):
     grid = on_grid(ev, phase)
     n2n = sig & (src < P.N_NODES) & (dst < P.N_NODES) & grid
     ingress = sig & (src == EXT) & (dst < P.N_NODES)
-    cv2 = sig & (src >= VAL0) & (src < VAL0 + P.N_VALIDATORS) & (dst < P.N_NODES)
+    cv2 = sig & (src >= P.N_NODES) & (src < P.N_NODES + P.N_VALIDATORS) & (dst < P.N_NODES)
     t_send, t_arr = ev["t_send"], ev["t_arr"]
 
     pos = np.zeros(n_ev, np.int8)
@@ -247,7 +247,7 @@ def successors(pred, n_ev):
 def cred_terminals(ev, sig, s1):
     """Arrivals at a node followed within milliseconds by that node contacting a validator."""
     src, dst = ev["src"].astype(int), ev["dst"].astype(int)
-    cv1 = np.nonzero(sig & (src < P.N_NODES) & (dst >= VAL0) & (dst < VAL0 + P.N_VALIDATORS))[0]
+    cv1 = np.nonzero(sig & (src < P.N_NODES) & (dst >= P.N_NODES) & (dst < P.N_NODES + P.N_VALIDATORS))[0]
     arrivals = s1["n2n"]
     out = []
     for n in range(P.N_NODES):
@@ -351,7 +351,7 @@ def gossip_origins(ev, reads_record_type: bool, gossip_wire: int):
 # =========================================================================== one run
 def _scored(run):
     t0 = run.subs["t0"]
-    return np.nonzero((t0 >= P.WARMUP_S) & (t0 < P.WARMUP_S + P.MEASURE_S))[0]
+    return np.nonzero((t0 >= P.WARMUP_S) & (t0 < P.WARMUP_S + run.cfg.measure_s))[0]
 
 
 def _pack(correct, gap, post):
@@ -429,7 +429,7 @@ def sequencing(run, lik: Likelihoods, pools, sc, rng):
     leg, sub_of = ev["leg"], ev["sub"]
     sig = signature_mask(ev, cfg.attacker_reads_record_type, pools.tls13_overhead)
     src, dst = ev["src"].astype(int), ev["dst"].astype(int)
-    rows = np.nonzero(sig & (src >= VAL0) & (src < VAL0 + P.N_VALIDATORS) & (dst < P.N_NODES))[0]
+    rows = np.nonzero(sig & (src >= P.N_NODES) & (src < P.N_NODES + P.N_VALIDATORS) & (dst < P.N_NODES))[0]
     cols = gossip_origins(ev, cfg.attacker_reads_record_type, pools.gossip_wire)
     d = ev["t_send"][cols][None, :] - ev["t_arr"][rows][:, None]
     Ws = np.where((d > 0) & (d < lik.seq_max), lik.seq(np.clip(d, 0, lik.seq_max)), -np.inf)

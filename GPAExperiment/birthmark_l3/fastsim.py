@@ -18,11 +18,10 @@ import numpy as np
 
 from . import lottery as LT
 from . import params as P
-from .crypto_legs import raw_size_table, ring_gk_raw_size
 from .wire_pools import Pools
 
 EXT = 99                 # every external host (device or background client) as the GPA labels it
-VAL0 = P.N_NODES         # validators are ids 20..23
+VAL0 = P.N_NODES         # validators follow the nodes (ids 20..23 by default); params.use_topology
 
 # leg codes (truth only)
 CRED1, CRED2, CRED3, CA1, CA2, CA3, CB1, CB2, CB3 = range(1, 10)
@@ -38,11 +37,41 @@ K_BIRTHMARK, K_BLEND, K_BULK, K_KEEPALIVE = 0, 1, 2, 3
 _RAW = None
 
 
+# Measured raw sizes (crypto_legs.measure_raw_sizes and ring_gk_raw_size, real keys). Used when
+# the cryptography packages are absent or BIRTHMARK_NO_CRYPTO is set; only unpadded (positive
+# control) runs read raw sizes at all.
+MEASURED_RAW = {"Cred-1": 235, "Cred-2": 235, "Cred-3": 219, "ContA-1": 162, "ContA-2": 162,
+                "ContA-3": 146, "GK": 289, "CV-1": 178, "CV-2": 165, "Reg": 96}
+MEASURED_RING_GK = 801
+
+
+def _no_crypto():
+    import os
+    return bool(os.environ.get("BIRTHMARK_NO_CRYPTO"))
+
+
 def raw_sizes():
     global _RAW
     if _RAW is None:
-        _RAW = raw_size_table()
+        if _no_crypto():
+            _RAW = dict(MEASURED_RAW)
+        else:
+            try:
+                from .crypto_legs import raw_size_table
+                _RAW = raw_size_table()
+            except ImportError:
+                _RAW = dict(MEASURED_RAW)
     return _RAW
+
+
+def ring_gk_raw_size():
+    if _no_crypto():
+        return MEASURED_RING_GK
+    try:
+        from .crypto_legs import ring_gk_raw_size as measure
+        return measure()
+    except ImportError:
+        return MEASURED_RING_GK
 
 
 class _Events:
@@ -106,10 +135,13 @@ class World:
 
     def relay_size(self, leg_family: str, n):
         ring = leg_family == "GK" and self.cfg.ring_sig
+        # the ring spans the C-eligible pool (all nodes minus the three gatekeepers); AOS signatures
+        # are 32 B per member plus 32 B, so a larger pool shifts the GK class by the same amount
+        grow = 32 * (P.N_NODES - 20) if ring else 0
         if not self.cfg.padding_enabled:
-            raw = ring_gk_raw_size() if ring else raw_sizes()[leg_family]
+            raw = ring_gk_raw_size() + grow if ring else raw_sizes()[leg_family]
             return np.full(n, raw + self.pools.tls13_overhead)
-        lo, hi = P.PAD_GK_RING if ring else (P.PAD_MIN, P.PAD_MAX)
+        lo, hi = P.gk_class(ring)
         target = self.rng.integers(lo, hi + 1, n)
         return target + self.pools.tls13_overhead      # measured: one TLS 1.3 record per packet
 
@@ -177,6 +209,25 @@ def _mesh(rng):
             for v in range(P.N_NODES)}
 
 
+def _catalog_roles(r, S):
+    """Round 1 of the insider experiment (restored from commit 49cab2b; "catalog" role rules).
+    Leg Catalog K3 as first read: C, F, I distinct; first hops A, D, G distinct and never C, F or I;
+    each Random hop excludes its own first hop and destination; the three gatekeepers are any three
+    nodes, drawn per submission (so C, F or I can be a gatekeeper)."""
+    N, idx = P.N_NODES, np.arange(S)
+    perm = np.argsort(r.random((S, N)), axis=1)
+    C, F, I, A, D, G = perm[:, :6].T
+
+    def pick(excl):
+        x = r.random((S, N))
+        for e in excl:
+            x[idx, e] = 2.0
+        return x.argmin(axis=1)
+    B, E, Hh = pick((A, C)), pick((D, F)), pick((G, I))
+    gk = np.argsort(r.random((S, N)), axis=1)[:, :3]
+    return C, F, I, A, B, D, E, G, Hh, gk
+
+
 def _insider_v2_roles(r, S):
     """Insider Experiment Design!B3-B4. One active set of three gatekeepers for the run; C, F, I
     from the other 17; first hops A, D, G distinct and never C, F or I (device-table routing,
@@ -200,6 +251,18 @@ def _insider_v2_roles(r, S):
     return C, F, I, A, B, D, E, G, Hh, gk
 
 
+def validator_of(cfg: P.Config, dev):
+    """Validator index per device. Default: an even split (device % n_validators). With
+    validator0_share = s, validator 0 serves the first round(s * devices) devices and the others
+    split the rest evenly. Assignment is by device index, so it draws no random numbers."""
+    if not cfg.validator0_share:
+        return dev % P.N_VALIDATORS
+    k = int(round(cfg.validator0_share * cfg.devices))
+    if P.N_VALIDATORS == 1:
+        return np.zeros_like(dev)
+    return np.where(dev < k, 0, 1 + (dev - k) % (P.N_VALIDATORS - 1))
+
+
 def gen_birthmark(w: World):
     cfg, r, H = w.cfg, w.rng, w.cfg.horizon_s
     rate = 1.0 / (cfg.interval_min * 60.0)
@@ -210,9 +273,11 @@ def gen_birthmark(w: World):
     t0, dev = t0[o], dev[o]
     S = t0.shape[0]
     sub = np.arange(S)
-    val = VAL0 + dev % P.N_VALIDATORS
+    val = VAL0 + validator_of(cfg, dev)
     if cfg.role_rules == "insider_v2":
         C, F, I, A, B, D, E, G, Hh, gk = _insider_v2_roles(r, S)
+    elif cfg.role_rules == "catalog":
+        C, F, I, A, B, D, E, G, Hh, gk = _catalog_roles(r, S)
     else:
         # role slots: nine distinct nodes so no intermediary or first hop is shared across
         # channels (G6), and A != C, B not in {A, C} etc. as the Leg Catalog requires.
@@ -246,17 +311,27 @@ def gen_birthmark(w: World):
     posts, gk_ids = np.empty((S, 3)), []
     gk_arr = np.empty((S, 3))
     gk_hold_phase = r.uniform(0, P.TICK_S, P.N_NODES) if cfg.gk_hold == "gatekeeper" else None
+    gk_valid = gk != C[:, None]          # False only under role_rules="catalog" (Round 1)
     for j in range(3):
         rel = LT.release_time(r, cv2_a, w.phase[C], cfg.relay_clock, cfg.lottery_enabled) + w.proc(S)
         arr = rel + w.lat_int[C, gk[:, j]] + w.jit(S)
-        gk_ids.append(w.ev.add(rel, arr, C, gk[:, j], w.relay_size("GK", S), P.RT_APPDATA, K_BIRTHMARK,
-                               GK1 + j, sub))
+        if gk_valid[:, j].all():
+            gk_ids.append(w.ev.add(rel, arr, C, gk[:, j], w.relay_size("GK", S), P.RT_APPDATA, K_BIRTHMARK,
+                                   GK1 + j, sub))
+        else:   # C posts to its own board directly: no leg on the wire
+            m = gk_valid[:, j]
+            ids = np.full(S, -1, dtype=np.int64)
+            ids[m] = w.ev.add(rel[m], arr[m], C[m], gk[m, j], w.relay_size("GK", int(m.sum())), P.RT_APPDATA,
+                              K_BIRTHMARK, GK1 + j, sub[m])
+            gk_ids.append(ids)
+            arr = np.where(m, arr, cv2_a)
         gk_arr[:, j] = arr
         if cfg.gk_hold:   # gatekeeper holds before countersigning and posting (its own hold clock)
             ph = gk_hold_phase[gk[:, j]] if cfg.gk_hold == "gatekeeper" else r.uniform(0, P.TICK_S, S)
             arr = LT.release_time(r, arr, ph, "node", True)
         posts[:, j] = arr + r.uniform(*P.GATEKEEPER_PROC_MS, S) / 1000   # Post-j: internal, unobserved
-    quorum = np.sort(posts, axis=1)[:, 1]                                 # 2 of 3 boards
+    # quorum: 2 of the 3 boards; a record C signed as both C and gatekeeper does not count (Round 1 only)
+    quorum = np.sort(np.where(gk_valid, posts, np.inf), axis=1)[:, 1]
 
     # F and I poll the boards on their own 10 s tick and post once 2-of-3 AND content are in
     # [DECISION: polling default, flagged as an assumption]
@@ -278,7 +353,7 @@ def gen_birthmark(w: World):
     legs = np.concatenate([np.full(S, REG_F_ORIGIN), np.full(S, REG_I_ORIGIN)])
     oids = _gossip(w, origin, t_org, np.concatenate([sub, sub]), legs, mesh)
 
-    subs = dict(t0=t0, dev=dev, val=val, C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh, gk=gk,
+    subs = dict(t0=t0, dev=dev, val=val, C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh, gk=gk, gk_valid=gk_valid,
                 posts=posts, gk_arr=gk_arr, gk_hold_phase=gk_hold_phase, det_f=det_f, det_i=det_i,
                 quorum=quorum, reg_f=reg_f, reg_i=reg_i, arr_c=arr_c, arr_f=arr_f, arr_i=arr_i,
                 ev_cred=np.stack(cred_ids, 1), ev_ca=np.stack(ca_ids, 1), ev_cb=np.stack(cb_ids, 1),
@@ -441,6 +516,7 @@ _ARRAYS_CACHE = {}
 
 
 def simulate(cfg: P.Config, seed: int, pools: Pools) -> Run:
+    P.use_topology(cfg)
     key = id(pools)
     if key not in _ARRAYS_CACHE:
         _ARRAYS_CACHE[key] = _pool_arrays(pools)
