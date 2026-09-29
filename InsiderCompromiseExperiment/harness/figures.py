@@ -40,42 +40,66 @@ def _fig(w, h):
     return f
 
 
+def _main_series(rows, rec, rnd):
+    """Main cells of one record: 20 nodes, no variant or share, the 3-hour window (40 minutes at
+    L = 1000, where compute sets the window)."""
+    return sorted((r for r in rows if r["record"] == rec and r["round"] == rnd and not r["variant"]
+                   and not r["share"] and r["nodes"] == 20
+                   and r["window_min"] == (40.0 if r["L"] >= 1000 else 180.0)), key=lambda r: r["L"])
+
+
+def _spread(ys, min_gap):
+    """End-label positions (log10 units) pushed apart by at least min_gap, order kept."""
+    order = np.argsort(ys)
+    out = np.array(ys, float)
+    for i in range(1, len(order)):
+        a, b = order[i - 1], order[i]
+        if out[b] - out[a] < min_gap:
+            out[b] = out[a] + min_gap
+    return out
+
+
 def lift_vs_L(rows, path, rnd=3):
-    """Lift (accuracy x L) against L for each scenario's primary attack; F under Round 1 dashed."""
-    f = _fig(6.4, 4.0)
-    ax = f.add_subplot(111)
-    _style(ax)
-    series = []
-    for sc in ORDER:
-        pts = sorted((r["L"], r["lift"], r["lift_lo"], r["lift_hi"]) for r in rows
-                     if r["record"] == PRIMARY[sc] and r["round"] == rnd and not r["variant"]
-                     and not r["share"] and r["nodes"] == 20 and r["window_min"] == 180)
-        if pts:
-            series.append((sc, pts, "-"))
-    pts = sorted((r["L"], r["lift"], r["lift_lo"], r["lift_hi"]) for r in rows
-                 if r["record"] == "F.full" and r["round"] == 1 and not r["variant"] and r["window_min"] == 180)
-    if pts:
-        series.append(("F (Round 1)", pts, "--"))
-    for name, pts, ls in series:
-        x = np.array([p[0] for p in pts])
-        y = np.array([p[1] for p in pts])
-        lo = np.array([p[2] for p in pts])
-        hi = np.array([p[3] for p in pts])
-        ax.fill_between(x, lo, hi, color=SLOT[name], alpha=0.12, linewidth=0)
-        ax.plot(x, y, ls, color=SLOT[name], linewidth=2, marker=MARK[name], markersize=4,
-                markeredgecolor=SURFACE, markeredgewidth=0.8)
-        ax.annotate(name, (x[-1], y[-1]), xytext=(6, 0), textcoords="offset points", va="center",
-                    fontsize=7, color=INK)
-    ax.axhline(1.0, color=INK2, linewidth=1, linestyle=":")
-    xmin = min(p[0] for _, pts, _ in series for p in pts) if series else 4
-    ax.annotate("chance (lift = 1)", (xmin, 1.0), xytext=(0, 4),
-                textcoords="offset points", fontsize=7, color=INK2)
-    ax.set_xscale("log")
-    ax.set_yscale("log")
-    ax.set_xlabel("L (workbook Little's-law anonymity set)", color=INK, fontsize=8)
-    ax.set_ylabel("lift = accuracy x L", color=INK, fontsize=8)
-    ax.set_title(f"Lift against L, Round {rnd} (primary attack per scenario, 95% CI band)",
-                 color=INK, fontsize=9, loc="left")
+    """Lift (accuracy x L) against L for each scenario's primary attack, Round 3, with F under
+    Round 1 dashed. Left: joint assignment (pre-registered). Right: per-decision attack."""
+    f = _fig(10.0, 4.4)
+    for k, (mode, title) in enumerate((("joint", "Joint assignment (pre-registered primary)"),
+                                       ("per_decision", "Per-decision attack"))):
+        ax = f.add_subplot(1, 2, k + 1)
+        _style(ax)
+        series = [(sc, _main_series(rows, PRIMARY[sc], rnd), "-") for sc in ORDER]
+        series.append(("F (Round 1)", _main_series(rows, "F.full", 1), "--"))
+        ends = []
+        for name, pts, ls in series:
+            if not pts:
+                continue
+            x = np.array([r["L"] for r in pts])
+            if mode == "joint":
+                y = np.array([r["lift"] for r in pts])
+                ax.fill_between(x, [r["lift_lo"] for r in pts], [r["lift_hi"] for r in pts],
+                                color=SLOT[name], alpha=0.12, linewidth=0)
+            else:
+                y = np.array([r["accuracy_per_decision"] * r["L"] for r in pts])
+            y = np.maximum(y, 1e-3)
+            ax.plot(x, y, ls, color=SLOT[name], linewidth=2, marker=MARK[name], markersize=4,
+                    markeredgecolor=SURFACE, markeredgewidth=0.8)
+            ends.append((name, x[-1], y[-1]))
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_ylim(0.01, 30)
+        ax.axhline(1.0, color=INK2, linewidth=1, linestyle=":")
+        ax.annotate("chance (lift = 1)", (4, 1.0), xytext=(0, 4), textcoords="offset points", fontsize=7, color=INK2)
+        ly = _spread([np.log10(e[2]) for e in ends], 0.09)
+        for (name, xe, ye), yl in zip(ends, ly):
+            ax.annotate(name, (xe, ye), xytext=(xe * 1.25, 10 ** yl), textcoords="data", va="center",
+                        fontsize=7, color=INK, arrowprops=dict(arrowstyle="-", color=GRID, linewidth=0.6))
+        ax.set_xlim(3, 4000)
+        ax.set_xlabel("L (workbook Little's-law anonymity set)", color=INK, fontsize=8)
+        if k == 0:
+            ax.set_ylabel("lift = accuracy x L", color=INK, fontsize=8)
+        ax.set_title(title, color=INK, fontsize=9, loc="left")
+    f.suptitle(f"Lift against L, Round {rnd} (F under Round 1 dashed). L = 1000 uses the 40-minute window.",
+               fontsize=8, color=INK2, x=0.01, ha="left")
     f.tight_layout()
     f.savefig(path, facecolor=SURFACE)
     plt.close(f)

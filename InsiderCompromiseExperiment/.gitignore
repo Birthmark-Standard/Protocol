@@ -14,3 +14,4 @@ results/*/models/
 results/*/*.tmp
 results/*/cells.json
 results/*/costs.json
+results/*/figures/
