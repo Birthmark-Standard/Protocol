@@ -5,6 +5,8 @@
     python -m harness analyze --in results/x
     python -m harness estimate --scenario N A C D F V GK --round 3 --L 4 40 200 1000 --runs 20
     python -m harness regress                                 # reproduce the published rounds
+    python -m harness equivalence                             # the tool's F attack vs the original
+    python -m harness publish                                 # results/ tables, figures, paper table
 """
 from __future__ import annotations
 
@@ -53,6 +55,7 @@ def main(argv=None):
     z = sub.add_parser("analyze", help="metrics from persisted decisions (never re-simulates)")
     z.add_argument("--in", dest="inp", default=str(ROOT / "results" / "extension"))
     z.add_argument("--publish", action="store_true", help="also write results/ tables and figures")
+    sub.add_parser("publish", help="write results/ tables, figures, paper table from results/extension")
     q = sub.add_parser("quick", help="smoke test, under 2 minutes")
     q.add_argument("--out", default=None)
     q.add_argument("--workers", default="auto")
@@ -77,6 +80,12 @@ def main(argv=None):
     elif a.cmd == "analyze":
         from .report import analyze_dir
         analyze_dir(Path(a.inp), publish=a.publish)
+        if a.publish:
+            from . import publish
+            publish.main()
+    elif a.cmd == "publish":
+        from . import publish
+        publish.main()
     elif a.cmd == "quick":
         import tempfile
         from .report import analyze_dir

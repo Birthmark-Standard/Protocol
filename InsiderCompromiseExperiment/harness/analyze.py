@@ -23,7 +23,8 @@ MIN_EACH = 50                                  # correct and incorrect decisions
 
 def stack(records):
     """Concatenate run records into one table with a run index per decision."""
-    keys = [k for k, v in records[0].items() if isinstance(v, np.ndarray)]
+    keys = [k for k, v in records[0].items() if isinstance(v, np.ndarray)
+            and all(isinstance(r.get(k), np.ndarray) for r in records)]      # fields every record has
     out = {k: np.concatenate([r[k] for r in records]) for k in keys}
     out["run"] = np.concatenate([np.full(r["correct"].shape[0], r["run"], np.int32) for r in records])
     return out
