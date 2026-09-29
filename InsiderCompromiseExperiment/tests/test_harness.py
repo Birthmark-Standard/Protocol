@@ -92,3 +92,19 @@ def test_results_do_not_depend_on_worker_count(tmp_path):
         a, b = outs[1][k], outs[2][k]
         for key in ("correct", "pred", "top1", "rank"):
             assert np.array_equal(a[key], b[key])
+
+
+def test_loader_skips_a_damaged_member(tmp_path):
+    """An interrupted session leaves a truncated gzip member; records before and after it survive."""
+    import gzip
+    p = tmp_path / "raw" / "x.pkl.gz"
+    p.parent.mkdir()
+    for runs in ((0, 1), (2,), (3, 4)):
+        with gzip.open(p, "ab") as f:
+            for k in runs:
+                pickle.dump(dict(run=k, v=np.arange(50)), f)
+    data = p.read_bytes()
+    starts = [i for i in range(len(data)) if data.startswith(b"\x1f\x8b\x08", i)]
+    cut = data[:starts[1]] + data[starts[1]:starts[2]][:20] + data[starts[2]:]   # truncate member 2
+    p.write_bytes(cut)
+    assert sorted(r["run"] for r in RN.load(tmp_path, "x")) == [0, 1, 3, 4]

@@ -20,16 +20,43 @@ def raw_path(out: Path, name: str) -> Path:
 
 
 def load(out: Path, name: str) -> list[dict]:
-    """Every complete record in one raw file. A record cut off by an interruption is dropped."""
+    """Every complete record in one raw file. Each writing session appends its own gzip member;
+    a member cut off by an interruption is skipped, and every intact member after it is still
+    read. A record cut off mid-pickle is dropped."""
     p = raw_path(out, name)
-    res = []
-    if p.exists():
-        with gzip.open(p, "rb") as f:
-            while True:
-                try:
-                    res.append(pickle.load(f))
-                except (EOFError, OSError, pickle.UnpicklingError):
-                    break
+    if not p.exists():
+        return []
+    by_run = {}
+    for r in read_records(p):                  # a run recomputed after an interruption is identical
+        by_run[r.get("run")] = r
+    return list(by_run.values())
+
+
+def read_records(p: Path) -> list[dict]:
+    import io
+    import zlib
+    data = Path(p).read_bytes()
+    res, pos, magic = [], 0, b"\x1f\x8b\x08"
+    while pos < len(data):
+        d = zlib.decompressobj(wbits=31)
+        try:
+            raw = d.decompress(data[pos:])
+            complete = d.eof
+        except zlib.error:
+            raw, complete = b"", False
+        buf = io.BytesIO(raw)
+        while True:
+            try:
+                res.append(pickle.load(buf))
+            except (EOFError, pickle.UnpicklingError, ValueError, TypeError, AttributeError, IndexError):
+                break
+        if complete:
+            pos = len(data) - len(d.unused_data)
+        else:                                  # damaged member: resume at the next member header
+            nxt = data.find(magic, pos + 1)
+            if nxt < 0:
+                break
+            pos = nxt
     return res
 
 
