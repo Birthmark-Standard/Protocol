@@ -1,0 +1,412 @@
+{
+ "padding": {
+  "legs_checked": 12614,
+  "legs_outside_class": 0,
+  "ring_v_signature_bytes": 64,
+  "ring_v_verifies": true,
+  "ring_v_expected": 64,
+  "raw_fits": {
+   "Cred-1": {
+    "raw": 251,
+    "class_min": 420,
+    "fits": true
+   },
+   "Cred-2": {
+    "raw": 251,
+    "class_min": 420,
+    "fits": true
+   },
+   "Cred-3": {
+    "raw": 235,
+    "class_min": 420,
+    "fits": true
+   },
+   "Cont-1": {
+    "raw": 163,
+    "class_min": 420,
+    "fits": true
+   },
+   "Cont-2": {
+    "raw": 163,
+    "class_min": 420,
+    "fits": true
+   },
+   "Cont-3": {
+    "raw": 147,
+    "class_min": 420,
+    "fits": true
+   },
+   "CV-1": {
+    "raw": 218,
+    "class_min": 420,
+    "fits": true
+   },
+   "CV-2": {
+    "raw": 134,
+    "class_min": 420,
+    "fits": true
+   },
+   "CV-2 reject": {
+    "raw": 69,
+    "class_min": 420,
+    "fits": true
+   },
+   "GK": {
+    "raw": 753,
+    "class_min": 820,
+    "fits": true
+   }
+  },
+  "ring_v_scaling_note": [
+   {
+    "ring_v_members": 1,
+    "gk_raw": 753,
+    "fits_class": true,
+    "within_class_max": true
+   },
+   {
+    "ring_v_members": 2,
+    "gk_raw": 785,
+    "fits_class": true,
+    "within_class_max": true
+   },
+   {
+    "ring_v_members": 3,
+    "gk_raw": 817,
+    "fits_class": true,
+    "within_class_max": true
+   },
+   {
+    "ring_v_members": 4,
+    "gk_raw": 849,
+    "fits_class": false,
+    "within_class_max": true
+   },
+   {
+    "ring_v_members": 5,
+    "gk_raw": 881,
+    "fits_class": false,
+    "within_class_max": false
+   },
+   {
+    "ring_v_members": 6,
+    "gk_raw": 913,
+    "fits_class": false,
+    "within_class_max": false
+   },
+   {
+    "ring_v_members": 7,
+    "gk_raw": 945,
+    "fits_class": false,
+    "within_class_max": false
+   },
+   {
+    "ring_v_members": 8,
+    "gk_raw": 977,
+    "fits_class": false,
+    "within_class_max": false
+   }
+  ],
+  "passed": true
+ },
+ "answer_extraction": {
+  "registry_found": 340,
+  "registry_expected": 340,
+  "registry_unlabelled": 0,
+  "replies_found": 901,
+  "replies_expected": 901,
+  "replies_unlabelled": 0,
+  "passed": true
+ },
+ "background_independence": {
+  "identical": {
+   "baseline": true,
+   "first_hop_cred": true,
+   "first_hop_content": true,
+   "cred_processor": true,
+   "content_server": true,
+   "validator": true,
+   "gatekeeper": true
+  },
+  "passed": true
+ },
+ "decoys_cannot_tell": {
+  "baseline": {
+   "features": {
+    "Cred-1 size": {
+     "auc": 0.49387029194617915,
+     "lo": 0.470817192738615,
+     "hi": 0.5169233911537433,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "Cred-2 size": {
+     "auc": 0.5105920579997537,
+     "lo": 0.4955710849633697,
+     "hi": 0.5256130310361378,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "Cred-3 size": {
+     "auc": 0.4962533944076571,
+     "lo": 0.47547051803696894,
+     "hi": 0.5170362707783452,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "ContA-1 size": {
+     "auc": 0.4899615162668788,
+     "lo": 0.4741574162037005,
+     "hi": 0.505765616330057,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "ContA-3 size": {
+     "auc": 0.4927838392545031,
+     "lo": 0.4705858298407888,
+     "hi": 0.5149818486682174,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "ContB-1 size": {
+     "auc": 0.5042678985589902,
+     "lo": 0.4836201274838939,
+     "hi": 0.5249156696340866,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "CV-1 size": {
+     "auc": 0.4984911520274395,
+     "lo": 0.4748355545678705,
+     "hi": 0.5221467494870085,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "CV-2 size": {
+     "auc": 0.5031635673985622,
+     "lo": 0.48238539465490554,
+     "hi": 0.5239417401422187,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "GK leg size (mean of 3)": {
+     "auc": 0.4923440131248499,
+     "lo": 0.46043163337149856,
+     "hi": 0.5242563928782011,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "C: Cred-3 arrival to CV-1 send": {
+     "auc": 0.5092735275119354,
+     "lo": 0.4861906546434043,
+     "hi": 0.5323564003804666,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "V: CV-1 arrival to CV-2 send": {
+     "auc": 0.5018052777239755,
+     "lo": 0.4776596270640722,
+     "hi": 0.5259509283838788,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "C: CV-2 arrival to first GK send": {
+     "auc": 0.491399640282049,
+     "lo": 0.4664512655393689,
+     "hi": 0.5163480150247292,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "C: GK send spread": {
+     "auc": 0.5093853271854571,
+     "lo": 0.487637643209552,
+     "hi": 0.5311330111613624,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "source: spread of its three first-hop sends": {
+     "auc": 0.5062188107611214,
+     "lo": 0.4801292285958315,
+     "hi": 0.5323083929264113,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "source: time since its previous capture": {
+     "auc": 0.49566661716019605,
+     "lo": 0.470394584182711,
+     "hi": 0.520938650137681,
+     "covers_half": true,
+     "n_real": 1986,
+     "n_decoy": 8035
+    },
+    "A: hold": {
+     "auc": 0.48987083372434254,
+     "lo": 0.4698835921741227,
+     "hi": 0.5098580752745624,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "B: hold": {
+     "auc": 0.5026291617994577,
+     "lo": 0.48879448066833303,
+     "hi": 0.5164638429305825,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "D: hold": {
+     "auc": 0.5054648080642374,
+     "lo": 0.4859263743012369,
+     "hi": 0.5250032418272379,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "E: hold": {
+     "auc": 0.4956402340220467,
+     "lo": 0.4796828456094122,
+     "hi": 0.5115976224346812,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    }
+   },
+   "passed": true
+  },
+  "first_hop_cred": {
+   "features": {
+    "Cred-1 size": {
+     "auc": 0.49387029194617915,
+     "lo": 0.470817192738615,
+     "hi": 0.5169233911537433,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "A: hold": {
+     "auc": 0.48987083372434254,
+     "lo": 0.4698835921741227,
+     "hi": 0.5098580752745624,
+     "covers_half": true,
+     "n_real": 2166,
+     "n_decoy": 8767
+    },
+    "source: time since its previous capture": {
+     "auc": 0.49566661716019605,
+     "lo": 0.470394584182711,
+     "hi": 0.520938650137681,
+     "covers_half": true,
+     "n_real": 1986,
+     "n_decoy": 8035
+    }
+   },
+   "passed": true
+  },
+  "first_hop_content": {
+   "features": {
+    "Content first-hop size": {
+     "auc": 0.4971713642540792,
+     "lo": 0.4831285454551187,
+     "hi": 0.5112141830530398,
+     "covers_half": true,
+     "n_real": 4332,
+     "n_decoy": 17534
+    },
+    "hold at the first hop": {
+     "auc": 0.5017920992650502,
+     "lo": 0.4836909696087085,
+     "hi": 0.5198932289213919,
+     "covers_half": true,
+     "n_real": 4332,
+     "n_decoy": 17534
+    },
+    "source: time since its previous capture": {
+     "auc": 0.49566661716019605,
+     "lo": 0.470394584182711,
+     "hi": 0.5209386501376811,
+     "covers_half": true,
+     "n_real": 3972,
+     "n_decoy": 16070
+    }
+   },
+   "passed": true
+  },
+  "content_server": {
+   "features": {
+    "Content last-leg size": {
+     "auc": 0.4952605469537038,
+     "lo": 0.48276042445785844,
+     "hi": 0.5077606694495491,
+     "covers_half": true,
+     "n_real": 4332,
+     "n_decoy": 17534
+    },
+    "arrival to first board check": {
+     "auc": 0.49644488360353256,
+     "lo": 0.48178556021813984,
+     "hi": 0.5111042069889252,
+     "covers_half": true,
+     "n_real": 4332,
+     "n_decoy": 17534
+    }
+   },
+   "passed": true,
+   "after_timeout": {
+    "auc": 1.0,
+    "lo": 1.0,
+    "hi": 1.0,
+    "covers_half": false,
+    "n_real": 4332,
+    "n_decoy": 17534
+   },
+   "passed_scoped": true
+  }
+ },
+ "decoys_can_tell": {
+  "validator": {
+   "rule": "the reply's plaintext indicator is the credential's registration status",
+   "agrees": true
+  },
+  "cred_processor": {
+   "rule": "reads the validator's indicator; sends a same-size placeholder for sigma_C on a dummy",
+   "gk_leg_size_auc": 0.4923440131248499,
+   "agrees": true
+  },
+  "gatekeeper": {
+   "rule": "sigma_C verification fails exactly on dummies; substitute posting on the real schedule",
+   "quorum_never_forms_for_decoys": true,
+   "quorum_forms_for_real": true,
+   "schedule_auc": {
+    "auc": 0.4967331698894311,
+    "lo": 0.48027780061510755,
+    "hi": 0.5131885391637546,
+    "covers_half": true,
+    "n_real": 6498,
+    "n_decoy": 26301
+   }
+  },
+  "passed": true
+ },
+ "n_feature_tests": 29,
+ "runs": 12,
+ "cell": {
+  "R": 8,
+  "T": 40,
+  "background": true
+ }
+}
