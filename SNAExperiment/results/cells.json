@@ -3,6 +3,7 @@
   "key": "R1",
   "R": 1.0,
   "T": 1.0,
+  "decoys": false,
   "control": false,
   "window_s": 125114.15842025627,
   "D": 625.5707921012813
@@ -459,7 +460,62 @@
   "key": "R40_control",
   "R": 40.0,
   "T": 40.0,
+  "decoys": false,
   "control": true,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R1_D40": {
+  "key": "R1_D40",
+  "R": 1.0,
+  "T": 41.0,
+  "decoys": true,
+  "control": false,
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R5_D40": {
+  "key": "R5_D40",
+  "R": 5.0,
+  "T": 45.0,
+  "decoys": true,
+  "control": false,
+  "window_s": 25022.831684051253,
+  "D": 625.5707921012813
+ },
+ "R15_D40": {
+  "key": "R15_D40",
+  "R": 15.0,
+  "T": 55.0,
+  "decoys": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R45_D40": {
+  "key": "R45_D40",
+  "R": 45.0,
+  "T": 85.0,
+  "decoys": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R100_D40": {
+  "key": "R100_D40",
+  "R": 100.0,
+  "T": 140.0,
+  "decoys": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R15": {
+  "key": "R15",
+  "R": 15.0,
+  "T": 15.0,
+  "decoys": false,
+  "control": false,
   "window_s": 10800,
   "D": 625.5707921012813
  }
