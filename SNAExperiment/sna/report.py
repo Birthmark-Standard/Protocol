@@ -42,7 +42,7 @@ def _clean(r):
 def build(out: Path):
     out = Path(out)
     cells = json.loads((out / "cells.json").read_text())
-    rows, trends = AN.analyze(out, cells, lambda k: RN.load(out, k))
+    rows, trends = AN.analyze(out, cells, lambda k: RN.load(out, f"{k}__{CE.TARGET}"))
     clean = [_clean(r) for r in rows]
     (out / "summary.json").write_text(json.dumps(dict(rows=clean, trends=trends), indent=1, default=float))
     keys = sorted({k for r in clean for k in r if not isinstance(r[k], dict)},
@@ -65,84 +65,73 @@ def _get(rows, v, R, T, control=False):
     return None
 
 
-def _acc_cell(r):
-    if r is None or "accuracy" not in r:
-        return "not run"
-    s = ci(r, "accuracy", "ci_lo", "ci_hi")
-    if not r["stable"]:
+def _acc(r, lvl):
+    s = ci(r, f"{lvl}_accuracy", f"{lvl}_ci_lo", f"{lvl}_ci_hi")
+    if lvl == "dev" and not r["stable"]:
         s += f" (unstable; {r['runs_needed']} runs needed)"
     return s
 
 
 def tables(rows, trends, D, out):
-    md = [f"# Tables\n\nMeasured end-to-end delay D = {D:.1f} s. Accuracy is the per-decision attack; "
-          "intervals resample whole runs.\n"]
+    md = [f"# Tables\n\nRecord-to-device linking. Measured end-to-end delay D = {D:.1f} s. Per-decision "
+          "attack; intervals resample whole runs. Device level (primary): the named device is the record's. "
+          "Submission level: the named submission group contains a packet of the record's capture.\n"]
     md.append("## Volume\n\n" + volume_table(D) + "\n")
-    # no-decoy sweep
     Ls = sorted({int(r["R"]) for r in rows if r["R"] == r["T"] and not r["control"]})
     md.append("## No-decoy sweep (T = R)\n")
     for v in ORDER:
         md.append(f"### {AT.LABEL[v]}\n")
-        md.append("| L | 1/L | Random assignment | Accuracy [95% CI] | Lift | Baseline | Contribution [95% CI] | "
-                  "Joint | Joint contribution | AUC [95% CI] | Precision top 1% | Precision top 5% | Coverage at >50% | Runs | n |")
-        md.append("|" + "---|" * 15)
+        md.append("| L | Device accuracy [95% CI] | Random device | Lift vs random | Baseline | Contribution [95% CI] | "
+                  "Submission accuracy [95% CI] | 1/L | Lift (x L) | Baseline | Contribution [95% CI] | "
+                  "AUC [95% CI] | Precision top 1% | Precision top 5% | Coverage at >50% | Runs | n |")
+        md.append("|" + "---|" * 17)
         for L in Ls:
             r = _get(rows, v, L, L)
-            if not r or "accuracy" not in r:
+            if not r or "dev_accuracy" not in r:
                 continue
             ub = " (upper bound)" if v in AT.CAN_TELL and L > 40 else ""
-            md.append(f"| {L}{ub} | {pct(1 / L)} | {pct(r['random_assignment'])} | {_acc_cell(r)} | "
-                      f"{r['lift']:.2f} [{r['lift_lo']:.2f}, {r['lift_hi']:.2f}] | {pct(r['baseline'])} | "
-                      f"{ci(r, 'contribution', 'contribution_lo', 'contribution_hi')} | {pct(r['accuracy_joint'])} | "
-                      f"{ci(r, 'contribution_joint', 'contribution_joint_lo', 'contribution_joint_hi')} | "
+            md.append(f"| {L}{ub} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {r['dev_lift_random']:.2f} | "
+                      f"{pct(r['dev_baseline'])} | {ci(r, 'dev_contribution', 'dev_contribution_lo', 'dev_contribution_hi')} | "
+                      f"{_acc(r, 'sub')} | {pct(1 / L)} | {r['sub_lift']:.2f} | {pct(r['sub_baseline'])} | "
+                      f"{ci(r, 'sub_contribution', 'sub_contribution_lo', 'sub_contribution_hi')} | "
                       f"{r['auc']:.3f} [{r['auc_lo']:.3f}, {r['auc_hi']:.3f}] | {pct(r['p_at_1'], 1)} | "
                       f"{pct(r['p_at_5'], 1)} | {pct(r['coverage_p50'], 3)} | {r['runs']} | {r['n']} |")
         md.append("")
     md.append("## Lift trend, L = 40 to 500 (no-decoy sweep)\n")
-    md.append("| Vantage | Lift at 40 | Lift at 500 | Slope of log lift on log L [95% CI] | Direction |")
+    md.append("| Vantage | Level | Lift at 40 | Lift at 500 | Slope of log lift on log L [95% CI] | Direction |")
+    md.append("|---|---|---|---|---|---|")
+    for v in ORDER:
+        for level, name in (("dev", "device (vs random)"), ("sub", "submission (x L)")):
+            t = trends.get(f"{v}.{level}")
+            if t:
+                md.append(f"| {AT.LABEL[v]} | {name} | {t['lift_40']:.2f} | {t['lift_500']:.2f} | "
+                          f"{t['slope']:.3f} [{t['lo']:.3f}, {t['hi']:.3f}] | {t['direction']} |")
+    md.append("")
+    Ts = sorted({int(r["T"]) for r in rows})
+    for lvl, title in (("dev", "Device accuracy"), ("sub", "Submission accuracy")):
+        md.append(f"## Decoy sweep: {title.lower()} (rows R, columns T)\n")
+        for v in ORDER:
+            md.append(f"### {AT.LABEL[v]}" + (" (can tell decoys: every T > R entry is an upper bound on L)"
+                                              if v in AT.CAN_TELL else "") + "\n")
+            md.append("| R \\ T | " + " | ".join(str(T) for T in Ts) + " |")
+            md.append("|" + "---|" * (len(Ts) + 1))
+            for R in CE.LOW_R:
+                cells_ = []
+                for T in Ts:
+                    r = _get(rows, v, R, T)
+                    cells_.append("" if r is None or f"{lvl}_accuracy" not in r else
+                                  f"{pct(r[f'{lvl}_accuracy'])} ({r[f'{lvl}_contribution'] * 100:+.2f})"
+                                  + ("" if r["stable"] else " u"))
+                md.append(f"| {R} | " + " | ".join(cells_) + " |")
+            md.append("\n(Accuracy, then the contribution over the paired baseline in points. u: fewer than 50 "
+                      "device-level successes or failures; runs needed in summary.csv.)\n")
+    md.append("## Sensitivity control (R = 40, every hold off)\n")
+    md.append("| Vantage | Device accuracy [95% CI] | Random device | Submission accuracy | 1/L |")
     md.append("|---|---|---|---|---|")
     for v in ORDER:
-        t = trends.get(v)
-        if t:
-            md.append(f"| {AT.LABEL[v]} | {t['lift_40']:.2f} | {t['lift_500']:.2f} | "
-                      f"{t['slope']:.3f} [{t['lo']:.3f}, {t['hi']:.3f}] | {t['direction']} |")
-    md.append("")
-    # decoy sweep
-    md.append("## Decoy sweep (T > R; accuracy [95% CI], chance 1/T)\n")
-    Ts = sorted({int(r["T"]) for r in rows})
-    for v in ORDER:
-        md.append(f"### {AT.LABEL[v]}" + (" (can tell decoys: every T > R entry is an upper bound on L)"
-                                          if v in AT.CAN_TELL else "") + "\n")
-        md.append("| R \\ T | " + " | ".join(str(T) for T in Ts) + " |")
-        md.append("|" + "---|" * (len(Ts) + 1))
-        for R in CE.LOW_R:
-            cells_ = []
-            for T in Ts:
-                r = _get(rows, v, R, T)
-                cells_.append("" if r is None or "accuracy" not in r else
-                              f"{pct(r['accuracy'])} [{pct(r['ci_lo'])}, {pct(r['ci_hi'])}]"
-                              + ("" if r["stable"] else " u"))
-            md.append(f"| {R} | " + " | ".join(cells_) + " |")
-        md.append("\nContribution over the paired baseline (joint assignment, where decoy rows compete):\n")
-        md.append("| R \\ T | " + " | ".join(str(T) for T in Ts) + " |")
-        md.append("|" + "---|" * (len(Ts) + 1))
-        for R in CE.LOW_R:
-            cells_ = []
-            for T in Ts:
-                r = _get(rows, v, R, T)
-                cells_.append("" if r is None or "accuracy" not in r else
-                              f"{pct(r['contribution'])} / {pct(r['contribution_joint'])}")
-            md.append(f"| {R} | " + " | ".join(cells_) + " |")
-        md.append("\n(u: fewer than 50 successes or failures; see summary.csv for runs needed. "
-                  "Contribution cells read per-decision / joint.)\n")
-    # control
-    md.append("## Sensitivity control (R = 40, every hold off)\n")
-    md.append("| Vantage | Accuracy [95% CI] | 1/L | Baseline |")
-    md.append("|---|---|---|---|")
-    for v in ORDER:
         r = _get(rows, v, CE.CONTROL_R, CE.CONTROL_R, True)
-        if r and "accuracy" in r:
-            md.append(f"| {AT.LABEL[v]} | {ci(r, 'accuracy', 'ci_lo', 'ci_hi')} | {pct(1 / CE.CONTROL_R)} | {pct(r['baseline'])} |")
+        if r and "dev_accuracy" in r:
+            md.append(f"| {AT.LABEL[v]} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {pct(r['sub_accuracy'])} | {pct(1 / CE.CONTROL_R)} |")
     md.append("")
     md.append("## Outcome-shuffle control (stable cells)\n")
     st = [r for r in rows if r.get("stable")]
@@ -178,56 +167,57 @@ def figures(rows, fig_dir):
     import matplotlib.pyplot as plt
     fig_dir = Path(fig_dir)
     fig_dir.mkdir(parents=True, exist_ok=True)
-    # lift against L, no-decoy sweep
-    f = plt.figure(figsize=(6.4, 4.4), dpi=300, facecolor=SURFACE)
-    ax = f.add_subplot(1, 1, 1)
-    _style(ax)
-    for v in ORDER:
-        pts = sorted((r for r in rows if r["vantage"] == v and r["R"] == r["T"] and not r["control"] and "lift" in r),
-                     key=lambda r: r["R"])
-        if not pts:
-            continue
-        x = np.array([r["R"] for r in pts])
-        y = np.maximum([r["lift"] for r in pts], 1e-3)
-        ax.fill_between(x, np.maximum([r["lift_lo"] for r in pts], 1e-3), [r["lift_hi"] for r in pts],
-                        color=SLOT[v], alpha=0.12, linewidth=0)
-        ax.plot(x, y, "-", color=SLOT[v], linewidth=2, marker=MARK[v], markersize=4, markeredgecolor=SURFACE,
-                label=AT.LABEL[v])
-    ax.set_xscale("log")
-    ax.set_yscale("log")
-    ax.axhline(1.0, color=INK2, linewidth=1, linestyle=":")
-    ax.set_xlabel("L (real transactions in flight, no decoys)", color=INK, fontsize=8)
-    ax.set_ylabel("lift = accuracy x L (1 = chance)", color=INK, fontsize=8)
-    ax.legend(fontsize=6.5, frameon=False, labelcolor=INK)
+    f = plt.figure(figsize=(10, 4.4), dpi=300, facecolor=SURFACE)
+    for i, (lvl, key, lo, hi, ylab) in enumerate((
+            ("dev", "dev_lift_random", "dev_lift_random_lo", "dev_lift_random_hi", "device accuracy / random device rate"),
+            ("sub", "sub_lift", "sub_lift_lo", "sub_lift_hi", "submission accuracy x L"))):
+        ax = f.add_subplot(1, 2, i + 1)
+        _style(ax)
+        for v in ORDER:
+            pts = sorted((r for r in rows if r["vantage"] == v and r["R"] == r["T"] and not r["control"] and key in r),
+                         key=lambda r: r["R"])
+            if not pts:
+                continue
+            x = np.array([r["R"] for r in pts])
+            ax.fill_between(x, np.maximum([r[lo] for r in pts], 1e-3), np.maximum([r[hi] for r in pts], 1e-3),
+                            color=SLOT[v], alpha=0.12, linewidth=0)
+            ax.plot(x, np.maximum([r[key] for r in pts], 1e-3), "-", color=SLOT[v], linewidth=2, marker=MARK[v],
+                    markersize=4, markeredgecolor=SURFACE, label=AT.LABEL[v])
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.axhline(1.0, color=INK2, linewidth=1, linestyle=":")
+        ax.set_xlabel("L (real transactions in flight, no decoys)", color=INK, fontsize=8)
+        ax.set_ylabel(ylab + " (1 = chance)", color=INK, fontsize=8)
+        ax.set_title("Device level" if lvl == "dev" else "Submission level", fontsize=9, color=INK, loc="left")
+        if i == 0:
+            ax.legend(fontsize=6.5, frameon=False, labelcolor=INK)
     f.tight_layout()
     f.savefig(fig_dir / "lift_vs_L_nodecoy.png", facecolor=SURFACE)
     plt.close(f)
-    # accuracy against T at each R, decoy sweep, one panel per vantage
     f = plt.figure(figsize=(10, 5.2), dpi=300, facecolor=SURFACE)
     cmap = plt.get_cmap("viridis")
     for i, v in enumerate(ORDER):
         ax = f.add_subplot(2, 4, i + 1)
         _style(ax)
         for j, R in enumerate(CE.LOW_R):
-            pts = sorted((r for r in rows if r["vantage"] == v and r["R"] == R and not r["control"] and "accuracy" in r),
+            pts = sorted((r for r in rows if r["vantage"] == v and r["R"] == R and not r["control"] and "dev_accuracy" in r),
                          key=lambda r: r["T"])
             if not pts:
                 continue
-            ax.plot([r["T"] for r in pts], np.maximum([r["accuracy"] for r in pts], 1e-4), "-o", markersize=2.5,
+            ax.plot([r["T"] for r in pts], np.maximum([r["dev_accuracy"] for r in pts], 1e-4), "-o", markersize=2.5,
                     linewidth=1.3, color=cmap(j / (len(CE.LOW_R) - 1)), label=f"R = {R}")
-        Tg = np.array(sorted(set(CE.WIDE_L) | set(CE.LOW_R)), float)
-        ax.plot(Tg, 1 / Tg, ":", color=INK2, linewidth=1)
         ax.set_xscale("log")
         ax.set_yscale("log")
         ax.set_ylim(1e-4, 1.2)
         ax.set_title(AT.LABEL[v], fontsize=8, color=INK, loc="left")
         ax.set_xlabel("T (total in flight)", fontsize=7, color=INK)
         if i % 4 == 0:
-            ax.set_ylabel("accuracy (dotted: 1/T)", fontsize=7, color=INK)
+            ax.set_ylabel("device accuracy", fontsize=7, color=INK)
     ax = f.add_subplot(2, 4, 8)
     ax.axis("off")
     h, lab = f.axes[0].get_legend_handles_labels()
-    ax.legend(h, lab, fontsize=7, frameon=False, loc="center", labelcolor=INK)
+    if h:
+        ax.legend(h, lab, fontsize=7, frameon=False, loc="center", labelcolor=INK)
     f.tight_layout()
-    f.savefig(fig_dir / "accuracy_vs_T_decoy.png", facecolor=SURFACE)
+    f.savefig(fig_dir / "device_accuracy_vs_T_decoy.png", facecolor=SURFACE)
     plt.close(f)

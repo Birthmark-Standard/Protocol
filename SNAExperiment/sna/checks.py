@@ -3,8 +3,10 @@ results/checks.json and reported, pass or fail.
 
 1. Padding classes: every leg's wire size lies in its class; every raw payload fits its class; the
    Ring V signature measured with real keys has the size the leg table assumes.
-2. Answer extraction: with background traffic on, the registry submissions and validator replies a
-   passive observer extracts are exactly the true ones.
+2. Answer extraction: with background traffic on, the registry submissions a passive observer
+   extracts are exactly the true ones, and its device candidates hold every device and decoy
+   first-hop packet and no background packet. The share of submission groups that hold one
+   capture only is reported.
 3. Background independence: every vantage's and baseline's decisions are identical with background
    traffic on and off (so sweeps may run without it).
 4. Decoys, cannot tell: for the baseline, both first hops and the content server, every feature
@@ -129,12 +131,17 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     real = ~s["decoy"]
     col_t, col_sub, tc = AT.registry_answers(run, pools)
     expected = int(s["ok_f"][real].sum() + s["ok_i"][real].sum())
-    ct, cs, ctc = AT.credential_answers(run, pools)
+    cand = AT.candidates(run, pools)
+    mem = cand["msub"]
+    first_hops = int(3 * s["t0"].size)                          # every capture's three first-hop packets
+    found = int((mem >= 0).sum())
+    bg_members = int(((cand["n"][:, None] > np.arange(3)[None, :]) & (mem < 0)).sum())
     res["answer_extraction"] = dict(
         registry_found=int(col_t.size), registry_expected=expected, registry_unlabelled=int((col_sub < 0).sum()),
-        replies_found=int(ct.size), replies_expected=int(s["t0"].size), replies_unlabelled=int((cs < 0).sum()),
-        passed=bool(col_t.size == expected and (col_sub < 0).sum() == 0 and ct.size == s["t0"].size
-                    and (cs < 0).sum() == 0 and ((tc[real] >= 0).sum(1) == 2).all()))
+        device_packets_found=found, device_packets_expected=first_hops, background_packets_in_candidates=bg_members,
+        submission_groups=int(cand["t"].size), pure_group_share=float((cand["sub"] >= 0).mean()),
+        passed=bool(col_t.size == expected and (col_sub < 0).sum() == 0 and ((tc[real] >= 0).sum(1) == 2).all()
+                    and found == first_hops and bg_members == 0))
 
     # 3. background independence --------------------------------------------------------
     CE.ensure_models(out, False, pools)
@@ -148,7 +155,7 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     same = {}
     for v in AT.VANTAGES:
         same[v] = all(np.array_equal(on[v][k], off[v][k]) for k in
-                      ("sub", "v_correct", "b_correct", "v_correct_joint", "b_correct_joint", "top1"))
+                      ("sub", "dev_v_correct", "dev_b_correct", "sub_v_correct", "sub_b_correct", "dev_top1"))
     res["background_independence"] = dict(identical=same, passed=bool(all(same.values())))
 
     # 4 and 5. decoys --------------------------------------------------------------------
@@ -218,7 +225,9 @@ def print_checks(res):
           f"Ring V signature {p['ring_v_signature_bytes']} B (verifies: {p['ring_v_verifies']})")
     a = res["answer_extraction"]
     print(f"[{mark(a['passed'])}] answer extraction: registry {a['registry_found']}/{a['registry_expected']}, "
-          f"validator replies {a['replies_found']}/{a['replies_expected']}")
+          f"device packets {a['device_packets_found']}/{a['device_packets_expected']}, "
+          f"background packets among candidates {a['background_packets_in_candidates']}; "
+          f"{a['pure_group_share']:.1%} of submission groups hold one capture")
     b = res["background_independence"]
     print(f"[{mark(b['passed'])}] background independence: " + ", ".join(f"{k} {v}" for k, v in b["identical"].items()))
     for v, r in res["decoys_cannot_tell"].items():

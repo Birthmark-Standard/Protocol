@@ -101,8 +101,15 @@ def calibrate(out=RESULTS, runs=10, force=False):
 
 
 # --------------------------------------------------------------------------- models
+TARGET = "link"             # record-to-device linking; names every model and record file
+
+
 def model_path(out, control):
-    return Path(out) / "models" / ("control.pkl" if control else "main.pkl")
+    return Path(out) / "models" / (f"{TARGET}_control.pkl" if control else f"{TARGET}_main.pkl")
+
+
+def rec_name(spec):
+    return f"{spec['key']}__{TARGET}"
 
 
 def ensure_models(out, control, pools=None):
@@ -140,7 +147,7 @@ def worker(out, spec, run_id, D):
     recs = AT.compute(run, _W["pools"], _W["models"])
     rec = dict(run=run_id, seconds=time.time() - t, sim_seconds=t_sim, vantages=recs,
                n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum()))
-    return [(spec["key"], rec)]
+    return [(rec_name(spec), rec)]
 
 
 def write_cells(out, specs, D):
@@ -161,7 +168,7 @@ def run_cells(out, specs, runs, workers="auto"):
     pools = Pools()
     tasks = []
     for spec in specs:
-        done = RN.done_runs(out, spec["key"])
+        done = RN.done_runs(out, rec_name(spec))
         todo = [k for k in range(runs) if k not in done]
         if todo:
             ensure_models(out, spec["control"], pools)
@@ -182,17 +189,17 @@ def probe_costs(out, specs, probe_runs=1, workers="auto"):
     probe = out / "probe"
     tasks = []
     for spec in specs:
-        done = RN.done_runs(probe, spec["key"])
+        done = RN.done_runs(probe, rec_name(spec))
         tasks += [(str(out), spec, 1_000_000 + k, D) for k in range(probe_runs) if 1_000_000 + k not in done]
     RN.execute(tasks, _probe_worker, probe, workers, label="probe")
     costs = {}
     for spec in specs:
-        recs = RN.load(probe, spec["key"])
+        recs = RN.load(probe, rec_name(spec))
         if not recs:
             continue
-        succ = {v: float(np.mean([r["vantages"][v]["v_correct"].sum() for r in recs])) for v in AT.VANTAGES}
-        fail = {v: float(np.mean([(1 - r["vantages"][v]["v_correct"]).sum() for r in recs])) for v in AT.VANTAGES}
-        bsucc = {v: float(np.mean([r["vantages"][v]["b_correct"].sum() for r in recs])) for v in AT.VANTAGES}
+        succ = {v: float(np.mean([r["vantages"][v]["dev_v_correct"].sum() for r in recs])) for v in AT.VANTAGES}
+        fail = {v: float(np.mean([(1 - r["vantages"][v]["dev_v_correct"]).sum() for r in recs])) for v in AT.VANTAGES}
+        bsucc = {v: float(np.mean([r["vantages"][v]["dev_b_correct"].sum() for r in recs])) for v in AT.VANTAGES}
         costs[spec["key"]] = dict(R=spec["R"], T=spec["T"], control=spec["control"],
                                   sec_per_run=float(np.mean([r["seconds"] for r in recs])),
                                   sim_sec_per_run=float(np.mean([r["sim_seconds"] for r in recs])),

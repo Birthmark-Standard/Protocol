@@ -6,13 +6,13 @@ This plan is fixed before the first sweep run. Every section below states what i
 
 Semantic Non-Assembly claims that no single compromised component can link a piece of content to the credential transaction that produced it better than chance among the L transactions in flight.
 
-This experiment tests that claim directly. Each vantage point holds:
+The harm this protects against is a public registry record being traced to the device that produced it. This experiment tests the claim on that link. Starting from a registry record, each vantage tries to name the device submission behind it. Each vantage holds:
 
 - its real keys;
 - its own exact event timing;
 - a passive view of the sizes and timing of all network traffic.
 
-The test is whether it can name the right transaction more often than 1/L.
+The test is whether its own knowledge lets it name the right device, or the right capture, more often than chance and more often than a passive observer on the same records.
 
 ## 2. Simulated system
 
@@ -65,47 +65,51 @@ The simulator follows the per-leg message specification. Its design choices are:
 
 ## 3. Vantages and attacks
 
-Each vantage guesses for every item it holds. Decoys are included whenever it cannot tell them apart. Scoring counts real items only.
+### 3.1 Rows and candidates
 
-### 3.1 Answer lists
+**Rows: registry records.** A passive observer finds each registry submission as a flood-publish burst: gossip-size frames that one node sends to nearly every peer within 2 ms. When several submissions leave one node on the same tick, the burst carries one frame per submission to every peer, and the observer counts them as the smallest per-peer frame count. The public record names both submitting servers, so the observer pairs a record's two submissions. A record is timed at their midpoint, u. Every real record whose capture falls in the scored window is a row.
 
-**Registry list.** Most vantages pick a registry submission on the wire. A passive observer finds a submission as a flood-publish burst: gossip-size frames that one node sends to nearly every peer within 2 ms. When several submissions leave one node on the same tick, the burst carries one frame per submission to every peer. The observer counts them as the smallest per-peer frame count. Both of a transaction's submissions (F's and I's) are right answers.
+**Candidates: device submissions on the wire.**
+- A device packet is a relay-class application record sent from an external host to a pool node.
+- An external source that ever sends anything else (a handshake, a DNS lookup, a record outside the class) is not treated as a device, and all its packets are dropped. Check 2 confirms that this removes every background client.
+- Each source's packets are grouped greedily in time order: a group holds up to three packets within one device hold (310 s) of its first. A group is timed at its members' mean send time, s.
+- Decoy sources' packets are candidates wherever a vantage cannot tell decoys apart.
 
-**Validator-reply list.** The content server picks a validator reply (CV-2) on the wire. The answer list is every relay-class message from the validator to a pool node, timed at arrival. Decoy replies are on the list. The right answer is the transaction's own reply.
+**Success**, scored at two levels:
+- **Device (primary).** The vantage names a device: the source with the largest summed posterior over its groups. It is right if that is the record's device. A source address is visible on the wire, so every vantage can aggregate this way.
+- **Submission.** The vantage names a group. It is right if the group contains a packet of the record's own capture.
 
-### 3.2 Anchors
+### 3.2 What each vantage knows, and how it enters
 
-Each vantage is scored twice on the same run:
+Each vantage scores a row against every candidate with a likelihood of the record time given that candidate. Every vantage's likelihood nests the baseline's: it is the baseline density conditioned on the vantage's extra observation. So a vantage whose extra observation carries no information scores exactly as the baseline does.
 
-- with its own anchor (the vantage attack);
-- with the paired baseline's anchor, which is the same anchoring event with the vantage's extra keys and knowledge removed. It uses only what the wire shows and guesses for every item, decoys included.
+The rows of each vantage are the records it took part in:
 
-| Vantage | Rows (items it holds) | Vantage anchor | Paired baseline anchor | Answer list |
-|---|---|---|---|---|
-| Baseline | every validator reply on the wire | reply arrival at the credential processor | the same | registry |
-| First hop, credential | credential packets it receives as A, decoys included | its own forward to B (own hold known) | the packet's arrival at A | registry |
-| First hop, content | content packets it receives as D or G, decoys included | its own forward to E or H | the packet's arrival at D or G | registry |
-| Credential processor | real transactions (reads the indicator) | the median of its own three fan-out sends | reply arrival at C (the nearest event a passive observer can attribute to C without searching the fan-out legs) | registry |
-| Content server | items that reached quorum (a decoy never does) | quorum-detection tick and content arrival, with a flag for quorum present at the first check | content arrival | validator replies |
-| Validator | real transactions (knows which credentials are disposable) | its reply send | its reply send (the same wire event) | registry |
-| Gatekeeper | real transactions (σ_C check) | its own board posting time | its fan-out leg's arrival | registry |
+| Vantage | Rows | Likelihood of record r from candidate group k |
+|---|---|---|
+| Baseline | every record | g(y), where y = u_r − s_k |
+| First hop, credential | records whose credential it relayed as A | p(y given its own hold) for groups containing a packet it relayed; g(y) for the rest |
+| First hop, content | records whose content it relayed as D or G | the same |
+| Credential processor | records whose credential it processed as C | mixture over its own transactions j: 1/17 × Σ_j w_kj real_j p(y given x_kj) plus the remaining weight × g(y). Here x_kj is transaction j's fan-out median minus s_k, and w_kj is the posterior that j is k's transaction |
+| Content server | records it submitted (as F or I) | the joint density of y and x = its own content arrival − s_k |
+| Validator | every record | its own replies are its candidates, each labelled with its device identity; density of u_r minus the reply send time. It knows which credentials are disposable, so decoys are not candidates |
+| Gatekeeper | every record (all three gatekeepers see every transaction) | mixture over its own postings j: Σ_j w_kj real_j p(y given x_kj), where x_kj is posting j minus s_k. A decoy's substitute posting takes weight but never produces a record |
 
-For the baseline, both anchors are the same event, so its contribution is zero by construction. For the validator, the anchors coincide too, so its per-decision contribution is zero by construction. Its baseline also guesses for decoys, so the two can still differ under joint assignment.
+Notes on the model choices:
+- The first hop's own hold does not depend on which candidate is the source, so the conditional density is the right likelihood.
+- The content server's arrival offset does depend on the source, so the joint density is used.
+- In the mixtures, w_kj ∝ q(x_kj), where q is the density of x for the true pair, normalised over the server's events.
 
-### 3.3 Likelihoods and decisions
+**Densities.** Each density is a histogram built from Monte Carlo runs on seeds disjoint from the evaluation seeds:
+- g: 1 s bins.
+- The conditional densities: 2D histograms with 10 s bins in x, each shrunk towards g with 20 pseudo-samples per x bin, so a sparse or unseen x falls back to g.
+- Every density is −inf outside the simulated support of y.
 
-**Likelihoods.** Each vantage's likelihood is a histogram of (answer time − anchor time), with 0.5 s bins, built from Monte Carlo runs on seeds disjoint from the evaluation seeds. It is −inf outside the simulated support, so every candidate outside that band is excluded exactly.
+Delays do not depend on volume, so one model set serves every cell. The sensitivity control has its own models, with 0.05 s bins in y and 0.5 s bins in x.
 
-The content server combines its two timing features as independent terms within its quorum class:
+**Paired baseline.** Every vantage's rows are also scored by the baseline, so each vantage's contribution is a paired difference on the same records.
 
-- quorum present at the first board check;
-- quorum detected on a later tick.
-
-Delays do not depend on volume, so one model set serves every cell.
-
-**Per-decision attack (primary).** Each row picks its highest-scoring answer.
-
-**Joint assignment (secondary).** One compromised server's rows are assigned one-to-one to answers, maximising the summed score over each row's 64 best candidates. Every server that can hold the role is compromised in turn. The joint assignment is solved per server.
+**Decision.** Per decision: each row picks its highest-scoring candidate, at each level. No joint assignment is used.
 
 ## 4. Pre-run checks
 
@@ -116,7 +120,7 @@ Delays do not depend on volume, so one model set serves every cell.
    - Every raw payload fits its class minimum. This includes the reply's one-byte indicator.
    - A Ring V signature made and verified with real keys is 64 bytes.
    - A padding-class scaling note lists the fan-out leg's raw size against the number of Ring V members. It is a size question and does not bear on decoys.
-2. **Answer extraction.** The observer extracts exactly the true registry submissions and validator replies, with none missing and none extra.
+2. **Answer extraction.** The observer extracts exactly the true registry submissions, with none missing and none extra. Its device candidates hold every device and decoy first-hop packet and no background packet. The share of submission groups that hold a single capture is reported.
 3. **Background independence.** Every vantage's and baseline's decisions are identical with background traffic on and off, on the same seed.
 4. **Cannot tell decoys** (baseline, both first hops, content server)
    - Each feature the vantage observes is tested: sizes, holds, processing delays, the spread of a source's three first-hop sends, and the time since the source's previous capture.
@@ -140,7 +144,7 @@ A cell is (R, T): R real transactions in flight and T total.
 
 **Decoy sweep.**
 - For each R in {1, 2, 3, 4, 8, 24, 40}, T runs through {4, 8, 24, 40, 50, 100, 200, 500} with T > R. That gives 46 cells.
-- The decoy sweep's chance level is 1/T.
+- The decoy sweep's chance references are the random-assignment rates and, at the submission level, 1/T.
 - For the can-tell vantages, a decoy cell's L counts decoys they remove, so their decoy rows are labelled upper bounds.
 
 The two sweeps are reported as two separate, equally load-bearing results.
@@ -159,50 +163,55 @@ Probe runs use run ids from 1,000,000 upward and are written to `results/probe/`
 
 ### 5.2 Metrics per cell and vantage
 
+At each level (device primary, submission secondary):
+
 - **Accuracy.** Per-decision accuracy with a 95% interval from resampling whole runs (2,000 replicates). A Bonferroni-adjusted interval is also computed across the 7 vantages × 2 tests in the cell.
-- **Joint-assignment accuracy.**
-- **Chance references.** 1/L (= 1/T), 1/R, and the random-assignment rate: the true answers among a row's feasible candidates divided by the feasible candidates, averaged.
-- **Lift.** Accuracy × L, with its interval.
-- **Contribution over the baseline.** Vantage correct minus paired baseline correct, on the same rows, with a run-resampled interval. It is computed for the per-decision and the joint attack.
-- **Calibrated confidence.** The softmax posterior of the pick, with its temperature fitted on the other half of the runs (split by run-id parity). From it:
+- **Chance references.**
+  - The random-assignment rate: one over the feasible devices, if the true device is among them (device level); the true groups among the feasible groups (submission level).
+  - 1/L (= 1/T) at the submission level.
+- **Lift.** Device level: accuracy over the random-assignment rate. Submission level: accuracy × L. Both with intervals.
+- **Contribution over the baseline.** Vantage correct minus paired baseline correct, on the same rows, with a run-resampled interval.
+
+At the device level only:
+
+- **Calibrated confidence.** The softmax posterior of the device pick, with its temperature fitted on the other half of the runs (split by run-id parity). From it:
   - AUC for right against wrong, with Obuchowski's clustered variance;
   - precision in the top 1% and top 5% most confident decisions, with Wilson intervals;
   - the largest coverage whose precision exceeds 50%.
-- **Outcome-shuffle control.** Correctness is permuted within each run. The confidence AUC must then cover 0.5.
+- **Outcome-shuffle control.** Correctness is permuted within each run and the confidence AUC recomputed. Permuting within a run keeps each run's success rate, so a small between-run association can survive the shuffle. Confidence AUCs within 0.03 of 0.5 are therefore not read as signal.
 
 **Signal.** A cell shows signal if either:
-- the adjusted accuracy interval lies above 1/L; or
-- the finding is stable and the adjusted AUC interval lies above 0.5.
+- the adjusted device-accuracy interval lies above the random-assignment rate; or
+- the finding is stable and the adjusted AUC interval lies above 0.5 by more than 0.03.
 
-**Stability.** A cell's numbers are a finding only when it has at least 50 successes and 50 failures. Otherwise the report gives the number of runs needed at the observed rate and does not treat the numbers as a finding.
+**Stability.** A cell's numbers are a finding only when it has at least 50 device-level successes and 50 failures. Otherwise the report gives the number of runs needed at the observed rate and does not treat the numbers as a finding.
 
-**Lift trend from 40 to 500.** For each vantage on the no-decoy sweep, the slope of log lift against log L over L = 40, 50, 100, 200 and 500, with a 95% interval from resampling runs within each cell. It rises or falls if the interval excludes zero. Otherwise it holds flat.
+**Lift trend from 40 to 500.** For each vantage on the no-decoy sweep, at each level, the slope of log lift against log L over L = 40, 50, 100, 200 and 500, with a 95% interval from resampling runs within each cell. It rises or falls if the interval excludes zero. Otherwise it holds flat.
 
 **Volume table.** L against devices and captures per day at D = 625.6 s.
 
 ## 6. Predictions
 
-Development runs were made before this plan, to verify the pipeline:
+Development runs of this attack were made before this section was written, to verify the pipeline and its speed:
 
-- single runs at R = 24 and R = 40;
-- one run each of R = 1, 4, 40 and 500, and of the decoy cells R = 1, T = 500 and R = 4, T = 100.
+- six runs at R = 40;
+- one run each at R = 500, R = 1 with T = 500, R = 4 with T = 500, R = 40 with T = 500, and the sensitivity control.
 
-They showed three things:
-- the gatekeeper well above 1/L and above its baseline;
-- the baseline above 1/L at R = 24 and 40;
-- the content server's accuracy falling sharply when decoys are added.
+They showed:
+- every vantage's device accuracy above the random-assignment rate at R = 40;
+- the first hops gaining several points at the submission level;
+- the gatekeeper and credential processor close to the baseline;
+- the validator unaffected by decoys (91% device accuracy at R = 1, T = 500).
 
-A four-run trial of check 4 flagged one baseline feature: a processing delay produced by identical code for real and decoy traffic. With 12 runs it passed. The predictions below were written after seeing these runs, so P3, P5 and P6 are confirmations of development observations rather than blind predictions.
+Q1, Q2, Q3, Q4 and Q6 therefore confirm development observations; they are not blind predictions.
 
-- **P1.** For every registry-list vantage, the per-decision accuracy at fixed R is identical at every T. Decoys create no registry submissions and leave the real traffic unchanged, so they add no candidates to a registry list. Under the joint assignment, decoy rows can change the result for the vantages that cannot tell.
-- **P2.** At fixed R, the content server's accuracy falls as T rises, because decoy validator replies are genuine candidates on its list.
-- **P3.** The gatekeeper's accuracy exceeds 1/L and its paired baseline at every R ≥ 4 on the no-decoy sweep.
-- **P4.** The validator's per-decision contribution is zero in every cell.
-- **P5.** On the no-decoy sweep, the baseline's accuracy exceeds 1/L at R = 24 and 40.
-- **P6.** On the no-decoy sweep, the content server's contribution is positive at R = 24 and 40.
-- **P7.** Neither first hop's contribution interval lies above zero at any R ≥ 4.
-- **P8.** Sensitivity control: every vantage's accuracy interval lies above 1/L.
-- **P9.** The outcome-shuffle AUC interval covers 0.5 in every stable cell.
+- **Q1.** On the no-decoy sweep, every vantage's device accuracy (the baseline's included) has its adjusted interval above the random-assignment rate at every L from 4 to 500.
+- **Q2.** The gatekeeper's and the credential processor's device-level contribution is below +1 point at every L of 8 or more.
+- **Q3.** Both first hops' submission-level contribution interval lies above zero at every L from 4 to 500.
+- **Q4.** The validator's device accuracy at fixed R is identical at every T: it knows which credentials are disposable, so decoys never become its candidates.
+- **Q5.** At fixed R, the baseline's device accuracy falls as T rises, because decoy packets are candidates.
+- **Q6.** Sensitivity control: every vantage's device-accuracy interval lies above the random-assignment rate.
+- **Q7.** The content server's device-level contribution interval lies above zero at L = 24 and 40.
 
 No direction is predicted for the lift trend from 40 to 500.
 
@@ -215,9 +224,8 @@ No direction is predicted for the lift trend from 40 to 500.
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for every cell in section 5: 11 no-decoy cells, 46 decoy
-cells and the sensitivity control. Chosen from the cost estimate in results/costs.json (about
-20 core-hours in total) and the runs needed for 50 successes and 50 failures per vantage
-(1 to 3 runs for every vantage in every cell, except the content server's highest-decoy
-cells). Cells still short of 50 successes at 200 runs are reported with the runs needed at the
-observed rate and not as findings.
+To be set from the cost estimate for this attack (`python -m sna estimate`) and recorded here before the first sweep run.
+
+## 9. Amendment record
+
+Sections 1, 3, 5.2 and 6 and check 2 were rewritten before any sweep of the record-to-device target. An earlier sweep scored a different link (registry record to credential transaction); none of its records are used here. The earlier text of this plan is in the repository history at commit 5bc4a08.

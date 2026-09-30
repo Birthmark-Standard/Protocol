@@ -40,23 +40,25 @@ def cmd_quick(a):
     p = CE.model_path(out, False)
     if not p.exists():
         p.parent.mkdir(parents=True, exist_ok=True)
-        m = AT.build_models(P.Config(), Pools(), seed0=CE.MODEL_SEED0, min_samples=20_000)
+        m = AT.build_models(P.Config(), Pools(), seed0=CE.MODEL_SEED0, min_samples=40_000)
         with open(p, "wb") as f:
             pickle.dump(m, f)
     specs = [s for s in CE.grid("all") if s["key"] in ("R24", "R24_T100")]
     for s in specs:
         s["key"] = s["key"] + "_quick"
+    names = {s["key"]: CE.rec_name(s) for s in specs}
     import dataclasses  # noqa: F401
     CE.write_cells(out, specs, D)
     tasks = [(str(out), dict(s, quick=True), k, D) for s in specs for k in range(2)
-             if k not in RN.done_runs(out, s["key"])]
+             if k not in RN.done_runs(out, names[s["key"]])]
     RN.execute(tasks, _quick_worker, out, a.workers, label="quick")
     from . import analyze as AN
     cells = {s["key"]: s for s in specs}
-    rows, _ = AN.analyze(out, cells, lambda k: RN.load(out, k))
+    rows, _ = AN.analyze(out, cells, lambda k: RN.load(out, names[k]))
     for r in rows:
-        print(f"  {r['cell']:<16} {r['vantage']:<18} n={r['n']:5d} accuracy {r.get('accuracy', math.nan):.3f} "
-              f"baseline {r.get('baseline', math.nan):.3f} 1/L {r['inv_L']:.3f}")
+        print(f"  {r['cell']:<16} {r['vantage']:<18} n={r['n']:5d} device {r.get('dev_accuracy', math.nan):.3f} "
+              f"(baseline {r.get('dev_baseline', math.nan):.3f}, random {r.get('dev_random', math.nan):.3f})  "
+              f"submission {r.get('sub_accuracy', math.nan):.3f} (1/L {r['inv_L']:.3f})")
     print(f"quick: D = {D:.0f} s, {time.time() - t:.0f} s total")
 
 
@@ -74,7 +76,7 @@ def _quick_worker(out, spec, run_id, D):
     t = time.time()
     run = S.simulate(cfg, CE.traffic_seed(spec["R"], run_id), Pools())
     recs = AT.compute(run, Pools(), m)
-    return [(spec["key"], dict(run=run_id, seconds=time.time() - t, sim_seconds=0.0, vantages=recs,
+    return [(CE.rec_name(spec), dict(run=run_id, seconds=time.time() - t, sim_seconds=0.0, vantages=recs,
                                n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum())))]
 
 

@@ -2,15 +2,15 @@
 
 Semantic Non-Assembly claims that no single compromised component can link a piece of content to the credential transaction that produced it better than chance among the L transactions in flight.
 
-This experiment tests that claim directly. It gives each vantage point:
+The harm this guards against is a public registry record being traced to the device that produced it. This experiment tests the claim on that link. Starting from a registry record, each vantage point tries to name the device behind it, using:
 
 - its real keys;
 - its own exact event timing;
 - a passive view of the sizes and timing of all network traffic.
 
-It then measures how often that vantage names the right transaction, against 1/L.
+It is scored against chance and against a passive observer on the same records.
 
-The pre-registered analysis plan is `ANALYSIS_PLAN.md`. The findings are in `RESULTS.md`. `PAPER_TABLE.md` has one row per vantage.
+The pre-registered analysis plan is `ANALYSIS_PLAN.md`. The findings go in `RESULTS.md`, and `PAPER_TABLE.md` has one row per vantage.
 
 ## Vantages
 
@@ -24,7 +24,7 @@ The pre-registered analysis plan is `ANALYSIS_PLAN.md`. The findings are in `RES
 | Validator | token-decryption and signing keys | device identity, request arrival, reply moment | device identity |
 | Gatekeeper | transit and countersignature keys | packet hash, sender's address, its own arrival, hold outcome and posting | transaction |
 
-Each vantage is scored against a paired baseline on the same traffic. The baseline anchors on the same event, but only as a passive observer sees it on the wire, and it cannot tell decoys apart. The difference between the two is the vantage's contribution over the baseline.
+Each vantage is scored against the baseline on the same records. The difference between the two is the vantage's contribution over the baseline.
 
 ## Design choices
 
@@ -57,9 +57,10 @@ Each vantage is scored against a paired baseline on the same traffic. The baseli
 - Decoy volume is `max(0, T − R)` in flight.
 
 **Attacks**
-- Each vantage scores every candidate answer by an empirical likelihood of (answer time − anchor time), built by Monte Carlo on separate seeds.
-- The primary attack picks each item's highest-scoring answer.
-- The secondary attack is a one-to-one assignment per compromised server.
+- Rows are registry records. Each record's two submissions are paired and timed at their midpoint.
+- Candidates are device submissions on the wire: each source's first-hop packets, grouped into captures. Decoy sources' packets are included wherever a vantage cannot tell decoys apart.
+- Each vantage scores every candidate by a likelihood of the record time. It is built by Monte Carlo on separate seeds, and each vantage's likelihood nests the baseline's, conditioned on the vantage's own exact knowledge.
+- Each record picks its highest-scoring device (primary) and capture (secondary).
 
 **Runs**
 - A run's traffic depends only on its real volume and run id. Every decoy cell therefore carries the same real traffic as the no-decoy cell at its real volume.
@@ -99,8 +100,7 @@ py -m sna analyze
 |---|---|
 | `sna/params.py` | every numeric design choice |
 | `sna/sim.py` | the simulator: real and decoy traffic, background traffic |
-| `sna/attacks.py` | answer lists, vantage and baseline anchors, likelihood models, scoring |
-| `sna/engine.py` | banded scoring, per-decision and joint decisions |
+| `sna/attacks.py` | record and candidate extraction, likelihood models, block scoring of every vantage |
 | `sna/analyze.py` | metrics |
 | `sna/checks.py` | pre-run checks |
 | `sna/cells.py` | grid, seeds, calibration, worker |
