@@ -34,8 +34,8 @@ from . import sim as S
 
 VANTAGES = ("baseline", "first_hop_cred", "first_hop_content", "cred_processor", "content_server",
             "validator", "gatekeeper")
-CAN_TELL = ("cred_processor", "validator", "gatekeeper")
-CANNOT_TELL = ("baseline", "first_hop_cred", "first_hop_content", "content_server")
+CAN_TELL = ()                                    # decoys are genuine transactions: no vantage can tell
+CANNOT_TELL = VANTAGES
 LABEL = {"baseline": "Baseline", "first_hop_cred": "First hop, credential",
          "first_hop_content": "First hop, content", "cred_processor": "Credential processor",
          "content_server": "Content server", "validator": "Validator", "gatekeeper": "Gatekeeper"}
@@ -545,7 +545,7 @@ def score_vantage(v, run, rec, cand, m: Models, base):
             return cs(x, u[rows][:, None] - sk) + csq(x)
         return ri, grp, score_blocks(lo, hi, cand, fn, truth)
     if v == "validator":
-        real = ~s["decoy"]
+        real = np.ones(s["decoy"].shape, bool)          # every approval; decoys are indistinguishable
         t = ev["t_send"][s["ev_cv2"]][real]
         o = np.argsort(t, kind="stable")
         vsub = np.nonzero(real)[0][o].astype(np.int64)
@@ -562,7 +562,7 @@ def score_vantage(v, run, rec, cand, m: Models, base):
             sel = np.nonzero(extra["j"] == j)[0]
             post = s["posts"][:, j]
             o = np.argsort(post, kind="stable")
-            mix = _MixtureV(cand["t"], post[o], (~s["decoy"][o]).astype(float), pdf["gk"], pdf["gk_q"], g)
+            mix = _MixtureV(cand["t"], post[o], np.ones(o.size), pdf["gk"], pdf["gk_q"], g)
             us = u[sel]
             outs.append((sel, score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
                                            dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))))
@@ -575,7 +575,7 @@ def score_vantage(v, run, rec, cand, m: Models, base):
             sel = np.nonzero(grp == X)[0]
             mine = np.nonzero(s["C"] == X)[0]
             mine = mine[np.argsort(m_all[mine], kind="stable")]
-            mix = _MixtureV(cand["t"], m_all[mine], (~s["decoy"][mine]).astype(float), pdf["c"], pdf["c_q"], g, pi=pi)
+            mix = _MixtureV(cand["t"], m_all[mine], np.ones(mine.size), pdf["c"], pdf["c_q"], g, pi=pi)
             us = u[sel]
             outs.append((sel, score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
                                            dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))))

@@ -160,7 +160,8 @@ def _content_server(w, r, arr, node):
 
 
 def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
-    """One stream of transactions (real devices, or decoy sources) up to the horizon."""
+    """One stream of transactions (real devices, or the decoy infrastructure's identities) up to
+    the horizon. Both streams run the same code; the decoy flag is truth only."""
     cfg, H = w.cfg, w.cfg.horizon_s
     S = int(r.poisson(rate * H)) if rate > 0 else 0
     t0 = np.sort(r.uniform(0, H, S))
@@ -195,13 +196,10 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         arr = rel + w.lat_int[C, g] + _jit(r, S)
         ev_gk[:, j] = w.ev.add(rel, arr, C, g, w.size(r, "GK", S), P.RT_APPDATA, K_BIRTHMARK, GK1 + j, sub)
         gk_send[:, j], gk_arr[:, j] = rel, arr
-        # verify sigma_V and sigma_C, hold on the gatekeeper's own hold clock, post (a real
-        # posting, or the substitute hash(PacketHash || BK) for a failed sigma_C: same schedule)
+        # verify sigma_V and sigma_C, hold on the gatekeeper's own hold clock, post
         chk = arr + r.uniform(*P.GATEKEEPER_PROC_MS, S) / 1000
         posts[:, j] = LT.release_time(r, chk, w.gk_phase[g], on) + _proc(r, S)
     quorum = np.sort(posts, axis=1)[:, 1]          # second of three boards
-    if decoy:
-        quorum = np.full(S, np.inf)                # substitute postings never satisfy quorum
 
     # content servers: hold on the node clock, then check the boards on each tick; submit on
     # quorum, drop after 30 minutes without it
@@ -260,8 +258,9 @@ def gen_birthmark(w: World):
     subs = {k: np.concatenate([real[k], dec[k]]) for k in real}
     S = subs["t0"].shape[0]
     sub = np.arange(S)
-    # registry submissions: real transactions only (a decoy never reaches quorum). The gossip
-    # stream is keyed to the real transactions alone, so decoys leave it unchanged.
+    # registry submissions: every transaction. A decoy is a genuine transaction from a registered
+    # credential held by the decoy infrastructure; it is approved, fanned out, posted and
+    # finalised exactly as a real one. The decoy flag is truth only, for scoring real records.
     okf, oki = subs["ok_f"], subs["ok_i"]
     origin = np.concatenate([subs["F"][okf], subs["I"][oki]])
     t_org = np.concatenate([subs["reg_f"][okf], subs["reg_i"][oki]])
