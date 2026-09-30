@@ -1,6 +1,6 @@
 {
  "padding": {
-  "legs_checked": 12614,
+  "legs_checked": 17388,
   "legs_outside_class": 0,
   "ring_v_signature_bytes": 64,
   "ring_v_verifies": true,
@@ -110,14 +110,14 @@
   "passed": true
  },
  "answer_extraction": {
-  "registry_found": 340,
-  "registry_expected": 340,
+  "registry_found": 2484,
+  "registry_expected": 2484,
   "registry_unlabelled": 0,
-  "device_packets_found": 2703,
-  "device_packets_expected": 2703,
+  "device_packets_found": 3726,
+  "device_packets_expected": 3726,
   "background_packets_in_candidates": 0,
-  "submission_groups": 901,
-  "pure_group_share": 0.804661487236404,
+  "submission_groups": 1242,
+  "pure_group_share": 0.8276972624798712,
   "passed": true
  },
  "background_independence": {
@@ -136,185 +136,185 @@
   "baseline": {
    "features": {
     "Cred-1 size": {
-     "auc": 0.49387029194617915,
-     "lo": 0.470817192738615,
-     "hi": 0.5169233911537433,
+     "auc": 0.4948862024589656,
+     "lo": 0.4762186587286457,
+     "hi": 0.5135537461892855,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "Cred-2 size": {
-     "auc": 0.5105920579997537,
-     "lo": 0.4955710849633697,
-     "hi": 0.5256130310361378,
+     "auc": 0.48982798361082297,
+     "lo": 0.47192834080482965,
+     "hi": 0.5077276264168162,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "Cred-3 size": {
-     "auc": 0.4962533944076571,
-     "lo": 0.47547051803696894,
-     "hi": 0.5170362707783452,
+     "auc": 0.48997927992415063,
+     "lo": 0.47778106538576254,
+     "hi": 0.5021774944625388,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "ContA-1 size": {
-     "auc": 0.4899615162668788,
-     "lo": 0.4741574162037005,
-     "hi": 0.505765616330057,
+     "auc": 0.489614838988906,
+     "lo": 0.4720074543685053,
+     "hi": 0.5072222236093067,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "ContA-3 size": {
-     "auc": 0.4927838392545031,
-     "lo": 0.4705858298407888,
-     "hi": 0.5149818486682174,
+     "auc": 0.5031467446615784,
+     "lo": 0.48422679994868423,
+     "hi": 0.5220666893744725,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "ContB-1 size": {
-     "auc": 0.5042678985589902,
-     "lo": 0.4836201274838939,
-     "hi": 0.5249156696340866,
+     "auc": 0.49655196795204504,
+     "lo": 0.47812722532266805,
+     "hi": 0.514976710581422,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "CV-1 size": {
-     "auc": 0.4984911520274395,
-     "lo": 0.4748355545678705,
-     "hi": 0.5221467494870085,
+     "auc": 0.4903835920453437,
+     "lo": 0.47481175834251804,
+     "hi": 0.5059554257481693,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "CV-2 size": {
-     "auc": 0.5031635673985622,
-     "lo": 0.48238539465490554,
-     "hi": 0.5239417401422187,
+     "auc": 0.49107501240424495,
+     "lo": 0.4752070619801764,
+     "hi": 0.5069429628283134,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "GK leg size (mean of 3)": {
-     "auc": 0.4923440131248499,
-     "lo": 0.46043163337149856,
-     "hi": 0.5242563928782011,
+     "auc": 0.500409031066816,
+     "lo": 0.48689355036752163,
+     "hi": 0.5139245117661104,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "C: Cred-3 arrival to CV-1 send": {
-     "auc": 0.5092735275119354,
-     "lo": 0.4861906546434043,
-     "hi": 0.5323564003804666,
+     "auc": 0.4980250264316734,
+     "lo": 0.4816320209131276,
+     "hi": 0.5144180319502192,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "V: CV-1 arrival to CV-2 send": {
-     "auc": 0.5018052777239755,
-     "lo": 0.4776596270640722,
-     "hi": 0.5259509283838788,
+     "auc": 0.5070842864376341,
+     "lo": 0.4923066160523639,
+     "hi": 0.5218619568229044,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "C: CV-2 arrival to first GK send": {
-     "auc": 0.491399640282049,
-     "lo": 0.4664512655393689,
-     "hi": 0.5163480150247292,
+     "auc": 0.4900152465451629,
+     "lo": 0.47074270003676394,
+     "hi": 0.5092877930535618,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "C: GK send spread": {
-     "auc": 0.5093853271854571,
-     "lo": 0.487637643209552,
-     "hi": 0.5311330111613624,
+     "auc": 0.5013080961890242,
+     "lo": 0.4875563814601418,
+     "hi": 0.5150598109179065,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "source: spread of its three first-hop sends": {
-     "auc": 0.5062188107611214,
-     "lo": 0.4801292285958315,
-     "hi": 0.5323083929264113,
+     "auc": 0.5040688467169102,
+     "lo": 0.4933071648494958,
+     "hi": 0.5148305285843247,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "source: time since its previous capture": {
-     "auc": 0.49566661716019605,
-     "lo": 0.470394584182711,
-     "hi": 0.520938650137681,
+     "auc": 0.5087039035948718,
+     "lo": 0.4922618525842285,
+     "hi": 0.5251459546055152,
      "covers_half": true,
-     "n_real": 1986,
-     "n_decoy": 8035
+     "n_real": 3738,
+     "n_decoy": 10045
     },
     "A: hold": {
-     "auc": 0.48987083372434254,
-     "lo": 0.4698835921741227,
-     "hi": 0.5098580752745624,
+     "auc": 0.5062697272565452,
+     "lo": 0.49100625063044373,
+     "hi": 0.5215332038826467,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "B: hold": {
-     "auc": 0.5026291617994577,
-     "lo": 0.48879448066833303,
-     "hi": 0.5164638429305825,
+     "auc": 0.5001720909105879,
+     "lo": 0.4908093469879614,
+     "hi": 0.5095348348332144,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "D: hold": {
-     "auc": 0.5054648080642374,
-     "lo": 0.4859263743012369,
-     "hi": 0.5250032418272379,
-     "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "auc": 0.4879835563821631,
+     "lo": 0.4764498663395703,
+     "hi": 0.4995172464247559,
+     "covers_half": false,
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "E: hold": {
-     "auc": 0.4956402340220467,
-     "lo": 0.4796828456094122,
-     "hi": 0.5115976224346812,
+     "auc": 0.49941123623122113,
+     "lo": 0.48109217524439646,
+     "hi": 0.5177302972180458,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     }
    },
-   "passed": true
+   "passed": false
   },
   "first_hop_cred": {
    "features": {
     "Cred-1 size": {
-     "auc": 0.49387029194617915,
-     "lo": 0.470817192738615,
-     "hi": 0.5169233911537433,
+     "auc": 0.4948862024589656,
+     "lo": 0.4762186587286457,
+     "hi": 0.5135537461892855,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "A: hold": {
-     "auc": 0.48987083372434254,
-     "lo": 0.4698835921741227,
-     "hi": 0.5098580752745624,
+     "auc": 0.5062697272565452,
+     "lo": 0.49100625063044373,
+     "hi": 0.5215332038826467,
      "covers_half": true,
-     "n_real": 2166,
-     "n_decoy": 8767
+     "n_real": 4086,
+     "n_decoy": 10969
     },
     "source: time since its previous capture": {
-     "auc": 0.49566661716019605,
-     "lo": 0.470394584182711,
-     "hi": 0.520938650137681,
+     "auc": 0.5087039035948718,
+     "lo": 0.4922618525842285,
+     "hi": 0.5251459546055152,
      "covers_half": true,
-     "n_real": 1986,
-     "n_decoy": 8035
+     "n_real": 3738,
+     "n_decoy": 10045
     }
    },
    "passed": true
@@ -322,28 +322,73 @@
   "first_hop_content": {
    "features": {
     "Content first-hop size": {
-     "auc": 0.4971713642540792,
-     "lo": 0.4831285454551187,
-     "hi": 0.5112141830530398,
+     "auc": 0.4930797778030347,
+     "lo": 0.4803931066230277,
+     "hi": 0.5057664489830417,
      "covers_half": true,
-     "n_real": 4332,
-     "n_decoy": 17534
+     "n_real": 8172,
+     "n_decoy": 21938
     },
     "hold at the first hop": {
-     "auc": 0.5017920992650502,
-     "lo": 0.4836909696087085,
-     "hi": 0.5198932289213919,
+     "auc": 0.4955722847198042,
+     "lo": 0.4845865206690824,
+     "hi": 0.5065580487705259,
      "covers_half": true,
-     "n_real": 4332,
-     "n_decoy": 17534
+     "n_real": 8172,
+     "n_decoy": 21938
     },
     "source: time since its previous capture": {
-     "auc": 0.49566661716019605,
-     "lo": 0.470394584182711,
-     "hi": 0.5209386501376811,
+     "auc": 0.5087039035948717,
+     "lo": 0.49226185258422817,
+     "hi": 0.5251459546055153,
      "covers_half": true,
-     "n_real": 3972,
-     "n_decoy": 16070
+     "n_real": 7476,
+     "n_decoy": 20090
+    }
+   },
+   "passed": true
+  },
+  "cred_processor": {
+   "features": {
+    "Cred-3 arrival to CV-1 send": {
+     "auc": 0.4980250264316734,
+     "lo": 0.4816320209131276,
+     "hi": 0.5144180319502192,
+     "covers_half": true,
+     "n_real": 4086,
+     "n_decoy": 10969
+    },
+    "CV-2 arrival to first GK send": {
+     "auc": 0.4900152465451629,
+     "lo": 0.47074270003676394,
+     "hi": 0.5092877930535618,
+     "covers_half": true,
+     "n_real": 4086,
+     "n_decoy": 10969
+    },
+    "GK send spread": {
+     "auc": 0.5013080961890242,
+     "lo": 0.4875563814601418,
+     "hi": 0.5150598109179065,
+     "covers_half": true,
+     "n_real": 4086,
+     "n_decoy": 10969
+    },
+    "CV-2 size": {
+     "auc": 0.49107501240424495,
+     "lo": 0.4752070619801764,
+     "hi": 0.5069429628283134,
+     "covers_half": true,
+     "n_real": 4086,
+     "n_decoy": 10969
+    },
+    "Cred-3 size": {
+     "auc": 0.48997927992415063,
+     "lo": 0.47778106538576254,
+     "hi": 0.5021774944625388,
+     "covers_half": true,
+     "n_real": 4086,
+     "n_decoy": 10969
     }
    },
    "passed": true
@@ -351,64 +396,79 @@
   "content_server": {
    "features": {
     "Content last-leg size": {
-     "auc": 0.4952605469537038,
-     "lo": 0.48276042445785844,
-     "hi": 0.5077606694495491,
+     "auc": 0.503673657332793,
+     "lo": 0.49341194479175776,
+     "hi": 0.5139353698738283,
      "covers_half": true,
-     "n_real": 4332,
-     "n_decoy": 17534
+     "n_real": 8172,
+     "n_decoy": 21938
     },
     "arrival to first board check": {
-     "auc": 0.49644488360353256,
-     "lo": 0.48178556021813984,
-     "hi": 0.5111042069889252,
+     "auc": 0.5007188304047535,
+     "lo": 0.49262806878843834,
+     "hi": 0.5088095920210687,
      "covers_half": true,
-     "n_real": 4332,
-     "n_decoy": 17534
+     "n_real": 8172,
+     "n_decoy": 21938
     }
    },
-   "passed": true,
-   "after_timeout": {
-    "auc": 1.0,
-    "lo": 1.0,
-    "hi": 1.0,
-    "covers_half": false,
-    "n_real": 4332,
-    "n_decoy": 17534
-   },
-   "passed_scoped": true
-  }
- },
- "decoys_can_tell": {
-  "validator": {
-   "rule": "the reply's plaintext indicator is the credential's registration status",
-   "agrees": true
+   "passed": true
   },
-  "cred_processor": {
-   "rule": "reads the validator's indicator; sends a same-size placeholder for sigma_C on a dummy",
-   "gk_leg_size_auc": 0.4923440131248499,
-   "agrees": true
+  "validator": {
+   "features": {
+    "CV-1 arrival to CV-2 send": {
+     "auc": 0.5070842864376341,
+     "lo": 0.4923066160523639,
+     "hi": 0.5218619568229044,
+     "covers_half": true,
+     "n_real": 4086,
+     "n_decoy": 10969
+    },
+    "time since the same credential's previous request": {
+     "auc": 0.5090403244255851,
+     "lo": 0.49333300254056206,
+     "hi": 0.5247476463106081,
+     "covers_half": true,
+     "n_real": 3738,
+     "n_decoy": 10045
+    },
+    "CV-1 size": {
+     "auc": 0.4903835920453437,
+     "lo": 0.47481175834251804,
+     "hi": 0.5059554257481693,
+     "covers_half": true,
+     "n_real": 4086,
+     "n_decoy": 10969
+    }
+   },
+   "passed": true
   },
   "gatekeeper": {
-   "rule": "sigma_C verification fails exactly on dummies; substitute posting on the real schedule",
-   "quorum_never_forms_for_decoys": true,
-   "quorum_forms_for_real": true,
-   "schedule_auc": {
-    "auc": 0.4967331698894311,
-    "lo": 0.48027780061510755,
-    "hi": 0.5131885391637546,
-    "covers_half": true,
-    "n_real": 6498,
-    "n_decoy": 26301
-   }
-  },
+   "features": {
+    "GK arrival to board posting": {
+     "auc": 0.497390164005759,
+     "lo": 0.4887740230220099,
+     "hi": 0.506006304989508,
+     "covers_half": true,
+     "n_real": 12258,
+     "n_decoy": 32907
+    }
+   },
+   "passed": true
+  }
+ },
+ "decoys_reach_registry": {
+  "decoy_records": 915,
+  "decoys": 915,
+  "real_records": 327,
+  "real": 327,
   "passed": true
  },
- "n_feature_tests": 29,
+ "n_feature_tests": 36,
  "runs": 12,
  "cell": {
-  "R": 8,
-  "T": 40,
+  "R": 15,
+  "decoys_in_flight": 40.0,
   "background": true
  }
 }

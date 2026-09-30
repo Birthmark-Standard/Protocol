@@ -43,7 +43,7 @@ def cmd_quick(a):
         m = AT.build_models(P.Config(), Pools(), seed0=CE.MODEL_SEED0, min_samples=40_000)
         with open(p, "wb") as f:
             pickle.dump(m, f)
-    specs = [s for s in CE.grid("all") if s["key"] in ("R24", "R24_T100")]
+    specs = [s for s in CE.grid("all") if s["key"] in ("R15", "R15_D40")]
     for s in specs:
         s["key"] = s["key"] + "_quick"
     names = {s["key"]: CE.rec_name(s) for s in specs}

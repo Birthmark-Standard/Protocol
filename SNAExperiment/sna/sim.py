@@ -222,10 +222,11 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk)
 
 
-def _gossip(w: World, origin, t_origin, sub, origin_leg):
+def _gossip(w: World, origin, t_origin, sub, origin_leg, stream=0):
     """Registry submissions: gossipsub flood-publishes to every peer; each peer then forwards on
-    first receipt to its mesh peers (not back to the origin)."""
-    r, N = np.random.default_rng(w.gossip_seed), P.N_NODES
+    first receipt to its mesh peers (not back to the origin). stream 0 carries the real
+    transactions' submissions and stream 1 the decoys', so decoys leave the real frames unchanged."""
+    r, N = np.random.default_rng([w.gossip_seed, stream]), P.N_NODES
     size = w.pools.gossip_wire
     origin_ids = np.full(origin.shape[0], -1, dtype=np.int64)
     for o in range(N):
@@ -262,14 +263,16 @@ def gen_birthmark(w: World):
     # credential held by the decoy infrastructure; it is approved, fanned out, posted and
     # finalised exactly as a real one. The decoy flag is truth only, for scoring real records.
     okf, oki = subs["ok_f"], subs["ok_i"]
-    origin = np.concatenate([subs["F"][okf], subs["I"][oki]])
-    t_org = np.concatenate([subs["reg_f"][okf], subs["reg_i"][oki]])
-    osub = np.concatenate([sub[okf], sub[oki]])
-    legs = np.concatenate([np.full(okf.sum(), REG_F), np.full(oki.sum(), REG_I)])
-    oids = _gossip(w, origin, t_org, osub, legs)
     ev_rf, ev_ri = np.full(S, -1, np.int64), np.full(S, -1, np.int64)
-    ev_rf[okf] = oids[:okf.sum()]
-    ev_ri[oki] = oids[okf.sum():]
+    for stream, part in enumerate((sub < S_r, sub >= S_r)):
+        f_, i_ = okf & part, oki & part
+        origin = np.concatenate([subs["F"][f_], subs["I"][i_]])
+        t_org = np.concatenate([subs["reg_f"][f_], subs["reg_i"][i_]])
+        osub = np.concatenate([sub[f_], sub[i_]])
+        legs = np.concatenate([np.full(f_.sum(), REG_F), np.full(i_.sum(), REG_I)])
+        oids = _gossip(w, origin, t_org, osub, legs, stream)
+        ev_rf[f_] = oids[:f_.sum()]
+        ev_ri[i_] = oids[f_.sum():]
     subs["ev_reg_f"], subs["ev_reg_i"] = ev_rf, ev_ri
     subs["final"] = np.where(okf & oki, np.fmax(subs["reg_f"], subs["reg_i"]), np.nan)
     return subs

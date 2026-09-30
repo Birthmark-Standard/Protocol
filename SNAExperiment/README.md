@@ -45,25 +45,22 @@ Each vantage is scored against the baseline on the same records. The difference 
 - The measured 22-byte TLS 1.3 record overhead is added on the wire.
 
 **Decoys**
-- Decoy sources behave like devices: one credential packet and two content packets per capture.
-- The validator marks a dummy with a plaintext indicator.
-- The credential processor sends a same-size placeholder in place of σ_C.
-- Gatekeepers post a substitute value on the real schedule.
-- A decoy never reaches quorum, so it never reaches the registry.
+- A decoy is a genuine transaction from a registered identity held by the decoy infrastructure. It is approved, fanned out, posted and finalized exactly as a real transaction, and it produces a permanent registry record.
+- The decoy stream is a steady 40 transactions in flight, independent of real traffic, shared by 77 identities that each capture at a device's rate.
 
 **Volume**
 - L is transactions in flight: rate × D, where D is the simulator's measured end-to-end delay (625.6 s, capture to registry finalization).
 - Devices capture every 20 minutes on average.
-- Decoy volume is `max(0, T − R)` in flight.
+- With decoys, T = R + 40 in flight.
 
 **Attacks**
 - Rows are registry records. Each record's two submissions are paired and timed at their midpoint.
-- Candidates are device submissions on the wire: each source's first-hop packets, grouped into captures. Decoy sources' packets are included wherever a vantage cannot tell decoys apart.
+- Candidates are device submissions on the wire: each source's first-hop packets, grouped into captures. Decoy identities' packets are included for every vantage; no vantage can tell them apart.
 - Each vantage scores every candidate by a likelihood of the record time. It is built by Monte Carlo on separate seeds, and each vantage's likelihood nests the baseline's, conditioned on the vantage's own exact knowledge.
 - Each record picks its highest-scoring device (primary) and capture (secondary).
 
 **Runs**
-- A run's traffic depends only on its real volume and run id. Every decoy cell therefore carries the same real traffic as the no-decoy cell at its real volume.
+- A run's traffic depends only on its real volume and run id. A cell with decoys therefore carries the same real traffic as the cell without them at its real volume.
 - The scored window is 3 hours, extended at small real volume to hold 200 real transactions per run on average.
 
 ## Running it

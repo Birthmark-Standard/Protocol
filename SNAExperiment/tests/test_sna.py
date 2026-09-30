@@ -27,17 +27,17 @@ def test_real_traffic_unchanged_by_decoys_and_background():
     for cfg in (SMALL, SMALL.with_(background_enabled=True)):
         s = S.simulate(cfg, 12, POOLS).subs
         real = ~s["decoy"]
-        for k in ("t0", "C", "F", "I", "posts", "reg_f", "reg_i", "det_f"):
+        for k in ("t0", "C", "F", "I", "posts", "reg_f", "reg_i", "det_f", "src"):
             assert np.array_equal(base[k], s[k][real], equal_nan=True), k
 
 
-def test_decoys_never_reach_the_registry():
+def test_decoys_reach_the_registry():
+    """A decoy is a genuine transaction: it reaches quorum and produces a record like a real one."""
     run = S.simulate(SMALL, 13, POOLS)
     s = run.subs
-    assert not s["ok_f"][s["decoy"]].any() and not s["ok_i"][s["decoy"]].any()
+    assert s["ok_f"][s["decoy"]].all() and s["ok_i"][s["decoy"]].all()
     col_t, col_sub, tc = AT.registry_answers(run, POOLS)
-    assert not np.isin(col_sub, np.nonzero(s["decoy"])[0]).any()
-    assert ((tc[~s["decoy"]] >= 0).sum(1) == 2).all()
+    assert ((tc >= 0).sum(1) == 2).all()
 
 
 def test_role_rules():

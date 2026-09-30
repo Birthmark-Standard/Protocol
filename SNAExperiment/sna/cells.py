@@ -1,11 +1,11 @@
 """The experiment grid, per-cell configuration, seeds, the end-to-end delay calibration, model
 caching, and the per-run worker.
 
-A cell is one (real volume R, total volume T) pair, both in transactions in flight. R = T is a
-no-decoy cell; T > R is a decoy cell carrying T - R decoy transactions in flight on top of the
-same real traffic. Rates follow from the measured end-to-end delay D (capture to registry
-finalisation): real rate R / D, decoy credential rate (T - R) / D, two decoy content packets per
-decoy credential transaction.
+A cell is a real volume R (real transactions in flight), with or without the decoy stream. The
+decoy stream is a steady 40 transactions in flight, independent of real traffic, so a decoy cell
+has T = R + 40 in flight. Rates follow from the measured end-to-end delay D (capture to registry
+finalisation): real rate R / D, decoy rate 40 / D. A decoy is a genuine transaction from one of the
+decoy infrastructure's registered identities, each capturing at a device's rate.
 """
 from __future__ import annotations
 
@@ -27,32 +27,29 @@ from .pools import Pools
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
-WIDE_L = (4, 8, 24, 40, 50, 100, 200, 500)       # no-decoy sweep, and the decoy targets
-LOW_R = (1, 2, 3, 4, 8, 24, 40)                  # low range, and the real floors of the decoy grid
+DECOY_R = (1, 5, 15, 45, 100)                    # real volumes run with the decoy stream
+NODECOY_R = (1, 15)                              # real volumes run without it (paired reference)
 CONTROL_R = 40                                   # sensitivity control volume (every hold off)
 CAL_SEED0, MODEL_SEED0 = 2_000_000_000, 1_000_000_000
 
 
-def cell_key(R, T=None, control=False):
-    T = R if T is None else T
-    k = f"R{R:g}" if T == R else f"R{R:g}_T{T:g}"
-    return k + ("_control" if control else "")
+def cell_key(R, decoys=False, control=False):
+    return f"R{R:g}" + ("_D40" if decoys else "") + ("_control" if control else "")
 
 
 def grid(which="all"):
-    """Cell specs. which: all | nodecoy | decoy | control."""
+    """Cell specs. which: all | decoy | nodecoy | control."""
     specs = []
-    if which in ("all", "nodecoy"):
-        for R in sorted(set(WIDE_L) | set(LOW_R)):
-            specs.append(dict(key=cell_key(R), R=float(R), T=float(R), control=False))
     if which in ("all", "decoy"):
-        for R in LOW_R:
-            for T in WIDE_L:
-                if T > R:
-                    specs.append(dict(key=cell_key(R, T), R=float(R), T=float(T), control=False))
+        for R in DECOY_R:
+            specs.append(dict(key=cell_key(R, True), R=float(R), T=float(R + P.DECOYS_IN_FLIGHT), decoys=True,
+                              control=False))
+    if which in ("all", "nodecoy"):
+        for R in NODECOY_R:
+            specs.append(dict(key=cell_key(R), R=float(R), T=float(R), decoys=False, control=False))
     if which in ("all", "control"):
         specs.append(dict(key=cell_key(CONTROL_R, control=True), R=float(CONTROL_R), T=float(CONTROL_R),
-                          control=True))
+                          decoys=False, control=True))
     return specs
 
 
@@ -63,8 +60,9 @@ def window_s(R, D):
 
 
 def config_of(spec, D):
-    R, T = spec["R"], spec["T"]
-    return P.Config(real_rate=R / D, decoy_rate=max(0.0, T - R) / D, measure_s=window_s(R, D),
+    R = spec["R"]
+    return P.Config(real_rate=R / D, decoy_rate=(P.DECOYS_IN_FLIGHT / D) if spec.get("decoys") else 0.0,
+                    measure_s=window_s(R, D),
                     lottery_enabled=not spec["control"], background_enabled=False, nonblending_enabled=False)
 
 
@@ -101,7 +99,7 @@ def calibrate(out=RESULTS, runs=10, force=False):
 
 
 # --------------------------------------------------------------------------- models
-TARGET = "link"             # record-to-device linking; names every model and record file
+TARGET = "link_genuine"     # record-to-device linking, genuine decoys; names every model and record file
 
 
 def model_path(out, control):

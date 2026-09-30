@@ -9,13 +9,12 @@ results/checks.json and reported, pass or fail.
    capture only is reported.
 3. Background independence: every vantage's and baseline's decisions are identical with background
    traffic on and off (so sweeps may run without it).
-4. Decoys, cannot tell: for the baseline, both first hops and the content server, every feature
-   the vantage observes has an AUC for real against decoy whose adjusted interval covers 0.5. The
-   content server is also tested on whether quorum forms within 30 minutes (expected to separate
-   them perfectly, after the timeout).
-5. Decoys, can tell: the validator's indicator, the credential processor's reading of it and the
-   gatekeeper's signature check each equal the truth for every transaction, and the gatekeeper's
-   substitute posting keeps the real posting schedule.
+4. Decoys, cannot tell: for every vantage, every feature it observes has an AUC for real against
+   decoy whose adjusted interval covers 0.5. Decoys run the same code path as real transactions,
+   so this is expected to pass by construction; the check confirms nothing in the simulator
+   separates them.
+5. Decoys reach the registry: every decoy transaction reaches quorum and produces a registry
+   record, as every real one does.
 """
 from __future__ import annotations
 
@@ -86,10 +85,17 @@ def features(run):
     arr = np.r_[s["arr_f"], s["arr_i"]]
     content = {"Content last-leg size": np.r_[sz[ca[:, 2]], sz[cb[:, 2]]],
                "arrival to first board check": np.r_[s["hold_f"], s["hold_i"]] - arr}
-    after = {"quorum within 30 minutes": np.r_[np.isfinite(s["det_f"]), np.isfinite(s["det_i"])].astype(float)}
-    gk = {"gatekeeper: GK arrival to board posting": (s["posts"] - s["gk_arr"]).ravel()}
+    gk = {"GK arrival to board posting": (s["posts"] - s["gk_arr"]).ravel()}
+    vgap = _prev_gap(s["src"], ta[s["ev_cv1"]])
+    validator = {"CV-1 arrival to CV-2 send": ts[s["ev_cv2"]] - ta[s["ev_cv1"]],
+                 "time since the same credential's previous request": vgap,
+                 "CV-1 size": sz[s["ev_cv1"]]}
+    cred = {"Cred-3 arrival to CV-1 send": ts[s["ev_cv1"]] - ta[cr[:, 2]],
+            "CV-2 arrival to first GK send": ts[s["ev_gk"]].min(1) - ta[s["ev_cv2"]],
+            "GK send spread": ts[s["ev_gk"]].max(1) - ts[s["ev_gk"]].min(1),
+            "CV-2 size": sz[s["ev_cv2"]], "Cred-3 size": sz[cr[:, 2]]}
     return dict(baseline=(wire, 1), first_hop_cred=(first_cred, 1), first_hop_content=(first_cont, 2),
-                content_server=(content, 2), content_server_after_timeout=(after, 2), gatekeeper_schedule=(gk, 3))
+                cred_processor=(cred, 1), content_server=(content, 2), validator=(validator, 1), gatekeeper=(gk, 3))
 
 
 def run_checks(out=CE.RESULTS, runs=4, verbose=True):
@@ -97,7 +103,7 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     pools = Pools()
     D = CE.calibrate(out)["D"]
     res = {}
-    spec = dict(key="check", R=8.0, T=40.0, control=False)
+    spec = dict(key="check", R=15.0, T=15.0 + P.DECOYS_IN_FLIGHT, decoys=True, control=False)
     cfg = CE.config_of(spec, D).with_(background_enabled=True, nonblending_enabled=True, measure_s=P.MEASURE_S)
 
     # 1. padding classes -------------------------------------------------------------------
@@ -130,7 +136,7 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     s = run.subs
     real = ~s["decoy"]
     col_t, col_sub, tc = AT.registry_answers(run, pools)
-    expected = int(s["ok_f"][real].sum() + s["ok_i"][real].sum())
+    expected = int(s["ok_f"].sum() + s["ok_i"].sum())            # decoys reach the registry too
     cand = AT.candidates(run, pools)
     mem = cand["msub"]
     first_hops = int(3 * s["t0"].size)                          # every capture's three first-hop packets
@@ -140,7 +146,7 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
         registry_found=int(col_t.size), registry_expected=expected, registry_unlabelled=int((col_sub < 0).sum()),
         device_packets_found=found, device_packets_expected=first_hops, background_packets_in_candidates=bg_members,
         submission_groups=int(cand["t"].size), pure_group_share=float((cand["sub"] >= 0).mean()),
-        passed=bool(col_t.size == expected and (col_sub < 0).sum() == 0 and ((tc[real] >= 0).sum(1) == 2).all()
+        passed=bool(col_t.size == expected and (col_sub < 0).sum() == 0 and ((tc >= 0).sum(1) == 2).all()
                     and found == first_hops and bg_members == 0))
 
     # 3. background independence --------------------------------------------------------
@@ -175,32 +181,18 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
         fd = {fn: np.concatenate(x) for fn, x in feats[name].items()}
         decoy_res[name] = _auc_features(fd, np.concatenate(decs[name]), np.concatenate(rids[name]), n_tests)
     cannot = {}
-    for v in ("baseline", "first_hop_cred", "first_hop_content", "content_server"):
+    for v in AT.VANTAGES:
         ok = all(f["covers_half"] for f in decoy_res[v].values())
         cannot[v] = dict(features=decoy_res[v], passed=bool(ok))
-    after = decoy_res["content_server_after_timeout"]["quorum within 30 minutes"]
-    cannot["content_server"]["after_timeout"] = after
-    cannot["content_server"]["passed_scoped"] = bool(cannot["content_server"]["passed"] and after["auc"] > 0.99)
     res["decoys_cannot_tell"] = cannot
-
     s = run.subs
-    sched = decoy_res["gatekeeper_schedule"]["gatekeeper: GK arrival to board posting"]
-    can = dict(
-        validator=dict(rule="the reply's plaintext indicator is the credential's registration status",
-                       agrees=True),
-        cred_processor=dict(rule="reads the validator's indicator; sends a same-size placeholder for sigma_C on a dummy",
-                            gk_leg_size_auc=decoy_res["baseline"]["GK leg size (mean of 3)"]["auc"], agrees=True),
-        gatekeeper=dict(rule="sigma_C verification fails exactly on dummies; substitute posting on the real schedule",
-                        quorum_never_forms_for_decoys=bool(~np.isfinite(s["quorum"][s["decoy"]]).all()),
-                        quorum_forms_for_real=bool(np.isfinite(s["quorum"][~s["decoy"]]).all()),
-                        schedule_auc=sched),
-    )
-    can["passed"] = bool(can["gatekeeper"]["quorum_never_forms_for_decoys"] and can["gatekeeper"]["quorum_forms_for_real"]
-                         and sched["covers_half"])
-    res["decoys_can_tell"] = can
+    res["decoys_reach_registry"] = dict(
+        decoy_records=int((s["ok_f"] & s["ok_i"] & s["decoy"]).sum()), decoys=int(s["decoy"].sum()),
+        real_records=int((s["ok_f"] & s["ok_i"] & ~s["decoy"]).sum()), real=int((~s["decoy"]).sum()),
+        passed=bool((s["ok_f"] & s["ok_i"]).all()))
     res["n_feature_tests"] = n_tests
     res["runs"] = runs
-    res["cell"] = dict(R=8, T=40, background=True)
+    res["cell"] = dict(R=15, decoys_in_flight=P.DECOYS_IN_FLIGHT, background=True)
     (out / "checks.json").write_text(json.dumps(res, indent=1, default=_json))
     if verbose:
         print_checks(res)
@@ -234,9 +226,6 @@ def print_checks(res):
         worst = max(r["features"].items(), key=lambda kv: abs(kv[1]["auc"] - 0.5))
         print(f"[{mark(r['passed'])}] cannot tell decoys, {v}: {len(r['features'])} features, "
               f"largest |AUC - 0.5| {worst[0]} AUC {worst[1]['auc']:.3f} [{worst[1]['lo']:.3f}, {worst[1]['hi']:.3f}]")
-        if "after_timeout" in r:
-            t = r["after_timeout"]
-            print(f"[FAIL, scoped] content server after its 30-minute timeout: quorum AUC {t['auc']:.3f}")
-    c = res["decoys_can_tell"]
-    print(f"[{mark(c['passed'])}] can tell decoys (validator, credential processor, gatekeeper); "
-          f"gatekeeper posting schedule AUC {c['gatekeeper']['schedule_auc']['auc']:.3f}")
+    d = res["decoys_reach_registry"]
+    print(f"[{mark(d['passed'])}] decoys reach the registry: {d['decoy_records']}/{d['decoys']} decoy and "
+          f"{d['real_records']}/{d['real']} real transactions finalised")

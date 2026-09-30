@@ -1,10 +1,12 @@
-models (main): 133 Monte Carlo runs, 57 s
-[PASS] padding classes: 12614 legs, 0 outside class; Ring V signature 64 B (verifies: True)
-[PASS] answer extraction: registry 340/340, device packets 2703/2703, background packets among candidates 0; 80.5% of submission groups hold one capture
+models (main): 133 Monte Carlo runs, 35 s
+[PASS] padding classes: 17388 legs, 0 outside class; Ring V signature 64 B (verifies: True)
+[PASS] answer extraction: registry 2484/2484, device packets 3726/3726, background packets among candidates 0; 82.8% of submission groups hold one capture
 [PASS] background independence: baseline True, first_hop_cred True, first_hop_content True, cred_processor True, content_server True, validator True, gatekeeper True
-[PASS] cannot tell decoys, baseline: 19 features, largest |AUC - 0.5| Cred-2 size AUC 0.511 [0.496, 0.526]
-[PASS] cannot tell decoys, first_hop_cred: 3 features, largest |AUC - 0.5| A: hold AUC 0.490 [0.470, 0.510]
-[PASS] cannot tell decoys, first_hop_content: 3 features, largest |AUC - 0.5| source: time since its previous capture AUC 0.496 [0.470, 0.521]
-[PASS] cannot tell decoys, content_server: 2 features, largest |AUC - 0.5| Content last-leg size AUC 0.495 [0.483, 0.508]
-[FAIL, scoped] content server after its 30-minute timeout: quorum AUC 1.000
-[PASS] can tell decoys (validator, credential processor, gatekeeper); gatekeeper posting schedule AUC 0.497
+[FAIL] cannot tell decoys, baseline: 19 features, largest |AUC - 0.5| D: hold AUC 0.488 [0.476, 0.500]
+[PASS] cannot tell decoys, first_hop_cred: 3 features, largest |AUC - 0.5| source: time since its previous capture AUC 0.509 [0.492, 0.525]
+[PASS] cannot tell decoys, first_hop_content: 3 features, largest |AUC - 0.5| source: time since its previous capture AUC 0.509 [0.492, 0.525]
+[PASS] cannot tell decoys, cred_processor: 5 features, largest |AUC - 0.5| Cred-3 size AUC 0.490 [0.478, 0.502]
+[PASS] cannot tell decoys, content_server: 2 features, largest |AUC - 0.5| Content last-leg size AUC 0.504 [0.493, 0.514]
+[PASS] cannot tell decoys, validator: 3 features, largest |AUC - 0.5| CV-1 size AUC 0.490 [0.475, 0.506]
+[PASS] cannot tell decoys, gatekeeper: 1 features, largest |AUC - 0.5| GK arrival to board posting AUC 0.497 [0.489, 0.506]
+[PASS] decoys reach the registry: 915/915 decoy and 327/327 real transactions finalised

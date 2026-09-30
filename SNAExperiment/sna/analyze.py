@@ -19,7 +19,6 @@ Z_ADJ = float(norm.ppf(1 - 0.05 / FAMILY / 2))
 BOOT = 2000
 MIN_EACH = 50                                 # successes (and failures) needed for a stable finding
 AUC_MARGIN = 0.03                             # confidence AUCs within this of 0.5 are not read as signal
-TREND_L = (40, 50, 100, 200, 500)
 
 
 def cluster_boot(num, den, rng, z=None, reps=BOOT):
@@ -194,32 +193,33 @@ def metrics(records, v, spec, rng):
     return out
 
 
-def lift_trend(rows_by_L, rng, level="dev", reps=BOOT):
-    """Slope of log lift against log L across TREND_L, with a percentile interval from resampling
-    runs within each cell. Device level: lift against the random-assignment rate. Submission
-    level: accuracy x L. Direction: rises / falls if the interval excludes 0, else holds flat."""
-    Ls = [L for L in TREND_L if L in rows_by_L and "_per_run" in rows_by_L[L]]
-    if len(Ls) < 2:
-        return None
-    x = np.log(np.array(Ls, float))
-    ref = np.array([1.0 / rows_by_L[L][f"{level}_random"] if level == "dev" else L for L in Ls], float)
-
-    def slope(acc):
-        return float(np.polyfit(x, np.log(np.maximum(np.array(acc) * ref, 1e-6)), 1)[0])
-    est = slope([rows_by_L[L][f"{level}_accuracy"] for L in Ls])
-    boots = []
-    for _ in range(reps):
-        acc = []
-        for L in Ls:
-            num, den = rows_by_L[L]["_per_run"][level]
-            i = rng.integers(0, num.size, num.size)
-            acc.append(num[i].sum() / max(den[i].sum(), 1e-12))
-        boots.append(slope(acc))
-    lo, hi = np.percentile(boots, [2.5, 97.5])
-    direction = "rises" if lo > 0 else ("falls" if hi < 0 else "holds flat")
-    return dict(slope=est, lo=float(lo), hi=float(hi), direction=direction, L=Ls,
-                lift_40=float(rows_by_L[Ls[0]][f"{level}_accuracy"] * ref[0]),
-                lift_500=float(rows_by_L[Ls[-1]][f"{level}_accuracy"] * ref[-1]))
+def decoy_effect(with_recs, without_recs, v, rng):
+    """Paired effect of the decoy stream on the same real records: accuracy with decoys minus
+    accuracy without, matched row by row on (run, transaction, group), with an interval from
+    resampling runs. Both cells carry identical real traffic."""
+    base = {}
+    for r in without_recs:
+        x = r["vantages"][v]
+        base[r["run"]] = x
+    out = {}
+    for lvl in ("dev", "sub"):
+        num, den, n_unmatched = [], [], 0
+        for r in with_recs:
+            y = r["vantages"][v]
+            x = base.get(r["run"])
+            if x is None:
+                continue
+            kx = {(int(a), int(b)): i for i, (a, b) in enumerate(zip(x["sub"], x["group"]))}
+            idx = [kx.get((int(a), int(b)), -1) for a, b in zip(y["sub"], y["group"])]
+            idx = np.array(idx, np.int64)
+            ok = idx >= 0
+            n_unmatched += int((~ok).sum())
+            d = y[f"{lvl}_v_correct"][ok].astype(float) - x[f"{lvl}_v_correct"][idx[ok]].astype(float)
+            num.append(d.sum())
+            den.append(ok.sum())
+        e, lo, hi = cluster_boot(np.array(num), np.array(den), rng)
+        out[lvl] = dict(effect=e, lo=lo, hi=hi, n=int(sum(den)), unmatched=n_unmatched)
+    return out
 
 
 def analyze(out, cells, loader, seed=12345):
@@ -233,11 +233,18 @@ def analyze(out, cells, loader, seed=12345):
         recs = sorted(recs, key=lambda r: r["run"])
         for v in AT.VANTAGES:
             rows.append(metrics(recs, v, spec, rng))
-    trends = {}
-    for v in AT.VANTAGES:
-        by_L = {int(r["T"]): r for r in rows if r["vantage"] == v and r["R"] == r["T"] and not r["control"]}
-        for level in ("dev", "sub"):
-            tr = lift_trend(by_L, rng, level)
-            if tr:
-                trends[f"{v}.{level}"] = tr
-    return rows, trends
+    effects = {}
+    by_key = {spec["key"]: spec for spec in cells.values()}
+    for key, spec in by_key.items():
+        if not spec.get("decoys"):
+            continue
+        ref = next((k for k, sp in by_key.items() if sp["R"] == spec["R"] and not sp.get("decoys")
+                    and not sp["control"]), None)
+        if ref is None:
+            continue
+        w, wo = loader(key), loader(ref)
+        if not w or not wo:
+            continue
+        for v in AT.VANTAGES:
+            effects[f"{v}.R{spec['R']:g}"] = decoy_effect(w, wo, v, rng)
+    return rows, effects

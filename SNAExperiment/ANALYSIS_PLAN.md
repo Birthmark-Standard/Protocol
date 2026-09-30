@@ -46,12 +46,13 @@ The simulator follows the per-leg message specification. Its design choices are:
 - The Ring V signature over one validator is 64 bytes, so the fan-out leg's raw size is 753 bytes.
 
 **Decoys**
-- A decoy source is modelled as indistinguishable from a device. It sends one decoy credential packet and two decoy content packets per capture, on the same schedule and through the same role rules as a device.
-- The validator signs every approval identically and adds a plaintext real/dummy indicator.
-- The credential processor sends a same-size placeholder in place of σ_C on a dummy.
-- Each gatekeeper's σ_C check fails on the placeholder. The gatekeeper then posts a substitute value on the real hold-and-post schedule.
-- A decoy never reaches quorum at a content server, so it never produces a registry submission.
-- The decoy rate is (T − R) / D credential transactions per second, which is `dummy = max(0, TARGET − real)` in transactions in flight.
+- A decoy is a genuine transaction from a genuinely registered device credential. The credentials belong to a pool of identities held by the decoy infrastructure.
+- It passes every stage exactly as a real transaction does: V approves it, C fans it out with a valid σ_C, the gatekeepers verify and post it, quorum forms, and F and I finalize a permanent registry record.
+- No party can tell a decoy from a real transaction.
+- The decoy stream is a steady Poisson process at 40 transactions in flight (rate 40 / D), independent of real traffic.
+- The pool has as many identities as the decoy rate needs for each identity to capture every 20 minutes on average, like a device: 77 identities at D = 625.6 s. A decoy identity's packets come from its own external address, with the same latency model as a device.
+- Registry records are permanent. No pruning is modelled.
+- Decoy transactions draw their random numbers from their own streams, and their registry submissions are gossiped on their own stream. So a cell with decoys carries exactly the real traffic of the cell without them at the same R. The one exception is the observer's timing of a registry burst: when a real and a decoy submission leave one node on the same clock tick, the burst is timed by its first frame (under 2 ms apart).
 
 **Background traffic**
 - 25 clients per node exchange TLS sessions whose record sizes come from a measured pool, plus DNS lookups, bulk transfers and keepalives.
@@ -73,7 +74,7 @@ The simulator follows the per-leg message specification. Its design choices are:
 - A device packet is a relay-class application record sent from an external host to a pool node.
 - An external source that ever sends anything else (a handshake, a DNS lookup, a record outside the class) is not treated as a device, and all its packets are dropped. Check 2 confirms that this removes every background client.
 - Each source's packets are grouped greedily in time order: a group holds up to three packets within one device hold (310 s) of its first. A group is timed at its members' mean send time, s.
-- Decoy sources' packets are candidates wherever a vantage cannot tell decoys apart.
+- Decoy identities' packets are candidates for every vantage.
 
 **Success**, scored at two levels:
 - **Device (primary).** The vantage names a device: the source with the largest summed posterior over its groups. It is right if that is the record's device. A source address is visible on the wire, so every vantage can aggregate this way.
@@ -90,10 +91,10 @@ The rows of each vantage are the records it took part in:
 | Baseline | every record | g(y), where y = u_r − s_k |
 | First hop, credential | records whose credential it relayed as A | p(y given its own hold) for groups containing a packet it relayed; g(y) for the rest |
 | First hop, content | records whose content it relayed as D or G | the same |
-| Credential processor | records whose credential it processed as C | mixture over its own transactions j: 1/17 × Σ_j w_kj real_j p(y given x_kj) plus the remaining weight × g(y). Here x_kj is transaction j's fan-out median minus s_k, and w_kj is the posterior that j is k's transaction |
+| Credential processor | records whose credential it processed as C | mixture over its own transactions j: 1/17 × Σ_j w_kj p(y given x_kj) plus the remaining weight × g(y). Here x_kj is transaction j's fan-out median minus s_k, and w_kj is the posterior that j is k's transaction |
 | Content server | records it submitted (as F or I) | the joint density of y and x = its own content arrival − s_k |
-| Validator | every record | its own replies are its candidates, each labelled with its device identity; density of u_r minus the reply send time. It knows which credentials are disposable, so decoys are not candidates |
-| Gatekeeper | every record (all three gatekeepers see every transaction) | mixture over its own postings j: Σ_j w_kj real_j p(y given x_kj), where x_kj is posting j minus s_k. A decoy's substitute posting takes weight but never produces a record |
+| Validator | every record | its own replies are its candidates, each labelled with its credential's identity; density of u_r minus the reply send time. Decoy approvals are candidates, since nothing marks them |
+| Gatekeeper | every record (all three gatekeepers see every transaction) | mixture over its own postings j: Σ_j w_kj p(y given x_kj), where x_kj is posting j minus s_k |
 
 Notes on the model choices:
 - The first hop's own hold does not depend on which candidate is the source, so the conditional density is the right likelihood.
@@ -122,42 +123,40 @@ Delays do not depend on volume, so one model set serves every cell. The sensitiv
    - A padding-class scaling note lists the fan-out leg's raw size against the number of Ring V members. It is a size question and does not bear on decoys.
 2. **Answer extraction.** The observer extracts exactly the true registry submissions, with none missing and none extra. Its device candidates hold every device and decoy first-hop packet and no background packet. The share of submission groups that hold a single capture is reported.
 3. **Background independence.** Every vantage's and baseline's decisions are identical with background traffic on and off, on the same seed.
-4. **Cannot tell decoys** (baseline, both first hops, content server)
-   - Each feature the vantage observes is tested: sizes, holds, processing delays, the spread of a source's three first-hop sends, and the time since the source's previous capture.
-   - The test is the AUC of that feature for real against decoy, with a run-clustered interval, Bonferroni-adjusted across every feature test.
+4. **Cannot tell decoys** (all seven vantages)
+   - Each feature a vantage observes is tested:
+     - the baseline and the first hops: sizes, holds, processing delays, the spread of a source's three first-hop sends, and the time since the source's previous capture;
+     - the credential processor: its processing delays and received sizes;
+     - the content server: its last-leg size and hold;
+     - the validator: its request-to-reply delay, request size, and the time since the same credential's previous request;
+     - the gatekeeper: its arrival-to-posting delay.
+   - The test is the AUC of that feature for real against decoy, with a run-clustered interval, Bonferroni-adjusted across every feature test (36).
    - Pass: every adjusted interval covers 0.5.
-   - The content server is also tested on whether quorum forms within 30 minutes. The prediction is that it separates real from decoy perfectly after the timeout. This is reported as a scoped failure of the cannot-tell rule: it is too late for the vantage's own decision, and it is the reason the content server guesses only for items that reached quorum.
-5. **Can tell decoys** (validator, credential processor, gatekeeper)
-   - The indicator, its use at C, and the σ_C check agree with the truth for every transaction: quorum never forms for a decoy and always forms for a real transaction.
-   - The gatekeeper's substitute posting keeps the real schedule: the AUC of arrival-to-posting for real against decoy covers 0.5.
+   - Decoys run the same code as real transactions, so a pass is expected by construction. The check confirms nothing in the simulator separates them.
+5. **Decoys reach the registry.** Every decoy transaction reaches quorum and produces a registry record, as every real one does.
+
+The checks run at R = 15 with the decoy stream and background traffic on, over 12 seeded runs.
 
 ## 5. Cells, runs and metrics
 
 ### 5.1 Cells
 
-A cell is (R, T): R real transactions in flight and T total.
+A cell is a real volume R (real transactions in flight), with or without the decoy stream.
 
-**No-decoy sweep (T = R).**
-- R = 4, 8, 24, 40, 50, 100, 200, 500 for the baseline and the four vantages that cannot tell decoys.
-- R = 1, 2, 3, 4, 8, 24, 40 as the low range for the three vantages that can.
-- Every vantage is scored in every cell. For the can-tell vantages, any row above R = 40 is labelled an upper bound.
+- **With decoys:** R = 1, 5, 15, 45 and 100, each with 40 decoys in flight (T = R + 40).
+- **Without decoys:** R = 1 and 15, the paired references.
 
-**Decoy sweep.**
-- For each R in {1, 2, 3, 4, 8, 24, 40}, T runs through {4, 8, 24, 40, 50, 100, 200, 500} with T > R. That gives 46 cells.
-- The decoy sweep's chance references are the random-assignment rates and, at the submission level, 1/T.
-- For the can-tell vantages, a decoy cell's L counts decoys they remove, so their decoy rows are labelled upper bounds.
-
-The two sweeps are reported as two separate, equally load-bearing results.
+All seven vantages are scored in every cell. Decoys are indistinguishable to every vantage, so there is no split by vantage.
 
 **Sensitivity control.** R = 40 with every hold off: device, relay, fan-out, gatekeeper and content server. It uses its own likelihood models, with 0.05 s bins.
 
 **Traffic seeds.** A run's traffic seed depends on R and the run id only. So:
-- every decoy cell carries, event for event, the real traffic of the no-decoy cell at the same R;
+- the cell with decoys carries the real traffic of the cell without them at the same R (section 2);
 - every vantage reads the same run.
 
-**Scored window.** Transactions captured in the scored window are scored. The window is 3 hours, extended to hold 200 real transactions on average: 200 × D / R, which is 34.7 hours at R = 1. Warm-up is 20 minutes and cool-down 40 minutes.
+**Scored window.** Real records whose capture falls in the scored window are scored; decoy records are never rows. The window is 3 hours, extended to hold 200 real transactions on average: 200 × D / R, which is 34.7 hours at R = 1. Warm-up is 20 minutes and cool-down 40 minutes.
 
-**Run count.** The run count per cell is set after the cost estimate (`python -m sna estimate`) and recorded in section 8 before the first sweep run.
+**Run count.** Recorded in section 8, before the first sweep run.
 
 Probe runs use run ids from 1,000,000 upward and are written to `results/probe/`. They are used only to measure cost and successes per run, and they are never reported as findings.
 
@@ -168,8 +167,8 @@ At each level (device primary, submission secondary):
 - **Accuracy.** Per-decision accuracy with a 95% interval from resampling whole runs (2,000 replicates). A Bonferroni-adjusted interval is also computed across the 7 vantages × 2 tests in the cell.
 - **Chance references.**
   - The random-assignment rate: one over the feasible devices, if the true device is among them (device level); the true groups among the feasible groups (submission level).
-  - 1/L (= 1/T) at the submission level.
-- **Lift.** Device level: accuracy over the random-assignment rate. Submission level: accuracy × L. Both with intervals.
+  - 1/T at the submission level, where T = R + 40 with decoys and T = R without.
+- **Lift.** Device level: accuracy over the random-assignment rate. Submission level: accuracy × T. Both with intervals.
 - **Contribution over the baseline.** Vantage correct minus paired baseline correct, on the same rows, with a run-resampled interval.
 
 At the device level only:
@@ -186,34 +185,29 @@ At the device level only:
 
 **Stability.** A cell's numbers are a finding only when it has at least 50 device-level successes and 50 failures. Otherwise the report gives the number of runs needed at the observed rate and does not treat the numbers as a finding.
 
-**Lift trend from 40 to 500.** For each vantage on the no-decoy sweep, at each level, the slope of log lift against log L over L = 40, 50, 100, 200 and 500, with a 95% interval from resampling runs within each cell. It rises or falls if the interval excludes zero. Otherwise it holds flat.
+**Effect of the decoy stream.** At R = 1 and 15, for each vantage and level: accuracy with decoys minus accuracy without, matched record by record on (run, transaction, server), with a 95% interval from resampling runs.
 
 **Volume table.** L against devices and captures per day at D = 625.6 s.
 
 ## 6. Predictions
 
-Development runs of this attack were made before this section was written, to verify the pipeline and its speed:
+Development runs on this build were made before this section was written, to verify the pipeline:
+- 6 runs of R = 1 with decoys to 40 in flight, and 4 runs of R = 4 with decoys to 100, against no-decoy runs at 40 and 100 in flight;
+- one run of R = 15 with and without decoys;
+- 2 runs of every cell in section 5.1.
 
-- six runs at R = 40;
-- one run each at R = 500, R = 1 with T = 500, R = 4 with T = 500, R = 40 with T = 500, and the sensitivity control.
+They showed every vantage's device accuracy falling sharply with decoys, the validator included, and the validator close to the baseline with decoys (within about 2 points).
 
-They showed:
-- every vantage's device accuracy above the random-assignment rate at R = 40;
-- the first hops gaining several points at the submission level;
-- the gatekeeper and credential processor close to the baseline;
-- the validator unaffected by decoys (91% device accuracy at R = 1, T = 500).
+The pre-run checks were also run before this section was written. Check 4 failed marginally for one baseline feature, D's hold: AUC 0.488 [0.476, 0.4995], against 36 tests. The feature is produced by identical code for real and decoy traffic. The failure is reported as it stands; the check is not re-run with more runs.
 
-Q1, Q2, Q3, Q4 and Q6 therefore confirm development observations; they are not blind predictions.
+Predictions R2 and R3 confirm development observations; they are not blind.
 
-- **Q1.** On the no-decoy sweep, every vantage's device accuracy (the baseline's included) has its adjusted interval above the random-assignment rate at every L from 4 to 500.
-- **Q2.** The gatekeeper's and the credential processor's device-level contribution is below +1 point at every L of 8 or more.
-- **Q3.** Both first hops' submission-level contribution interval lies above zero at every L from 4 to 500.
-- **Q4.** The validator's device accuracy at fixed R is identical at every T: it knows which credentials are disposable, so decoys never become its candidates.
-- **Q5.** At fixed R, the baseline's device accuracy falls as T rises, because decoy packets are candidates.
-- **Q6.** Sensitivity control: every vantage's device-accuracy interval lies above the random-assignment rate.
-- **Q7.** The content server's device-level contribution interval lies above zero at L = 24 and 40.
-
-No direction is predicted for the lift trend from 40 to 500.
+- **R1.** At R = 1 and at R = 15, every vantage's device-level decoy effect interval lies below zero.
+- **R2.** For every vantage, the device-level decoy effect is smaller in size at R = 15 than at R = 1.
+- **R3.** With decoys, the validator's device-level contribution over the baseline is below +5 points in every cell.
+- **R4.** The gatekeeper's and the credential processor's device-level contribution is below +1 point in every cell.
+- **R5.** Every vantage's adjusted device-accuracy interval lies above the random-assignment rate in every cell.
+- **R6.** Sensitivity control: every vantage's device-accuracy interval lies above the random-assignment rate.
 
 ## 7. Deliverables
 
@@ -224,8 +218,10 @@ No direction is predicted for the lift trend from 40 to 500.
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for every cell in section 5: 11 no-decoy cells, 46 decoy cells and the sensitivity control. This count was recommended from the cost estimate (`results/costs.json`, about 26.5 core-hours) before the sweep started, and the sweep used it. It was recorded here after the sweep, not before as this section required; no sweep result had been seen when it was chosen. RESULTS.md lists this as a deviation.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run.
 
 ## 9. Amendment record
 
 Sections 1, 3, 5.2 and 6 and check 2 were rewritten before any sweep of the record-to-device target. An earlier sweep scored a different link (registry record to credential transaction); none of its records are used here. The earlier text of this plan is in the repository history at commit 5bc4a08.
+
+A second amendment followed a change to the decoy mechanism in the specification. Decoys became genuine transactions from registered identities, and the decoy stream a steady 40 in flight independent of real traffic. Sections 2 (Decoys), 4, 5.1, 5.2, 6 and 8 were rewritten before any sweep of this build. Sweeps of earlier builds are not used here; their text and results are in the repository history.

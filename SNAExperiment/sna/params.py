@@ -27,6 +27,8 @@ NOISE_FRAME = 18           # libp2p Noise transport framing
 
 # --------------------------------------------------------------------------- devices and volume
 INTERVAL_MIN = 20.0        # mean interval between one device's captures
+DECOYS_IN_FLIGHT = 40.0    # decoy transactions in flight: a steady Poisson stream, independent of
+                           #   real traffic; each decoy identity captures at a device's rate
 QUORUM_TIMEOUT_S = 30 * 60 # content server drops a packet whose quorum has not formed in 30 minutes
 
 # --------------------------------------------------------------------------- background traffic
