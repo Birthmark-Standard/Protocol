@@ -1,6 +1,6 @@
-models (main): 75 Monte Carlo runs, 16 s
+models (main): 133 Monte Carlo runs, 57 s
 [PASS] padding classes: 12614 legs, 0 outside class; Ring V signature 64 B (verifies: True)
-[PASS] answer extraction: registry 340/340, validator replies 901/901
+[PASS] answer extraction: registry 340/340, device packets 2703/2703, background packets among candidates 0; 80.5% of submission groups hold one capture
 [PASS] background independence: baseline True, first_hop_cred True, first_hop_content True, cred_processor True, content_server True, validator True, gatekeeper True
 [PASS] cannot tell decoys, baseline: 19 features, largest |AUC - 0.5| Cred-2 size AUC 0.511 [0.496, 0.526]
 [PASS] cannot tell decoys, first_hop_cred: 3 features, largest |AUC - 0.5| A: hold AUC 0.490 [0.470, 0.510]

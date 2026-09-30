@@ -113,9 +113,11 @@
   "registry_found": 340,
   "registry_expected": 340,
   "registry_unlabelled": 0,
-  "replies_found": 901,
-  "replies_expected": 901,
-  "replies_unlabelled": 0,
+  "device_packets_found": 2703,
+  "device_packets_expected": 2703,
+  "background_packets_in_candidates": 0,
+  "submission_groups": 901,
+  "pure_group_share": 0.804661487236404,
   "passed": true
  },
  "background_independence": {
