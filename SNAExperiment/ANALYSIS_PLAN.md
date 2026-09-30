@@ -224,7 +224,7 @@ No direction is predicted for the lift trend from 40 to 500.
 
 ## 8. Run count
 
-To be set from the cost estimate for this attack (`python -m sna estimate`) and recorded here before the first sweep run.
+200 runs per cell, run ids 0 to 199, for every cell in section 5: 11 no-decoy cells, 46 decoy cells and the sensitivity control. This count was recommended from the cost estimate (`results/costs.json`, about 26.5 core-hours) before the sweep started, and the sweep used it. It was recorded here after the sweep, not before as this section required; no sweep result had been seen when it was chosen. RESULTS.md lists this as a deviation.
 
 ## 9. Amendment record
 
