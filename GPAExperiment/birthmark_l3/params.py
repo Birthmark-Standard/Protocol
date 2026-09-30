@@ -108,7 +108,8 @@ class Config:
     reg_hold_phase: str = "node"       # [WB Level 3!B13] "node": F's and I's own node clocks,
                                        #   independent of each other (spec). "fresh": a new random phase
                                        #   per posting (check run only, to settle the wording).
-    role_rules: str = "distinct"       # "distinct": nine distinct nodes per submission, gatekeepers drawn
+    role_rules: str = "distinct"       # "catalog": insider Round 1 (C/F/I may be gatekeepers; see fastsim).
+                                       # "distinct": nine distinct nodes per submission, gatekeepers drawn
                                        #   per submission and never C (the published GPA sweep).
                                        #   "insider_v2": Insider Experiment Design!B3-B5. One active set of 3
                                        #   gatekeepers per run [DECISION: rotation slower than a run], used by
@@ -132,10 +133,39 @@ class Config:
     padding_enabled: bool = True       # False = positive control (raw sizes on the wire)
     background_enabled: bool = True
     nonblending_enabled: bool = True
+    # Scale and deployment parameters (insider extension). Defaults reproduce every earlier run.
+    n_nodes: int = N_NODES             # pool size; node ids 0..n-1, validators follow
+    n_validators: int = N_VALIDATORS   # validators (manufacturers)
+    validator0_share: float = 0.0      # 0 = devices split evenly (device % n_validators). Otherwise
+                                       #   validator 0 serves this share of devices and the rest split
+                                       #   the remainder evenly. Assignment is by device index, no draws.
+    measure_s: float = MEASURE_S       # scored window after warm-up
 
     @property
     def horizon_s(self) -> float:
-        return WARMUP_S + MEASURE_S + COOLDOWN_S
+        return WARMUP_S + self.measure_s + COOLDOWN_S
 
     def with_(self, **kw) -> "Config":
         return replace(self, **kw)
+
+
+def gk_class(ring: bool) -> tuple[int, int]:
+    """Padding class of the GK fan-out leg. The ring signature spans the C-eligible pool (all nodes
+    minus the three gatekeepers) at 32 B per member plus 32 B, so a larger pool shifts the ring class
+    by the same amount (820-860 B at 20 nodes)."""
+    if not ring:
+        return PAD_MIN, PAD_MAX
+    grow = 32 * (N_NODES - 20)
+    return PAD_GK_RING[0] + grow, PAD_GK_RING[1] + grow
+
+
+def use_topology(cfg: "Config") -> None:
+    """Install cfg's pool and validator counts as the module-level constants the simulator and the
+    attacks read. simulate() calls this, so a run and the attacks scored on it always agree. Node ids
+    are 0..n_nodes-1, validators n_nodes..n_nodes+n_validators-1, and every external host is 99."""
+    global N_NODES, N_VALIDATORS
+    if cfg.n_nodes + cfg.n_validators >= 99:
+        raise ValueError("node and validator ids must stay below the external-host id 99")
+    N_NODES, N_VALIDATORS = cfg.n_nodes, cfg.n_validators
+    from . import fastsim
+    fastsim.VAL0 = N_NODES

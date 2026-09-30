@@ -1,6 +1,6 @@
 """Checks that the simulator implements the workbook and that the attack is not broken.
 
-Run from GPAExperiment/level3:   python -m pytest -q tests
+Run from GPAExperiment:   python -m pytest -q tests
 """
 import numpy as np
 import pytest

@@ -1,0 +1,91 @@
+models (control): 200 Monte Carlo runs, 44 s
+probe: 58 runs on 4 workers
+probe: 2/58 runs, 0.0 min elapsed, ETA 0.1 min
+probe: 6/58 runs, 0.0 min elapsed, ETA 0.2 min
+probe: 8/58 runs, 0.1 min elapsed, ETA 0.3 min
+probe: 10/58 runs, 0.1 min elapsed, ETA 0.3 min
+probe: 12/58 runs, 0.1 min elapsed, ETA 0.3 min
+probe: 14/58 runs, 0.1 min elapsed, ETA 0.4 min
+probe: 16/58 runs, 0.3 min elapsed, ETA 0.8 min
+probe: 20/58 runs, 0.3 min elapsed, ETA 0.6 min
+probe: 22/58 runs, 0.4 min elapsed, ETA 0.6 min
+probe: 24/58 runs, 0.5 min elapsed, ETA 0.7 min
+probe: 26/58 runs, 0.5 min elapsed, ETA 0.6 min
+probe: 28/58 runs, 0.5 min elapsed, ETA 0.6 min
+probe: 30/58 runs, 0.6 min elapsed, ETA 0.5 min
+probe: 32/58 runs, 1.0 min elapsed, ETA 0.8 min
+probe: 34/58 runs, 1.0 min elapsed, ETA 0.7 min
+probe: 36/58 runs, 1.0 min elapsed, ETA 0.6 min
+probe: 38/58 runs, 1.0 min elapsed, ETA 0.6 min
+probe: 40/58 runs, 1.1 min elapsed, ETA 0.5 min
+probe: 42/58 runs, 1.1 min elapsed, ETA 0.4 min
+probe: 44/58 runs, 1.2 min elapsed, ETA 0.4 min
+probe: 46/58 runs, 1.2 min elapsed, ETA 0.3 min
+probe: 48/58 runs, 1.2 min elapsed, ETA 0.3 min
+probe: 50/58 runs, 1.3 min elapsed, ETA 0.2 min
+probe: 52/58 runs, 1.3 min elapsed, ETA 0.2 min
+probe: 54/58 runs, 1.4 min elapsed, ETA 0.1 min
+probe: 56/58 runs, 1.5 min elapsed, ETA 0.1 min
+probe: 58/58 runs, 1.6 min elapsed, ETA 0.0 min
+
+cell             s/run   real   decoy  runs needed for 50 successes and failures per vantage
+R1                 0.1    198       0  Base=2 A=1 D=1 C=2 F=1 V=2 GK=1
+R2                 0.1    214       0  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R3                 0.2    209       0  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R4                 0.3    214       0  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R8                 0.1    251       0  Base=2 A=2 D=1 C=1 F=1 V=2 GK=1
+R24                0.8    544       0  Base=2 A=2 D=2 C=2 F=1 V=2 GK=1
+R40                1.8    950       0  Base=2 A=2 D=2 C=2 F=1 V=2 GK=1
+R50                2.4   1180       0  Base=2 A=2 D=1 C=1 F=1 V=2 GK=1
+R100               6.6   2381       0  Base=2 A=2 D=1 C=2 F=1 V=2 GK=1
+R200              16.8   4620       0  Base=2 A=3 D=1 C=2 F=1 V=2 GK=1
+R500              67.3  11532       0  Base=2 A=2 D=2 C=2 F=1 V=2 GK=1
+R1_T4              0.3    198     617  Base=2 A=1 D=1 C=2 F=1 V=2 GK=1
+R1_T8              0.2    198    1440  Base=2 A=1 D=1 C=2 F=1 V=2 GK=1
+R1_T24             0.7    198    4733  Base=2 A=1 D=1 C=2 F=2 V=2 GK=1
+R1_T40             1.4    198    8025  Base=2 A=1 D=1 C=2 F=2 V=2 GK=1
+R1_T50             1.7    198   10082  Base=2 A=1 D=1 C=2 F=3 V=2 GK=1
+R1_T100            6.0    198   20370  Base=2 A=1 D=1 C=2 F=5 V=2 GK=1
+R1_T200           14.3    198   40946  Base=2 A=1 D=1 C=2 F=13 V=2 GK=1
+R1_T500           81.4    198  102673  Base=2 A=1 D=1 C=2 F=50 V=2 GK=1
+R2_T4              0.1    214     218  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R2_T8              0.3    214     646  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R2_T24             0.4    214    2348  Base=1 A=1 D=1 C=1 F=2 V=1 GK=1
+R2_T40             0.8    214    4047  Base=1 A=1 D=1 C=1 F=2 V=1 GK=1
+R2_T50             1.1    214    5108  Base=1 A=1 D=1 C=1 F=3 V=1 GK=1
+R2_T100            3.0    214   10410  Base=1 A=1 D=1 C=1 F=7 V=1 GK=1
+R2_T200            8.4    214   21004  Base=1 A=1 D=1 C=1 F=8 V=1 GK=1
+R2_T500           36.8    214   52768  Base=1 A=1 D=1 C=1 F=50 V=1 GK=1
+R3_T4              0.1    209      65  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R3_T8              0.1    209     345  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R3_T24             0.3    209    1486  Base=1 A=1 D=1 C=1 F=2 V=1 GK=1
+R3_T40             0.5    209    2633  Base=1 A=1 D=1 C=1 F=3 V=1 GK=1
+R3_T50             0.7    209    3351  Base=1 A=1 D=1 C=1 F=3 V=1 GK=1
+R3_T100            2.2    209    6950  Base=1 A=1 D=1 C=1 F=7 V=1 GK=1
+R3_T200            5.3    209   14160  Base=1 A=1 D=1 C=1 F=13 V=1 GK=1
+R3_T500           21.6    209   35824  Base=1 A=1 D=1 C=1 F=25 V=1 GK=1
+R4_T8              0.2    214     215  Base=1 A=1 D=1 C=1 F=1 V=1 GK=1
+R4_T24             0.4    214    1097  Base=1 A=1 D=1 C=1 F=2 V=1 GK=1
+R4_T40             0.5    214    1982  Base=1 A=1 D=1 C=1 F=2 V=1 GK=1
+R4_T50             0.7    214    2537  Base=1 A=1 D=1 C=1 F=3 V=1 GK=1
+R4_T100            1.9    214    5312  Base=1 A=1 D=1 C=1 F=5 V=1 GK=1
+R4_T200            3.7    214   10871  Base=1 A=1 D=1 C=1 F=25 V=1 GK=1
+R4_T500           15.3    214   27563  Base=1 A=1 D=1 C=1 F=50 V=1 GK=1
+R8_T24             0.3    251     510  Base=2 A=2 D=1 C=1 F=2 V=2 GK=1
+R8_T40             0.5    251    1010  Base=2 A=2 D=1 C=1 F=3 V=2 GK=1
+R8_T50             0.5    251    1321  Base=2 A=2 D=1 C=1 F=4 V=2 GK=1
+R8_T100            1.1    251    2873  Base=2 A=2 D=1 C=1 F=7 V=2 GK=1
+R8_T200            3.2    251    5967  Base=2 A=2 D=1 C=1 F=50 V=2 GK=1
+R8_T500           10.6    251   15231  Base=2 A=2 D=1 C=1 F=inf V=2 GK=1
+R24_T40            0.7    544     343  Base=2 A=2 D=2 C=2 F=2 V=2 GK=1
+R24_T50            1.1    544     566  Base=2 A=2 D=2 C=2 F=2 V=2 GK=1
+R24_T100           1.6    544    1694  Base=2 A=2 D=2 C=2 F=3 V=2 GK=1
+R24_T200           3.1    544    3967  Base=2 A=2 D=2 C=2 F=5 V=2 GK=1
+R24_T500          12.2    544   10818  Base=2 A=2 D=2 C=2 F=13 V=2 GK=1
+R40_T50            0.9    950     231  Base=2 A=2 D=2 C=2 F=1 V=2 GK=1
+R40_T100           2.3    950    1382  Base=2 A=2 D=2 C=2 F=2 V=2 GK=1
+R40_T200           5.1    950    3685  Base=2 A=2 D=2 C=2 F=4 V=2 GK=1
+R40_T500          12.1    950   10592  Base=2 A=2 D=2 C=2 F=7 V=2 GK=1
+R40_control        0.2    967       0  Base=50 A=25 D=5 C=50 F=inf V=inf GK=inf
+
+100 runs per cell: 10.1 core-hours, about 2.5 hours on 4 workers

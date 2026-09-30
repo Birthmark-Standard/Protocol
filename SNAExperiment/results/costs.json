@@ -1,0 +1,2148 @@
+{
+ "R1": {
+  "R": 1.0,
+  "T": 1.0,
+  "control": false,
+  "sec_per_run": 0.12986516952514648,
+  "sim_sec_per_run": 0.050086259841918945,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 303.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 81.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 220.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R2": {
+  "R": 2.0,
+  "T": 2.0,
+  "control": false,
+  "sec_per_run": 0.13394951820373535,
+  "sim_sec_per_run": 0.05628538131713867,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 266.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 140.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 170.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R3": {
+  "R": 3.0,
+  "T": 3.0,
+  "control": false,
+  "sec_per_run": 0.17362475395202637,
+  "sim_sec_per_run": 0.05840301513671875,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 204.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 180.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 128.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R4": {
+  "R": 4.0,
+  "T": 4.0,
+  "control": false,
+  "sec_per_run": 0.26548290252685547,
+  "sim_sec_per_run": 0.06948018074035645,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 184.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 220.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 101.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R8": {
+  "R": 8.0,
+  "T": 8.0,
+  "control": false,
+  "sec_per_run": 0.12612223625183105,
+  "sim_sec_per_run": 0.03005075454711914,
+  "successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 44.0,
+   "first_hop_content": 65.0,
+   "cred_processor": 57.0,
+   "content_server": 109.0,
+   "validator": 43.0,
+   "gatekeeper": 236.0
+  },
+  "failures_per_run": {
+   "baseline": 153.0,
+   "first_hop_cred": 156.0,
+   "first_hop_content": 335.0,
+   "cred_processor": 143.0,
+   "content_server": 291.0,
+   "validator": 157.0,
+   "gatekeeper": 364.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 30.0,
+   "first_hop_content": 76.0,
+   "cred_processor": 47.0,
+   "content_server": 53.0,
+   "validator": 43.0,
+   "gatekeeper": 136.0
+  },
+  "n_real": 251.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R24": {
+  "R": 24.0,
+  "T": 24.0,
+  "control": false,
+  "sec_per_run": 0.751429557800293,
+  "sim_sec_per_run": 0.05227065086364746,
+  "successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 36.0,
+   "first_hop_content": 41.0,
+   "cred_processor": 37.0,
+   "content_server": 81.0,
+   "validator": 36.0,
+   "gatekeeper": 333.0
+  },
+  "failures_per_run": {
+   "baseline": 357.0,
+   "first_hop_cred": 355.0,
+   "first_hop_content": 741.0,
+   "cred_processor": 354.0,
+   "content_server": 701.0,
+   "validator": 355.0,
+   "gatekeeper": 840.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 26.0,
+   "first_hop_content": 61.0,
+   "cred_processor": 34.0,
+   "content_server": 33.0,
+   "validator": 36.0,
+   "gatekeeper": 98.0
+  },
+  "n_real": 544.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R40": {
+  "R": 40.0,
+  "T": 40.0,
+  "control": false,
+  "sec_per_run": 1.7858004570007324,
+  "sim_sec_per_run": 0.19902753829956055,
+  "successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 29.0,
+   "first_hop_content": 46.0,
+   "cred_processor": 29.0,
+   "content_server": 70.0,
+   "validator": 41.0,
+   "gatekeeper": 436.0
+  },
+  "failures_per_run": {
+   "baseline": 701.0,
+   "first_hop_cred": 707.0,
+   "first_hop_content": 1426.0,
+   "cred_processor": 707.0,
+   "content_server": 1402.0,
+   "validator": 695.0,
+   "gatekeeper": 1772.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 23.0,
+   "first_hop_content": 39.0,
+   "cred_processor": 35.0,
+   "content_server": 44.0,
+   "validator": 41.0,
+   "gatekeeper": 91.0
+  },
+  "n_real": 950.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R50": {
+  "R": 50.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 2.4406304359436035,
+  "sim_sec_per_run": 0.2329721450805664,
+  "successes_per_run": {
+   "baseline": 38.0,
+   "first_hop_cred": 28.0,
+   "first_hop_content": 57.0,
+   "cred_processor": 55.0,
+   "content_server": 82.0,
+   "validator": 35.0,
+   "gatekeeper": 478.0
+  },
+  "failures_per_run": {
+   "baseline": 863.0,
+   "first_hop_cred": 873.0,
+   "first_hop_content": 1745.0,
+   "cred_processor": 846.0,
+   "content_server": 1720.0,
+   "validator": 866.0,
+   "gatekeeper": 2225.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 38.0,
+   "first_hop_cred": 28.0,
+   "first_hop_content": 50.0,
+   "cred_processor": 38.0,
+   "content_server": 46.0,
+   "validator": 35.0,
+   "gatekeeper": 107.0
+  },
+  "n_real": 1180.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R100": {
+  "R": 100.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 6.565130233764648,
+  "sim_sec_per_run": 0.5799582004547119,
+  "successes_per_run": {
+   "baseline": 36.0,
+   "first_hop_cred": 40.0,
+   "first_hop_content": 52.0,
+   "cred_processor": 35.0,
+   "content_server": 80.0,
+   "validator": 39.0,
+   "gatekeeper": 662.0
+  },
+  "failures_per_run": {
+   "baseline": 1741.0,
+   "first_hop_cred": 1737.0,
+   "first_hop_content": 3502.0,
+   "cred_processor": 1742.0,
+   "content_server": 3474.0,
+   "validator": 1738.0,
+   "gatekeeper": 4669.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 36.0,
+   "first_hop_cred": 25.0,
+   "first_hop_content": 49.0,
+   "cred_processor": 36.0,
+   "content_server": 43.0,
+   "validator": 39.0,
+   "gatekeeper": 90.0
+  },
+  "n_real": 2381.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R200": {
+  "R": 200.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 16.78263020515442,
+  "sim_sec_per_run": 0.9570679664611816,
+  "successes_per_run": {
+   "baseline": 42.0,
+   "first_hop_cred": 24.0,
+   "first_hop_content": 58.0,
+   "cred_processor": 38.0,
+   "content_server": 92.0,
+   "validator": 45.0,
+   "gatekeeper": 715.0
+  },
+  "failures_per_run": {
+   "baseline": 3395.0,
+   "first_hop_cred": 3413.0,
+   "first_hop_content": 6816.0,
+   "cred_processor": 3399.0,
+   "content_server": 6782.0,
+   "validator": 3392.0,
+   "gatekeeper": 9596.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 42.0,
+   "first_hop_cred": 31.0,
+   "first_hop_content": 43.0,
+   "cred_processor": 42.0,
+   "content_server": 58.0,
+   "validator": 45.0,
+   "gatekeeper": 129.0
+  },
+  "n_real": 4620.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R500": {
+  "R": 500.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 67.31063890457153,
+  "sim_sec_per_run": 1.704110860824585,
+  "successes_per_run": {
+   "baseline": 42.0,
+   "first_hop_cred": 38.0,
+   "first_hop_content": 45.0,
+   "cred_processor": 36.0,
+   "content_server": 88.0,
+   "validator": 38.0,
+   "gatekeeper": 740.0
+  },
+  "failures_per_run": {
+   "baseline": 8611.0,
+   "first_hop_cred": 8615.0,
+   "first_hop_content": 17261.0,
+   "cred_processor": 8617.0,
+   "content_server": 17218.0,
+   "validator": 8615.0,
+   "gatekeeper": 25219.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 42.0,
+   "first_hop_cred": 37.0,
+   "first_hop_content": 39.0,
+   "cred_processor": 42.0,
+   "content_server": 33.0,
+   "validator": 38.0,
+   "gatekeeper": 121.0
+  },
+  "n_real": 11532.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ },
+ "R1_T4": {
+  "R": 1.0,
+  "T": 4.0,
+  "control": false,
+  "sec_per_run": 0.2552490234375,
+  "sim_sec_per_run": 0.08860254287719727,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 183.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 201.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 94.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 617.0,
+  "probe_runs": 1
+ },
+ "R1_T8": {
+  "R": 1.0,
+  "T": 8.0,
+  "control": false,
+  "sec_per_run": 0.19834327697753906,
+  "sim_sec_per_run": 0.03425335884094238,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 112.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 272.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 40.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 1440.0,
+  "probe_runs": 1
+ },
+ "R1_T24": {
+  "R": 1.0,
+  "T": 24.0,
+  "control": false,
+  "sec_per_run": 0.6686620712280273,
+  "sim_sec_per_run": 0.07421135902404785,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 48.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 336.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 11.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 4733.0,
+  "probe_runs": 1
+ },
+ "R1_T40": {
+  "R": 1.0,
+  "T": 40.0,
+  "control": false,
+  "sec_per_run": 1.3905327320098877,
+  "sim_sec_per_run": 0.07703542709350586,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 28.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 356.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 7.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 8025.0,
+  "probe_runs": 1
+ },
+ "R1_T50": {
+  "R": 1.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 1.712505578994751,
+  "sim_sec_per_run": 0.060975074768066406,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 24.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 360.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 4.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 10082.0,
+  "probe_runs": 1
+ },
+ "R1_T100": {
+  "R": 1.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 5.99876070022583,
+  "sim_sec_per_run": 0.2307441234588623,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 12.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 372.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 2.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 20370.0,
+  "probe_runs": 1
+ },
+ "R1_T200": {
+  "R": 1.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 14.273086309432983,
+  "sim_sec_per_run": 0.2208726406097412,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 4.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 380.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 2.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 40946.0,
+  "probe_runs": 1
+ },
+ "R1_T500": {
+  "R": 1.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 81.43936538696289,
+  "sim_sec_per_run": 0.5718803405761719,
+  "successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 141.0,
+   "first_hop_content": 236.0,
+   "cred_processor": 156.0,
+   "content_server": 1.0,
+   "validator": 156.0,
+   "gatekeeper": 431.0
+  },
+  "failures_per_run": {
+   "baseline": 37.0,
+   "first_hop_cred": 51.0,
+   "first_hop_content": 148.0,
+   "cred_processor": 36.0,
+   "content_server": 383.0,
+   "validator": 36.0,
+   "gatekeeper": 145.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 155.0,
+   "first_hop_cred": 137.0,
+   "first_hop_content": 246.0,
+   "cred_processor": 155.0,
+   "content_server": 0.0,
+   "validator": 156.0,
+   "gatekeeper": 445.0
+  },
+  "n_real": 198.0,
+  "n_decoy": 102673.0,
+  "probe_runs": 1
+ },
+ "R2_T4": {
+  "R": 2.0,
+  "T": 4.0,
+  "control": false,
+  "sec_per_run": 0.11883711814880371,
+  "sim_sec_per_run": 0.032692909240722656,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 196.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 210.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 108.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 218.0,
+  "probe_runs": 1
+ },
+ "R2_T8": {
+  "R": 2.0,
+  "T": 8.0,
+  "control": false,
+  "sec_per_run": 0.256641149520874,
+  "sim_sec_per_run": 0.032083988189697266,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 111.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 295.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 62.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 646.0,
+  "probe_runs": 1
+ },
+ "R2_T24": {
+  "R": 2.0,
+  "T": 24.0,
+  "control": false,
+  "sec_per_run": 0.4236135482788086,
+  "sim_sec_per_run": 0.039357900619506836,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 38.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 368.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 19.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 2348.0,
+  "probe_runs": 1
+ },
+ "R2_T40": {
+  "R": 2.0,
+  "T": 40.0,
+  "control": false,
+  "sec_per_run": 0.8205428123474121,
+  "sim_sec_per_run": 0.06331896781921387,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 29.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 377.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 15.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 4047.0,
+  "probe_runs": 1
+ },
+ "R2_T50": {
+  "R": 2.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 1.0926826000213623,
+  "sim_sec_per_run": 0.06884169578552246,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 18.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 388.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 10.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 5108.0,
+  "probe_runs": 1
+ },
+ "R2_T100": {
+  "R": 2.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 3.0486018657684326,
+  "sim_sec_per_run": 0.09258008003234863,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 8.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 398.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 4.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 10410.0,
+  "probe_runs": 1
+ },
+ "R2_T200": {
+  "R": 2.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 8.436962366104126,
+  "sim_sec_per_run": 0.09751057624816895,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 7.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 399.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 1.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 21004.0,
+  "probe_runs": 1
+ },
+ "R2_T500": {
+  "R": 2.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 36.79093599319458,
+  "sim_sec_per_run": 0.23655438423156738,
+  "successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 126.0,
+   "first_hop_content": 177.0,
+   "cred_processor": 129.0,
+   "content_server": 1.0,
+   "validator": 131.0,
+   "gatekeeper": 395.0
+  },
+  "failures_per_run": {
+   "baseline": 75.0,
+   "first_hop_cred": 77.0,
+   "first_hop_content": 229.0,
+   "cred_processor": 74.0,
+   "content_server": 405.0,
+   "validator": 72.0,
+   "gatekeeper": 214.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 128.0,
+   "first_hop_cred": 119.0,
+   "first_hop_content": 195.0,
+   "cred_processor": 128.0,
+   "content_server": 0.0,
+   "validator": 131.0,
+   "gatekeeper": 368.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 52768.0,
+  "probe_runs": 1
+ },
+ "R3_T4": {
+  "R": 3.0,
+  "T": 4.0,
+  "control": false,
+  "sec_per_run": 0.10616302490234375,
+  "sim_sec_per_run": 0.029794692993164062,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 161.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 223.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 106.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 65.0,
+  "probe_runs": 1
+ },
+ "R3_T8": {
+  "R": 3.0,
+  "T": 8.0,
+  "control": false,
+  "sec_per_run": 0.13636493682861328,
+  "sim_sec_per_run": 0.029634475708007812,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 109.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 275.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 48.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 345.0,
+  "probe_runs": 1
+ },
+ "R3_T24": {
+  "R": 3.0,
+  "T": 24.0,
+  "control": false,
+  "sec_per_run": 0.30477428436279297,
+  "sim_sec_per_run": 0.03343939781188965,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 38.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 346.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 13.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 1486.0,
+  "probe_runs": 1
+ },
+ "R3_T40": {
+  "R": 3.0,
+  "T": 40.0,
+  "control": false,
+  "sec_per_run": 0.5149059295654297,
+  "sim_sec_per_run": 0.03784489631652832,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 19.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 365.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 12.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 2633.0,
+  "probe_runs": 1
+ },
+ "R3_T50": {
+  "R": 3.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 0.6547305583953857,
+  "sim_sec_per_run": 0.03831338882446289,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 17.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 367.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 8.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 3351.0,
+  "probe_runs": 1
+ },
+ "R3_T100": {
+  "R": 3.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 2.1804909706115723,
+  "sim_sec_per_run": 0.048520565032958984,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 8.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 376.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 2.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 6950.0,
+  "probe_runs": 1
+ },
+ "R3_T200": {
+  "R": 3.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 5.290758848190308,
+  "sim_sec_per_run": 0.07560563087463379,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 4.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 380.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 1.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 14160.0,
+  "probe_runs": 1
+ },
+ "R3_T500": {
+  "R": 3.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 21.611624717712402,
+  "sim_sec_per_run": 0.15443754196166992,
+  "successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 92.0,
+   "first_hop_content": 156.0,
+   "cred_processor": 112.0,
+   "content_server": 2.0,
+   "validator": 101.0,
+   "gatekeeper": 342.0
+  },
+  "failures_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 100.0,
+   "first_hop_content": 228.0,
+   "cred_processor": 80.0,
+   "content_server": 382.0,
+   "validator": 91.0,
+   "gatekeeper": 234.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 96.0,
+   "first_hop_cred": 82.0,
+   "first_hop_content": 150.0,
+   "cred_processor": 96.0,
+   "content_server": 0.0,
+   "validator": 101.0,
+   "gatekeeper": 312.0
+  },
+  "n_real": 209.0,
+  "n_decoy": 35824.0,
+  "probe_runs": 1
+ },
+ "R4_T8": {
+  "R": 4.0,
+  "T": 8.0,
+  "control": false,
+  "sec_per_run": 0.17232561111450195,
+  "sim_sec_per_run": 0.057272911071777344,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 111.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 293.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 54.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 215.0,
+  "probe_runs": 1
+ },
+ "R4_T24": {
+  "R": 4.0,
+  "T": 24.0,
+  "control": false,
+  "sec_per_run": 0.38187456130981445,
+  "sim_sec_per_run": 0.07838916778564453,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 49.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 355.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 19.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 1097.0,
+  "probe_runs": 1
+ },
+ "R4_T40": {
+  "R": 4.0,
+  "T": 40.0,
+  "control": false,
+  "sec_per_run": 0.5051085948944092,
+  "sim_sec_per_run": 0.049205780029296875,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 31.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 373.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 8.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 1982.0,
+  "probe_runs": 1
+ },
+ "R4_T50": {
+  "R": 4.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 0.7274589538574219,
+  "sim_sec_per_run": 0.0696563720703125,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 24.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 380.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 9.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 2537.0,
+  "probe_runs": 1
+ },
+ "R4_T100": {
+  "R": 4.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 1.860999345779419,
+  "sim_sec_per_run": 0.0486605167388916,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 12.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 392.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 7.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 5312.0,
+  "probe_runs": 1
+ },
+ "R4_T200": {
+  "R": 4.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 3.6538827419281006,
+  "sim_sec_per_run": 0.10520458221435547,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 2.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 402.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 3.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 10871.0,
+  "probe_runs": 1
+ },
+ "R4_T500": {
+  "R": 4.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 15.320214033126831,
+  "sim_sec_per_run": 0.11640667915344238,
+  "successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 59.0,
+   "first_hop_content": 118.0,
+   "cred_processor": 100.0,
+   "content_server": 1.0,
+   "validator": 93.0,
+   "gatekeeper": 319.0
+  },
+  "failures_per_run": {
+   "baseline": 104.0,
+   "first_hop_cred": 143.0,
+   "first_hop_content": 286.0,
+   "cred_processor": 102.0,
+   "content_server": 403.0,
+   "validator": 109.0,
+   "gatekeeper": 287.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 98.0,
+   "first_hop_cred": 65.0,
+   "first_hop_content": 121.0,
+   "cred_processor": 98.0,
+   "content_server": 3.0,
+   "validator": 93.0,
+   "gatekeeper": 263.0
+  },
+  "n_real": 214.0,
+  "n_decoy": 27563.0,
+  "probe_runs": 1
+ },
+ "R8_T24": {
+  "R": 8.0,
+  "T": 24.0,
+  "control": false,
+  "sec_per_run": 0.2867770195007324,
+  "sim_sec_per_run": 0.04421186447143555,
+  "successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 44.0,
+   "first_hop_content": 65.0,
+   "cred_processor": 57.0,
+   "content_server": 39.0,
+   "validator": 43.0,
+   "gatekeeper": 236.0
+  },
+  "failures_per_run": {
+   "baseline": 153.0,
+   "first_hop_cred": 156.0,
+   "first_hop_content": 335.0,
+   "cred_processor": 143.0,
+   "content_server": 361.0,
+   "validator": 157.0,
+   "gatekeeper": 364.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 30.0,
+   "first_hop_content": 76.0,
+   "cred_processor": 47.0,
+   "content_server": 15.0,
+   "validator": 43.0,
+   "gatekeeper": 136.0
+  },
+  "n_real": 251.0,
+  "n_decoy": 510.0,
+  "probe_runs": 1
+ },
+ "R8_T40": {
+  "R": 8.0,
+  "T": 40.0,
+  "control": false,
+  "sec_per_run": 0.5020954608917236,
+  "sim_sec_per_run": 0.06537795066833496,
+  "successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 44.0,
+   "first_hop_content": 65.0,
+   "cred_processor": 57.0,
+   "content_server": 21.0,
+   "validator": 43.0,
+   "gatekeeper": 236.0
+  },
+  "failures_per_run": {
+   "baseline": 153.0,
+   "first_hop_cred": 156.0,
+   "first_hop_content": 335.0,
+   "cred_processor": 143.0,
+   "content_server": 379.0,
+   "validator": 157.0,
+   "gatekeeper": 364.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 30.0,
+   "first_hop_content": 76.0,
+   "cred_processor": 47.0,
+   "content_server": 9.0,
+   "validator": 43.0,
+   "gatekeeper": 136.0
+  },
+  "n_real": 251.0,
+  "n_decoy": 1010.0,
+  "probe_runs": 1
+ },
+ "R8_T50": {
+  "R": 8.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 0.5334813594818115,
+  "sim_sec_per_run": 0.07226753234863281,
+  "successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 44.0,
+   "first_hop_content": 65.0,
+   "cred_processor": 57.0,
+   "content_server": 14.0,
+   "validator": 43.0,
+   "gatekeeper": 236.0
+  },
+  "failures_per_run": {
+   "baseline": 153.0,
+   "first_hop_cred": 156.0,
+   "first_hop_content": 335.0,
+   "cred_processor": 143.0,
+   "content_server": 386.0,
+   "validator": 157.0,
+   "gatekeeper": 364.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 30.0,
+   "first_hop_content": 76.0,
+   "cred_processor": 47.0,
+   "content_server": 4.0,
+   "validator": 43.0,
+   "gatekeeper": 136.0
+  },
+  "n_real": 251.0,
+  "n_decoy": 1321.0,
+  "probe_runs": 1
+ },
+ "R8_T100": {
+  "R": 8.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 1.1168925762176514,
+  "sim_sec_per_run": 0.07291555404663086,
+  "successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 44.0,
+   "first_hop_content": 65.0,
+   "cred_processor": 57.0,
+   "content_server": 8.0,
+   "validator": 43.0,
+   "gatekeeper": 236.0
+  },
+  "failures_per_run": {
+   "baseline": 153.0,
+   "first_hop_cred": 156.0,
+   "first_hop_content": 335.0,
+   "cred_processor": 143.0,
+   "content_server": 392.0,
+   "validator": 157.0,
+   "gatekeeper": 364.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 30.0,
+   "first_hop_content": 76.0,
+   "cred_processor": 47.0,
+   "content_server": 5.0,
+   "validator": 43.0,
+   "gatekeeper": 136.0
+  },
+  "n_real": 251.0,
+  "n_decoy": 2873.0,
+  "probe_runs": 1
+ },
+ "R8_T200": {
+  "R": 8.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 3.240156650543213,
+  "sim_sec_per_run": 0.06981110572814941,
+  "successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 44.0,
+   "first_hop_content": 65.0,
+   "cred_processor": 57.0,
+   "content_server": 1.0,
+   "validator": 43.0,
+   "gatekeeper": 236.0
+  },
+  "failures_per_run": {
+   "baseline": 153.0,
+   "first_hop_cred": 156.0,
+   "first_hop_content": 335.0,
+   "cred_processor": 143.0,
+   "content_server": 399.0,
+   "validator": 157.0,
+   "gatekeeper": 364.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 30.0,
+   "first_hop_content": 76.0,
+   "cred_processor": 47.0,
+   "content_server": 1.0,
+   "validator": 43.0,
+   "gatekeeper": 136.0
+  },
+  "n_real": 251.0,
+  "n_decoy": 5967.0,
+  "probe_runs": 1
+ },
+ "R8_T500": {
+  "R": 8.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 10.560895919799805,
+  "sim_sec_per_run": 0.08707904815673828,
+  "successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 44.0,
+   "first_hop_content": 65.0,
+   "cred_processor": 57.0,
+   "content_server": 0.0,
+   "validator": 43.0,
+   "gatekeeper": 236.0
+  },
+  "failures_per_run": {
+   "baseline": 153.0,
+   "first_hop_cred": 156.0,
+   "first_hop_content": 335.0,
+   "cred_processor": 143.0,
+   "content_server": 400.0,
+   "validator": 157.0,
+   "gatekeeper": 364.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 47.0,
+   "first_hop_cred": 30.0,
+   "first_hop_content": 76.0,
+   "cred_processor": 47.0,
+   "content_server": 1.0,
+   "validator": 43.0,
+   "gatekeeper": 136.0
+  },
+  "n_real": 251.0,
+  "n_decoy": 15231.0,
+  "probe_runs": 1
+ },
+ "R24_T40": {
+  "R": 24.0,
+  "T": 40.0,
+  "control": false,
+  "sec_per_run": 0.6924633979797363,
+  "sim_sec_per_run": 0.0864107608795166,
+  "successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 36.0,
+   "first_hop_content": 41.0,
+   "cred_processor": 37.0,
+   "content_server": 45.0,
+   "validator": 36.0,
+   "gatekeeper": 333.0
+  },
+  "failures_per_run": {
+   "baseline": 357.0,
+   "first_hop_cred": 355.0,
+   "first_hop_content": 741.0,
+   "cred_processor": 354.0,
+   "content_server": 737.0,
+   "validator": 355.0,
+   "gatekeeper": 840.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 26.0,
+   "first_hop_content": 61.0,
+   "cred_processor": 34.0,
+   "content_server": 16.0,
+   "validator": 36.0,
+   "gatekeeper": 98.0
+  },
+  "n_real": 544.0,
+  "n_decoy": 343.0,
+  "probe_runs": 1
+ },
+ "R24_T50": {
+  "R": 24.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 1.1480541229248047,
+  "sim_sec_per_run": 0.04765892028808594,
+  "successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 36.0,
+   "first_hop_content": 41.0,
+   "cred_processor": 37.0,
+   "content_server": 37.0,
+   "validator": 36.0,
+   "gatekeeper": 333.0
+  },
+  "failures_per_run": {
+   "baseline": 357.0,
+   "first_hop_cred": 355.0,
+   "first_hop_content": 741.0,
+   "cred_processor": 354.0,
+   "content_server": 745.0,
+   "validator": 355.0,
+   "gatekeeper": 840.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 26.0,
+   "first_hop_content": 61.0,
+   "cred_processor": 34.0,
+   "content_server": 15.0,
+   "validator": 36.0,
+   "gatekeeper": 98.0
+  },
+  "n_real": 544.0,
+  "n_decoy": 566.0,
+  "probe_runs": 1
+ },
+ "R24_T100": {
+  "R": 24.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 1.5697059631347656,
+  "sim_sec_per_run": 0.05287575721740723,
+  "successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 36.0,
+   "first_hop_content": 41.0,
+   "cred_processor": 37.0,
+   "content_server": 19.0,
+   "validator": 36.0,
+   "gatekeeper": 333.0
+  },
+  "failures_per_run": {
+   "baseline": 357.0,
+   "first_hop_cred": 355.0,
+   "first_hop_content": 741.0,
+   "cred_processor": 354.0,
+   "content_server": 763.0,
+   "validator": 355.0,
+   "gatekeeper": 840.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 26.0,
+   "first_hop_content": 61.0,
+   "cred_processor": 34.0,
+   "content_server": 6.0,
+   "validator": 36.0,
+   "gatekeeper": 98.0
+  },
+  "n_real": 544.0,
+  "n_decoy": 1694.0,
+  "probe_runs": 1
+ },
+ "R24_T200": {
+  "R": 24.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 3.1277785301208496,
+  "sim_sec_per_run": 0.04366350173950195,
+  "successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 36.0,
+   "first_hop_content": 41.0,
+   "cred_processor": 37.0,
+   "content_server": 10.0,
+   "validator": 36.0,
+   "gatekeeper": 333.0
+  },
+  "failures_per_run": {
+   "baseline": 357.0,
+   "first_hop_cred": 355.0,
+   "first_hop_content": 741.0,
+   "cred_processor": 354.0,
+   "content_server": 772.0,
+   "validator": 355.0,
+   "gatekeeper": 840.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 26.0,
+   "first_hop_content": 61.0,
+   "cred_processor": 34.0,
+   "content_server": 5.0,
+   "validator": 36.0,
+   "gatekeeper": 98.0
+  },
+  "n_real": 544.0,
+  "n_decoy": 3967.0,
+  "probe_runs": 1
+ },
+ "R24_T500": {
+  "R": 24.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 12.221894025802612,
+  "sim_sec_per_run": 0.10080981254577637,
+  "successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 36.0,
+   "first_hop_content": 41.0,
+   "cred_processor": 37.0,
+   "content_server": 4.0,
+   "validator": 36.0,
+   "gatekeeper": 333.0
+  },
+  "failures_per_run": {
+   "baseline": 357.0,
+   "first_hop_cred": 355.0,
+   "first_hop_content": 741.0,
+   "cred_processor": 354.0,
+   "content_server": 778.0,
+   "validator": 355.0,
+   "gatekeeper": 840.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 34.0,
+   "first_hop_cred": 26.0,
+   "first_hop_content": 61.0,
+   "cred_processor": 34.0,
+   "content_server": 1.0,
+   "validator": 36.0,
+   "gatekeeper": 98.0
+  },
+  "n_real": 544.0,
+  "n_decoy": 10818.0,
+  "probe_runs": 1
+ },
+ "R40_T50": {
+  "R": 40.0,
+  "T": 50.0,
+  "control": false,
+  "sec_per_run": 0.8958501815795898,
+  "sim_sec_per_run": 0.05428266525268555,
+  "successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 29.0,
+   "first_hop_content": 46.0,
+   "cred_processor": 29.0,
+   "content_server": 55.0,
+   "validator": 41.0,
+   "gatekeeper": 436.0
+  },
+  "failures_per_run": {
+   "baseline": 701.0,
+   "first_hop_cred": 707.0,
+   "first_hop_content": 1426.0,
+   "cred_processor": 707.0,
+   "content_server": 1417.0,
+   "validator": 695.0,
+   "gatekeeper": 1772.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 23.0,
+   "first_hop_content": 39.0,
+   "cred_processor": 35.0,
+   "content_server": 37.0,
+   "validator": 41.0,
+   "gatekeeper": 91.0
+  },
+  "n_real": 950.0,
+  "n_decoy": 231.0,
+  "probe_runs": 1
+ },
+ "R40_T100": {
+  "R": 40.0,
+  "T": 100.0,
+  "control": false,
+  "sec_per_run": 2.260098457336426,
+  "sim_sec_per_run": 0.06893324851989746,
+  "successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 29.0,
+   "first_hop_content": 46.0,
+   "cred_processor": 29.0,
+   "content_server": 27.0,
+   "validator": 41.0,
+   "gatekeeper": 436.0
+  },
+  "failures_per_run": {
+   "baseline": 701.0,
+   "first_hop_cred": 707.0,
+   "first_hop_content": 1426.0,
+   "cred_processor": 707.0,
+   "content_server": 1445.0,
+   "validator": 695.0,
+   "gatekeeper": 1772.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 23.0,
+   "first_hop_content": 39.0,
+   "cred_processor": 35.0,
+   "content_server": 18.0,
+   "validator": 41.0,
+   "gatekeeper": 91.0
+  },
+  "n_real": 950.0,
+  "n_decoy": 1382.0,
+  "probe_runs": 1
+ },
+ "R40_T200": {
+  "R": 40.0,
+  "T": 200.0,
+  "control": false,
+  "sec_per_run": 5.103391408920288,
+  "sim_sec_per_run": 0.07019877433776855,
+  "successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 29.0,
+   "first_hop_content": 46.0,
+   "cred_processor": 29.0,
+   "content_server": 13.0,
+   "validator": 41.0,
+   "gatekeeper": 436.0
+  },
+  "failures_per_run": {
+   "baseline": 701.0,
+   "first_hop_cred": 707.0,
+   "first_hop_content": 1426.0,
+   "cred_processor": 707.0,
+   "content_server": 1459.0,
+   "validator": 695.0,
+   "gatekeeper": 1772.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 23.0,
+   "first_hop_content": 39.0,
+   "cred_processor": 35.0,
+   "content_server": 9.0,
+   "validator": 41.0,
+   "gatekeeper": 91.0
+  },
+  "n_real": 950.0,
+  "n_decoy": 3685.0,
+  "probe_runs": 1
+ },
+ "R40_T500": {
+  "R": 40.0,
+  "T": 500.0,
+  "control": false,
+  "sec_per_run": 12.116785287857056,
+  "sim_sec_per_run": 0.10112524032592773,
+  "successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 29.0,
+   "first_hop_content": 46.0,
+   "cred_processor": 29.0,
+   "content_server": 8.0,
+   "validator": 41.0,
+   "gatekeeper": 436.0
+  },
+  "failures_per_run": {
+   "baseline": 701.0,
+   "first_hop_cred": 707.0,
+   "first_hop_content": 1426.0,
+   "cred_processor": 707.0,
+   "content_server": 1464.0,
+   "validator": 695.0,
+   "gatekeeper": 1772.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 35.0,
+   "first_hop_cred": 23.0,
+   "first_hop_content": 39.0,
+   "cred_processor": 35.0,
+   "content_server": 5.0,
+   "validator": 41.0,
+   "gatekeeper": 91.0
+  },
+  "n_real": 950.0,
+  "n_decoy": 10592.0,
+  "probe_runs": 1
+ },
+ "R40_control": {
+  "R": 40.0,
+  "T": 40.0,
+  "control": true,
+  "sec_per_run": 0.21158218383789062,
+  "sim_sec_per_run": 0.06386041641235352,
+  "successes_per_run": {
+   "baseline": 723.0,
+   "first_hop_cred": 722.0,
+   "first_hop_content": 1437.0,
+   "cred_processor": 723.0,
+   "content_server": 1448.0,
+   "validator": 724.0,
+   "gatekeeper": 2172.0
+  },
+  "failures_per_run": {
+   "baseline": 1.0,
+   "first_hop_cred": 2.0,
+   "first_hop_content": 11.0,
+   "cred_processor": 1.0,
+   "content_server": 0.0,
+   "validator": 0.0,
+   "gatekeeper": 0.0
+  },
+  "baseline_successes_per_run": {
+   "baseline": 723.0,
+   "first_hop_cred": 722.0,
+   "first_hop_content": 1437.0,
+   "cred_processor": 723.0,
+   "content_server": 1434.0,
+   "validator": 724.0,
+   "gatekeeper": 2172.0
+  },
+  "n_real": 967.0,
+  "n_decoy": 0.0,
+  "probe_runs": 1
+ }
+}
