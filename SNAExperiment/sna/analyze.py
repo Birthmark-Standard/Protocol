@@ -18,6 +18,7 @@ FAMILY = 14                                   # 7 vantages x 2 tests per cell
 Z_ADJ = float(norm.ppf(1 - 0.05 / FAMILY / 2))
 BOOT = 2000
 MIN_EACH = 50                                 # successes (and failures) needed for a stable finding
+AUC_MARGIN = 0.03                             # confidence AUCs within this of 0.5 are not read as signal
 TREND_L = (40, 50, 100, 200, 500)
 
 
@@ -177,7 +178,7 @@ def metrics(records, v, spec, rng):
     a = auc_clustered(conf, c.astype(int), t["run"])
     out["auc"], out["auc_lo"], out["auc_hi"] = a["auc"], a["auc"] - Z95 * a["se"], a["auc"] + Z95 * a["se"]
     out["auc_adj_lo"] = a["auc"] - Z_ADJ * a["se"]
-    out["signal_auc"] = bool(enough and out["auc_adj_lo"] > 0.5)
+    out["signal_auc"] = bool(enough and out["auc_adj_lo"] > 0.5 + AUC_MARGIN)
     out["signal"] = out["dev_signal_random"] or out["signal_auc"]
     for q, name in ((0.01, "p_at_1"), (0.05, "p_at_5")):
         p, lo, hi = precision_at(conf, c, q)
