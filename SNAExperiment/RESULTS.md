@@ -280,6 +280,13 @@ Measured end-to-end delay D = 625.6 s (capture to registry finalization).
 
 ## Scope
 
+- **Arrival model.** Real captures arrive as one homogeneous Poisson process at a fixed rate for the whole run. Each capture is assigned to one of round(rate × 1,200 s) devices uniformly at random. There are no bursts beyond Poisson chance, no idle periods, no time-of-day pattern and no bursts from one device. Every figure above is therefore an average over the local neighbour counts a Poisson process happens to produce.
+  - An exploratory breakdown, not pre-registered, was run on 20 fresh runs per volume. With no decoys, a record with no other real capture within ±600 s is linked to its device essentially every time, by every vantage the breakdown covered: the baseline 99.8% and the validator 100% at R = 1.
+  - Accuracy falls as neighbours from other devices appear. At R = 1, with three or more such neighbours, the baseline falls to 55% and the validator to 66%.
+  - Neighbours from the same device give much less cover: with three or more neighbours of any device, the baseline is at 79%.
+  - The R = 1 figures are averages over this mix. They are neither a worst case nor a typical case for an isolated capture.
+- **Decoy stream.** Decoys are a separate stationary Poisson stream at a constant rate, (T − R) / D, independent of the real traffic. Every real capture sees the same expected decoy density in its window. No controller computes decoy volume from observed real traffic, so the effect of a controller's measurement window on a capture in a lull is not tested.
+- **Capture accounting.** One capture is one transaction: one credential packet and two content packets. A capture that produces two credential-side transactions on the same credential is not modelled.
 - **One validator.** It sees every transaction. With several validators, each sees only its own manufacturer's share. The padded multi-validator case is outside this build.
 - **Candidates.** They are device packets grouped per source by timing. Of the groups, 80.5% hold a single capture; the rest merge two captures from one device and are scored as mixed.
 - **The attacks.** Each vantage uses one timing observation beyond the baseline's; the gatekeeper and the credential processor use a mixture over their own events. Stronger attacks can only raise these accuracies, so every figure here is a lower bound for its vantage.
