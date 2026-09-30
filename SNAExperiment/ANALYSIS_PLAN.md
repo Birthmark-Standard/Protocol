@@ -215,4 +215,9 @@ No direction is predicted for the lift trend from 40 to 500.
 
 ## 8. Run count
 
-To be filled in before the first sweep run, from the cost estimate.
+200 runs per cell, run ids 0 to 199, for every cell in section 5: 11 no-decoy cells, 46 decoy
+cells and the sensitivity control. Chosen from the cost estimate in results/costs.json (about
+20 core-hours in total) and the runs needed for 50 successes and 50 failures per vantage
+(1 to 3 runs for every vantage in every cell, except the content server's highest-decoy
+cells). Cells still short of 50 successes at 200 runs are reported with the runs needed at the
+observed rate and not as findings.
