@@ -1,0 +1,105 @@
+{
+ "runs": 200,
+ "build": "reg60",
+ "cells": {
+  "R1_D20_B": {
+   "R": 1.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 416850,
+   "mean_submissions": 4.032184238934868,
+   "mean_transactions": 2.830747271200672,
+   "p_lt2_submissions": 0.15468154012234617,
+   "p_lt2_transactions": 0.22574307304785896,
+   "p_empty": 0.05937147655031786
+  },
+  "R1_D40_B": {
+   "R": 1.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 416850,
+   "mean_submissions": 7.86992443324937,
+   "mean_transactions": 5.527715005397625,
+   "p_lt2_submissions": 0.016437567470313063,
+   "p_lt2_transactions": 0.02572388149214346,
+   "p_empty": 0.0038527048098836512
+  },
+  "R1_D60_B": {
+   "R": 1.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 416850,
+   "mean_submissions": 11.708449082403742,
+   "mean_transactions": 8.224812282595657,
+   "p_lt2_submissions": 0.0016312822358162408,
+   "p_lt2_transactions": 0.0025212906321218664,
+   "p_empty": 0.00028547439126784215
+  },
+  "R15_D20_B": {
+   "R": 15.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 35800,
+   "mean_submissions": 6.772122905027933,
+   "mean_transactions": 4.747402234636872,
+   "p_lt2_submissions": 0.0323463687150838,
+   "p_lt2_transactions": 0.04977653631284916,
+   "p_empty": 0.00829608938547486
+  },
+  "R15_D40_B": {
+   "R": 15.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 35800,
+   "mean_submissions": 10.615921787709498,
+   "mean_transactions": 7.45072625698324,
+   "p_lt2_submissions": 0.0034357541899441343,
+   "p_lt2_transactions": 0.005,
+   "p_empty": 0.0006424581005586592
+  },
+  "R15_D60_B": {
+   "R": 15.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 35800,
+   "mean_submissions": 14.46572625698324,
+   "mean_transactions": 10.145,
+   "p_lt2_submissions": 0.000335195530726257,
+   "p_lt2_transactions": 0.00036312849162011175,
+   "p_empty": 2.793296089385475e-05
+  },
+  "R50_D20_B": {
+   "R": 50.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 35800,
+   "mean_submissions": 13.383296089385475,
+   "mean_transactions": 9.381145251396648,
+   "p_lt2_submissions": 0.00036312849162011175,
+   "p_lt2_transactions": 0.000670391061452514,
+   "p_empty": 5.58659217877095e-05
+  },
+  "R50_D40_B": {
+   "R": 50.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 35800,
+   "mean_submissions": 17.219832402234637,
+   "mean_transactions": 12.082905027932961,
+   "p_lt2_submissions": 5.58659217877095e-05,
+   "p_lt2_transactions": 5.58659217877095e-05,
+   "p_empty": 0.0
+  },
+  "R50_D60_B": {
+   "R": 50.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 35800,
+   "mean_submissions": 21.042374301675977,
+   "mean_transactions": 14.776340782122904,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  }
+ }
+}
