@@ -73,18 +73,21 @@ class Run:
     gk_set: np.ndarray
     horizon: float
     bundle_phase: np.ndarray = None
+    push_phase: np.ndarray = None
 
 
 class World:
     def __init__(self, cfg: P.Config, seed: int, pools: Pools):
         self.cfg, self.pools = cfg, pools
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(6)
-        self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle = \
+        streams = ss.spawn(7)
+        self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle, rng_push = \
             (np.random.default_rng(s) for s in streams)
         # each gatekeeper's departure-bundle grid phase, on its own stream, so bundling on or off
         # leaves every other draw unchanged
         self.bundle_phase = rng_bundle.uniform(0, P.BUNDLE_S, P.N_NODES)
+        # each match board's push schedule phase, on its own stream
+        self.push_phase = rng_push.uniform(0, P.BOARD_PUSH_S, P.N_NODES)
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -158,9 +161,23 @@ def _proc(r, n):
 
 
 def _content_server(w, r, arr, node):
-    """Hold on the node clock, then check the boards on every tick of that clock. Returns the
-    hold release time (the first board check)."""
+    """Hold on the node clock. Returns the hold release time."""
     return LT.release_time(r, arr, w.phase[node], w.cfg.lottery_enabled)
+
+
+def _pushed(w, posts, node):
+    """When a content server learns of quorum. Each board pushes every match posted since its
+    last push to every content server on its own schedule; the server learns of quorum when the
+    second of the three boards' pushes carrying the match reaches it. The server never queries a
+    board itself. Pushes go to every server on a fixed schedule whatever they carry, and are
+    internal to the board layer, so they are not on the observed wire."""
+    known = np.empty_like(posts)
+    for j in range(posts.shape[1]):
+        g = int(w.gk_set[j])
+        ph = w.push_phase[g]
+        push = ph + P.BOARD_PUSH_S * np.ceil((posts[:, j] - ph) / P.BOARD_PUSH_S)
+        known[:, j] = push + w.lat_int[g, node]
+    return np.sort(known, axis=1)[:, 1]
 
 
 def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
@@ -212,14 +229,12 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         posts[:, j] = rel_gk + _proc(r, S)
     quorum = np.sort(posts, axis=1)[:, 1]          # second of three boards
 
-    # content servers: hold on the node clock, then check the boards on each tick; submit on
-    # quorum, drop after 30 minutes without it
+    # content servers: hold on the node clock; submit once the hold has released and the board
+    # pushes have shown quorum, whichever is later; drop after 30 minutes without quorum
     out = {}
     for name, arr, node in (("f", arr_f, F), ("i", arr_i, I)):
         hold = _content_server(w, r, arr, node)
-        det = np.where(quorum <= hold, hold, LT.next_tick(np.where(np.isfinite(quorum), quorum, hold), w.phase[node]))
-        if not on:
-            det = np.maximum(arr, quorum)
+        det = np.maximum(hold, _pushed(w, posts, node))
         ok = np.isfinite(quorum) & (det - arr <= P.QUORUM_TIMEOUT_S)
         det = np.where(ok, det, np.nan)
         post = det + _proc(r, S)
@@ -444,5 +459,5 @@ def simulate(cfg: P.Config, seed: int, pools: Pools) -> Run:
         if k.startswith("ev_"):
             subs[k] = np.where(v >= 0, rank[np.maximum(v, 0)], -1)
     return Run(cfg=cfg, events=events, subs=subs, phase=w.phase, gk_phase=w.gk_phase, gk_set=w.gk_set,
-               bundle_phase=w.bundle_phase,
+               bundle_phase=w.bundle_phase, push_phase=w.push_phase,
                horizon=cfg.horizon_s)

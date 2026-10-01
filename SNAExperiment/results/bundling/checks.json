@@ -403,7 +403,7 @@
      "n_real": 8172,
      "n_decoy": 21938
     },
-    "arrival to hold release": {
+    "arrival to first board check": {
      "auc": 0.5007188304047535,
      "lo": 0.49262806878843834,
      "hi": 0.5088095920210687,
@@ -474,13 +474,6 @@
    0.0005004746017220896,
    0.002999582472966722
   ],
-  "passed": true
- },
- "board_push": {
-  "period_s": 10.0,
-  "min_margin": 0.0,
-  "max_push_wait": 9.407174418474824,
-  "max_after_push": 0.07545047169514874,
   "passed": true
  },
  "cell": {

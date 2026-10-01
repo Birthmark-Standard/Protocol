@@ -31,8 +31,9 @@ The simulator follows the per-leg message specification. Its design choices are:
 - Each gatekeeper verifies, holds on its own dedicated hold clock, then posts to its board.
 
 **Content servers**
-- A content server holds on its node clock, then checks the boards on every tick of that clock.
-- It submits to the registry once two boards carry a posting with a valid σ_C.
+- A content server holds on its node clock. It never queries a board (section 6c).
+- Each match board pushes every match posted since its previous push to every content server, every 10 seconds on its own schedule.
+- A content server submits to the registry once its hold has released and pushes from two boards have carried a posting with a valid σ_C.
 - It drops the packet if quorum has not formed 30 minutes after arrival.
 
 **Registry submissions**
@@ -114,7 +115,7 @@ Delays do not depend on volume, so one model set serves every cell. The sensitiv
 
 ## 4. Pre-run checks
 
-`python -m sna checks` runs these checks with background traffic on, at R = 8 and T = 40, over 12 seeded runs. Each outcome is reported.
+`python -m sna checks` runs these checks. Each outcome is reported.
 
 1. **Padding classes**
    - Every credential, content, validator and fan-out leg lies in its class on the wire.
@@ -134,8 +135,10 @@ Delays do not depend on volume, so one model set serves every cell. The sensitiv
    - Pass: every adjusted interval covers 0.5.
    - Decoys run the same code as real transactions, so a pass is expected by construction. The check confirms nothing in the simulator separates them.
 5. **Decoys reach the registry.** Every decoy transaction reaches quorum and produces a registry record, as every real one does.
+6. **Departure bundling.** Every gatekeeper posting departs on its gatekeeper's own 30-second grid, at least 0 and under 30 seconds after the hold clock selected it.
+7. **Board pushes.** No content server acts before its hold releases or before the second board push carrying the match reaches it. Every push lands on its board's own 10-second schedule.
 
-The checks run at R = 15 with the decoy stream and background traffic on, over 12 seeded runs.
+The checks run at R = 15 with the decoy stream, departure bundling and background traffic on, over 12 seeded runs.
 
 ## 5. Cells, runs and metrics
 
@@ -271,6 +274,36 @@ Written after the sweeps above and before the bundling sweep.
 - **B2.** No vantage's device-level bundling effect interval lies wholly below -3 points in any cell.
 - **B3.** At each R, the share of bundles with fewer than two postings falls as the decoy target rises.
 
+## 6c. Match board pushes
+
+Written after the bundling sweep and before the board-push sweep.
+
+**Mechanism.** In the sweeps above, a content server held on its node clock and then checked the boards on every tick of that clock. In this build a content server never queries a board:
+- Each board pushes every match posted since its previous push to every content server, every 10 seconds.
+- Each board pushes on its own schedule, with a random phase drawn on a separate random stream. So the push build shares every other random draw with the build before it, and the real and decoy traffic up to the content servers is identical.
+- A push reaches a content server after the internal latency between the two nodes.
+- A content server submits once its hold has released and pushes from two of the three boards have carried the match, whichever is later.
+- Pushes go to every content server on a fixed schedule whatever they carry, and are internal to the board layer, so they are not on the observed wire.
+
+The 10-second period matches the relay tick. The period, the per-board phase, and keeping pushes off the observed wire are this build's choices. The specification states only that the boards regularly push all new matches to all servers.
+
+**Cells.** Bundling on, at real volume R = 1, 15 and 50 × decoy target 20, 40 and 60 in flight: 9 cells, plus the sensitivity control. 200 runs per cell, run ids 0 to 199, recorded here before the first run of this sweep.
+
+**Models.** The likelihood models are rebuilt under the push build. The first hops and the credential processor are scored on every record, as in section 6a.
+
+**Reported.**
+- Each vantage's accuracy in every cell.
+- The paired effect of board pushes: accuracy in the push build minus accuracy in the bundling sweep's bundling-on cell at the same R and decoy target, matched record by record on identical traffic, with a run-resampled interval.
+
+**Development runs**, made before this section was written:
+- The pre-run checks were run on the push build. Checks 1 to 3 and 5 to 7 pass. Check 4 fails marginally for the baseline's D hold, the same feature and seeds as before (AUC 0.488 [0.476, 0.500]), because pushes do not touch relay holds.
+- 8 paired runs in each of the 9 cells. Every vantage's device-level push effect lay within ±1.4 points. The largest was the content server at R = 1 with 20 decoys, at -1.37 points.
+
+**Predictions:**
+- **P1.** The passive observer's device-level push effect lies within ±1 point in every cell.
+- **P2.** No vantage's device-level push effect interval lies wholly outside ±3 points in any cell.
+- **P3.** The content server's device-level push effect lies within ±2 points in every cell.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -280,10 +313,12 @@ Written after the sweeps above and before the bundling sweep.
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b and 6c record their own cells and run counts.
 
 ## 9. Amendment record
 
 Sections 1, 3, 5.2 and 6 and check 2 were rewritten before any sweep of the record-to-device target. An earlier sweep scored a different link (registry record to credential transaction); none of its records are used here. The earlier text of this plan is in the repository history at commit 5bc4a08.
 
 A second amendment followed a change to the decoy mechanism in the specification. Decoys became genuine transactions from registered identities, and the decoy stream a steady 40 in flight independent of real traffic. Sections 2 (Decoys), 4, 5.1, 5.2, 6 and 8 were rewritten before any sweep of this build. Sweeps of earlier builds are not used here; their text and results are in the repository history.
+
+A third amendment followed a change to the content servers in the specification: the match boards push new matches to every content server, and a content server no longer checks the boards itself. Section 2 (Content servers), section 4 (checks 6 and 7) and section 6c were written before any sweep of this build. The bundling sweep's results are kept in `results/bundling/`.

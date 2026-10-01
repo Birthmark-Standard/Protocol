@@ -200,7 +200,7 @@ R2, R3 and S1 were written after development runs or diagnostics that showed the
 
 # Gatekeeper departure bundling
 
-Plan section 6b; full tables in `results/tables.md`, checks in `results/checks.json` (run with bundling on).
+Plan section 6b; full tables in `results/bundling/tables.md`, checks in `results/bundling/checks.json` (run with bundling on).
 
 Each gatekeeper's hold-clock selections wait for the next boundary of its own 30-second grid and depart together. Board postings are internal to the gatekeeper and are not on the observed wire. The sweep covered R = 1, 15 and 50 real transactions in flight, at decoy targets of 20, 40 and 60 in flight, with bundling on and off.
 
@@ -253,7 +253,7 @@ Accuracy with bundling minus accuracy without, matched record by record (percent
 | 50 | 40 | 4.59% | 4.54% | -0.06 [-0.10, -0.01] | 2.46% | 2.44% | -0.02 [-0.11, +0.08] |
 | 50 | 60 | 3.85% | 3.83% | -0.02 [-0.07, +0.02] | 2.01% | 2.01% | +0.00 [-0.09, +0.08] |
 
-Figure: `results/figures/bundling_gpa.png`.
+Figure: `results/bundling/figures/bundling_gpa.png`.
 
 ## Effect of bundling on every vantage
 
@@ -269,7 +269,7 @@ The range of each vantage's device-level effect across the nine (R, decoy) cells
 | Validator | -0.00 [-0.15, +0.14] (R = 1, 40 decoys) | +0.19 [+0.08, +0.30] (R = 15, 40 decoys) |
 | Gatekeeper | -0.12 [-0.20, -0.04] (R = 15, 60 decoys) | -0.01 [-0.12, +0.11] (R = 15, 20 decoys) |
 
-Every cell is in `results/tables.md`.
+Every cell is in `results/bundling/tables.md`.
 
 ## Decoy target at R = 1 (bundling on)
 

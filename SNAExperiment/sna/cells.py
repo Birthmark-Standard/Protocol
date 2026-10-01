@@ -99,7 +99,8 @@ def calibrate(out=RESULTS, runs=10, force=False):
 
 
 # --------------------------------------------------------------------------- models
-TARGET = "link_bundling"    # record-to-device linking, genuine decoys, bundling on/off; names every model and record file
+TARGET = "link_push"        # record-to-device linking, genuine decoys, board pushes; names every model and record file
+PRIOR_TARGET = "link_bundling"  # the same cells with content servers checking the boards on their own clock
 
 
 def model_path(out, control, bundle=False):

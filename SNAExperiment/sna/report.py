@@ -35,11 +35,12 @@ def volume_table(D):
     return "\n".join(lines)
 
 
-def _load(out, key):
+def _load(out, key, target=None):
     """A cell's run records. Where re-scored records of the vantages scored on every record exist,
     they replace those vantages' rows run by run."""
-    recs = RN.load(out, f"{key}__{CE.TARGET}")
-    extra = {r["run"]: r for r in RN.load(out, f"{key}__{CE.TARGET}__allrecords")}
+    target = target or CE.TARGET
+    recs = RN.load(out, f"{key}__{target}")
+    extra = {r["run"]: r for r in RN.load(out, f"{key}__{target}__allrecords")}
     if extra:
         recs = [r for r in recs if r["run"] in extra]
         for r in recs:
@@ -56,9 +57,11 @@ def _clean(r):
 def build(out: Path):
     out = Path(out)
     cells = json.loads((out / "cells.json").read_text())
-    rows, effects = AN.analyze(out, cells, lambda k: _load(out, k))
+    rows, effects, push = AN.analyze(out, cells, lambda k: _load(out, k),
+                                     prior_loader=lambda k: _load(out, k, CE.PRIOR_TARGET))
     clean = [_clean(r) for r in rows]
-    (out / "summary.json").write_text(json.dumps(dict(rows=clean, bundling_effects=effects), indent=1, default=float))
+    (out / "summary.json").write_text(json.dumps(dict(rows=clean, bundling_effects=effects, push_effects=push),
+                                                 indent=1, default=float))
     keys = sorted({k for r in clean for k in r if not isinstance(r[k], dict)},
                   key=lambda k: (k not in ("cell", "vantage", "R", "T"), k))
     with open(out / "summary.csv", "w", newline="") as f:
@@ -66,7 +69,7 @@ def build(out: Path):
         w.writeheader()
         w.writerows(clean)
     D = CE.calibrate(out)["D"]
-    md = tables(clean, effects, D, out)
+    md = tables(clean, effects, D, out, push)
     (out / "tables.md").write_text(md)
     figures(clean, out / "figures")
     print(f"wrote {out / 'summary.json'}, summary.csv, tables.md and figures/")
@@ -93,8 +96,23 @@ def _cell_label(r):
     return f"R = {r['R']:g}, {r['decoys']:g} decoys, bundling {'on' if r['bundle'] else 'off'}"
 
 
-def tables(rows, effects, D, out):
-    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, gatekeeper departure bundling on and off. "
+def _effect_table(md, effects):
+    md.append("| Vantage | R | Decoys | Device effect [95% CI] | Submission effect [95% CI] | Matched rows |")
+    md.append("|---|---|---|---|---|---|")
+    for v in ORDER:
+        for R in CE.REAL_R:
+            for d in CE.DECOY_LEVELS:
+                e = effects.get(f"{v}.R{R:g}.D{d:g}")
+                if e:
+                    md.append(f"| {AT.LABEL[v]} | {R} | {d} | {100 * e['dev']['effect']:+.2f} [{100 * e['dev']['lo']:+.2f}, "
+                              f"{100 * e['dev']['hi']:+.2f}] | {100 * e['sub']['effect']:+.2f} [{100 * e['sub']['lo']:+.2f}, "
+                              f"{100 * e['sub']['hi']:+.2f}] | {e['dev']['n']} |")
+    md.append("")
+
+
+def tables(rows, effects, D, out, push=None):
+    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, gatekeeper departure bundling, and match boards "
+          "pushing new matches to every content server. "
           f"Measured end-to-end delay D = {D:.1f} s. Per-decision attack; intervals resample whole runs. Device level "
           "(primary): the named device is the record's. Submission level: the named submission group contains a "
           "packet of the record's capture. Rows are real records only. The first hops and the credential processor "
@@ -113,20 +131,16 @@ def tables(rows, effects, D, out):
                           f"{pct(r['bundle_p_lt2'], 1)} | {pct(r['bundle_p1_nonempty'], 1)} | {pct(r['bundle_alone_share'], 1)} | "
                           f"{r['bundle_bundles']:,} |")
     md.append("")
-    md.append("## Effect of bundling on the same records\n")
-    md.append("Accuracy with bundling minus accuracy without, matched record by record on identical traffic "
-              "(percentage points).\n")
-    md.append("| Vantage | R | Decoys | Device effect [95% CI] | Submission effect [95% CI] | Matched rows |")
-    md.append("|---|---|---|---|---|---|")
-    for v in ORDER:
-        for R in CE.REAL_R:
-            for d in CE.DECOY_LEVELS:
-                e = effects.get(f"{v}.R{R:g}.D{d:g}")
-                if e:
-                    md.append(f"| {AT.LABEL[v]} | {R} | {d} | {100 * e['dev']['effect']:+.2f} [{100 * e['dev']['lo']:+.2f}, "
-                              f"{100 * e['dev']['hi']:+.2f}] | {100 * e['sub']['effect']:+.2f} [{100 * e['sub']['lo']:+.2f}, "
-                              f"{100 * e['sub']['hi']:+.2f}] | {e['dev']['n']} |")
-    md.append("")
+    if effects:
+        md.append("## Effect of bundling on the same records\n")
+        md.append("Accuracy with bundling minus accuracy without, matched record by record on identical traffic "
+                  "(percentage points).\n")
+        _effect_table(md, effects)
+    if push:
+        md.append("## Effect of board pushes on the same records\n")
+        md.append("Accuracy with board pushes minus accuracy with content servers checking the boards on their own "
+                  "clock, matched record by record on identical traffic (percentage points). Bundling is on in both.\n")
+        _effect_table(md, push)
     md.append("## Every cell\n")
     for v in ORDER:
         md.append(f"### {AT.LABEL[v]}\n")

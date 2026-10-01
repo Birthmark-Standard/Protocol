@@ -30,6 +30,7 @@ INTERVAL_MIN = 20.0        # mean interval between one device's captures
 DECOYS_IN_FLIGHT = 40.0    # default decoy target (checks): decoy transactions in flight: a steady Poisson stream, independent of
                            #   real traffic; each decoy identity captures at a device's rate
 BUNDLE_S = 30.0            # gatekeeper departure bundling window (when bundling is on)
+BOARD_PUSH_S = 10.0        # each match board pushes its new matches to every content server on this period
 QUORUM_TIMEOUT_S = 30 * 60 # content server drops a packet whose quorum has not formed in 30 minutes
 
 # --------------------------------------------------------------------------- background traffic

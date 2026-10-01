@@ -83,3 +83,14 @@ def test_bundling_moves_only_postings():
         assert np.array_equal(a[k], b[k]), k
     shift = b["posts"] - a["posts"]
     assert (shift >= 0).all() and (shift < P.BUNDLE_S).all()
+
+
+def test_content_server_waits_for_board_push():
+    """A content server acts at the later of its hold release and the second board push carrying
+    the match; it never acts on a board posting before the push reaches it."""
+    run = S.simulate(SMALL, 17, POOLS)
+    s = run.subs
+    for nm in ("f", "i"):
+        ok = s[f"ok_{nm}"]
+        assert (s[f"det_{nm}"][ok] >= s[f"hold_{nm}"][ok]).all()
+        assert (s[f"det_{nm}"][ok] >= s["quorum"][ok]).all()

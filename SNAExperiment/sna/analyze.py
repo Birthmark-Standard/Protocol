@@ -250,8 +250,10 @@ def decoy_effect(with_recs, without_recs, v, rng):
     return out
 
 
-def analyze(out, cells, loader, seed=12345):
-    """Metrics for every cell with records. loader(key) -> list of run records."""
+def analyze(out, cells, loader, seed=12345, prior_loader=None):
+    """Metrics for every cell with records. loader(key) -> list of run records. prior_loader(key),
+    when given, loads the same cell under the build before board pushes; each vantage's push
+    effect is then paired against it."""
     rng = np.random.default_rng(seed)
     rows = []
     for key, spec in cells.items():
@@ -280,7 +282,15 @@ def analyze(out, cells, loader, seed=12345):
             continue
         for v in AT.VANTAGES:
             effects[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = decoy_effect(w, wo, v, rng)
-    return rows, effects
+    push = {}
+    if prior_loader is not None:
+        for key, spec in by_key.items():
+            w, pr = loader(key), prior_loader(key)
+            if spec["control"] or not w or not pr:
+                continue
+            for v in AT.VANTAGES:
+                push[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = decoy_effect(w, pr, v, rng)
+    return rows, effects, push
 
 
 def bundle_stats(records):

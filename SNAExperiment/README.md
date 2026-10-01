@@ -20,7 +20,7 @@ The pre-registered analysis plan is `ANALYSIS_PLAN.md`. The findings go in `RESU
 | First hop, credential | relay transit key | source address and arrival; its own hold and forward times | network address |
 | First hop, content | relay transit key | the same, for one content copy | network address |
 | Credential processor | transit and ring-signing keys | packet hash, key reference, its own fan-out sends, reply arrival | transaction (manufacturer) |
-| Content server | transit and registry-signing keys | content hash, content arrival, when it saw quorum, board postings | content |
+| Content server | transit and registry-signing keys | content hash, content arrival, when the board pushes showed quorum, board postings | content |
 | Validator | token-decryption and signing keys | device identity, request arrival, reply moment | device identity |
 | Gatekeeper | transit and countersignature keys | packet hash, sender's address, its own arrival, hold outcome and posting | transaction |
 
@@ -37,7 +37,8 @@ Each vantage is scored against the baseline on the same records. The difference 
 - Timing lottery on every hold: 10-second ticks, 8.33% release per tick, 5-minute cap.
 - Each node holds on one clock; each gatekeeper holds on a dedicated clock.
 - The device holds each channel on a fresh phase.
-- Content servers hold first, then check the boards on every tick, and drop after 30 minutes without quorum.
+- Gatekeeper postings depart in 30-second bundles, on each gatekeeper's own grid.
+- Content servers hold first and never query a board. Each match board pushes its new matches to every content server every 10 seconds, on its own schedule. A content server submits once its hold has released and two boards' pushes carry the match, and drops the packet after 30 minutes without quorum.
 
 **Padding**
 - 420 to 460 bytes for every transit leg.

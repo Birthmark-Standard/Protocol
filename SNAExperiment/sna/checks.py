@@ -17,6 +17,8 @@ results/checks.json and reported, pass or fail.
    record, as every real one does.
 6. Departure bundling: every gatekeeper posting departs on its gatekeeper's own 30-second grid,
    at least 0 and under 30 seconds after the hold clock selected it.
+7. Board pushes: no content server acts before its hold releases or before the second board push
+   carrying the match reaches it, and every push lands on its board's own schedule.
 """
 from __future__ import annotations
 
@@ -86,7 +88,7 @@ def features(run):
                   "source: time since its previous capture": np.r_[src_gap, src_gap]}
     arr = np.r_[s["arr_f"], s["arr_i"]]
     content = {"Content last-leg size": np.r_[sz[ca[:, 2]], sz[cb[:, 2]]],
-               "arrival to first board check": np.r_[s["hold_f"], s["hold_i"]] - arr}
+               "arrival to hold release": np.r_[s["hold_f"], s["hold_i"]] - arr}
     gk = {"GK arrival to board posting": (s["posts"] - s["gk_arr"]).ravel()}
     vgap = _prev_gap(s["src"], ta[s["ev_cv1"]])
     validator = {"CV-1 arrival to CV-2 send": ts[s["ev_cv2"]] - ta[s["ev_cv1"]],
@@ -207,6 +209,26 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
                            proc_range=[float(off.min()), float(off.max())],
                            passed=bool(wait.min() >= 0 and wait.max() < P.BUNDLE_S and off.min() >= 0
                                        and off.max() <= P.PROC_MS[1] / 1000 + 1e-9))
+    # 7. board pushes: each content server acts at the later of its hold release and the moment the
+    # second board push carrying the match reaches it, and never queries a board itself
+    late, early, grid = [], [], []
+    for nm, node in (("f", s["F"]), ("i", s["I"])):
+        ok = s[f"ok_{nm}"]
+        known = np.empty((ok.sum(), 3))
+        for j, g in enumerate(run.gk_set):
+            ph = run.push_phase[g]
+            k = (s["posts"][ok, j] - ph) / P.BOARD_PUSH_S
+            push = ph + P.BOARD_PUSH_S * np.ceil(k)
+            grid.append(push - s["posts"][ok, j])
+            known[:, j] = push
+        det, hold = s[f"det_{nm}"][ok], s[f"hold_{nm}"][ok]
+        early.append(np.minimum(det - hold, det - np.sort(known, axis=1)[:, 1]))
+        late.append(det - np.maximum(hold, np.sort(known, axis=1)[:, 1]))
+    early, late, grid = np.concatenate(early), np.concatenate(late), np.concatenate(grid)
+    res["board_push"] = dict(period_s=P.BOARD_PUSH_S, min_margin=float(early.min()),
+                             max_push_wait=float(grid.max()), max_after_push=float(late.max()),
+                             passed=bool(early.min() >= 0 and grid.min() >= 0 and grid.max() < P.BOARD_PUSH_S
+                                         and late.max() <= P.LAT_INT_MS[1] / 1000 + 1e-9))
     res["cell"] = dict(R=15, decoys_in_flight=P.DECOYS_IN_FLIGHT, bundling=True, background=True)
     (out / "checks.json").write_text(json.dumps(res, indent=1, default=_json))
     if verbose:
@@ -244,6 +266,10 @@ def print_checks(res):
     bnd = res["bundling"]
     print(f"[{mark(bnd['passed'])}] departure bundling: every posting departs on its gatekeeper's grid, "
           f"{bnd['min_wait']:.2f} to {bnd['max_wait']:.2f} s after selection (window {bnd['window_s']:g} s)")
+    bp = res["board_push"]
+    print(f"[{mark(bp['passed'])}] board pushes: no content server acts before its hold or quorum push "
+          f"(least margin {bp['min_margin']:.3f} s); pushes wait up to {bp['max_push_wait']:.2f} s "
+          f"(period {bp['period_s']:g} s)")
     d = res["decoys_reach_registry"]
     print(f"[{mark(d['passed'])}] decoys reach the registry: {d['decoy_records']}/{d['decoys']} decoy and "
           f"{d['real_records']}/{d['real']} real transactions finalised")

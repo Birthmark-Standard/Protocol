@@ -56,7 +56,7 @@ def cmd_quick(a):
     RN.execute(tasks, _quick_worker, out, a.workers, label="quick")
     from . import analyze as AN
     cells = {s["key"]: s for s in specs}
-    rows, _ = AN.analyze(out, cells, lambda k: RN.load(out, names[k]))
+    rows, _, _ = AN.analyze(out, cells, lambda k: RN.load(out, names[k]))
     for r in rows:
         print(f"  {r['cell']:<16} {r['vantage']:<18} n={r['n']:5d} device {r.get('dev_accuracy', math.nan):.3f} "
               f"(baseline {r.get('dev_baseline', math.nan):.3f}, random {r.get('dev_random', math.nan):.3f})  "
