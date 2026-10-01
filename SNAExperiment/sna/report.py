@@ -54,8 +54,7 @@ def _clean(r):
     return {k: v for k, v in r.items() if not k.startswith("_")}
 
 
-PRIOR_LABEL = {"push": "board pushes", "twopoint": "the two-point gatekeeper hold",
-               "regbundle": "registry-level bundling"}
+
 
 
 def _suffix(build):
@@ -123,6 +122,8 @@ def _effect_table(md, effects):
 
 
 BUILD_TEXT = {
+    **{f"reg{w}": f"gatekeeper departure bundling, match board pushes, and {w}-second registry-level pooled bundling"
+       for w in CE.REG_WINDOWS},
     "push": "gatekeeper departure bundling, and match boards pushing new matches to every content server",
     "twopoint": "gatekeeper departure bundling, match board pushes, and the two-point gatekeeper hold",
     "regbundle": "gatekeeper departure bundling, match board pushes, the two-point gatekeeper hold, and "

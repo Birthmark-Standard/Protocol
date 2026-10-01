@@ -390,7 +390,7 @@ P1 to P3 follow development runs, as the plan discloses.
 
 # Two-point gatekeeper hold and registry-level bundling
 
-Plan section 6d; full tables in `results/tables_twopoint.md` (two-point hold) and `results/tables.md` (two-point hold and registry bundling); checks in `results/checks.json` and `results/checks.log`, run on the build with both mechanisms.
+Plan section 6d; full tables in `results/tables_twopoint.md` (two-point hold) and `results/tables_regbundle.md` (two-point hold and registry bundling); checks and run log in `results/regbundle/`, run on the build with both mechanisms.
 
 Each build adds one mechanism to the one before it:
 - **push** is the build of the previous section.
@@ -440,7 +440,7 @@ Device-level effect in points [95% CI], at R = 1 with 40 decoys and across all n
 | Validator | -0.52 [-0.82, -0.21] | -0.58 to -0.25 | -0.71 [-0.96, -0.44] | -1.15 to -0.38 |
 | Gatekeeper | -0.73 [-0.95, -0.53] | -1.05 to -0.34 | -0.09 [-0.21, +0.05] | -0.12 to +0.00 |
 
-Every cell is in `results/tables_twopoint.md` and `results/tables.md`.
+Every cell is in `results/tables_twopoint.md` and `results/tables_regbundle.md`.
 
 ## Contribution over the passive observer, R = 1 with 40 decoys
 
@@ -464,7 +464,7 @@ The two-point hold lowers the observer more than it lowers the content server, s
 
 ## Registry bundle sizes
 
-Over the sweep's own runs (`results/registry_bundles.json`), 120-second bundles pooled across every content server:
+Over the sweep's own runs (`results/registry_bundles_regbundle.json`), 120-second bundles pooled across every content server:
 
 | R | Decoys | Submissions per bundle | Distinct transactions per bundle | Bundles with fewer than 2 transactions |
 |---|---|---|---|---|
@@ -529,3 +529,160 @@ M1 to M4 follow development runs, as the plan discloses. M1 did not anticipate t
 - **Window.** The 120-second registry window is sized to the 40-decoy target at R = 1. At the low end of the 40 ± 10 range (30 decoys), 0.33% of bundles would hold fewer than two transactions; about 150 seconds meets the 0.1% criterion there.
 - **One shared schedule.** Every content server uses one registry bundle schedule.
 - **Record time.** The observer times a record by its gossiped submissions. The registry's coarsened timestamp is not modelled.
+
+# Gatekeeper occupancy and the registry bundling window
+
+Plan section 6e. The two-point gatekeeper hold is dropped; every build below uses the relay-lottery gatekeeper hold of the push build. Full tables in `results/tables_reg60.md`, `results/tables.md` (120 s, the default build), `results/tables_reg240.md` and `results/tables_reg480.md`; checks in `results/checks.json` and `results/checks.log` (run on the 120-second build).
+
+## Summary
+
+1. **A gatekeeper holds about 7 packets at a time at the 40-decoy target, not 40.** A transaction spends about 106 of its 626 seconds at a gatekeeper, so the gatekeeper's own load is its arrival rate (0.066 per second) times its hold, 7.0. It selects 0.66 packets per 10-second tick, against the 3.33 the specification derived. Reaching the specification's 30-second bundle of 10 with under 0.1% degenerate bundles needs about 200 decoys in flight, or a window of about 150 seconds at 40 decoys.
+2. **The registry window wears down the validator's edge, slowly at first.** At R = 1 with 40 decoys, the validator's contribution over the passive observer is 1.19 points without registry bundling, 1.15 at 60 seconds, 1.09 at 120, 0.88 at 240 and 0.35 at 480.
+3. **The 120-second window does less on its own than section 6d suggested.** On the push build, it lowers the validator by 0.10 to 0.36 points. Section 6d measured 0.38 to 1.15 points, but against the two-point build, whose hold had first raised the validator's edge.
+4. **A longer window strengthens the content server.** Its contribution over the observer at R = 1 with 40 decoys rises from 0.83 points without registry bundling to 1.41 at 480 seconds, so at 480 seconds the content server replaces the validator as the strongest single component. The content server knows when its own submission was confirmed, which the observer loses inside the window.
+5. **The passive observer's absolute accuracy falls only at long windows, and its multiple of random barely moves.** At 480 seconds it loses 0.69 to 2.02 points, but the random rate falls with it. At R = 1 its multiple of random stays inside the push interval (4.04 [3.82, 4.26] against 4.16 [3.98, 4.34] at 40 decoys); at R = 50 it falls below it (4.55 [4.43, 4.67] against 4.77 [4.66, 4.88]).
+6. **Latency grows by about half the window.** Mean capture to finalization at R = 1 with 40 decoys: 625.5 seconds without registry bundling, 656.0 at 60 seconds, 684.0 at 120, 744.8 at 240 and 861.2 at 480.
+
+## Gatekeeper occupancy
+
+Each active gatekeeper, under the push build at R = 1 (`results/gatekeeper_occupancy.json`, 50 runs per decoy target):
+
+| Decoys in flight | Arrivals per second | Mean hold | Held at once (5th to 95th percentile) | Selections per 10 s tick | Postings per 30 s bundle | 30 s bundles with fewer than 2 |
+|---|---|---|---|---|---|---|
+| 20 | 0.034 | 106.1 s | 3.6 (1 to 7) | 0.34 | 1.0 | 73.2% |
+| 30 | 0.050 | 106.2 s | 5.3 (2 to 9) | 0.50 | 1.5 | 56.0% |
+| 40 | 0.066 | 106.4 s | 7.0 (3 to 12) | 0.66 | 2.0 | 41.2% |
+| 50 | 0.082 | 106.4 s | 8.7 (4 to 14) | 0.82 | 2.5 | 29.8% |
+| 60 | 0.098 | 106.2 s | 10.4 (5 to 16) | 0.98 | 2.9 | 21.1% |
+| 100 | 0.162 | 106.1 s | 17.1 (11 to 24) | 1.62 | 4.8 | 4.5% |
+| 150 | 0.242 | 106.2 s | 25.7 (18 to 34) | 2.42 | 7.2 | 0.61% |
+| 175 | 0.281 | 105.9 s | 29.8 (21 to 39) | 2.81 | 8.4 | 0.19% |
+| 200 | 0.321 | 106.2 s | 34.1 (25 to 44) | 3.22 | 9.6 | 0.07% |
+| 250 | 0.402 | 106.2 s | 42.7 (32 to 54) | 4.02 | 12.1 | under 0.01% |
+| 300 | 0.482 | 106.4 s | 51.2 (40 to 63) | 4.82 | 14.5 | under 0.01% |
+
+The held count equals the arrival rate times the mean hold in every row, as it must for a stable queue.
+
+Share of gatekeeper bundles with fewer than two postings, by window:
+
+| Decoys | 30 s | 60 s | 90 s | 120 s | 135 s | 150 s | 180 s | 240 s |
+|---|---|---|---|---|---|---|---|---|
+| 30 | 56.0% | 20.0% | 5.9% | 1.7% | 0.85% | 0.30% | 0.13% | under 0.01% |
+| 40 | 41.2% | 9.6% | 2.0% | 0.37% | 0.18% | 0.06% | under 0.01% | under 0.01% |
+| 50 | 29.8% | 4.4% | 0.51% | 0.08% | 0.04% | 0.01% | under 0.01% | under 0.01% |
+
+What the specification's criterion (mean about 10, under 0.1% of bundles below two) needs at the gatekeeper:
+- **At the 30-second window:** about 200 decoys in flight (0.07% at 200, 0.19% at 175).
+- **At 40 decoys:** a 150-second window (0.06%). That adds about 60 seconds of mean wait over the 30-second window.
+- **At 30 decoys, the low end of 40 ± 10:** about 200 seconds (0.13% at 180, under 0.01% at 240).
+- **At 50 decoys:** a 120-second window (0.08%).
+
+Gatekeeper bundling changed no vantage's accuracy by more than half a point in the bundling sweep, because board postings are internal and the observer never sees a gatekeeper departure. A larger gatekeeper bundle would add latency without a measured gain in this model, unless postings were observable.
+
+## The registry bundling window
+
+Each window is compared against the push build on the same records.
+
+### The validator and the content server
+
+Contribution over the passive observer, device level, at R = 1 with 40 decoys [95% CI]:
+
+| Window | Validator | Content server |
+|---|---|---|
+| none (push) | +1.19 [+0.90, +1.50] | +0.83 |
+| 60 s | +1.15 [+0.79, +1.49] | +0.89 |
+| 120 s | +1.09 [+0.76, +1.42] | +0.93 |
+| 240 s | +0.88 [+0.50, +1.26] | +1.06 |
+| 480 s | +0.35 [+0.01, +0.68] | +1.41 |
+
+At 480 seconds the validator's contribution interval reaches 0 at R = 15 with 40 decoys (+0.14 [-0.10, +0.39]). Every other vantage stays within 0.13 points of the observer at every window.
+
+### Paired effect of each window against push
+
+Device level, in points, the range across the nine cells:
+
+| Vantage | 60 s | 120 s | 240 s | 480 s |
+|---|---|---|---|---|
+| Baseline | -0.19 to +0.11 | -0.18 to +0.03 | -0.62 to -0.20 | -2.02 to -0.69 |
+| First hop, credential | -0.14 to +0.07 | -0.17 to -0.02 | -0.66 to -0.25 | -2.05 to -0.67 |
+| Credential processor | -0.16 to +0.09 | -0.16 to +0.01 | -0.59 to -0.23 | -1.99 to -0.68 |
+| Content server | -0.10 to +0.07 | -0.19 to -0.03 | -0.54 to -0.12 | -1.48 to -0.41 |
+| Validator | -0.11 to +0.03 | -0.36 to -0.10 | -1.17 to -0.35 | -3.42 to -1.14 |
+| Gatekeeper | -0.15 to +0.16 | -0.22 to -0.00 | -0.56 to -0.22 | -2.10 to -0.70 |
+
+The first hop for content matches the first hop for credentials to within 0.01 points. At 240 and 480 seconds every vantage's interval lies wholly below 0 in all nine cells.
+
+### The passive observer
+
+Device accuracy, random-pick rate, and accuracy as a multiple of the random rate [95% CI]:
+
+| Window | R = 1, 40 decoys | R = 15, 40 decoys | R = 50, 40 decoys |
+|---|---|---|---|
+| none (push) | 8.65%, 2.08%, ×4.16 [3.98, 4.34] | 6.92%, 1.55%, ×4.47 [4.31, 4.65] | 4.54%, 0.95%, ×4.77 [4.66, 4.88] |
+| 60 s | 8.63%, 2.04%, ×4.22 [4.04, 4.41] | 6.73%, 1.52%, ×4.42 [4.25, 4.60] | 4.47%, 0.93%, ×4.78 [4.66, 4.90] |
+| 120 s | 8.52%, 2.05%, ×4.14 [3.97, 4.32] | 6.76%, 1.53%, ×4.42 [4.26, 4.59] | 4.48%, 0.94%, ×4.77 [4.65, 4.88] |
+| 240 s | 8.03%, 1.91%, ×4.21 [4.02, 4.41] | 6.46%, 1.42%, ×4.55 [4.37, 4.73] | 4.27%, 0.87%, ×4.90 [4.77, 5.01] |
+| 480 s | 7.19%, 1.78%, ×4.04 [3.82, 4.26] | 5.83%, 1.32%, ×4.40 [4.21, 4.60] | 3.70%, 0.81%, ×4.55 [4.43, 4.67] |
+
+As with the two-point hold, a longer delay leaves more devices feasible for each record, so the random rate falls with the observer's accuracy. At 240 seconds the multiple rises slightly; at 480 seconds it falls, outside the push interval only at R = 50.
+
+### Bundle sizes
+
+Distinct transactions per registry bundle, and the share of bundles with fewer than two, over the sweep's own runs (`results/registry_bundles_reg<window>.json`):
+
+| R | Decoys | 60 s | 120 s | 240 s | 480 s |
+|---|---|---|---|---|---|
+| 1 | 20 | 2.8 (22.6%) | 5.4 (2.9%) | 10.1 (0.056%) | 18.4 (under 0.001%) |
+| 1 | 40 | 5.5 (2.6%) | 10.6 (0.032%) | 19.6 (under 0.001%) | 36.0 (under 0.001%) |
+| 1 | 60 | 8.2 (0.25%) | 15.7 (under 0.001%) | 29.2 (under 0.001%) | 53.6 (under 0.001%) |
+| 15 | 40 | 7.5 (0.50%) | 14.3 (under 0.001%) | 26.5 (under 0.001%) | 48.5 (under 0.001%) |
+| 50 | 40 | 12.1 (0.006%) | 23.1 (under 0.001%) | 43.0 (under 0.001%) | 78.6 (under 0.001%) |
+
+The bundle-size histogram is capped at 127 submissions, so the 480-second means at R = 50 are lower bounds. Every other cell is in the JSON files.
+
+### Latency
+
+Capture to registry finalization at 40 decoys (`results/latency.json`, 20 runs per cell), mean / median / 95th percentile:
+
+| Window | R = 1 | R = 15 | R = 50 | Mean registry wait, R = 1 |
+|---|---|---|---|---|
+| none (push) | 625.5 / 618.2 / 892.2 s | 633.0 / 622.0 / 898.5 s | 628.1 / 618.7 / 889.7 s | 0 |
+| 60 s | 656.0 / 648.1 / 921.5 s | 663.5 / 652.9 / 931.3 s | 658.0 / 648.0 / 919.5 s | 31.2 s |
+| 120 s | 684.0 / 675.6 / 955.6 s | 693.3 / 683.1 / 958.8 s | 686.9 / 679.0 / 953.9 s | 61.2 s |
+| 240 s | 744.8 / 736.6 / 1029.9 s | 754.7 / 744.2 / 1044.7 s | 748.2 / 742.2 / 1033.2 s | 127.1 s |
+| 480 s | 861.2 / 856.0 / 1209.8 s | 872.7 / 867.6 / 1213.6 s | 866.2 / 862.8 / 1211.2 s | 252.6 s |
+
+The mean added latency is a little under half the window. The registry wait is counted on the later of the two content servers, and part of it overlaps time that server would otherwise spend waiting for its own hold.
+
+## Trade-off at R = 1 with 40 decoys
+
+| Window | Mean latency added | Validator's edge removed | Content server's edge added | Observer, multiple of random |
+|---|---|---|---|---|
+| 60 s | 30.5 s | 0.04 points | 0.06 points | ×4.22 |
+| 120 s | 58.5 s | 0.10 points | 0.10 points | ×4.14 |
+| 240 s | 119.3 s | 0.31 points | 0.23 points | ×4.21 |
+| 480 s | 235.7 s | 0.84 points | 0.58 points | ×4.04 |
+
+The largest single-component edge over the observer is 1.19 points (validator) without registry bundling, 1.09 (validator) at 120 seconds, 1.06 (content server) at 240 seconds, and 1.41 (content server) at 480 seconds. The strongest single component's edge is lowest at 240 seconds, though the 120- and 240-second values differ by less than their intervals.
+
+## Checks and controls
+
+- **Pre-run checks** (120-second build): every registry submission departs on the shared grid, 2.3 to 119.4 seconds after confirmation (check 9). Check 8 does not apply. Every other check passes except the same marginal baseline failure as before (D's hold, AUC 0.488 [0.476, 0.500]).
+- **Outcome-shuffle control:** 6, 5, 1 and 4 of 63 stable cells at 60, 120, 240 and 480 seconds have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin (largest 0.515).
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| W1. At 60 and 120 seconds, the observer's effect against push within ±1 point in every cell | Confirmed (-0.19 to +0.11). |
+| W2. At 480 seconds, the observer's effect against push below 0 in every cell | Confirmed (-2.02 to -0.69). |
+| W3. The validator's effect more negative at 480 than at 120 seconds in at least 7 of 9 cells | Confirmed in all 9. |
+| W4. At 480 seconds, the observer's multiple of random below its push value in at least 6 of 9 cells | Confirmed in 8 of 9; the exception is R = 1 with 20 decoys (×3.53 against ×3.52). Most of the differences lie inside the push intervals. |
+
+W1 to W4 follow development runs, as the plan discloses. The plan did not predict the content server's rise with the window; it is reported in summary point 4.
+
+## Scope
+
+- **One shared schedule** for every content server, as in section 6d.
+- **Rates** are those of the push build. Longer windows hold more transactions in flight in each cell.
+- **The sensitivity control** was not rerun for these builds.

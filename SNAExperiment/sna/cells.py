@@ -33,14 +33,19 @@ CONTROL_R = 40                                   # sensitivity control volume (e
 CAL_SEED0, MODEL_SEED0 = 2_000_000_000, 1_000_000_000
 
 
+REG_WINDOWS = (60, 120, 240, 480)                # registry bundling windows swept (section 6e)
+
 # builds: the protocol as attacked. Each later build adds one mechanism to the one before it.
 BUILDS = {
     "push": dict(target="link_push"),
     "twopoint": dict(target="link_twopoint", gk_twopoint=True),
     "regbundle": dict(target="link_regbundle", gk_twopoint=True, reg_bundle_s=P.REG_BUNDLE_S),
+    # registry-level bundling on the push build, without the two-point hold, at four windows
+    **{f"reg{w}": dict(target=f"link_reg{w}", reg_bundle_s=float(w)) for w in REG_WINDOWS},
 }
-DEFAULT_BUILD = "regbundle"
-PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push")}
+DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
+PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
+                **{f"reg{w}": ("push",) for w in REG_WINDOWS}}
 
 
 def build_kw(build):
@@ -374,7 +379,7 @@ def _reg_bundle_one(args):
 
 def registry_bundles(out, runs=200, build=DEFAULT_BUILD, workers="auto"):
     """Submissions and distinct transactions per registry-level bundle, over the sweep's own runs
-    (simulation only). Written to <out>/registry_bundles.json."""
+    (simulation only). Written to <out>/registry_bundles_<build>.json."""
     import multiprocessing as mp
     out = Path(out)
     D = calibrate(out)["D"]
@@ -399,5 +404,86 @@ def registry_bundles(out, runs=200, build=DEFAULT_BUILD, workers="auto"):
         r = rows[s["key"]]
         print(f"{s['key']:10s} bundles {r['bundles']:6d} submissions {r['mean_submissions']:.1f} transactions "
               f"{r['mean_transactions']:.1f} fewer than 2 transactions {100 * r['p_lt2_transactions']:.3f}%", flush=True)
-    (out / "registry_bundles.json").write_text(json.dumps(dict(runs=runs, build=build, cells=rows), indent=1))
+    (out / f"registry_bundles_{build}.json").write_text(json.dumps(dict(runs=runs, build=build, cells=rows), indent=1))
+    return rows
+
+
+# --------------------------------------------------------------------------- gatekeeper occupancy
+GK_SEED0 = 4_000_000
+
+
+def _gk_one(args):
+    R, d, run_id, D, windows = args
+    spec = dict(R=float(R), decoys=float(d), bundle=True, control=False, build="push")
+    cfg = config_of(spec, D).with_(measure_s=P.MEASURE_S)
+    run = S.simulate(cfg, traffic_seed(R, GK_SEED0 + run_id), Pools())
+    s = run.subs
+    a, b = P.WARMUP_S, P.WARMUP_S + cfg.measure_s
+    out = dict(arrivals=0, hold_sum=0.0, occ_samples=[], tick_counts=[], win={w: [] for w in windows})
+    probes = np.linspace(a, b, 2000, endpoint=False)
+    for j, g in enumerate(run.gk_set):
+        arr, rel = s["gk_arr"][:, j], s["gk_release"][:, j]
+        m = (arr >= a) & (arr < b)
+        out["arrivals"] += int(m.sum())
+        out["hold_sum"] += float((rel[m] - arr[m]).sum())
+        # occupancy: packets held (arrived, not yet selected) at evenly spaced instants
+        sa, sr = np.sort(arr), np.sort(rel)
+        out["occ_samples"].append(np.searchsorted(sa, probes, "right") - np.searchsorted(sr, probes, "right"))
+        # selections per tick of the gatekeeper's hold clock, and per bundle window on its own grid
+        sel = rel[(rel >= a) & (rel < b)]
+        ph = run.gk_phase[g]
+        k = np.floor((sel - ph) / P.TICK_S).astype(np.int64)
+        k0, k1 = int(np.ceil((a - ph) / P.TICK_S)), int(np.floor((b - ph) / P.TICK_S))
+        kk = k[(k >= k0) & (k < k1)] - k0
+        out["tick_counts"].append(np.bincount(kk, minlength=k1 - k0))
+        for w in windows:
+            phw = run.bundle_phase[g] * w / P.BUNDLE_S
+            kb = np.ceil((sel - phw) / w).astype(np.int64)
+            b0, b1 = int(np.ceil((a - phw) / w)) + 1, int(np.floor((b - phw) / w))
+            kb = kb[(kb >= b0) & (kb < b1)] - b0
+            out["win"][w].append(np.bincount(kb, minlength=b1 - b0))
+    return R, d, out, cfg.measure_s * len(run.gk_set)
+
+
+def gatekeeper_occupancy(out, runs=50, R=1, decoys=(20, 30, 40, 50, 60, 100, 150, 175, 200, 250, 300),
+                         windows=(30, 60, 90, 120, 135, 150, 180, 240, 300), workers="auto"):
+    """Each active gatekeeper's own load under the push build (relay-lottery gatekeeper hold,
+    departure bundling on), measured directly: arrival rate, mean hold, packets held at once,
+    selections per tick, and postings per bundle at several windows and decoy targets. Run ids
+    from 4,000,000 up, never used by a sweep. Written to <out>/gatekeeper_occupancy.json."""
+    import multiprocessing as mp
+    out = Path(out)
+    D = calibrate(out)["D"]
+    tasks = [(R, d, k, D, windows) for d in decoys for k in range(runs)]
+    with mp.Pool(RN.resolve_workers(workers)) as pool:
+        res = pool.map(_gk_one, tasks, chunksize=1)
+    rows = {}
+    for d in decoys:
+        parts = [(o, t) for (r_, d_, o, t) in res if d_ == d]
+        arrivals = sum(o["arrivals"] for o, _ in parts)
+        span = sum(t for _, t in parts)
+        hold = sum(o["hold_sum"] for o, _ in parts) / arrivals
+        occ = np.concatenate([x for o, _ in parts for x in o["occ_samples"]])
+        ticks = np.concatenate([x for o, _ in parts for x in o["tick_counts"]])
+        row = dict(R=R, decoys=d, arrivals_per_s=arrivals / span, mean_hold_s=hold,
+                   held_mean=float(occ.mean()), held_p5=float(np.percentile(occ, 5)),
+                   held_p95=float(np.percentile(occ, 95)),
+                   selections_per_tick=float(ticks.mean()), ticks_with_none=float((ticks == 0).mean()),
+                   windows={})
+        for w in windows:
+            c = np.concatenate([x for o, _ in parts for x in o["win"][w]])
+            n = c.sum()
+            row["windows"][str(w)] = dict(mean=float(c.mean()), p_lt2=float((c < 2).mean()),
+                                          p_empty=float((c == 0).mean()),
+                                          alone_share=float((c == 1).sum() / max(n, 1)),
+                                          added_wait_mean_s=w / 2)
+        rows[str(d)] = row
+        w30 = row["windows"]["30"]
+        print(f"decoys {d:3d}: {row['arrivals_per_s']:.4f} arrivals/s per gatekeeper, mean hold {hold:.1f} s, "
+              f"held at once {row['held_mean']:.2f} (5-95%: {row['held_p5']:.0f}-{row['held_p95']:.0f}), "
+              f"selections per tick {row['selections_per_tick']:.3f}; 30 s bundle mean {w30['mean']:.2f}, "
+              f"fewer than 2 {100 * w30['p_lt2']:.2f}%", flush=True)
+        print("    " + "  ".join(f"W={w}: {row['windows'][str(w)]['mean']:.1f}/{100 * row['windows'][str(w)]['p_lt2']:.2f}%"
+                                 for w in windows), flush=True)
+    (out / "gatekeeper_occupancy.json").write_text(json.dumps(dict(runs=runs, rates_from_D=D, cells=rows), indent=1))
     return rows

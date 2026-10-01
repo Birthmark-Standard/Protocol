@@ -55,3 +55,17 @@ Device named at R = 1 with 40 decoys, each build adding one mechanism to the row
 | + registry-level bundling (120 s) | 7.86% | 1.94% | ×4.05 [3.86, 4.23] | +0.75 points | 698.2 s |
 
 The two-point hold lowers the observer by 0.76 points on the same records, mostly by leaving more devices feasible for each record; as a multiple of the random rate, the observer is unchanged within its interval. Registry bundling leaves the observer unchanged and halves the validator's edge, at a cost of about 60 seconds of latency.
+
+## Registry bundling window
+
+R = 1 with 40 decoys, bundling and board pushes on, relay-lottery gatekeeper hold:
+
+| Registry window | Mean capture to finalization | Observer named the device | Observer as a multiple of random [95% CI] | Validator's edge over the observer | Content server's edge over the observer |
+|---|---|---|---|---|---|
+| none | 625.5 s | 8.65% | ×4.16 [3.98, 4.34] | +1.19 points | +0.83 points |
+| 60 s | 656.0 s | 8.63% | ×4.22 [4.04, 4.41] | +1.15 points | +0.89 points |
+| 120 s | 684.0 s | 8.52% | ×4.14 [3.97, 4.32] | +1.09 points | +0.93 points |
+| 240 s | 744.8 s | 8.03% | ×4.21 [4.02, 4.41] | +0.88 points | +1.06 points |
+| 480 s | 861.2 s | 7.19% | ×4.04 [3.82, 4.26] | +0.35 points | +1.41 points |
+
+A longer registry window moves the validator's edge to the content server. The strongest single component's edge is lowest at 240 seconds (1.06 points, against 1.09 at 120 seconds, within their intervals), and no window changes the passive observer's multiple of the random rate beyond its interval at this volume.

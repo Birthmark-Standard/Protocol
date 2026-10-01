@@ -1,0 +1,105 @@
+{
+ "runs": 200,
+ "build": "reg240",
+ "cells": {
+  "R1_D20_B": {
+   "R": 1.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 104058,
+   "mean_submissions": 16.129014588018222,
+   "mean_transactions": 10.066991485517692,
+   "p_lt2_submissions": 0.0002594706798131811,
+   "p_lt2_transactions": 0.0005573814603394261,
+   "p_empty": 5.7660151069595805e-05
+  },
+  "R1_D40_B": {
+   "R": 1.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 104058,
+   "mean_submissions": 31.48109708047435,
+   "mean_transactions": 19.640959849314804,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R1_D60_B": {
+   "R": 1.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 104058,
+   "mean_submissions": 46.83221857041266,
+   "mean_transactions": 29.22991985239001,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R15_D20_B": {
+   "R": 15.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 8800,
+   "mean_submissions": 27.0875,
+   "mean_transactions": 16.89,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R15_D40_B": {
+   "R": 15.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 8800,
+   "mean_submissions": 42.48590909090909,
+   "mean_transactions": 26.514659090909092,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R15_D60_B": {
+   "R": 15.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 8800,
+   "mean_submissions": 57.86034090909091,
+   "mean_transactions": 36.06011363636364,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D20_B": {
+   "R": 50.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 8800,
+   "mean_submissions": 53.54090909090909,
+   "mean_transactions": 33.404545454545456,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D40_B": {
+   "R": 50.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 8800,
+   "mean_submissions": 68.86397727272727,
+   "mean_transactions": 42.96727272727273,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D60_B": {
+   "R": 50.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 8800,
+   "mean_submissions": 84.1590909090909,
+   "mean_transactions": 52.563863636363635,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  }
+ }
+}
