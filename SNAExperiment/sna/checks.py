@@ -9,13 +9,20 @@ results/checks.json and reported, pass or fail.
    capture only is reported.
 3. Background independence: every vantage's and baseline's decisions are identical with background
    traffic on and off (so sweeps may run without it).
-4. Decoys, cannot tell: for the baseline, both first hops and the content server, every feature
-   the vantage observes has an AUC for real against decoy whose adjusted interval covers 0.5. The
-   content server is also tested on whether quorum forms within 30 minutes (expected to separate
-   them perfectly, after the timeout).
-5. Decoys, can tell: the validator's indicator, the credential processor's reading of it and the
-   gatekeeper's signature check each equal the truth for every transaction, and the gatekeeper's
-   substitute posting keeps the real posting schedule.
+4. Decoys, cannot tell: for every vantage, every feature it observes has an AUC for real against
+   decoy whose adjusted interval covers 0.5. Decoys run the same code path as real transactions,
+   so this is expected to pass by construction; the check confirms nothing in the simulator
+   separates them.
+5. Decoys reach the registry: every decoy transaction reaches quorum and produces a registry
+   record, as every real one does.
+6. Departure bundling: every gatekeeper posting departs on its gatekeeper's own 30-second grid,
+   at least 0 and under 30 seconds after the hold clock selected it.
+7. Board pushes: no content server acts before its hold releases or before the second board push
+   carrying the match reaches it, and every push lands on its board's own schedule.
+8. Gatekeeper hold shape: every gatekeeper hold is either immediate or the full 5-minute cap,
+   with about 40% at the cap.
+9. Registry-level bundling: every registry submission departs on the one shared schedule, at least
+   0 and under one window after its content server confirmed it.
 """
 from __future__ import annotations
 
@@ -85,11 +92,18 @@ def features(run):
                   "source: time since its previous capture": np.r_[src_gap, src_gap]}
     arr = np.r_[s["arr_f"], s["arr_i"]]
     content = {"Content last-leg size": np.r_[sz[ca[:, 2]], sz[cb[:, 2]]],
-               "arrival to first board check": np.r_[s["hold_f"], s["hold_i"]] - arr}
-    after = {"quorum within 30 minutes": np.r_[np.isfinite(s["det_f"]), np.isfinite(s["det_i"])].astype(float)}
-    gk = {"gatekeeper: GK arrival to board posting": (s["posts"] - s["gk_arr"]).ravel()}
+               "arrival to hold release": np.r_[s["hold_f"], s["hold_i"]] - arr}
+    gk = {"GK arrival to board posting": (s["posts"] - s["gk_arr"]).ravel()}
+    vgap = _prev_gap(s["src"], ta[s["ev_cv1"]])
+    validator = {"CV-1 arrival to CV-2 send": ts[s["ev_cv2"]] - ta[s["ev_cv1"]],
+                 "time since the same credential's previous request": vgap,
+                 "CV-1 size": sz[s["ev_cv1"]]}
+    cred = {"Cred-3 arrival to CV-1 send": ts[s["ev_cv1"]] - ta[cr[:, 2]],
+            "CV-2 arrival to first GK send": ts[s["ev_gk"]].min(1) - ta[s["ev_cv2"]],
+            "GK send spread": ts[s["ev_gk"]].max(1) - ts[s["ev_gk"]].min(1),
+            "CV-2 size": sz[s["ev_cv2"]], "Cred-3 size": sz[cr[:, 2]]}
     return dict(baseline=(wire, 1), first_hop_cred=(first_cred, 1), first_hop_content=(first_cont, 2),
-                content_server=(content, 2), content_server_after_timeout=(after, 2), gatekeeper_schedule=(gk, 3))
+                cred_processor=(cred, 1), content_server=(content, 2), validator=(validator, 1), gatekeeper=(gk, 3))
 
 
 def run_checks(out=CE.RESULTS, runs=4, verbose=True):
@@ -97,7 +111,7 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     pools = Pools()
     D = CE.calibrate(out)["D"]
     res = {}
-    spec = dict(key="check", R=8.0, T=40.0, control=False)
+    spec = dict(key="check", R=15.0, T=15.0 + P.DECOYS_IN_FLIGHT, decoys=P.DECOYS_IN_FLIGHT, bundle=True, control=False)
     cfg = CE.config_of(spec, D).with_(background_enabled=True, nonblending_enabled=True, measure_s=P.MEASURE_S)
 
     # 1. padding classes -------------------------------------------------------------------
@@ -130,7 +144,7 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     s = run.subs
     real = ~s["decoy"]
     col_t, col_sub, tc = AT.registry_answers(run, pools)
-    expected = int(s["ok_f"][real].sum() + s["ok_i"][real].sum())
+    expected = int(s["ok_f"].sum() + s["ok_i"].sum())            # decoys reach the registry too
     cand = AT.candidates(run, pools)
     mem = cand["msub"]
     first_hops = int(3 * s["t0"].size)                          # every capture's three first-hop packets
@@ -140,13 +154,13 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
         registry_found=int(col_t.size), registry_expected=expected, registry_unlabelled=int((col_sub < 0).sum()),
         device_packets_found=found, device_packets_expected=first_hops, background_packets_in_candidates=bg_members,
         submission_groups=int(cand["t"].size), pure_group_share=float((cand["sub"] >= 0).mean()),
-        passed=bool(col_t.size == expected and (col_sub < 0).sum() == 0 and ((tc[real] >= 0).sum(1) == 2).all()
+        passed=bool(col_t.size == expected and (col_sub < 0).sum() == 0 and ((tc >= 0).sum(1) == 2).all()
                     and found == first_hops and bg_members == 0))
 
     # 3. background independence --------------------------------------------------------
-    CE.ensure_models(out, False, pools)
+    CE.ensure_models(out, False, pools, bundle=True)
     import pickle
-    with open(CE.model_path(out, False), "rb") as f:
+    with open(CE.model_path(out, False, True), "rb") as f:
         models = pickle.load(f)
     small = cfg.with_(measure_s=3600.0)
     on = AT.compute(S.simulate(small, CHECK_SEED0 + 1, pools), pools, models)
@@ -175,32 +189,74 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
         fd = {fn: np.concatenate(x) for fn, x in feats[name].items()}
         decoy_res[name] = _auc_features(fd, np.concatenate(decs[name]), np.concatenate(rids[name]), n_tests)
     cannot = {}
-    for v in ("baseline", "first_hop_cred", "first_hop_content", "content_server"):
+    for v in AT.VANTAGES:
         ok = all(f["covers_half"] for f in decoy_res[v].values())
         cannot[v] = dict(features=decoy_res[v], passed=bool(ok))
-    after = decoy_res["content_server_after_timeout"]["quorum within 30 minutes"]
-    cannot["content_server"]["after_timeout"] = after
-    cannot["content_server"]["passed_scoped"] = bool(cannot["content_server"]["passed"] and after["auc"] > 0.99)
     res["decoys_cannot_tell"] = cannot
-
     s = run.subs
-    sched = decoy_res["gatekeeper_schedule"]["gatekeeper: GK arrival to board posting"]
-    can = dict(
-        validator=dict(rule="the reply's plaintext indicator is the credential's registration status",
-                       agrees=True),
-        cred_processor=dict(rule="reads the validator's indicator; sends a same-size placeholder for sigma_C on a dummy",
-                            gk_leg_size_auc=decoy_res["baseline"]["GK leg size (mean of 3)"]["auc"], agrees=True),
-        gatekeeper=dict(rule="sigma_C verification fails exactly on dummies; substitute posting on the real schedule",
-                        quorum_never_forms_for_decoys=bool(~np.isfinite(s["quorum"][s["decoy"]]).all()),
-                        quorum_forms_for_real=bool(np.isfinite(s["quorum"][~s["decoy"]]).all()),
-                        schedule_auc=sched),
-    )
-    can["passed"] = bool(can["gatekeeper"]["quorum_never_forms_for_decoys"] and can["gatekeeper"]["quorum_forms_for_real"]
-                         and sched["covers_half"])
-    res["decoys_can_tell"] = can
+    res["decoys_reach_registry"] = dict(
+        decoy_records=int((s["ok_f"] & s["ok_i"] & s["decoy"]).sum()), decoys=int(s["decoy"].sum()),
+        real_records=int((s["ok_f"] & s["ok_i"] & ~s["decoy"]).sum()), real=int((~s["decoy"]).sum()),
+        passed=bool((s["ok_f"] & s["ok_i"]).all()))
     res["n_feature_tests"] = n_tests
     res["runs"] = runs
-    res["cell"] = dict(R=8, T=40, background=True)
+    # 6. departure bundling: every posting departs on its gatekeeper's own grid, within one window
+    # of its selection, and postings on one boundary share a departure time
+    off, wait = [], []
+    for j, g in enumerate(run.gk_set):
+        dep = np.ceil((s["gk_release"][:, j] - run.bundle_phase[g]) / P.BUNDLE_S) * P.BUNDLE_S + run.bundle_phase[g]
+        proc = s["posts"][:, j] - dep
+        off.append(proc)
+        wait.append(dep - s["gk_release"][:, j])
+    off, wait = np.concatenate(off), np.concatenate(wait)
+    res["bundling"] = dict(window_s=P.BUNDLE_S, max_wait=float(wait.max()), min_wait=float(wait.min()),
+                           proc_range=[float(off.min()), float(off.max())],
+                           passed=bool(wait.min() >= 0 and wait.max() < P.BUNDLE_S and off.min() >= 0
+                                       and off.max() <= P.PROC_MS[1] / 1000 + 1e-9))
+    # 7. board pushes: each content server acts at the later of its hold release and the moment the
+    # second board push carrying the match reaches it, and never queries a board itself
+    late, early, grid = [], [], []
+    for nm, node in (("f", s["F"]), ("i", s["I"])):
+        ok = s[f"ok_{nm}"]
+        known = np.empty((ok.sum(), 3))
+        for j, g in enumerate(run.gk_set):
+            ph = run.push_phase[g]
+            k = (s["posts"][ok, j] - ph) / P.BOARD_PUSH_S
+            push = ph + P.BOARD_PUSH_S * np.ceil(k)
+            grid.append(push - s["posts"][ok, j])
+            known[:, j] = push
+        det, hold = s[f"det_{nm}"][ok], s[f"hold_{nm}"][ok]
+        early.append(np.minimum(det - hold, det - np.sort(known, axis=1)[:, 1]))
+        late.append(det - np.maximum(hold, np.sort(known, axis=1)[:, 1]))
+    early, late, grid = np.concatenate(early), np.concatenate(late), np.concatenate(grid)
+    res["board_push"] = dict(period_s=P.BOARD_PUSH_S, min_margin=float(early.min()),
+                             max_push_wait=float(grid.max()), max_after_push=float(late.max()),
+                             passed=bool(early.min() >= 0 and grid.min() >= 0 and grid.max() < P.BOARD_PUSH_S
+                                         and late.max() <= P.LAT_INT_MS[1] / 1000 + 1e-9))
+    # 8. two-point gatekeeper hold: release time minus arrival is processing alone, or the cap plus
+    # processing
+    gk_hold = (s["gk_release"] - s["gk_arr"]).ravel()
+    pm = P.GATEKEEPER_PROC_MS[0] / 1000 - 1e-9, P.GATEKEEPER_PROC_MS[1] / 1000 + 1e-9
+    imm = (gk_hold >= pm[0]) & (gk_hold <= pm[1])
+    capd = (gk_hold >= P.GK_CAP_S + pm[0]) & (gk_hold <= P.GK_CAP_S + pm[1])
+    res["gk_hold_shape"] = dict(immediate=float(imm.mean()), capped=float(capd.mean()), n=int(gk_hold.size),
+                                mean_s=float(gk_hold.mean()),
+                                passed=bool((imm | capd).all() and abs(capd.mean() - (1 - P.GK_IMMEDIATE_P)) < 0.03))
+    # 9. registry-level bundling: every submission departs on the shared grid
+    W, ph = run.cfg.reg_bundle_s, run.reg_phase
+    waits, offs = [], []
+    for nm in ("f", "i"):
+        ok = s[f"ok_{nm}"]
+        reg, det = s[f"reg_{nm}"][ok], s[f"det_{nm}"][ok]
+        dep = ph + W * np.ceil((det - ph) / W)
+        waits.append(dep - det)
+        offs.append(reg - dep)
+    waits, offs = np.concatenate(waits), np.concatenate(offs)
+    res["registry_bundling"] = dict(window_s=W, max_wait=float(waits.max()), min_wait=float(waits.min()),
+                                    proc_range=[float(offs.min()), float(offs.max())],
+                                    passed=bool(W > 0 and waits.min() >= 0 and waits.max() < W and offs.min() >= 0
+                                                and offs.max() <= P.PROC_MS[1] / 1000 + 1e-9))
+    res["cell"] = dict(R=15, decoys_in_flight=P.DECOYS_IN_FLIGHT, bundling=True, background=True, build=CE.DEFAULT_BUILD)
     (out / "checks.json").write_text(json.dumps(res, indent=1, default=_json))
     if verbose:
         print_checks(res)
@@ -234,9 +290,19 @@ def print_checks(res):
         worst = max(r["features"].items(), key=lambda kv: abs(kv[1]["auc"] - 0.5))
         print(f"[{mark(r['passed'])}] cannot tell decoys, {v}: {len(r['features'])} features, "
               f"largest |AUC - 0.5| {worst[0]} AUC {worst[1]['auc']:.3f} [{worst[1]['lo']:.3f}, {worst[1]['hi']:.3f}]")
-        if "after_timeout" in r:
-            t = r["after_timeout"]
-            print(f"[FAIL, scoped] content server after its 30-minute timeout: quorum AUC {t['auc']:.3f}")
-    c = res["decoys_can_tell"]
-    print(f"[{mark(c['passed'])}] can tell decoys (validator, credential processor, gatekeeper); "
-          f"gatekeeper posting schedule AUC {c['gatekeeper']['schedule_auc']['auc']:.3f}")
+    bnd = res["bundling"]
+    print(f"[{mark(bnd['passed'])}] departure bundling: every posting departs on its gatekeeper's grid, "
+          f"{bnd['min_wait']:.2f} to {bnd['max_wait']:.2f} s after selection (window {bnd['window_s']:g} s)")
+    bp = res["board_push"]
+    print(f"[{mark(bp['passed'])}] board pushes: no content server acts before its hold or quorum push "
+          f"(least margin {bp['min_margin']:.3f} s); pushes wait up to {bp['max_push_wait']:.2f} s "
+          f"(period {bp['period_s']:g} s)")
+    gh = res["gk_hold_shape"]
+    print(f"[{mark(gh['passed'])}] gatekeeper hold shape: {100 * gh['immediate']:.1f}% immediate, "
+          f"{100 * gh['capped']:.1f}% at the cap, mean {gh['mean_s']:.1f} s")
+    rb = res["registry_bundling"]
+    print(f"[{mark(rb['passed'])}] registry bundling: every submission departs on the shared grid, "
+          f"{rb['min_wait']:.2f} to {rb['max_wait']:.2f} s after confirmation (window {rb['window_s']:g} s)")
+    d = res["decoys_reach_registry"]
+    print(f"[{mark(d['passed'])}] decoys reach the registry: {d['decoy_records']}/{d['decoys']} decoy and "
+          f"{d['real_records']}/{d['real']} real transactions finalised")

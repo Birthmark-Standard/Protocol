@@ -1,15 +1,57 @@
 # Paper table
 
-How often each compromised component, starting from a public registry record, names the device that produced it. Per-decision attack, 200 runs per cell. Each cell gives accuracy and, in brackets, the contribution over a passive observer on the same records in percentage points. L is the number of real transactions in flight. "Random" is the rate of a uniformly random pick among the feasible devices. The decoy columns hold the real volume at R = 1 or 4 and fill the total to T = 500. Intervals and every other cell are in RESULTS.md.
+How often each compromised component, starting from a public registry record, names the device that produced it. Decoys are genuine transactions at a steady 40 in flight, indistinguishable to every party. Per-decision attack, 200 runs per cell.
 
-| Vantage | Holds | Exact knowledge used | Device named, L = 4 (random 21.2%) | L = 40 (random 2.2%) | L = 500 (random 0.17%) | R = 1, T = 500 decoys | R = 4, T = 500 decoys | Exact capture named, L = 40 (1/L = 2.5%) |
-|---|---|---|---|---|---|---|---|---|
-| Baseline | nothing | sizes and timing on every link | 48.9% (+0.0) | 9.0% (+0.0) | 1.0% (+0.0) | 1.0% (+0.0) | 0.9% (+0.0) | 5.5% (+0.0) |
-| First hop, credential | relay transit key | source address; own hold and forward | 51.7% (+2.8) | 10.1% (+1.1) | 1.2% (+0.2) | 1.1% (+0.1) | 1.0% (+0.2) | 13.7% (+8.2) |
-| First hop, content | relay transit key | the same, for one content copy | 50.1% (+1.2) | 9.7% (+0.7) | 1.1% (+0.1) | 1.1% (+0.1) | 0.9% (+0.1) | 12.9% (+7.3) |
-| Credential processor | transit and ring-signing keys | own transactions' fan-out times | 48.7% (-0.2) | 9.0% (+0.0) | 1.0% (-0.0) | 1.0% (-0.0) | 0.9% (-0.0) | 5.5% (-0.0) |
-| Content server | transit and registry-signing keys | the records it submitted; its own content arrivals | 53.7% (+4.8) | 9.9% (+0.9) | 1.2% (+0.1) | 1.1% (+0.1) | 1.0% (+0.1) | 6.7% (+1.2) |
-| Validator | token-decryption and signing keys | device identity of each reply; which credentials are disposable | 53.5% (+4.6) | 10.2% (+1.2) | 1.2% (+0.2) | 89.5% (+88.5) | 53.5% (+52.6) | 5.7% (+0.2) |
-| Gatekeeper | transit and countersignature keys | own postings; which transactions are decoys | 49.1% (+0.2) | 9.0% (+0.0) | 1.0% (+0.0) | 1.0% (+0.0) | 0.9% (-0.0) | 5.6% (+0.1) |
+Each accuracy cell gives, in brackets, the contribution over a passive observer on the same records, in percentage points. The first hops and the credential processor are scored on every record, because they cannot identify the records they took part in. The last column is accuracy with the decoy stream minus accuracy without it, on the same real records. Intervals and every other cell are in RESULTS.md.
 
-Decoys bring every vantage to about 1% except the validator. It knows which credentials are disposable and names the device 89.5% of the time at R = 1 whatever the decoy volume. The gatekeeper and the credential processor add nothing over the passive observer. The first hops name the exact capture well above chance.
+| Vantage | Holds | Device named, R = 1 with decoys (random 2.1%) | Device named, R = 15 with decoys (random 1.6%) | Exact capture named, R = 1 with decoys (1/T = 2.4%) | Decoy effect on device accuracy, R = 1 |
+|---|---|---|---|---|---|
+| Baseline | nothing | 8.8% (+0.0) | 7.0% (+0.0) | 5.3% (+0.0) | -79.0 points |
+| First hop, credential | relay transit key; source address | 8.7% (-0.1) | 6.9% (-0.1) | 5.4% (+0.0) | -79.0 points |
+| First hop, content | relay transit key; source address | 8.7% (-0.1) | 6.9% (-0.1) | 5.4% (+0.0) | -79.0 points |
+| Credential processor | transit and ring-signing keys | 8.7% (-0.0) | 6.9% (-0.0) | 5.4% (+0.0) | -79.0 points |
+| Content server | transit and registry-signing keys | 9.6% (+0.9) | 7.7% (+0.8) | 6.5% (+1.2) | -80.2 points |
+| Validator | token-decryption and signing keys; device identity | 9.8% (+1.1) | 7.8% (+0.8) | 5.9% (+0.5) | -79.7 points |
+| Gatekeeper | transit and countersignature keys | 8.6% (-0.1) | 6.9% (-0.1) | 5.3% (+0.0) | -79.2 points |
+
+With decoys, every component names the device behind a record at about 4 times the random-pick rate, and within about a point of what a passive observer achieves. Only the validator and the content server, which know which records they handled, add about a point. Decoys cut every component's accuracy at R = 1 by about 79 points.
+
+## Gatekeeper departure bundling
+
+Passive observer, device named, R = 1 (paired effect of bundling on the same records, in points). Board postings are internal, so the observer never sees a departure.
+
+| Decoys in flight | Bundling off | Bundling on | Effect | Postings per bundle | Bundles with fewer than 2 |
+|---|---|---|---|---|---|
+| 20 | 14.6% | 14.3% | -0.26 | 1.01 | 73.3% |
+| 40 | 8.8% | 8.6% | -0.14 | 1.97 | 41.5% |
+| 60 | 6.0% | 6.0% | +0.02 | 2.93 | 21.0% |
+
+Bundling changes no vantage's accuracy by more than half a point; the decoy target changes the observer's accuracy by more than 8 points between 20 and 60 decoys.
+
+## Match board pushes
+
+Device named, bundling on, with match boards pushing new matches to every content server every 10 seconds (contribution over the passive observer, in points):
+
+| Vantage | R = 1, 40 decoys (random 2.1%) | R = 15, 40 decoys (random 1.6%) | Push effect, R = 1, 40 decoys |
+|---|---|---|---|
+| Baseline | 8.7% (+0.0) | 6.9% (+0.0) | +0.04 |
+| First hop, credential | 8.7% (+0.0) | 6.9% (-0.0) | +0.07 |
+| First hop, content | 8.7% (+0.0) | 6.9% (-0.0) | +0.07 |
+| Credential processor | 8.6% (-0.0) | 6.9% (-0.0) | -0.04 |
+| Content server | 9.5% (+0.8) | 7.7% (+0.8) | +0.09 |
+| Validator | 9.9% (+1.2) | 8.0% (+1.1) | +0.04 |
+| Gatekeeper | 8.6% (-0.0) | 6.9% (-0.0) | +0.10 |
+
+Board pushes move no vantage's accuracy by more than 0.11 points in any cell.
+
+## Two-point gatekeeper hold and registry-level bundling
+
+Device named at R = 1 with 40 decoys, each build adding one mechanism to the row above (bundling and board pushes on throughout):
+
+| Build | Passive observer | Random pick | Observer as a multiple of random [95% CI] | Validator's edge over the observer | Capture to finalization, mean |
+|---|---|---|---|---|---|
+| Board pushes | 8.65% | 2.08% | ×4.16 [3.98, 4.34] | +1.19 points | 625.5 s |
+| + two-point gatekeeper hold | 7.89% | 1.96% | ×4.03 [3.85, 4.21] | +1.44 points | 638.9 s |
+| + registry-level bundling (120 s) | 7.86% | 1.94% | ×4.05 [3.86, 4.23] | +0.75 points | 698.2 s |
+
+The two-point hold lowers the observer by 0.76 points on the same records, mostly by leaving more devices feasible for each record; as a multiple of the random rate, the observer is unchanged within its interval. Registry bundling leaves the observer unchanged and halves the validator's edge, at a cost of about 60 seconds of latency.

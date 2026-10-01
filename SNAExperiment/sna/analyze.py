@@ -19,7 +19,6 @@ Z_ADJ = float(norm.ppf(1 - 0.05 / FAMILY / 2))
 BOOT = 2000
 MIN_EACH = 50                                 # successes (and failures) needed for a stable finding
 AUC_MARGIN = 0.03                             # confidence AUCs within this of 0.5 are not read as signal
-TREND_L = (40, 50, 100, 200, 500)
 
 
 def cluster_boot(num, den, rng, z=None, reps=BOOT):
@@ -190,40 +189,71 @@ def metrics(records, v, spec, rng):
         perm[m] = c[m][rng.permutation(m.size)]
     a = auc_clustered(conf, perm.astype(int), t["run"])
     out["shuffle_auc"], out["shuffle_auc_lo"], out["shuffle_auc_hi"] = a["auc"], a["auc"] - Z95 * a["se"], a["auc"] + Z95 * a["se"]
+    if "claim" in t:
+        _claims(t, rng, out)
     out["_per_run"] = dict(dev=(num, den), sub=(nums, dens))
     return out
 
 
-def lift_trend(rows_by_L, rng, level="dev", reps=BOOT):
-    """Slope of log lift against log L across TREND_L, with a percentile interval from resampling
-    runs within each cell. Device level: lift against the random-assignment rate. Submission
-    level: accuracy x L. Direction: rises / falls if the interval excludes 0, else holds flat."""
-    Ls = [L for L in TREND_L if L in rows_by_L and "_per_run" in rows_by_L[L]]
-    if len(Ls) < 2:
-        return None
-    x = np.log(np.array(Ls, float))
-    ref = np.array([1.0 / rows_by_L[L][f"{level}_random"] if level == "dev" else L for L in Ls], float)
-
-    def slope(acc):
-        return float(np.polyfit(x, np.log(np.maximum(np.array(acc) * ref, 1e-6)), 1)[0])
-    est = slope([rows_by_L[L][f"{level}_accuracy"] for L in Ls])
-    boots = []
-    for _ in range(reps):
-        acc = []
-        for L in Ls:
-            num, den = rows_by_L[L]["_per_run"][level]
-            i = rng.integers(0, num.size, num.size)
-            acc.append(num[i].sum() / max(den[i].sum(), 1e-12))
-        boots.append(slope(acc))
-    lo, hi = np.percentile(boots, [2.5, 97.5])
-    direction = "rises" if lo > 0 else ("falls" if hi < 0 else "holds flat")
-    return dict(slope=est, lo=float(lo), hi=float(hi), direction=direction, L=Ls,
-                lift_40=float(rows_by_L[Ls[0]][f"{level}_accuracy"] * ref[0]),
-                lift_500=float(rows_by_L[Ls[-1]][f"{level}_accuracy"] * ref[-1]))
+def _claims(t, rng, out):
+    """For a vantage scored on every record: how many records it claims, how often a claim is
+    right, the baseline's accuracy on the same claimed records, and its accuracy on the records it
+    actually took part in (which it cannot identify)."""
+    cl = t["claim"].astype(bool)
+    part = t["took_part"].astype(bool)
+    n_runs = np.unique(t["run"]).size
+    nc, nd = per_run(cl, t["run"])
+    out["claim_rate"] = float(nc.sum() / nd.sum())
+    out["took_part_rate"] = float(part.mean())
+    out["claims_on_own_records"] = float((cl & part).sum() / max(cl.sum(), 1))
+    for lvl in ("dev", "sub"):
+        c = t[f"{lvl}_v_correct"].astype(bool)
+        b = t[f"{lvl}_b_correct"].astype(bool)
+        for name, m in (("claimed", cl), ("took_part", part)):
+            if m.sum() == 0:
+                continue
+            num, den = per_run(c[m], t["run"][m])
+            k = f"{lvl}_{name}"
+            out[k], out[k + "_lo"], out[k + "_hi"] = cluster_boot(num, den, rng)
+            nb, _ = per_run(b[m], t["run"][m])
+            out[k + "_baseline"] = float(nb.sum() / den.sum())
+            out[k + "_n"] = int(m.sum())
+    return out
 
 
-def analyze(out, cells, loader, seed=12345):
-    """Metrics for every cell with records. loader(key) -> list of run records."""
+def decoy_effect(with_recs, without_recs, v, rng):
+    """Paired effect on the same real records: accuracy in one cell minus accuracy in its paired
+    cell (bundling on minus off), matched row by row on (run, transaction, group), with an
+    interval from resampling runs. Both cells carry identical traffic."""
+    base = {}
+    for r in without_recs:
+        x = r["vantages"][v]
+        base[r["run"]] = x
+    out = {}
+    for lvl in ("dev", "sub"):
+        num, den, n_unmatched = [], [], 0
+        for r in with_recs:
+            y = r["vantages"][v]
+            x = base.get(r["run"])
+            if x is None:
+                continue
+            kx = {(int(a), int(b)): i for i, (a, b) in enumerate(zip(x["sub"], x["group"]))}
+            idx = [kx.get((int(a), int(b)), -1) for a, b in zip(y["sub"], y["group"])]
+            idx = np.array(idx, np.int64)
+            ok = idx >= 0
+            n_unmatched += int((~ok).sum())
+            d = y[f"{lvl}_v_correct"][ok].astype(float) - x[f"{lvl}_v_correct"][idx[ok]].astype(float)
+            num.append(d.sum())
+            den.append(ok.sum())
+        e, lo, hi = cluster_boot(np.array(num), np.array(den), rng)
+        out[lvl] = dict(effect=e, lo=lo, hi=hi, n=int(sum(den)), unmatched=n_unmatched)
+    return out
+
+
+def analyze(out, cells, loader, seed=12345, priors=None):
+    """Metrics for every cell with records. loader(key) -> list of run records. priors maps a name
+    to a loader of the same cells under an earlier build; each vantage's effect of the change from
+    that build is then paired against it, record by record."""
     rng = np.random.default_rng(seed)
     rows = []
     for key, spec in cells.items():
@@ -231,13 +261,47 @@ def analyze(out, cells, loader, seed=12345):
         if not recs:
             continue
         recs = sorted(recs, key=lambda r: r["run"])
+        bs = bundle_stats(recs)
         for v in AT.VANTAGES:
-            rows.append(metrics(recs, v, spec, rng))
-    trends = {}
-    for v in AT.VANTAGES:
-        by_L = {int(r["T"]): r for r in rows if r["vantage"] == v and r["R"] == r["T"] and not r["control"]}
-        for level in ("dev", "sub"):
-            tr = lift_trend(by_L, rng, level)
-            if tr:
-                trends[f"{v}.{level}"] = tr
-    return rows, trends
+            r = metrics(recs, v, spec, rng)
+            r["decoys"], r["bundle"] = float(spec.get("decoys", 0.0)), bool(spec.get("bundle", False))
+            if bs:
+                r.update({f"bundle_{k}": x for k, x in bs.items() if k != "hist"})
+            rows.append(r)
+    effects = {}
+    by_key = {spec["key"]: spec for spec in cells.values()}
+    for key, spec in by_key.items():
+        if not spec.get("bundle"):
+            continue
+        ref = next((k for k, sp in by_key.items() if sp["R"] == spec["R"] and sp.get("decoys") == spec.get("decoys")
+                    and not sp.get("bundle") and not sp["control"]), None)
+        if ref is None:
+            continue
+        w, wo = loader(key), loader(ref)
+        if not w or not wo:
+            continue
+        for v in AT.VANTAGES:
+            effects[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = decoy_effect(w, wo, v, rng)
+    changes = {}
+    for name, prior_loader in (priors or {}).items():
+        ch = {}
+        for key, spec in by_key.items():
+            w, pr = loader(key), prior_loader(key)
+            if spec["control"] or not w or not pr:
+                continue
+            for v in AT.VANTAGES:
+                ch[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = decoy_effect(w, pr, v, rng)
+        changes[name] = ch
+    return rows, effects, changes
+
+
+def bundle_stats(records):
+    """Departure-bundle size distribution summed over a cell's runs (per gatekeeper bundle)."""
+    h = np.sum([r["bundles"] for r in records if "bundles" in r], axis=0)
+    if np.ndim(h) == 0 or h.sum() == 0:
+        return None
+    k = np.arange(h.size)
+    n, pk = h.sum(), (h * k).sum()
+    return dict(bundles=int(n), mean=float(pk / n), p0=float(h[0] / n), p1=float(h[1] / n),
+                p_lt2=float((h[0] + h[1]) / n), p1_nonempty=float(h[1] / max(n - h[0], 1)),
+                alone_share=float(h[1] / max(pk, 1)), hist=h.tolist())

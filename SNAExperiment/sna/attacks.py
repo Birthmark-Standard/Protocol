@@ -34,8 +34,8 @@ from . import sim as S
 
 VANTAGES = ("baseline", "first_hop_cred", "first_hop_content", "cred_processor", "content_server",
             "validator", "gatekeeper")
-CAN_TELL = ("cred_processor", "validator", "gatekeeper")
-CANNOT_TELL = ("baseline", "first_hop_cred", "first_hop_content", "content_server")
+CAN_TELL = ()                                    # decoys are genuine transactions: no vantage can tell
+CANNOT_TELL = VANTAGES
 LABEL = {"baseline": "Baseline", "first_hop_cred": "First hop, credential",
          "first_hop_content": "First hop, content", "cred_processor": "Credential processor",
          "content_server": "Content server", "validator": "Validator", "gatekeeper": "Gatekeeper"}
@@ -328,7 +328,7 @@ def score_blocks(t_lo, t_hi, cand, block_fn, truth, max_cells=MAX_CELLS):
     dense log-likelihood block (len(rows), k1 - k0). truth: dict level -> (n,) true label.
     Returns per-level arrays: pick, top1, top2, s_true, rank, n_feas, n_true, lse."""
     n = t_lo.shape[0]
-    out = {lvl: dict(pick=np.full(n, -1, np.int64), correct=np.zeros(n, bool), top1=np.full(n, -np.inf), top2=np.full(n, -np.inf),
+    out = {lvl: dict(pick=np.full(n, -1, np.int64), pidx=np.full(n, -1, np.int64), correct=np.zeros(n, bool), top1=np.full(n, -np.inf), top2=np.full(n, -np.inf),
                      s_true=np.full(n, -np.inf), rank=np.full(n, _INT_MAX, np.int32),
                      n_feas=np.zeros(n, np.int32), n_true=np.zeros(n, np.int32),
                      lse=np.full((n, T_GRID.size), np.nan)) for lvl in LEVELS}
@@ -363,6 +363,8 @@ def score_blocks(t_lo, t_hi, cand, block_fn, truth, max_cells=MAX_CELLS):
         is_t = (ms[None, :, :] == truth["sub"][rows][:, None, None]).any(2) if ms.ndim == 2 else \
             ms[None, :] == truth["sub"][rows][:, None]
         _stats(W, cand["sub"][lo:hi], is_t, out, rows, "sub", False)
+        am = np.argmax(W, 1)
+        out["sub"]["pidx"][rows] = np.where(np.isfinite(W[np.arange(W.shape[0]), am]), lo + am, -1)
         Wd, labd = _aggregate(W, cand["dev"][lo:hi])
         _stats(Wd, labd, labd[None, :] == truth["dev"][rows][:, None], out, rows, "dev", True)
     return _finish(out)
@@ -457,6 +459,25 @@ class _MixtureV:
         self.V[c] = V
         return V
 
+    def own_share(self, u, kidx):
+        """Share of V_k(u - s_k) that comes from the server's own events, at one candidate per row."""
+        out = np.zeros(u.size)
+        ok = kidx >= 0
+        g = self.g
+        ny = self.gp.size
+        for c in np.unique(kidx[ok] // self.CH):
+            m = ok & (kidx // self.CH == c)
+            loc = kidx[m] - c * self.CH
+            V = self._vtab(c)
+            Z = self._pair(c)[3]
+            y = u[m] - self.ct[kidx[m]]
+            yi = np.clip(np.floor((y - g.lo) / g.bw).astype(np.int64), 0, ny - 1)
+            tot = V[loc, yi]
+            rest = (1.0 - self.pi * (Z[loc] > 0)) * self.gp[yi]
+            with np.errstate(invalid="ignore", divide="ignore"):
+                out[m] = np.where(tot > 0, 1.0 - rest / tot, 0.0)
+        return out
+
     def block(self, u, k0, k1):
         """log V_k(u_r - s_k) for rows u (r) and candidates k0..k1-1."""
         g = self.g
@@ -492,20 +513,37 @@ class _MixtureV:
             return np.where(ok, np.log(vals), -np.inf)
 
 
-def _vantage_rows(v, run, rec):
-    """(record index, group, extra) for every scored record the vantage took part in."""
+SERVERS_PER_RUN = 4       # first hops and credential processors compromised in turn, per run
+
+
+def servers_for(v, run_id, gk_set):
+    """The servers compromised in one run for a vantage scored on every record: SERVERS_PER_RUN of
+    them, rotating with the run id so every eligible server is covered across runs."""
+    pool = np.arange(P.N_NODES) if v.startswith("first_hop") else np.setdiff1d(np.arange(P.N_NODES), gk_set)
+    return pool[(run_id * SERVERS_PER_RUN + np.arange(SERVERS_PER_RUN)) % pool.size]
+
+
+def _vantage_rows(v, run, rec, run_id=0):
+    """(record index, group, extra) for every scored record the vantage scores. The content
+    server's rows are the records it submitted, which it can identify (the record names F and I).
+    The first hops and the credential processor cannot identify the records they took part in, so
+    each compromised server scores every record; took_part marks the rows it actually took part in."""
     s = run.subs
     sub = rec["sub"]
     n = sub.size
     idx = np.arange(n)
     if v in ("baseline", "validator"):
         return idx, np.zeros(n, int), {}
-    if v == "first_hop_cred":
-        return idx, s["A"][sub], {}
-    if v == "first_hop_content":
-        return np.r_[idx, idx], np.r_[s["D"][sub], s["G"][sub]], {}
-    if v == "cred_processor":
-        return idx, s["C"][sub], {}
+    if v in ("first_hop_cred", "first_hop_content", "cred_processor"):
+        servers = servers_for(v, run_id, run.gk_set)
+        ri, grp = np.tile(idx, servers.size), np.repeat(servers, n)
+        if v == "first_hop_cred":
+            part = s["A"][sub[ri]] == grp
+        elif v == "first_hop_content":
+            part = (s["D"][sub[ri]] == grp) | (s["G"][sub[ri]] == grp)
+        else:
+            part = s["C"][sub[ri]] == grp
+        return ri, grp, dict(took_part=part)
     if v == "content_server":
         return np.r_[idx, idx], np.r_[s["F"][sub], s["I"][sub]], dict(a=np.r_[s["arr_f"][sub], s["arr_i"][sub]])
     if v == "gatekeeper":
@@ -513,16 +551,17 @@ def _vantage_rows(v, run, rec):
     raise KeyError(v)
 
 
-def score_vantage(v, run, rec, cand, m: Models, base):
-    """Score one vantage on its rows. Returns (row record index, group, per-level output)."""
+def score_vantage(v, run, rec, cand, m: Models, base, run_id=0):
+    """Score one vantage on its rows. Returns (row record index, group, per-level output, extra).
+    extra carries took_part and claim for the vantages scored on every record."""
     pdf, s, ev = m.pdf, run.subs, run.events
-    ri, grp, extra = _vantage_rows(v, run, rec)
+    ri, grp, extra = _vantage_rows(v, run, rec, run_id)
     u = rec["u"][ri]
     truth = dict(sub=rec["sub"][ri], dev=rec["dev"][ri])
     g = pdf["g"]
     lo, hi = _band(u, g)
     if v == "baseline":
-        return ri, grp, base
+        return ri, grp, base, {}
     if v in ("first_hop_cred", "first_hop_content"):
         fh = pdf["fh"]
 
@@ -532,7 +571,10 @@ def score_vantage(v, run, rec, cand, m: Models, base):
             own = match.any(2)
             hold = np.nansum(np.where(match, cand["hold"][None, k0:k1, :], 0.0), 2)
             return np.where(own, fh(np.where(own, hold, np.nan), y), g(y))
-        return ri, grp, score_blocks(lo, hi, cand, fn, truth, max_cells=MAX_CELLS // 3)
+        res = score_blocks(lo, hi, cand, fn, truth, max_cells=MAX_CELLS // 3)
+        pidx = res["sub"]["pidx"]
+        claim = (pidx >= 0) & (cand["node"][np.maximum(pidx, 0)] == grp[:, None]).any(1)
+        return ri, grp, res, dict(took_part=extra["took_part"], claim=claim)
     if v == "content_server":
         cs, csq = pdf["cs"], pdf["cs_q"]
         a = extra["a"]
@@ -543,9 +585,9 @@ def score_vantage(v, run, rec, cand, m: Models, base):
             sk = cand["t"][None, k0:k1]
             x = a[rows][:, None] - sk
             return cs(x, u[rows][:, None] - sk) + csq(x)
-        return ri, grp, score_blocks(lo, hi, cand, fn, truth)
+        return ri, grp, score_blocks(lo, hi, cand, fn, truth), {}
     if v == "validator":
-        real = ~s["decoy"]
+        real = np.ones(s["decoy"].shape, bool)          # every approval; decoys are indistinguishable
         t = ev["t_send"][s["ev_cv2"]][real]
         o = np.argsort(t, kind="stable")
         vsub = np.nonzero(real)[0][o].astype(np.int64)
@@ -555,31 +597,34 @@ def score_vantage(v, run, rec, cand, m: Models, base):
         def fn(rows, k0, k1):
             return gV(u[rows][:, None] - vc["t"][None, k0:k1])
         vlo, vhi = _band(u, gV)
-        return ri, grp, score_blocks(vlo, vhi, vc, fn, truth)
+        return ri, grp, score_blocks(vlo, vhi, vc, fn, truth), {}
     if v == "gatekeeper":
         outs = []
         for j in range(3):
             sel = np.nonzero(extra["j"] == j)[0]
             post = s["posts"][:, j]
             o = np.argsort(post, kind="stable")
-            mix = _MixtureV(cand["t"], post[o], (~s["decoy"][o]).astype(float), pdf["gk"], pdf["gk_q"], g)
+            mix = _MixtureV(cand["t"], post[o], np.ones(o.size), pdf["gk"], pdf["gk_q"], g)
             us = u[sel]
             outs.append((sel, score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
                                            dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))))
-        return ri, grp, _merge(outs, ri.size)
+        return ri, grp, _merge(outs, ri.size), {}
     if v == "cred_processor":
         pi = 1.0 / (P.N_NODES - P.N_GATEKEEPERS)
         m_all = np.sort(s["gk_send"], 1)[:, 1]
         outs = []
+        claim = np.zeros(ri.size, bool)
         for X in np.unique(grp):
             sel = np.nonzero(grp == X)[0]
             mine = np.nonzero(s["C"] == X)[0]
             mine = mine[np.argsort(m_all[mine], kind="stable")]
-            mix = _MixtureV(cand["t"], m_all[mine], (~s["decoy"][mine]).astype(float), pdf["c"], pdf["c_q"], g, pi=pi)
+            mix = _MixtureV(cand["t"], m_all[mine], np.ones(mine.size), pdf["c"], pdf["c_q"], g, pi=pi)
             us = u[sel]
-            outs.append((sel, score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
-                                           dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))))
-        return ri, grp, _merge(outs, ri.size)
+            res = score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
+                               dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))
+            claim[sel] = mix.own_share(us, res["sub"]["pidx"]) > pi       # evidence favours its own transactions
+            outs.append((sel, res))
+        return ri, grp, _merge(outs, ri.size), dict(took_part=extra["took_part"], claim=claim)
     raise KeyError(v)
 
 
@@ -600,9 +645,13 @@ def scored_mask(run, sub):
     return (t0 >= P.WARMUP_S) & (t0 < P.WARMUP_S + run.cfg.measure_s) & ~run.subs["decoy"][sub]
 
 
-def compute(run, pools, m: Models, vantages=VANTAGES):
-    """Score every vantage and the baseline on one run. Each vantage's record carries its rows
-    (scored records it took part in) with the vantage's and the paired baseline's decisions."""
+def compute(run, pools, m: Models, vantages=VANTAGES, run_id=0):
+    """Score every vantage and the baseline on one run. Each vantage's record carries its rows with
+    the vantage's and the paired baseline's decisions; the vantages scored on every record also
+    carry took_part (the server took part in that record's transaction) and claim (the server
+    claims the link: its top capture holds a packet it relayed, or, for the credential processor,
+    the evidence at its pick favours its own transactions over the baseline, a likelihood ratio
+    above 1, which is an own-transaction share above its prior of 1/17)."""
     rec = records(run, pools)
     keep = scored_mask(run, rec["sub"])
     rec = {k: x[keep] for k, x in rec.items()}
@@ -616,8 +665,10 @@ def compute(run, pools, m: Models, vantages=VANTAGES):
     base = score_blocks(lo, hi, cand, gfn, truth)
     out = {}
     for v in vantages:
-        ri, grp, res = score_vantage(v, run, rec, cand, m, base)
+        ri, grp, res, info = score_vantage(v, run, rec, cand, m, base, run_id)
         r = dict(sub=rec["sub"][ri].astype(np.int32), group=np.asarray(grp).astype(np.int16))
+        for k, x in info.items():
+            r[k] = np.asarray(x).astype(np.int8)
         for lvl in LEVELS:
             o = res[lvl]
             b = base[lvl]

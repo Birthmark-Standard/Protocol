@@ -29,38 +29,68 @@ def ci(r, k, lo, hi, d=2):
 def volume_table(D):
     lines = ["| L (in flight) | Captures per second | Captures per day | Devices (20-minute interval) |",
              "|---|---|---|---|"]
-    for L in sorted(set(CE.LOW_R) | set(CE.WIDE_L)):
+    for L in sorted({R + d for R in CE.REAL_R for d in CE.DECOY_LEVELS} | set(CE.REAL_R)):
         rate = L / D
         lines.append(f"| {L} | {rate:.4f} | {rate * 86400:,.0f} | {rate * P.INTERVAL_MIN * 60:,.1f} |")
     return "\n".join(lines)
+
+
+def _load(out, key, target=None):
+    """A cell's run records. Where re-scored records of the vantages scored on every record exist,
+    they replace those vantages' rows run by run."""
+    target = target or CE.TARGET
+    recs = RN.load(out, f"{key}__{target}")
+    extra = {r["run"]: r for r in RN.load(out, f"{key}__{target}__allrecords")}
+    if extra:
+        recs = [r for r in recs if r["run"] in extra]
+        for r in recs:
+            for v in CE.ALL_RECORDS:
+                if v != "baseline":
+                    r["vantages"][v] = extra[r["run"]]["vantages"][v]
+    return recs
 
 
 def _clean(r):
     return {k: v for k, v in r.items() if not k.startswith("_")}
 
 
-def build(out: Path):
+PRIOR_LABEL = {"push": "board pushes", "twopoint": "the two-point gatekeeper hold",
+               "regbundle": "registry-level bundling"}
+
+
+def _suffix(build):
+    return "" if build == CE.DEFAULT_BUILD else f"_{build}"
+
+
+def build(out: Path, build=CE.DEFAULT_BUILD):
     out = Path(out)
-    cells = json.loads((out / "cells.json").read_text())
-    rows, trends = AN.analyze(out, cells, lambda k: RN.load(out, f"{k}__{CE.TARGET}"))
+    cells = {k: dict(v, build=build) for k, v in json.loads((out / "cells.json").read_text()).items()}
+    priors = {b: (lambda k, b=b: _load(out, k, CE.target(b))) for b in CE.PRIOR_BUILDS.get(build, ())}
+    if build == "push":
+        priors = {"bundling": lambda k: _load(out, k, CE.PRIOR_TARGET)}
+    rows, effects, changes = AN.analyze(out, cells, lambda k: _load(out, k, CE.target(build)), priors=priors)
     clean = [_clean(r) for r in rows]
-    (out / "summary.json").write_text(json.dumps(dict(rows=clean, trends=trends), indent=1, default=float))
+    sx = _suffix(build)
+    (out / f"summary{sx}.json").write_text(json.dumps(dict(build=build, rows=clean, bundling_effects=effects,
+                                                           build_effects=changes), indent=1, default=float))
     keys = sorted({k for r in clean for k in r if not isinstance(r[k], dict)},
                   key=lambda k: (k not in ("cell", "vantage", "R", "T"), k))
-    with open(out / "summary.csv", "w", newline="") as f:
+    with open(out / f"summary{sx}.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
         w.writeheader()
         w.writerows(clean)
     D = CE.calibrate(out)["D"]
-    md = tables(clean, trends, D, out)
-    (out / "tables.md").write_text(md)
-    figures(clean, out / "figures")
-    print(f"wrote {out / 'summary.json'}, summary.csv, tables.md and figures/")
+    md = tables(clean, effects, D, out, changes, build)
+    (out / f"tables{sx}.md").write_text(md)
+    figures(clean, out / "figures", sx)
+    build_figure(out)
+    print(f"wrote {out / f'summary{sx}.json'}, summary{sx}.csv, tables{sx}.md and figures/")
 
 
-def _get(rows, v, R, T, control=False):
+def _get(rows, v, R, d, bundle, control=False):
     for r in rows:
-        if r["vantage"] == v and r["R"] == R and r["T"] == T and r["control"] == control:
+        if (r["vantage"] == v and r["R"] == R and r.get("decoys", 0) == d and r.get("bundle", False) == bundle
+                and r["control"] == control):
             return r
     return None
 
@@ -72,67 +102,95 @@ def _acc(r, lvl):
     return s
 
 
-def tables(rows, trends, D, out):
-    md = [f"# Tables\n\nRecord-to-device linking. Measured end-to-end delay D = {D:.1f} s. Per-decision "
-          "attack; intervals resample whole runs. Device level (primary): the named device is the record's. "
-          "Submission level: the named submission group contains a packet of the record's capture.\n"]
+def _cell_label(r):
+    if r["control"]:
+        return f"R = {r['R']:g}, every hold off"
+    return f"R = {r['R']:g}, {r['decoys']:g} decoys, bundling {'on' if r['bundle'] else 'off'}"
+
+
+def _effect_table(md, effects):
+    md.append("| Vantage | R | Decoys | Device effect [95% CI] | Submission effect [95% CI] | Matched rows |")
+    md.append("|---|---|---|---|---|---|")
+    for v in ORDER:
+        for R in CE.REAL_R:
+            for d in CE.DECOY_LEVELS:
+                e = effects.get(f"{v}.R{R:g}.D{d:g}")
+                if e:
+                    md.append(f"| {AT.LABEL[v]} | {R} | {d} | {100 * e['dev']['effect']:+.2f} [{100 * e['dev']['lo']:+.2f}, "
+                              f"{100 * e['dev']['hi']:+.2f}] | {100 * e['sub']['effect']:+.2f} [{100 * e['sub']['lo']:+.2f}, "
+                              f"{100 * e['sub']['hi']:+.2f}] | {e['dev']['n']} |")
+    md.append("")
+
+
+BUILD_TEXT = {
+    "push": "gatekeeper departure bundling, and match boards pushing new matches to every content server",
+    "twopoint": "gatekeeper departure bundling, match board pushes, and the two-point gatekeeper hold",
+    "regbundle": "gatekeeper departure bundling, match board pushes, the two-point gatekeeper hold, and "
+                 "registry-level pooled bundling",
+}
+CHANGE_TEXT = {
+    "bundling": ("board pushes", "content servers checking the boards on their own clock"),
+    "push": None, "twopoint": None,
+}
+
+
+def tables(rows, effects, D, out, changes=None, build=CE.DEFAULT_BUILD):
+    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, {BUILD_TEXT[build]}. "
+          f"Measured end-to-end delay D = {D:.1f} s. Per-decision attack; intervals resample whole runs. Device level "
+          "(primary): the named device is the record's. Submission level: the named submission group contains a "
+          "packet of the record's capture. Rows are real records only. The first hops and the credential processor "
+          "are scored on every record.\n"]
     md.append("## Volume\n\n" + volume_table(D) + "\n")
-    Ls = sorted({int(r["R"]) for r in rows if r["R"] == r["T"] and not r["control"]})
-    md.append("## No-decoy sweep (T = R)\n")
+    md.append("## Departure bundle sizes\n")
+    md.append("Postings per 30-second bundle at one gatekeeper, on its own grid, over every run of the cell. Off cells "
+              "report the bundles the same selections would have formed.\n")
+    md.append("| R | Decoys | Mean per bundle | Empty | Exactly 1 | Fewer than 2 | 1, of non-empty | Postings departing alone | Bundles |")
+    md.append("|---|---|---|---|---|---|---|---|---|")
+    for R in CE.REAL_R:
+        for d in CE.DECOY_LEVELS:
+            r = _get(rows, "baseline", R, d, True)
+            if r and "bundle_mean" in r:
+                md.append(f"| {R} | {d} | {r['bundle_mean']:.2f} | {pct(r['bundle_p0'], 1)} | {pct(r['bundle_p1'], 1)} | "
+                          f"{pct(r['bundle_p_lt2'], 1)} | {pct(r['bundle_p1_nonempty'], 1)} | {pct(r['bundle_alone_share'], 1)} | "
+                          f"{r['bundle_bundles']:,} |")
+    md.append("")
+    if effects:
+        md.append("## Effect of bundling on the same records\n")
+        md.append("Accuracy with bundling minus accuracy without, matched record by record on identical traffic "
+                  "(percentage points).\n")
+        _effect_table(md, effects)
+    for name, ch in (changes or {}).items():
+        if not ch:
+            continue
+        if name == "bundling":
+            md.append("## Effect of board pushes on the same records\n")
+            md.append("Accuracy with board pushes minus accuracy with content servers checking the boards on their "
+                      "own clock, matched record by record on identical traffic (percentage points). Bundling is on "
+                      "in both.\n")
+        else:
+            md.append(f"## Change from the {name} build on the same records\n")
+            md.append(f"Accuracy in this build minus accuracy in the {name} build, matched record by record "
+                      "(percentage points). The two builds share every random draw outside the mechanisms they "
+                      "differ in.\n")
+        _effect_table(md, ch)
+    md.append("## Every cell\n")
     for v in ORDER:
         md.append(f"### {AT.LABEL[v]}\n")
-        md.append("| L | Device accuracy [95% CI] | Random device | Lift vs random | Baseline | Contribution [95% CI] | "
-                  "Submission accuracy [95% CI] | 1/L | Lift (x L) | Baseline | Contribution [95% CI] | "
+        md.append("| Cell | Device accuracy [95% CI] | Random device | Baseline | Contribution [95% CI] | "
+                  "Submission accuracy [95% CI] | 1/T | Baseline | Contribution [95% CI] | "
                   "AUC [95% CI] | Precision top 1% | Precision top 5% | Coverage at >50% | Runs | n |")
-        md.append("|" + "---|" * 17)
-        for L in Ls:
-            r = _get(rows, v, L, L)
-            if not r or "dev_accuracy" not in r:
+        md.append("|" + "---|" * 15)
+        for r in sorted((x for x in rows if x["vantage"] == v),
+                        key=lambda x: (x["control"], x["R"], x.get("decoys", 0), x.get("bundle", False))):
+            if "dev_accuracy" not in r:
                 continue
-            ub = " (upper bound)" if v in AT.CAN_TELL and L > 40 else ""
-            md.append(f"| {L}{ub} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {r['dev_lift_random']:.2f} | "
-                      f"{pct(r['dev_baseline'])} | {ci(r, 'dev_contribution', 'dev_contribution_lo', 'dev_contribution_hi')} | "
-                      f"{_acc(r, 'sub')} | {pct(1 / L)} | {r['sub_lift']:.2f} | {pct(r['sub_baseline'])} | "
+            md.append(f"| {_cell_label(r)} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {pct(r['dev_baseline'])} | "
+                      f"{ci(r, 'dev_contribution', 'dev_contribution_lo', 'dev_contribution_hi')} | {_acc(r, 'sub')} | "
+                      f"{pct(1 / r['T'])} | {pct(r['sub_baseline'])} | "
                       f"{ci(r, 'sub_contribution', 'sub_contribution_lo', 'sub_contribution_hi')} | "
                       f"{r['auc']:.3f} [{r['auc_lo']:.3f}, {r['auc_hi']:.3f}] | {pct(r['p_at_1'], 1)} | "
                       f"{pct(r['p_at_5'], 1)} | {pct(r['coverage_p50'], 3)} | {r['runs']} | {r['n']} |")
         md.append("")
-    md.append("## Lift trend, L = 40 to 500 (no-decoy sweep)\n")
-    md.append("| Vantage | Level | Lift at 40 | Lift at 500 | Slope of log lift on log L [95% CI] | Direction |")
-    md.append("|---|---|---|---|---|---|")
-    for v in ORDER:
-        for level, name in (("dev", "device (vs random)"), ("sub", "submission (x L)")):
-            t = trends.get(f"{v}.{level}")
-            if t:
-                md.append(f"| {AT.LABEL[v]} | {name} | {t['lift_40']:.2f} | {t['lift_500']:.2f} | "
-                          f"{t['slope']:.3f} [{t['lo']:.3f}, {t['hi']:.3f}] | {t['direction']} |")
-    md.append("")
-    Ts = sorted({int(r["T"]) for r in rows})
-    for lvl, title in (("dev", "Device accuracy"), ("sub", "Submission accuracy")):
-        md.append(f"## Decoy sweep: {title.lower()} (rows R, columns T)\n")
-        for v in ORDER:
-            md.append(f"### {AT.LABEL[v]}" + (" (can tell decoys: every T > R entry is an upper bound on L)"
-                                              if v in AT.CAN_TELL else "") + "\n")
-            md.append("| R \\ T | " + " | ".join(str(T) for T in Ts) + " |")
-            md.append("|" + "---|" * (len(Ts) + 1))
-            for R in CE.LOW_R:
-                cells_ = []
-                for T in Ts:
-                    r = _get(rows, v, R, T)
-                    cells_.append("" if r is None or f"{lvl}_accuracy" not in r else
-                                  f"{pct(r[f'{lvl}_accuracy'])} ({r[f'{lvl}_contribution'] * 100:+.2f})"
-                                  + ("" if r["stable"] else " u"))
-                md.append(f"| {R} | " + " | ".join(cells_) + " |")
-            md.append("\n(Accuracy, then the contribution over the paired baseline in points. u: fewer than 50 "
-                      "device-level successes or failures; runs needed in summary.csv.)\n")
-    md.append("## Sensitivity control (R = 40, every hold off)\n")
-    md.append("| Vantage | Device accuracy [95% CI] | Random device | Submission accuracy | 1/L |")
-    md.append("|---|---|---|---|---|")
-    for v in ORDER:
-        r = _get(rows, v, CE.CONTROL_R, CE.CONTROL_R, True)
-        if r and "dev_accuracy" in r:
-            md.append(f"| {AT.LABEL[v]} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {pct(r['sub_accuracy'])} | {pct(1 / CE.CONTROL_R)} |")
-    md.append("")
     md.append("## Outcome-shuffle control (stable cells)\n")
     st = [r for r in rows if r.get("stable")]
     bad = [r for r in st if not (r["shuffle_auc_lo"] <= 0.5 <= r["shuffle_auc_hi"])]
@@ -161,63 +219,64 @@ def _style(ax):
     ax.set_axisbelow(True)
 
 
-def figures(rows, fig_dir):
+def figures(rows, fig_dir, sx=""):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     fig_dir = Path(fig_dir)
     fig_dir.mkdir(parents=True, exist_ok=True)
     f = plt.figure(figsize=(10, 4.4), dpi=300, facecolor=SURFACE)
-    for i, (lvl, key, lo, hi, ylab) in enumerate((
-            ("dev", "dev_lift_random", "dev_lift_random_lo", "dev_lift_random_hi", "device accuracy / random device rate"),
-            ("sub", "sub_lift", "sub_lift_lo", "sub_lift_hi", "submission accuracy x L"))):
+    cmap = plt.get_cmap("viridis")
+    for i, (key, ylab) in enumerate((("dev_accuracy", "passive observer: device accuracy"),
+                                     ("sub_accuracy", "passive observer: submission accuracy"))):
         ax = f.add_subplot(1, 2, i + 1)
         _style(ax)
-        for v in ORDER:
-            pts = sorted((r for r in rows if r["vantage"] == v and r["R"] == r["T"] and not r["control"] and key in r),
-                         key=lambda r: r["R"])
-            if not pts:
-                continue
-            x = np.array([r["R"] for r in pts])
-            ax.fill_between(x, np.maximum([r[lo] for r in pts], 1e-3), np.maximum([r[hi] for r in pts], 1e-3),
-                            color=SLOT[v], alpha=0.12, linewidth=0)
-            ax.plot(x, np.maximum([r[key] for r in pts], 1e-3), "-", color=SLOT[v], linewidth=2, marker=MARK[v],
-                    markersize=4, markeredgecolor=SURFACE, label=AT.LABEL[v])
-        ax.set_xscale("log")
+        for j, R in enumerate(CE.REAL_R):
+            col = cmap(j / max(len(CE.REAL_R) - 1, 1) * 0.85)
+            for bundle, ls in ((False, "--"), (True, "-")):
+                pts = sorted((r for r in rows if r["vantage"] == "baseline" and r["R"] == R and not r["control"]
+                              and r.get("bundle") == bundle and key in r), key=lambda r: r["decoys"])
+                if pts:
+                    ax.plot([r["decoys"] for r in pts], [r[key] for r in pts], ls, color=col, linewidth=2, marker="o",
+                            markersize=3.5, label=f"R = {R}, bundling {'on' if bundle else 'off'}")
         ax.set_yscale("log")
-        ax.axhline(1.0, color=INK2, linewidth=1, linestyle=":")
-        ax.set_xlabel("L (real transactions in flight, no decoys)", color=INK, fontsize=8)
-        ax.set_ylabel(ylab + " (1 = chance)", color=INK, fontsize=8)
-        ax.set_title("Device level" if lvl == "dev" else "Submission level", fontsize=9, color=INK, loc="left")
+        ax.set_xlabel("decoys in flight", color=INK, fontsize=8)
+        ax.set_ylabel(ylab, color=INK, fontsize=8)
         if i == 0:
             ax.legend(fontsize=6.5, frameon=False, labelcolor=INK)
     f.tight_layout()
-    f.savefig(fig_dir / "lift_vs_L_nodecoy.png", facecolor=SURFACE)
+    f.savefig(fig_dir / f"observer{sx}.png", facecolor=SURFACE)
     plt.close(f)
-    f = plt.figure(figsize=(10, 5.2), dpi=300, facecolor=SURFACE)
+
+
+def build_figure(out):
+    """The passive observer's device accuracy against the decoy target, one line per build and
+    real volume, from every build's summary on disk."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    out = Path(out)
+    builds = [b for b in CE.BUILDS if (out / f"summary{_suffix(b)}.json").exists()]
+    if len(builds) < 2:
+        return
+    f = plt.figure(figsize=(10, 4.4), dpi=300, facecolor=SURFACE)
     cmap = plt.get_cmap("viridis")
-    for i, v in enumerate(ORDER):
-        ax = f.add_subplot(2, 4, i + 1)
+    for i, R in enumerate(CE.REAL_R):
+        ax = f.add_subplot(1, len(CE.REAL_R), i + 1)
         _style(ax)
-        for j, R in enumerate(CE.LOW_R):
-            pts = sorted((r for r in rows if r["vantage"] == v and r["R"] == R and not r["control"] and "dev_accuracy" in r),
-                         key=lambda r: r["T"])
-            if not pts:
-                continue
-            ax.plot([r["T"] for r in pts], np.maximum([r["dev_accuracy"] for r in pts], 1e-4), "-o", markersize=2.5,
-                    linewidth=1.3, color=cmap(j / (len(CE.LOW_R) - 1)), label=f"R = {R}")
-        ax.set_xscale("log")
-        ax.set_yscale("log")
-        ax.set_ylim(1e-4, 1.2)
-        ax.set_title(AT.LABEL[v], fontsize=8, color=INK, loc="left")
-        ax.set_xlabel("T (total in flight)", fontsize=7, color=INK)
-        if i % 4 == 0:
-            ax.set_ylabel("device accuracy", fontsize=7, color=INK)
-    ax = f.add_subplot(2, 4, 8)
-    ax.axis("off")
-    h, lab = f.axes[0].get_legend_handles_labels()
-    if h:
-        ax.legend(h, lab, fontsize=7, frameon=False, loc="center", labelcolor=INK)
+        for j, b in enumerate(builds):
+            rows = json.loads((out / f"summary{_suffix(b)}.json").read_text())["rows"]
+            pts = sorted((r for r in rows if r["vantage"] == "baseline" and r["R"] == R and not r["control"]
+                          and r.get("bundle") and "dev_accuracy" in r), key=lambda r: r["decoys"])
+            if pts:
+                ax.plot([r["decoys"] for r in pts], [100 * r["dev_accuracy"] for r in pts], "-", marker="o",
+                        markersize=3.5, linewidth=2, color=cmap(j / max(len(builds) - 1, 1) * 0.85), label=b)
+                ax.plot([r["decoys"] for r in pts], [100 * r["dev_random"] for r in pts], ":", color=INK2, linewidth=1)
+        ax.set_title(f"R = {R}", color=INK, fontsize=9)
+        ax.set_xlabel("decoys in flight", color=INK, fontsize=8)
+        if i == 0:
+            ax.set_ylabel("passive observer: device named (%); dotted: random", color=INK, fontsize=8)
+            ax.legend(fontsize=7, frameon=False, labelcolor=INK)
     f.tight_layout()
-    f.savefig(fig_dir / "device_accuracy_vs_T_decoy.png", facecolor=SURFACE)
+    f.savefig(out / "figures" / "observer_by_build.png", facecolor=SURFACE)
     plt.close(f)

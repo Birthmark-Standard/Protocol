@@ -72,15 +72,25 @@ class Run:
     gk_phase: np.ndarray    # gatekeeper hold-clock phases (per node; used for the active three)
     gk_set: np.ndarray
     horizon: float
+    bundle_phase: np.ndarray = None
+    push_phase: np.ndarray = None
+    reg_phase: float = 0.0
 
 
 class World:
     def __init__(self, cfg: P.Config, seed: int, pools: Pools):
         self.cfg, self.pools = cfg, pools
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(5)
-        self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb = \
-            (np.random.default_rng(s) for s in streams)
+        streams = ss.spawn(9)
+        (self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle, rng_push,
+         self.rng_gkhold, rng_reg) = (np.random.default_rng(s) for s in streams)
+        # each gatekeeper's departure-bundle grid phase, on its own stream, so bundling on or off
+        # leaves every other draw unchanged
+        self.bundle_phase = rng_bundle.uniform(0, P.BUNDLE_S, P.N_NODES)
+        # each match board's push schedule phase, on its own stream
+        self.push_phase = rng_push.uniform(0, P.BOARD_PUSH_S, P.N_NODES)
+        # the registry-level bundle schedule: one phase shared by every content server
+        self.reg_phase = float(rng_reg.uniform(0, max(cfg.reg_bundle_s, 1.0)))
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -154,13 +164,28 @@ def _proc(r, n):
 
 
 def _content_server(w, r, arr, node):
-    """Hold on the node clock, then check the boards on every tick of that clock. Returns the
-    hold release time (the first board check)."""
+    """Hold on the node clock. Returns the hold release time."""
     return LT.release_time(r, arr, w.phase[node], w.cfg.lottery_enabled)
 
 
+def _pushed(w, posts, node):
+    """When a content server learns of quorum. Each board pushes every match posted since its
+    last push to every content server on its own schedule; the server learns of quorum when the
+    second of the three boards' pushes carrying the match reaches it. The server never queries a
+    board itself. Pushes go to every server on a fixed schedule whatever they carry, and are
+    internal to the board layer, so they are not on the observed wire."""
+    known = np.empty_like(posts)
+    for j in range(posts.shape[1]):
+        g = int(w.gk_set[j])
+        ph = w.push_phase[g]
+        push = ph + P.BOARD_PUSH_S * np.ceil((posts[:, j] - ph) / P.BOARD_PUSH_S)
+        known[:, j] = push + w.lat_int[g, node]
+    return np.sort(known, axis=1)[:, 1]
+
+
 def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
-    """One stream of transactions (real devices, or decoy sources) up to the horizon."""
+    """One stream of transactions (real devices, or the decoy infrastructure's identities) up to
+    the horizon. Both streams run the same code; the decoy flag is truth only."""
     cfg, H = w.cfg, w.cfg.horizon_s
     S = int(r.poisson(rate * H)) if rate > 0 else 0
     t0 = np.sort(r.uniform(0, H, S))
@@ -187,7 +212,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     # fan-out: each leg its own lottery draw on C's node clock; a dummy carries a same-size
     # placeholder in place of sigma_C, so the leg is drawn from the same class either way
     gk = np.broadcast_to(w.gk_set, (S, 3))
-    gk_send, gk_arr, posts = np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3))
+    gk_send, gk_arr, posts, gk_rel = np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3))
     ev_gk = np.empty((S, 3), np.int64)
     for j in range(3):
         g = int(w.gk_set[j])
@@ -195,39 +220,54 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         arr = rel + w.lat_int[C, g] + _jit(r, S)
         ev_gk[:, j] = w.ev.add(rel, arr, C, g, w.size(r, "GK", S), P.RT_APPDATA, K_BIRTHMARK, GK1 + j, sub)
         gk_send[:, j], gk_arr[:, j] = rel, arr
-        # verify sigma_V and sigma_C, hold on the gatekeeper's own hold clock, post (a real
-        # posting, or the substitute hash(PacketHash || BK) for a failed sigma_C: same schedule)
+        # verify sigma_V and sigma_C, hold on the gatekeeper's own hold clock, post
         chk = arr + r.uniform(*P.GATEKEEPER_PROC_MS, S) / 1000
-        posts[:, j] = LT.release_time(r, chk, w.gk_phase[g], on) + _proc(r, S)
+        rel_gk = LT.release_time(r, chk, w.gk_phase[g], on)
+        if cfg.gk_twopoint and on:
+            # two-point hold: release at once, or hold the full cap. Drawn on its own stream (the
+            # lottery draw above is still consumed), so every other draw is unchanged
+            cap = w.rng_gkhold.random(S) >= P.GK_IMMEDIATE_P
+            rel_gk = chk + np.where(cap, P.GK_CAP_S, 0.0)
+        gk_rel[:, j] = rel_gk
+        if cfg.bundle_s > 0:
+            # departure bundling: a selected posting waits for the next boundary of this
+            # gatekeeper's own grid and departs with every posting selected since the last one
+            ph = w.bundle_phase[g]
+            rel_gk = ph + cfg.bundle_s * np.ceil((rel_gk - ph) / cfg.bundle_s)
+        posts[:, j] = rel_gk + _proc(r, S)
     quorum = np.sort(posts, axis=1)[:, 1]          # second of three boards
-    if decoy:
-        quorum = np.full(S, np.inf)                # substitute postings never satisfy quorum
 
-    # content servers: hold on the node clock, then check the boards on each tick; submit on
-    # quorum, drop after 30 minutes without it
+    # content servers: hold on the node clock; submit once the hold has released and the board
+    # pushes have shown quorum, whichever is later; drop after 30 minutes without quorum
     out = {}
     for name, arr, node in (("f", arr_f, F), ("i", arr_i, I)):
         hold = _content_server(w, r, arr, node)
-        det = np.where(quorum <= hold, hold, LT.next_tick(np.where(np.isfinite(quorum), quorum, hold), w.phase[node]))
-        if not on:
-            det = np.maximum(arr, quorum)
+        det = np.maximum(hold, _pushed(w, posts, node))
         ok = np.isfinite(quorum) & (det - arr <= P.QUORUM_TIMEOUT_S)
         det = np.where(ok, det, np.nan)
-        post = det + _proc(r, S)
+        dep = det
+        if cfg.reg_bundle_s > 0:
+            # registry-level pooled bundling: a confirmed submission waits for the next boundary of
+            # one schedule shared by every content server, and departs with every other
+            # submission confirmed since the previous boundary, from every server
+            ph = w.reg_phase
+            dep = ph + cfg.reg_bundle_s * np.ceil((det - ph) / cfg.reg_bundle_s)
+        post = dep + _proc(r, S)
         out[name] = (hold, det, post, ok)
 
     return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh,
                 arr_c=arr_c, arr_f=arr_f, arr_i=arr_i, cv2_s=cv2_s, cv2_a=cv2_a,
-                gk_send=gk_send, gk_arr=gk_arr, posts=posts, quorum=quorum,
+                gk_send=gk_send, gk_arr=gk_arr, posts=posts, gk_release=gk_rel, quorum=quorum,
                 hold_f=out["f"][0], det_f=out["f"][1], reg_f=out["f"][2], ok_f=out["f"][3],
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk)
 
 
-def _gossip(w: World, origin, t_origin, sub, origin_leg):
+def _gossip(w: World, origin, t_origin, sub, origin_leg, stream=0):
     """Registry submissions: gossipsub flood-publishes to every peer; each peer then forwards on
-    first receipt to its mesh peers (not back to the origin)."""
-    r, N = np.random.default_rng(w.gossip_seed), P.N_NODES
+    first receipt to its mesh peers (not back to the origin). stream 0 carries the real
+    transactions' submissions and stream 1 the decoys', so decoys leave the real frames unchanged."""
+    r, N = np.random.default_rng([w.gossip_seed, stream]), P.N_NODES
     size = w.pools.gossip_wire
     origin_ids = np.full(origin.shape[0], -1, dtype=np.int64)
     for o in range(N):
@@ -260,17 +300,20 @@ def gen_birthmark(w: World):
     subs = {k: np.concatenate([real[k], dec[k]]) for k in real}
     S = subs["t0"].shape[0]
     sub = np.arange(S)
-    # registry submissions: real transactions only (a decoy never reaches quorum). The gossip
-    # stream is keyed to the real transactions alone, so decoys leave it unchanged.
+    # registry submissions: every transaction. A decoy is a genuine transaction from a registered
+    # credential held by the decoy infrastructure; it is approved, fanned out, posted and
+    # finalised exactly as a real one. The decoy flag is truth only, for scoring real records.
     okf, oki = subs["ok_f"], subs["ok_i"]
-    origin = np.concatenate([subs["F"][okf], subs["I"][oki]])
-    t_org = np.concatenate([subs["reg_f"][okf], subs["reg_i"][oki]])
-    osub = np.concatenate([sub[okf], sub[oki]])
-    legs = np.concatenate([np.full(okf.sum(), REG_F), np.full(oki.sum(), REG_I)])
-    oids = _gossip(w, origin, t_org, osub, legs)
     ev_rf, ev_ri = np.full(S, -1, np.int64), np.full(S, -1, np.int64)
-    ev_rf[okf] = oids[:okf.sum()]
-    ev_ri[oki] = oids[okf.sum():]
+    for stream, part in enumerate((sub < S_r, sub >= S_r)):
+        f_, i_ = okf & part, oki & part
+        origin = np.concatenate([subs["F"][f_], subs["I"][i_]])
+        t_org = np.concatenate([subs["reg_f"][f_], subs["reg_i"][i_]])
+        osub = np.concatenate([sub[f_], sub[i_]])
+        legs = np.concatenate([np.full(f_.sum(), REG_F), np.full(i_.sum(), REG_I)])
+        oids = _gossip(w, origin, t_org, osub, legs, stream)
+        ev_rf[f_] = oids[:f_.sum()]
+        ev_ri[i_] = oids[f_.sum():]
     subs["ev_reg_f"], subs["ev_reg_i"] = ev_rf, ev_ri
     subs["final"] = np.where(okf & oki, np.fmax(subs["reg_f"], subs["reg_i"]), np.nan)
     return subs
@@ -431,4 +474,5 @@ def simulate(cfg: P.Config, seed: int, pools: Pools) -> Run:
         if k.startswith("ev_"):
             subs[k] = np.where(v >= 0, rank[np.maximum(v, 0)], -1)
     return Run(cfg=cfg, events=events, subs=subs, phase=w.phase, gk_phase=w.gk_phase, gk_set=w.gk_set,
+               bundle_phase=w.bundle_phase, push_phase=w.push_phase, reg_phase=w.reg_phase,
                horizon=cfg.horizon_s)
