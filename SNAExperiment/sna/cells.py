@@ -33,12 +33,36 @@ CONTROL_R = 40                                   # sensitivity control volume (e
 CAL_SEED0, MODEL_SEED0 = 2_000_000_000, 1_000_000_000
 
 
+# builds: the protocol as attacked. Each later build adds one mechanism to the one before it.
+BUILDS = {
+    "push": dict(target="link_push"),
+    "twopoint": dict(target="link_twopoint", gk_twopoint=True),
+    "regbundle": dict(target="link_regbundle", gk_twopoint=True, reg_bundle_s=P.REG_BUNDLE_S),
+}
+DEFAULT_BUILD = "regbundle"
+PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push")}
+
+
+def build_kw(build):
+    return {k: v for k, v in BUILDS[build].items() if k != "target"}
+
+
+def target(build):
+    return BUILDS[build]["target"]
+
+
+
 def cell_key(R, decoys=0, bundle=False, control=False):
     return f"R{R:g}" + (f"_D{decoys:g}" if decoys else "") + ("_B" if bundle else "") + ("_control" if control else "")
 
 
-def grid(which="all"):
+def grid(which="all", build=DEFAULT_BUILD):
     """Cell specs. which: all | bundle | nobundle | control."""
+    specs = [dict(s, build=build) for s in _grid(which)]
+    return specs
+
+
+def _grid(which):
     specs = []
     for bundle in (False, True):
         if which not in ("all", "bundle" if bundle else "nobundle"):
@@ -63,7 +87,8 @@ def config_of(spec, D):
     R = spec["R"]
     return P.Config(real_rate=R / D, decoy_rate=float(spec.get("decoys", 0.0)) / D,
                     bundle_s=P.BUNDLE_S if spec.get("bundle") else 0.0, measure_s=window_s(R, D),
-                    lottery_enabled=not spec["control"], background_enabled=False, nonblending_enabled=False)
+                    lottery_enabled=not spec["control"], background_enabled=False, nonblending_enabled=False,
+                    **build_kw(spec.get("build", DEFAULT_BUILD)))
 
 
 def traffic_seed(R, run_id, control=False):
@@ -99,23 +124,23 @@ def calibrate(out=RESULTS, runs=10, force=False):
 
 
 # --------------------------------------------------------------------------- models
-TARGET = "link_push"        # record-to-device linking, genuine decoys, board pushes; names every model and record file
-PRIOR_TARGET = "link_bundling"  # the same cells with content servers checking the boards on their own clock
+TARGET = target(DEFAULT_BUILD)
+PRIOR_TARGET = "link_bundling"  # the push build's cells with content servers checking the boards on their own clock
 
 
-def model_path(out, control, bundle=False):
+def model_path(out, control, bundle=False, build=DEFAULT_BUILD):
     """The attacker's likelihood models for a configuration: every hold off (control), or the
-    protocol with gatekeeper departure bundling on or off. An attacker knows the protocol, so each
-    configuration is attacked with models built under it."""
+    protocol with gatekeeper departure bundling on or off, under one build. An attacker knows the
+    protocol, so each configuration is attacked with models built under it."""
     name = "control" if control else ("main_bundle" if bundle else "main")
-    return Path(out) / "models" / f"{TARGET}_{name}.pkl"
+    return Path(out) / "models" / f"{target(build)}_{name}.pkl"
 
 
 ALL_RECORDS = ("baseline", "first_hop_cred", "first_hop_content", "cred_processor")
 
 
 def rec_name(spec):
-    return f"{spec['key']}__{TARGET}" + ("__allrecords" if spec.get("allrecords") else "")
+    return f"{spec['key']}__{target(spec.get('build', DEFAULT_BUILD))}" + ("__allrecords" if spec.get("allrecords") else "")
 
 
 def allrecords_specs(specs):
@@ -123,13 +148,14 @@ def allrecords_specs(specs):
     return [dict(s, allrecords=True, vantages=ALL_RECORDS) for s in specs]
 
 
-def ensure_models(out, control, pools=None, bundle=False):
-    p = model_path(out, control, bundle)
+def ensure_models(out, control, pools=None, bundle=False, build=DEFAULT_BUILD):
+    p = model_path(out, control, bundle, build)
     if p.exists():
         return
     p.parent.mkdir(parents=True, exist_ok=True)
     t = time.time()
-    m = AT.build_models(P.Config(lottery_enabled=not control, bundle_s=P.BUNDLE_S if bundle else 0.0),
+    m = AT.build_models(P.Config(lottery_enabled=not control, bundle_s=P.BUNDLE_S if bundle else 0.0,
+                                 **build_kw(build)),
                         pools or Pools(), seed0=MODEL_SEED0)
     tmp = p.with_suffix(".tmp")
     with open(tmp, "wb") as f:
@@ -147,7 +173,7 @@ def worker(out, spec, run_id, D):
     """One run of one cell: simulate once, score every vantage and its paired baseline."""
     if "pools" not in _W:
         _W["pools"] = Pools()
-    mp = model_path(out, spec["control"], spec.get("bundle", False))
+    mp = model_path(out, spec["control"], spec.get("bundle", False), spec.get("build", DEFAULT_BUILD))
     if _W.get("model_key") != str(mp):
         with open(mp, "rb") as f:
             _W["models"] = pickle.load(f)
@@ -201,7 +227,7 @@ def run_cells(out, specs, runs, workers="auto"):
         done = RN.done_runs(out, rec_name(spec))
         todo = [k for k in range(runs) if k not in done]
         if todo:
-            ensure_models(out, spec["control"], pools, spec.get("bundle", False))
+            ensure_models(out, spec["control"], pools, spec.get("bundle", False), spec.get("build", DEFAULT_BUILD))
         tasks += [(str(out), spec, k, D) for k in todo]
     tasks.sort(key=lambda t: (t[2], t[1]["T"], t[1]["key"]))
     RN.execute(tasks, worker, out, workers, label="run")
@@ -213,10 +239,10 @@ def probe_costs(out, specs, probe_runs=1, workers="auto"):
     1,000,000 up, never used by a sweep). Written to <out>/costs.json."""
     out = Path(out)
     D = calibrate(out)["D"]
-    for b in sorted({bool(s.get("bundle")) for s in specs if not s["control"]}):
-        ensure_models(out, False, bundle=b)
-    if any(s["control"] for s in specs):
-        ensure_models(out, True)
+    for b, bl in sorted({(bool(s.get("bundle")), s.get("build", DEFAULT_BUILD)) for s in specs if not s["control"]}):
+        ensure_models(out, False, bundle=b, build=bl)
+    for bl in sorted({s.get("build", DEFAULT_BUILD) for s in specs if s["control"]}):
+        ensure_models(out, True, build=bl)
     probe = out / "probe"
     tasks = []
     for spec in specs:
@@ -249,3 +275,81 @@ def runs_needed(successes_per_run, min_successes):
     if successes_per_run <= 0:
         return math.inf
     return int(math.ceil(min_successes / successes_per_run))
+
+
+# --------------------------------------------------------------------------- latency
+LATENCY_SEED0 = 3_000_000
+
+
+def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40))):
+    """Capture-to-finalisation time of real transactions under each build, with the stages that
+    make it up. Run ids from 3,000,000 up, never used by a sweep. Written to <out>/latency.json."""
+    out = Path(out)
+    D = calibrate(out)["D"]
+    pools = Pools()
+    res = {}
+    for build in BUILDS:
+        for R, d in cells:
+            spec = dict(R=float(R), decoys=float(d), bundle=True, control=False, build=build)
+            cfg = config_of(spec, D)
+            acc = {k: [] for k in ("total", "to_gatekeeper", "gk_hold", "gk_bundle_wait", "quorum",
+                                  "quorum_to_confirmed", "registry_bundle_wait", "confirmed_to_final")}
+            for k in range(runs):
+                s = S.simulate(cfg, traffic_seed(R, LATENCY_SEED0 + k), pools).subs
+                m = (s["t0"] >= P.WARMUP_S) & (s["t0"] < P.WARMUP_S + cfg.measure_s) & ~s["decoy"] \
+                    & s["ok_f"] & s["ok_i"]
+                t0 = s["t0"][m]
+                acc["total"].append(s["final"][m] - t0)
+                acc["to_gatekeeper"].append(s["gk_arr"][m].mean(1) - t0)
+                acc["gk_hold"].append((s["gk_release"][m] - s["gk_arr"][m]).mean(1))
+                acc["gk_bundle_wait"].append((s["posts"][m] - s["gk_release"][m]).mean(1))
+                acc["quorum"].append(s["quorum"][m] - t0)
+                last = np.where(s["reg_f"][m] >= s["reg_i"][m], 0, 1)
+                det = np.where(last == 0, s["det_f"][m], s["det_i"][m])
+                reg = np.where(last == 0, s["reg_f"][m], s["reg_i"][m])
+                acc["quorum_to_confirmed"].append(det - s["quorum"][m])
+                acc["registry_bundle_wait"].append(reg - det)
+                acc["confirmed_to_final"].append(s["final"][m] - det)
+            row = {}
+            for k, v in acc.items():
+                v = np.concatenate(v)
+                row[k] = dict(mean=float(v.mean()), median=float(np.median(v)), p95=float(np.percentile(v, 95)))
+            tot = np.concatenate(acc["total"])
+            row["n"] = int(tot.size)
+            # shape of the total: 10-second histogram, to show whether it collapses onto a few values
+            h, _ = np.histogram(tot, bins=np.arange(0, 2400 + 10, 10))
+            row["hist10"] = h.tolist()
+            row["largest_bin_share"] = float(h.max() / h.sum())
+            row["occupied_bins"] = int((h > 0).sum())
+            res[f"{build}.R{R}.D{d}"] = row
+            t = row["total"]
+            print(f"{build:9s} R={R:2d} decoys={d}: capture to finalisation mean {t['mean']:.1f} s, "
+                  f"median {t['median']:.1f} s, p95 {t['p95']:.1f} s (n = {row['n']})", flush=True)
+    (out / "latency.json").write_text(json.dumps(dict(runs=runs, rates_from_D=D, cells=res), indent=1))
+    _latency_figure(out, res, cells)
+    return res
+
+
+def _latency_figure(out, res, cells):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    R, d = cells[0]
+    f, ax = plt.subplots(figsize=(7, 3.6), dpi=300, facecolor="#fcfcfb")
+    ax.set_facecolor("#fcfcfb")
+    cmap = plt.get_cmap("viridis")
+    for j, build in enumerate(BUILDS):
+        h = np.array(res[f"{build}.R{R}.D{d}"]["hist10"], float)
+        x = np.arange(h.size) * 10 + 5
+        ax.plot(x, 100 * h / h.sum(), color=cmap(j / max(len(BUILDS) - 1, 1) * 0.85), linewidth=1.6, label=build)
+    ax.set_xlim(0, 1600)
+    ax.set_xlabel("capture to registry finalisation (s)", fontsize=8)
+    ax.set_ylabel("share of real transactions per 10 s (%)", fontsize=8)
+    ax.set_title(f"R = {R}, {d} decoys in flight", fontsize=9)
+    ax.legend(fontsize=7, frameon=False)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    f.tight_layout()
+    (out / "figures").mkdir(parents=True, exist_ok=True)
+    f.savefig(out / "figures" / "latency_by_build.png", facecolor="#fcfcfb")
+    plt.close(f)

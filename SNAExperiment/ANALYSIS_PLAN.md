@@ -28,12 +28,12 @@ The simulator follows the per-leg message specification. Its design choices are:
 - Every relay hop holds each packet on its node clock: 10-second ticks, 8.33% release per tick, released at tick 30 at the latest.
 - A device holds each of its three first-hop packets on a fresh random phase.
 - The credential processor draws each gatekeeper fan-out leg separately on its node clock.
-- Each gatekeeper verifies, holds on its own dedicated hold clock, then posts to its board.
+- Each gatekeeper verifies, holds on its own dedicated hold clock, then posts to its board. From section 6d on, the gatekeeper's hold is the two-point hold instead.
 
 **Content servers**
 - A content server holds on its node clock. It never queries a board (section 6c).
 - Each match board pushes every match posted since its previous push to every content server, every 10 seconds on its own schedule.
-- A content server submits to the registry once its hold has released and pushes from two boards have carried a posting with a valid σ_C.
+- A content server submits to the registry once its hold has released and pushes from two boards have carried a posting with a valid σ_C. From section 6d on, the submission then waits for the next registry-level bundle.
 - It drops the packet if quorum has not formed 30 minutes after arrival.
 
 **Registry submissions**
@@ -137,8 +137,10 @@ Delays do not depend on volume, so one model set serves every cell. The sensitiv
 5. **Decoys reach the registry.** Every decoy transaction reaches quorum and produces a registry record, as every real one does.
 6. **Departure bundling.** Every gatekeeper posting departs on its gatekeeper's own 30-second grid, at least 0 and under 30 seconds after the hold clock selected it.
 7. **Board pushes.** No content server acts before its hold releases or before the second board push carrying the match reaches it. Every push lands on its board's own 10-second schedule.
+8. **Gatekeeper hold shape** (section 6d). Every gatekeeper hold is either immediate or the full 5-minute cap, with about 40% at the cap.
+9. **Registry-level bundling** (section 6d). Every registry submission departs on the one shared schedule, at least 0 and under one window after its content server confirmed it.
 
-The checks run at R = 15 with the decoy stream, departure bundling and background traffic on, over 12 seeded runs.
+The checks run at R = 15 with the decoy stream, departure bundling and background traffic on, over 12 seeded runs, on the latest build.
 
 ## 5. Cells, runs and metrics
 
@@ -304,6 +306,62 @@ The 10-second period matches the relay tick. The period, the per-board phase, an
 - **P2.** No vantage's device-level push effect interval lies wholly outside ±3 points in any cell.
 - **P3.** The content server's device-level push effect lies within ±2 points in every cell.
 
+## 6d. Two-point gatekeeper hold and registry-level bundling
+
+Written after the board-push sweep and before the sweeps of the two builds below.
+
+**Builds.** Each build adds one mechanism to the one before it:
+
+| Build | Adds | Records |
+|---|---|---|
+| push | the build of section 6c | `link_push` |
+| twopoint | the two-point gatekeeper hold | `link_twopoint` |
+| regbundle | registry-level pooled bundling, on top of twopoint | `link_regbundle` |
+
+**Two-point gatekeeper hold.** A gatekeeper releases a packet at once with probability 0.6, or holds it for exactly 300 seconds with probability 0.4. The release does not wait for a tick of the gatekeeper's hold clock. Departure bundling then applies as before: the released posting waits for the next boundary of the gatekeeper's own 30-second grid. The draw comes from a separate random stream, and the relay-lottery draw it replaces is still consumed. So twopoint shares every other random draw with push.
+
+**Registry-level pooled bundling.** A content server's confirmed submission waits for the next boundary of one schedule shared by every content server, with a phase drawn on a separate random stream, and departs with every submission confirmed since the previous boundary. The registry submissions are gossiped as before, so the observer sees them depart together at each boundary. regbundle shares every random draw with twopoint, so only the registry submissions move.
+
+**Window size.** Measured before this section was written, over 20 runs per cell (run ids from 1,000 up, never used by a sweep), with the two-point hold, gatekeeper bundling and board pushes on:
+
+| R | Decoys | Confirmed submissions per second | Per 120 s bundle: submissions | Per 120 s bundle: distinct transactions | Bundles with fewer than 2 transactions |
+|---|---|---|---|---|---|
+| 1 | 20 | 0.067 | 8.0 | 5.4 | 2.9% |
+| 1 | 30 | 0.099 | 11.9 | 7.9 | 0.33% |
+| 1 | 40 | 0.131 | 15.7 | 10.5 | 0.038% |
+| 1 | 60 | 0.195 | 23.4 | 15.6 | under 0.001% |
+| 15 | 40 | 0.177 | 21.2 | 14.2 | under 0.001% |
+| 50 | 40 | 0.290 | 34.8 | 23.2 | under 0.001% |
+
+- Confirmed submissions arrive in bursts: the gaps between them have a coefficient of variation of 1.4 to 1.6, above the 1.0 of a Poisson stream.
+- A bundle holding only one transaction's two submissions mixes nothing, so the criterion counts distinct transactions.
+- The window is the smallest multiple of 30 seconds that keeps bundles with fewer than two distinct transactions under 0.1% at R = 1 with the 40-decoy target, the criterion the specification uses for gatekeeper bundling. That is 120 seconds (90 seconds gives 0.29%).
+
+**Rates.** Real and decoy rates stay those of the push build (R / D and decoys / D, with D = 625.6 s). The new mechanisms lengthen the end-to-end delay, so the number of transactions in flight in a cell rises in proportion; the decoy stream's rate is fixed, as the specification requires.
+
+**Cells.** Bundling and board pushes on, at R = 1, 15 and 50 × decoy target 20, 40 and 60: 9 cells per build. The sensitivity control is run for regbundle only; with every hold off, the twopoint control is the push control. 200 runs per cell, run ids 0 to 199, recorded here before the first run of these sweeps. Models are rebuilt under each build. The first hops and the credential processor are scored on every record.
+
+**Reported.**
+- Each vantage's accuracy in every cell of each build, and the passive observer's accuracy minus the random rate.
+- The paired effect of each mechanism on its own: twopoint minus push, and regbundle minus twopoint, matched record by record. regbundle minus push is reported as the combined effect.
+- The registry bundle sizes, as in the table above, for every cell.
+- The end-to-end delay with both mechanisms active, from a real capture to its registry finalization: mean, median and 95th percentile, with the stages that make it up, at R = 1, 15 and 50 with 40 decoys (`python -m sna latency`, 20 runs per cell on run ids from 3,000,000 up).
+- Whether the end-to-end delay collapses onto a few values under the two-point hold: the share of transactions in the fullest 10-second bin and the number of occupied 10-second bins, for each build.
+
+**Development runs**, made before this section was written:
+- The pre-run checks were run on regbundle. Checks 1 to 3 and 5 to 9 pass. Check 4 fails marginally for the baseline's D hold, the same feature and seeds as before (AUC 0.488 [0.476, 0.500]).
+- In isolation, the relay-lottery hold the gatekeeper used before has mean 106.2 s and coefficient of variation 0.84; the two-point hold has mean 119.8 s and coefficient of variation 1.23.
+- Over 20 runs at R = 1 with 40 decoys, the fullest 10-second bin of the end-to-end delay held 2.7% of transactions under push and 2.5% under twopoint, with 118 and 128 bins occupied.
+- 8 paired runs per cell for each build:
+  - twopoint minus push: the observer's device effect ranged from -1.24 to -0.20 points;
+  - regbundle minus twopoint: the observer's device effect ranged from -0.39 to +0.26 points, and the validator's from -2.48 to -0.27 points.
+
+**Predictions:**
+- **M1.** The two-point hold lowers the passive observer's device accuracy: its effect (twopoint minus push) is below 0 in every cell, and its interval lies wholly below 0 in at least 6 of the 9 cells.
+- **M2.** The two-point hold's effect on the observer lies above -3 points in every cell.
+- **M3.** Registry bundling's effect on the observer (regbundle minus twopoint) lies within ±1 point in every cell.
+- **M4.** Registry bundling lowers the validator's device accuracy: its effect is below 0 in every cell.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -313,7 +371,7 @@ The 10-second period matches the relay tick. The period, the per-board phase, an
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b and 6c record their own cells and run counts.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b, 6c and 6d record their own cells and run counts.
 
 ## 9. Amendment record
 
@@ -322,3 +380,5 @@ Sections 1, 3, 5.2 and 6 and check 2 were rewritten before any sweep of the reco
 A second amendment followed a change to the decoy mechanism in the specification. Decoys became genuine transactions from registered identities, and the decoy stream a steady 40 in flight independent of real traffic. Sections 2 (Decoys), 4, 5.1, 5.2, 6 and 8 were rewritten before any sweep of this build. Sweeps of earlier builds are not used here; their text and results are in the repository history.
 
 A third amendment followed a change to the content servers in the specification: the match boards push new matches to every content server, and a content server no longer checks the boards itself. Section 2 (Content servers), section 4 (checks 6 and 7) and section 6c were written before any sweep of this build. The bundling sweep's results are kept in `results/bundling/`.
+
+A fourth amendment followed two additions to the specification: the two-point gatekeeper hold and registry-level pooled bundling. Section 4 (checks 8 and 9) and section 6d were written before any sweep of these builds. The board-push sweep's results are kept as `results/summary_push.json` and `results/tables_push.md`, with its run log and checks in `results/push/`.

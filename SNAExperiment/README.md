@@ -35,10 +35,11 @@ Each vantage is scored against the baseline on the same records. The difference 
 
 **Timing**
 - Timing lottery on every hold: 10-second ticks, 8.33% release per tick, 5-minute cap.
-- Each node holds on one clock; each gatekeeper holds on a dedicated clock.
+- Each node holds on one clock. A gatekeeper holds with the two-point hold: it releases at once with probability 0.6, or holds the full 5-minute cap.
 - The device holds each channel on a fresh phase.
 - Gatekeeper postings depart in 30-second bundles, on each gatekeeper's own grid.
-- Content servers hold first and never query a board. Each match board pushes its new matches to every content server every 10 seconds, on its own schedule. A content server submits once its hold has released and two boards' pushes carry the match, and drops the packet after 30 minutes without quorum.
+- Content servers hold first and never query a board. Each match board pushes its new matches to every content server every 10 seconds, on its own schedule. A content server confirms once its hold has released and two boards' pushes carry the match, and drops the packet after 30 minutes without quorum.
+- A confirmed submission waits for the next 120-second registry-level bundle, on one schedule shared by every content server, and departs with every submission confirmed since the previous boundary.
 
 **Padding**
 - 420 to 460 bytes for every transit leg.
@@ -89,8 +90,9 @@ py -m sna analyze
 | `run` | Runs the sweep. It is resumable: an interrupted run loses at most the runs in flight, and rerunning the same command continues it. Results are identical for any `--workers` value. |
 | `analyze` | Writes `results/summary.json`, `summary.csv`, `tables.md` and `figures/`. |
 | `volume` | Prints L against captures per day and devices. |
+| `latency` | Writes the capture-to-finalization time under each build, by stage, to `results/latency.json`. |
 
-`--cells nodecoy|decoy|control` restricts a run to one part of the grid.
+`--cells bundle|nobundle|control` restricts a run to one part of the grid. `--build push|twopoint|regbundle` picks the protocol build (default regbundle, the latest specification).
 
 ## Layout
 

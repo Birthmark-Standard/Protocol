@@ -19,6 +19,10 @@ results/checks.json and reported, pass or fail.
    at least 0 and under 30 seconds after the hold clock selected it.
 7. Board pushes: no content server acts before its hold releases or before the second board push
    carrying the match reaches it, and every push lands on its board's own schedule.
+8. Gatekeeper hold shape: every gatekeeper hold is either immediate or the full 5-minute cap,
+   with about 40% at the cap.
+9. Registry-level bundling: every registry submission departs on the one shared schedule, at least
+   0 and under one window after its content server confirmed it.
 """
 from __future__ import annotations
 
@@ -229,7 +233,30 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
                              max_push_wait=float(grid.max()), max_after_push=float(late.max()),
                              passed=bool(early.min() >= 0 and grid.min() >= 0 and grid.max() < P.BOARD_PUSH_S
                                          and late.max() <= P.LAT_INT_MS[1] / 1000 + 1e-9))
-    res["cell"] = dict(R=15, decoys_in_flight=P.DECOYS_IN_FLIGHT, bundling=True, background=True)
+    # 8. two-point gatekeeper hold: release time minus arrival is processing alone, or the cap plus
+    # processing
+    gk_hold = (s["gk_release"] - s["gk_arr"]).ravel()
+    pm = P.GATEKEEPER_PROC_MS[0] / 1000 - 1e-9, P.GATEKEEPER_PROC_MS[1] / 1000 + 1e-9
+    imm = (gk_hold >= pm[0]) & (gk_hold <= pm[1])
+    capd = (gk_hold >= P.GK_CAP_S + pm[0]) & (gk_hold <= P.GK_CAP_S + pm[1])
+    res["gk_hold_shape"] = dict(immediate=float(imm.mean()), capped=float(capd.mean()), n=int(gk_hold.size),
+                                mean_s=float(gk_hold.mean()),
+                                passed=bool((imm | capd).all() and abs(capd.mean() - (1 - P.GK_IMMEDIATE_P)) < 0.03))
+    # 9. registry-level bundling: every submission departs on the shared grid
+    W, ph = run.cfg.reg_bundle_s, run.reg_phase
+    waits, offs = [], []
+    for nm in ("f", "i"):
+        ok = s[f"ok_{nm}"]
+        reg, det = s[f"reg_{nm}"][ok], s[f"det_{nm}"][ok]
+        dep = ph + W * np.ceil((det - ph) / W)
+        waits.append(dep - det)
+        offs.append(reg - dep)
+    waits, offs = np.concatenate(waits), np.concatenate(offs)
+    res["registry_bundling"] = dict(window_s=W, max_wait=float(waits.max()), min_wait=float(waits.min()),
+                                    proc_range=[float(offs.min()), float(offs.max())],
+                                    passed=bool(W > 0 and waits.min() >= 0 and waits.max() < W and offs.min() >= 0
+                                                and offs.max() <= P.PROC_MS[1] / 1000 + 1e-9))
+    res["cell"] = dict(R=15, decoys_in_flight=P.DECOYS_IN_FLIGHT, bundling=True, background=True, build=CE.DEFAULT_BUILD)
     (out / "checks.json").write_text(json.dumps(res, indent=1, default=_json))
     if verbose:
         print_checks(res)
@@ -270,6 +297,12 @@ def print_checks(res):
     print(f"[{mark(bp['passed'])}] board pushes: no content server acts before its hold or quorum push "
           f"(least margin {bp['min_margin']:.3f} s); pushes wait up to {bp['max_push_wait']:.2f} s "
           f"(period {bp['period_s']:g} s)")
+    gh = res["gk_hold_shape"]
+    print(f"[{mark(gh['passed'])}] gatekeeper hold shape: {100 * gh['immediate']:.1f}% immediate, "
+          f"{100 * gh['capped']:.1f}% at the cap, mean {gh['mean_s']:.1f} s")
+    rb = res["registry_bundling"]
+    print(f"[{mark(rb['passed'])}] registry bundling: every submission departs on the shared grid, "
+          f"{rb['min_wait']:.2f} to {rb['max_wait']:.2f} s after confirmation (window {rb['window_s']:g} s)")
     d = res["decoys_reach_registry"]
     print(f"[{mark(d['passed'])}] decoys reach the registry: {d['decoy_records']}/{d['decoys']} decoy and "
           f"{d['real_records']}/{d['real']} real transactions finalised")

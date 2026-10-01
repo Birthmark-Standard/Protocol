@@ -74,20 +74,23 @@ class Run:
     horizon: float
     bundle_phase: np.ndarray = None
     push_phase: np.ndarray = None
+    reg_phase: float = 0.0
 
 
 class World:
     def __init__(self, cfg: P.Config, seed: int, pools: Pools):
         self.cfg, self.pools = cfg, pools
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(7)
-        self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle, rng_push = \
-            (np.random.default_rng(s) for s in streams)
+        streams = ss.spawn(9)
+        (self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle, rng_push,
+         self.rng_gkhold, rng_reg) = (np.random.default_rng(s) for s in streams)
         # each gatekeeper's departure-bundle grid phase, on its own stream, so bundling on or off
         # leaves every other draw unchanged
         self.bundle_phase = rng_bundle.uniform(0, P.BUNDLE_S, P.N_NODES)
         # each match board's push schedule phase, on its own stream
         self.push_phase = rng_push.uniform(0, P.BOARD_PUSH_S, P.N_NODES)
+        # the registry-level bundle schedule: one phase shared by every content server
+        self.reg_phase = float(rng_reg.uniform(0, max(cfg.reg_bundle_s, 1.0)))
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -220,6 +223,11 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         # verify sigma_V and sigma_C, hold on the gatekeeper's own hold clock, post
         chk = arr + r.uniform(*P.GATEKEEPER_PROC_MS, S) / 1000
         rel_gk = LT.release_time(r, chk, w.gk_phase[g], on)
+        if cfg.gk_twopoint and on:
+            # two-point hold: release at once, or hold the full cap. Drawn on its own stream (the
+            # lottery draw above is still consumed), so every other draw is unchanged
+            cap = w.rng_gkhold.random(S) >= P.GK_IMMEDIATE_P
+            rel_gk = chk + np.where(cap, P.GK_CAP_S, 0.0)
         gk_rel[:, j] = rel_gk
         if cfg.bundle_s > 0:
             # departure bundling: a selected posting waits for the next boundary of this
@@ -237,7 +245,14 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         det = np.maximum(hold, _pushed(w, posts, node))
         ok = np.isfinite(quorum) & (det - arr <= P.QUORUM_TIMEOUT_S)
         det = np.where(ok, det, np.nan)
-        post = det + _proc(r, S)
+        dep = det
+        if cfg.reg_bundle_s > 0:
+            # registry-level pooled bundling: a confirmed submission waits for the next boundary of
+            # one schedule shared by every content server, and departs with every other
+            # submission confirmed since the previous boundary, from every server
+            ph = w.reg_phase
+            dep = ph + cfg.reg_bundle_s * np.ceil((det - ph) / cfg.reg_bundle_s)
+        post = dep + _proc(r, S)
         out[name] = (hold, det, post, ok)
 
     return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh,
@@ -459,5 +474,5 @@ def simulate(cfg: P.Config, seed: int, pools: Pools) -> Run:
         if k.startswith("ev_"):
             subs[k] = np.where(v >= 0, rank[np.maximum(v, 0)], -1)
     return Run(cfg=cfg, events=events, subs=subs, phase=w.phase, gk_phase=w.gk_phase, gk_set=w.gk_set,
-               bundle_phase=w.bundle_phase, push_phase=w.push_phase,
+               bundle_phase=w.bundle_phase, push_phase=w.push_phase, reg_phase=w.reg_phase,
                horizon=cfg.horizon_s)

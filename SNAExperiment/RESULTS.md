@@ -309,7 +309,7 @@ B1 confirms development runs, as the plan discloses.
 
 # Match board pushes
 
-Plan section 6c; full tables in `results/tables.md`, checks in `results/checks.json` and `results/checks.log`.
+Plan section 6c; full tables in `results/tables_push.md`, checks in `results/push/checks.json` and `results/push/checks.log`.
 
 Content servers never query a board. Each board pushes every match posted since its previous push to every content server, every 10 seconds on its own schedule. A content server submits once its hold has released and pushes from two boards have carried the match. Pushes are internal to the board layer and are not on the observed wire. Bundling is on in every cell.
 
@@ -352,7 +352,7 @@ Device accuracy (contribution over the baseline, in points):
 | Gatekeeper | 14.35% (+0.00) | 8.61% (-0.04) | 5.94% (-0.09) | 6.89% (-0.02) | 4.51% (-0.02) |
 | Random device | 4.07% | 2.08% | 1.40% | 1.55% | 0.95% |
 
-The random rate is the baseline's. It is slightly higher for the content server and the validator, which are scored on the records they handled. Every cell is in `results/tables.md`.
+The random rate is the baseline's. It is slightly higher for the content server and the validator, which are scored on the records they handled. Every cell is in `results/tables_push.md`.
 
 ## Sensitivity control
 

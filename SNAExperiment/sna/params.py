@@ -30,6 +30,9 @@ INTERVAL_MIN = 20.0        # mean interval between one device's captures
 DECOYS_IN_FLIGHT = 40.0    # default decoy target (checks): decoy transactions in flight: a steady Poisson stream, independent of
                            #   real traffic; each decoy identity captures at a device's rate
 BUNDLE_S = 30.0            # gatekeeper departure bundling window (when bundling is on)
+GK_IMMEDIATE_P = 0.6       # two-point gatekeeper hold: release at once with this probability,
+GK_CAP_S = 300.0           #   otherwise hold the full 5-minute cap (mean 120 s)
+REG_BUNDLE_S = 120.0       # registry-level pooled bundling window (sized against the measured submission rate)
 BOARD_PUSH_S = 10.0        # each match board pushes its new matches to every content server on this period
 QUORUM_TIMEOUT_S = 30 * 60 # content server drops a packet whose quorum has not formed in 30 minutes
 
@@ -77,6 +80,8 @@ class Config:
     measure_s: float = MEASURE_S
     lottery_enabled: bool = True       # False: no relay, device, gatekeeper or content-server hold
     bundle_s: float = 0.0              # gatekeeper departure bundling window; 0 = off
+    gk_twopoint: bool = False          # gatekeeper hold: two-point shape instead of the relay lottery
+    reg_bundle_s: float = 0.0          # registry-level pooled bundling window; 0 = off
     background_enabled: bool = True
     nonblending_enabled: bool = True
     bg_clients_per_node: int = BG_CLIENTS_PER_NODE

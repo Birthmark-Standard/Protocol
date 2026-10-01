@@ -94,3 +94,20 @@ def test_content_server_waits_for_board_push():
         ok = s[f"ok_{nm}"]
         assert (s[f"det_{nm}"][ok] >= s[f"hold_{nm}"][ok]).all()
         assert (s[f"det_{nm}"][ok] >= s["quorum"][ok]).all()
+
+
+def test_new_mechanisms_move_only_their_stage():
+    """The two-point hold and registry bundling draw on their own streams: captures, relay legs and
+    fan-out departures are unchanged; registry bundling moves only the submissions."""
+    a = S.simulate(SMALL.with_(bundle_s=P.BUNDLE_S), 18, POOLS).subs
+    b = S.simulate(SMALL.with_(bundle_s=P.BUNDLE_S, gk_twopoint=True), 18, POOLS).subs
+    c = S.simulate(SMALL.with_(bundle_s=P.BUNDLE_S, gk_twopoint=True, reg_bundle_s=P.REG_BUNDLE_S), 18, POOLS).subs
+    for k in ("t0", "gk_arr", "arr_f", "hold_f", "C", "F", "I"):
+        assert np.array_equal(a[k], b[k]), k
+    h = (b["gk_release"] - b["gk_arr"]).ravel()
+    assert ((h < 0.02) | ((h > P.GK_CAP_S) & (h < P.GK_CAP_S + 0.02))).all()
+    for k in ("posts", "det_f", "det_i", "gk_release"):
+        assert np.array_equal(b[k], c[k], equal_nan=True), k
+    ok = b["ok_f"]
+    w = c["reg_f"][ok] - b["reg_f"][ok]
+    assert (w > -0.01).all() and (w < P.REG_BUNDLE_S + 0.01).all()

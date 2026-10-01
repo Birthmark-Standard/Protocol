@@ -54,25 +54,37 @@ def _clean(r):
     return {k: v for k, v in r.items() if not k.startswith("_")}
 
 
-def build(out: Path):
+PRIOR_LABEL = {"push": "board pushes", "twopoint": "the two-point gatekeeper hold",
+               "regbundle": "registry-level bundling"}
+
+
+def _suffix(build):
+    return "" if build == CE.DEFAULT_BUILD else f"_{build}"
+
+
+def build(out: Path, build=CE.DEFAULT_BUILD):
     out = Path(out)
-    cells = json.loads((out / "cells.json").read_text())
-    rows, effects, push = AN.analyze(out, cells, lambda k: _load(out, k),
-                                     prior_loader=lambda k: _load(out, k, CE.PRIOR_TARGET))
+    cells = {k: dict(v, build=build) for k, v in json.loads((out / "cells.json").read_text()).items()}
+    priors = {b: (lambda k, b=b: _load(out, k, CE.target(b))) for b in CE.PRIOR_BUILDS.get(build, ())}
+    if build == "push":
+        priors = {"bundling": lambda k: _load(out, k, CE.PRIOR_TARGET)}
+    rows, effects, changes = AN.analyze(out, cells, lambda k: _load(out, k, CE.target(build)), priors=priors)
     clean = [_clean(r) for r in rows]
-    (out / "summary.json").write_text(json.dumps(dict(rows=clean, bundling_effects=effects, push_effects=push),
-                                                 indent=1, default=float))
+    sx = _suffix(build)
+    (out / f"summary{sx}.json").write_text(json.dumps(dict(build=build, rows=clean, bundling_effects=effects,
+                                                           build_effects=changes), indent=1, default=float))
     keys = sorted({k for r in clean for k in r if not isinstance(r[k], dict)},
                   key=lambda k: (k not in ("cell", "vantage", "R", "T"), k))
-    with open(out / "summary.csv", "w", newline="") as f:
+    with open(out / f"summary{sx}.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
         w.writeheader()
         w.writerows(clean)
     D = CE.calibrate(out)["D"]
-    md = tables(clean, effects, D, out, push)
-    (out / "tables.md").write_text(md)
-    figures(clean, out / "figures")
-    print(f"wrote {out / 'summary.json'}, summary.csv, tables.md and figures/")
+    md = tables(clean, effects, D, out, changes, build)
+    (out / f"tables{sx}.md").write_text(md)
+    figures(clean, out / "figures", sx)
+    build_figure(out)
+    print(f"wrote {out / f'summary{sx}.json'}, summary{sx}.csv, tables{sx}.md and figures/")
 
 
 def _get(rows, v, R, d, bundle, control=False):
@@ -110,9 +122,20 @@ def _effect_table(md, effects):
     md.append("")
 
 
-def tables(rows, effects, D, out, push=None):
-    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, gatekeeper departure bundling, and match boards "
-          "pushing new matches to every content server. "
+BUILD_TEXT = {
+    "push": "gatekeeper departure bundling, and match boards pushing new matches to every content server",
+    "twopoint": "gatekeeper departure bundling, match board pushes, and the two-point gatekeeper hold",
+    "regbundle": "gatekeeper departure bundling, match board pushes, the two-point gatekeeper hold, and "
+                 "registry-level pooled bundling",
+}
+CHANGE_TEXT = {
+    "bundling": ("board pushes", "content servers checking the boards on their own clock"),
+    "push": None, "twopoint": None,
+}
+
+
+def tables(rows, effects, D, out, changes=None, build=CE.DEFAULT_BUILD):
+    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, {BUILD_TEXT[build]}. "
           f"Measured end-to-end delay D = {D:.1f} s. Per-decision attack; intervals resample whole runs. Device level "
           "(primary): the named device is the record's. Submission level: the named submission group contains a "
           "packet of the record's capture. Rows are real records only. The first hops and the credential processor "
@@ -136,11 +159,20 @@ def tables(rows, effects, D, out, push=None):
         md.append("Accuracy with bundling minus accuracy without, matched record by record on identical traffic "
                   "(percentage points).\n")
         _effect_table(md, effects)
-    if push:
-        md.append("## Effect of board pushes on the same records\n")
-        md.append("Accuracy with board pushes minus accuracy with content servers checking the boards on their own "
-                  "clock, matched record by record on identical traffic (percentage points). Bundling is on in both.\n")
-        _effect_table(md, push)
+    for name, ch in (changes or {}).items():
+        if not ch:
+            continue
+        if name == "bundling":
+            md.append("## Effect of board pushes on the same records\n")
+            md.append("Accuracy with board pushes minus accuracy with content servers checking the boards on their "
+                      "own clock, matched record by record on identical traffic (percentage points). Bundling is on "
+                      "in both.\n")
+        else:
+            md.append(f"## Change from the {name} build on the same records\n")
+            md.append(f"Accuracy in this build minus accuracy in the {name} build, matched record by record "
+                      "(percentage points). The two builds share every random draw outside the mechanisms they "
+                      "differ in.\n")
+        _effect_table(md, ch)
     md.append("## Every cell\n")
     for v in ORDER:
         md.append(f"### {AT.LABEL[v]}\n")
@@ -187,7 +219,7 @@ def _style(ax):
     ax.set_axisbelow(True)
 
 
-def figures(rows, fig_dir):
+def figures(rows, fig_dir, sx=""):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -213,5 +245,38 @@ def figures(rows, fig_dir):
         if i == 0:
             ax.legend(fontsize=6.5, frameon=False, labelcolor=INK)
     f.tight_layout()
-    f.savefig(fig_dir / "bundling_gpa.png", facecolor=SURFACE)
+    f.savefig(fig_dir / f"observer{sx}.png", facecolor=SURFACE)
+    plt.close(f)
+
+
+def build_figure(out):
+    """The passive observer's device accuracy against the decoy target, one line per build and
+    real volume, from every build's summary on disk."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    out = Path(out)
+    builds = [b for b in CE.BUILDS if (out / f"summary{_suffix(b)}.json").exists()]
+    if len(builds) < 2:
+        return
+    f = plt.figure(figsize=(10, 4.4), dpi=300, facecolor=SURFACE)
+    cmap = plt.get_cmap("viridis")
+    for i, R in enumerate(CE.REAL_R):
+        ax = f.add_subplot(1, len(CE.REAL_R), i + 1)
+        _style(ax)
+        for j, b in enumerate(builds):
+            rows = json.loads((out / f"summary{_suffix(b)}.json").read_text())["rows"]
+            pts = sorted((r for r in rows if r["vantage"] == "baseline" and r["R"] == R and not r["control"]
+                          and r.get("bundle") and "dev_accuracy" in r), key=lambda r: r["decoys"])
+            if pts:
+                ax.plot([r["decoys"] for r in pts], [100 * r["dev_accuracy"] for r in pts], "-", marker="o",
+                        markersize=3.5, linewidth=2, color=cmap(j / max(len(builds) - 1, 1) * 0.85), label=b)
+                ax.plot([r["decoys"] for r in pts], [100 * r["dev_random"] for r in pts], ":", color=INK2, linewidth=1)
+        ax.set_title(f"R = {R}", color=INK, fontsize=9)
+        ax.set_xlabel("decoys in flight", color=INK, fontsize=8)
+        if i == 0:
+            ax.set_ylabel("passive observer: device named (%); dotted: random", color=INK, fontsize=8)
+            ax.legend(fontsize=7, frameon=False, labelcolor=INK)
+    f.tight_layout()
+    f.savefig(out / "figures" / "observer_by_build.png", facecolor=SURFACE)
     plt.close(f)
