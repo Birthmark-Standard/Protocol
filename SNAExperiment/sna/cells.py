@@ -28,7 +28,9 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
 REAL_R = (1, 15, 50)                             # real volumes
-DECOY_LEVELS = (20, 40, 60)                      # decoy targets, transactions in flight
+DECOY_LEVELS = (20, 30, 40, 60, 100, 150)        # decoy targets, transactions in flight
+DECOY_CORE = (20, 40, 60)                        # the levels of sections 6b to 6e
+DECOY_EXTRA = (30, 100, 150)                     # the levels added in section 6f
 CONTROL_R = 40                                   # sensitivity control volume (every hold off)
 CAL_SEED0, MODEL_SEED0 = 2_000_000_000, 1_000_000_000
 
@@ -45,7 +47,7 @@ BUILDS = {
 }
 DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
 PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
-                **{f"reg{w}": ("push",) for w in REG_WINDOWS}}
+                **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120")}
 
 
 def build_kw(build):
@@ -68,12 +70,17 @@ def grid(which="all", build=DEFAULT_BUILD):
 
 
 def _grid(which):
+    """which: all | bundle | nobundle | control use the core decoy levels; extra is the section 6f
+    levels with bundling on."""
     specs = []
+    if which == "extra":
+        return [dict(key=cell_key(R, d, True), R=float(R), T=float(R + d), decoys=float(d), bundle=True,
+                     control=False) for R in REAL_R for d in DECOY_EXTRA]
     for bundle in (False, True):
         if which not in ("all", "bundle" if bundle else "nobundle"):
             continue
         for R in REAL_R:
-            for d in DECOY_LEVELS:
+            for d in DECOY_CORE:
                 specs.append(dict(key=cell_key(R, d, bundle), R=float(R), T=float(R + d), decoys=float(d),
                                   bundle=bundle, control=False))
     if which in ("all", "control"):
@@ -377,13 +384,13 @@ def _reg_bundle_one(args):
     return spec["key"], np.bincount(np.minimum(ns, 127), minlength=128), np.bincount(np.minimum(nt, 127), minlength=128)
 
 
-def registry_bundles(out, runs=200, build=DEFAULT_BUILD, workers="auto"):
+def registry_bundles(out, runs=200, build=DEFAULT_BUILD, workers="auto", which="bundle"):
     """Submissions and distinct transactions per registry-level bundle, over the sweep's own runs
     (simulation only). Written to <out>/registry_bundles_<build>.json."""
     import multiprocessing as mp
     out = Path(out)
     D = calibrate(out)["D"]
-    specs = [s for s in grid("bundle", build)]
+    specs = [s for s in grid(which, build)]
     tasks = [(s, k, D) for s in specs for k in range(runs)]
     with mp.Pool(RN.resolve_workers(workers)) as pool:
         res = pool.map(_reg_bundle_one, tasks, chunksize=4)

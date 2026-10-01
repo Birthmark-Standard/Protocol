@@ -394,6 +394,30 @@ From it, the plan reports the decoy target that gives fewer than 0.1% of 30-seco
 - **W3.** The validator's device-level effect against push is more negative at 480 seconds than at 120 seconds in at least 7 of the 9 cells.
 - **W4.** At 480 seconds, the observer's accuracy as a multiple of the random rate is below its value under push in at least 6 of the 9 cells.
 
+## 6f. Decoy targets of 30, 100 and 150
+
+Written after section 6e and before the sweep below.
+
+**Cells.** Bundling and board pushes on, relay-lottery gatekeeper hold, at R = 1, 15 and 50 × decoy target 30, 100 and 150 in flight: 9 cells. Each cell runs under two builds, reg120 and reg480 (sections 6e). 200 runs per cell, run ids 0 to 199, recorded here before the first run of this sweep. These cells are run on another machine with `--out results/extra --cells extra`; every result depends only on the cell, the build and the run id, so the machine does not change any number.
+
+**Reported.**
+- Each vantage's accuracy in every cell and build; the passive observer's and the strongest single component's accuracy as a multiple of the random rate.
+- The paired effect of the 480-second window against the 120-second window, matched record by record.
+- Registry bundle sizes for every cell and build.
+- Together with the 20-, 40- and 60-decoy cells of section 6e, the passive observer's and the strongest component's accuracy against the decoy target from 20 to 150.
+
+**Development runs**, made before this section was written: 8 runs per cell and build.
+- At R = 1, the observer's device accuracy under reg120 was 10.78% at 30 decoys, 4.31% at 100 and 2.94% at 150.
+- The 480-second window's effect on the validator against reg120 was negative in all nine cells (-3.79 to -0.47 points).
+- Under reg480, the content server was the strongest single component in 8 of the 9 cells.
+
+**Predictions:**
+- **X1.** At R = 1, the observer's device accuracy at 30 decoys lies between its 20- and 40-decoy values of section 6e, in both builds (reg120: 14.26% and 8.52%; reg480: 12.32% and 7.19%).
+- **X2.** The observer's device accuracy is lower at 150 decoys than at 100 decoys at every R, in both builds.
+- **X3.** Under reg120, the observer's accuracy as a multiple of the random rate at 150 decoys is at least its 40-decoy value of section 6e at R = 1 (×4.14) and at R = 15 (×4.42).
+- **X4.** The 480-second window's device-level effect on the validator against reg120 is below 0 in every cell.
+- **X5.** Under reg480, the content server is the strongest single component in at least 7 of the 9 cells.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -403,7 +427,7 @@ From it, the plan reports the decoy target that gives fewer than 0.1% of 30-seco
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6e record their own cells and run counts.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6f record their own cells and run counts.
 
 ## 9. Amendment record
 
@@ -416,3 +440,5 @@ A third amendment followed a change to the content servers in the specification:
 A fourth amendment followed two additions to the specification: the two-point gatekeeper hold and registry-level pooled bundling. Section 4 (checks 8 and 9) and section 6d were written before any sweep of these builds. The board-push sweep's results are kept as `results/summary_push.json` and `results/tables_push.md`, with its run log and checks in `results/push/`.
 
 A fifth amendment drops the two-point gatekeeper hold and sweeps the registry bundling window. Section 4 (check 8's scope) and section 6e were written before any sweep of these builds.
+
+A sixth amendment adds decoy targets of 30, 100 and 150 under the 120- and 480-second registry windows. Section 6f was written before any run of these cells.
