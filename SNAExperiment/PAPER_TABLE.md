@@ -43,3 +43,15 @@ Device named, bundling on, with match boards pushing new matches to every conten
 | Gatekeeper | 8.6% (-0.0) | 6.9% (-0.0) | +0.10 |
 
 Board pushes move no vantage's accuracy by more than 0.11 points in any cell.
+
+## Two-point gatekeeper hold and registry-level bundling
+
+Device named at R = 1 with 40 decoys, each build adding one mechanism to the row above (bundling and board pushes on throughout):
+
+| Build | Passive observer | Random pick | Observer as a multiple of random [95% CI] | Validator's edge over the observer | Capture to finalization, mean |
+|---|---|---|---|---|---|
+| Board pushes | 8.65% | 2.08% | ×4.16 [3.98, 4.34] | +1.19 points | 625.5 s |
+| + two-point gatekeeper hold | 7.89% | 1.96% | ×4.03 [3.85, 4.21] | +1.44 points | 638.9 s |
+| + registry-level bundling (120 s) | 7.86% | 1.94% | ×4.05 [3.86, 4.23] | +0.75 points | 698.2 s |
+
+The two-point hold lowers the observer by 0.76 points on the same records, mostly by leaving more devices feasible for each record; as a multiple of the random rate, the observer is unchanged within its interval. Registry bundling leaves the observer unchanged and halves the validator's edge, at a cost of about 60 seconds of latency.

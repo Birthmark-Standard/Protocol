@@ -353,3 +353,51 @@ def _latency_figure(out, res, cells):
     (out / "figures").mkdir(parents=True, exist_ok=True)
     f.savefig(out / "figures" / "latency_by_build.png", facecolor="#fcfcfb")
     plt.close(f)
+
+
+# --------------------------------------------------------------------------- registry bundles
+def _reg_bundle_one(args):
+    spec, run_id, D = args
+    cfg = config_of(spec, D)
+    run = S.simulate(cfg, traffic_seed(spec["R"], run_id, spec["control"]), Pools())
+    s, W, ph = run.subs, cfg.reg_bundle_s, run.reg_phase
+    det = np.concatenate([s["det_f"][s["ok_f"]], s["det_i"][s["ok_i"]]])
+    sub = np.concatenate([np.nonzero(s["ok_f"])[0], np.nonzero(s["ok_i"])[0]])
+    b = np.ceil((det - ph) / W).astype(np.int64)
+    k0, k1 = int(np.ceil((P.WARMUP_S - ph) / W)), int(np.floor((P.WARMUP_S + cfg.measure_s - ph) / W))
+    m = (b >= k0) & (b < k1)
+    ns = np.bincount(b[m] - k0, minlength=k1 - k0)
+    pairs = np.unique(np.c_[b[m] - k0, sub[m]], axis=0)
+    nt = np.bincount(pairs[:, 0], minlength=k1 - k0)
+    return spec["key"], np.bincount(np.minimum(ns, 127), minlength=128), np.bincount(np.minimum(nt, 127), minlength=128)
+
+
+def registry_bundles(out, runs=200, build=DEFAULT_BUILD, workers="auto"):
+    """Submissions and distinct transactions per registry-level bundle, over the sweep's own runs
+    (simulation only). Written to <out>/registry_bundles.json."""
+    import multiprocessing as mp
+    out = Path(out)
+    D = calibrate(out)["D"]
+    specs = [s for s in grid("bundle", build)]
+    tasks = [(s, k, D) for s in specs for k in range(runs)]
+    with mp.Pool(RN.resolve_workers(workers)) as pool:
+        res = pool.map(_reg_bundle_one, tasks, chunksize=4)
+    acc = {}
+    for key, hs, ht in res:
+        a = acc.setdefault(key, [np.zeros(128, np.int64), np.zeros(128, np.int64)])
+        a[0] += hs
+        a[1] += ht
+    rows = {}
+    for s in specs:
+        hs, ht = acc[s["key"]]
+        k = np.arange(128)
+        n = hs.sum()
+        rows[s["key"]] = dict(R=s["R"], decoys=s["decoys"], window_s=P.REG_BUNDLE_S, bundles=int(n),
+                              mean_submissions=float((hs * k).sum() / n), mean_transactions=float((ht * k).sum() / n),
+                              p_lt2_submissions=float(hs[:2].sum() / n), p_lt2_transactions=float(ht[:2].sum() / n),
+                              p_empty=float(hs[0] / n))
+        r = rows[s["key"]]
+        print(f"{s['key']:10s} bundles {r['bundles']:6d} submissions {r['mean_submissions']:.1f} transactions "
+              f"{r['mean_transactions']:.1f} fewer than 2 transactions {100 * r['p_lt2_transactions']:.3f}%", flush=True)
+    (out / "registry_bundles.json").write_text(json.dumps(dict(runs=runs, build=build, cells=rows), indent=1))
+    return rows

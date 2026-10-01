@@ -1,0 +1,105 @@
+{
+ "runs": 200,
+ "build": "regbundle",
+ "cells": {
+  "R1_D20_B": {
+   "R": 1.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 208317,
+   "mean_submissions": 8.064848284105475,
+   "mean_transactions": 5.38018020612816,
+   "p_lt2_submissions": 0.017540575181094198,
+   "p_lt2_transactions": 0.02978153487233399,
+   "p_empty": 0.004805176725855307
+  },
+  "R1_D40_B": {
+   "R": 1.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 208317,
+   "mean_submissions": 15.740467652663968,
+   "mean_transactions": 10.501917750351627,
+   "p_lt2_submissions": 0.00015361204318418563,
+   "p_lt2_transactions": 0.0002880225809703481,
+   "p_empty": 2.880225809703481e-05
+  },
+  "R1_D60_B": {
+   "R": 1.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 208317,
+   "mean_submissions": 23.415871004286736,
+   "mean_transactions": 15.625201015759636,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R15_D20_B": {
+   "R": 15.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 13.543202247191012,
+   "mean_transactions": 9.029775280898876,
+   "p_lt2_submissions": 0.00022471910112359551,
+   "p_lt2_transactions": 0.0007303370786516854,
+   "p_empty": 5.617977528089888e-05
+  },
+  "R15_D40_B": {
+   "R": 15.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 21.23679775280899,
+   "mean_transactions": 14.169775280898877,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R15_D60_B": {
+   "R": 15.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 28.930898876404495,
+   "mean_transactions": 19.283483146067415,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D20_B": {
+   "R": 50.0,
+   "decoys": 20.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 26.761348314606742,
+   "mean_transactions": 17.833314606741574,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D40_B": {
+   "R": 50.0,
+   "decoys": 40.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 34.42162921348314,
+   "mean_transactions": 22.95741573033708,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D60_B": {
+   "R": 50.0,
+   "decoys": 60.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 42.063595505617975,
+   "mean_transactions": 28.056011235955054,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  }
+ }
+}

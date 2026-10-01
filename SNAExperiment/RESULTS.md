@@ -387,3 +387,145 @@ P1 to P3 follow development runs, as the plan discloses.
 
 - **Push schedule.** The 10-second period, the per-board phase, and keeping pushes off the observed wire are this build's choices. The specification states only that the boards regularly push all new matches to all servers.
 - **One validator.** Every cell has one validator.
+
+# Two-point gatekeeper hold and registry-level bundling
+
+Plan section 6d; full tables in `results/tables_twopoint.md` (two-point hold) and `results/tables.md` (two-point hold and registry bundling); checks in `results/checks.json` and `results/checks.log`, run on the build with both mechanisms.
+
+Each build adds one mechanism to the one before it:
+- **push** is the build of the previous section.
+- **twopoint** replaces the gatekeeper's hold with the two-point hold: release at once with probability 0.6, or hold exactly 300 seconds.
+- **regbundle** adds registry-level pooled bundling: a confirmed submission waits for the next boundary of one 120-second schedule shared by every content server.
+
+Every cell has gatekeeper departure bundling and board pushes on. The builds share every random draw outside the mechanism each adds, so each effect below is a paired difference on the same records. 200 runs per cell, 9 cells per build plus the control for regbundle: 3,800 runs. Every cell met the stability rule.
+
+## Summary
+
+1. **The two-point hold lowers every vantage's accuracy by 0.1 to 1.1 points.** The passive observer loses 0.30 to 0.88 points, and its interval lies below 0 in all nine cells.
+2. **Most of that drop comes from a larger candidate set, not a weaker signal.** The two-point hold lengthens the end-to-end delay, so more devices remain feasible for each record: at R = 1 with 40 decoys, 51.4 against 48.5. The random-pick rate falls with it, from 2.08% to 1.96%. Measured as a multiple of the random rate, the observer moves from 4.16 [3.98, 4.34] to 4.03 [3.85, 4.21], and the intervals overlap in every cell.
+3. **Registry bundling does not move the passive observer.** Its effect on the observer lies between -0.20 and +0.04 points.
+4. **Registry bundling removes about half of the validator's edge.** The validator's contribution over the observer falls from 1.44 to 0.75 points at R = 1 with 40 decoys, and its accuracy falls 0.38 to 1.15 points across the nine cells.
+5. **The combined cost is about 73 seconds of latency.** At R = 1 with 40 decoys, the mean time from capture to registry finalization rises from 625.5 to 698.2 seconds, and the 95th percentile from 892 to 996 seconds.
+6. **The end-to-end delay does not collapse onto a few values.** Under the two-point hold, the fullest 10-second bin holds 2.8% of transactions against 3.1% before, and more bins are occupied.
+
+## The passive observer, by build
+
+Device accuracy, the random-pick rate, and accuracy as a multiple of the random rate [95% CI]:
+
+| R | Decoys | push | twopoint | regbundle |
+|---|---|---|---|---|
+| 1 | 20 | 14.35% (random 4.07%, ×3.52 [3.41, 3.63]) | 13.47% (3.84%, ×3.50 [3.39, 3.62]) | 13.27% (3.81%, ×3.48 [3.36, 3.60]) |
+| 1 | 40 | 8.65% (2.08%, ×4.16 [3.98, 4.34]) | 7.89% (1.96%, ×4.03 [3.85, 4.21]) | 7.86% (1.94%, ×4.05 [3.86, 4.23]) |
+| 1 | 60 | 6.02% (1.40%, ×4.30 [4.06, 4.52]) | 5.62% (1.32%, ×4.25 [4.05, 4.46]) | 5.65% (1.31%, ×4.32 [4.11, 4.52]) |
+| 15 | 20 | 9.80% (2.43%, ×4.02 [3.91, 4.14]) | 9.12% (2.30%, ×3.97 [3.86, 4.10]) | 8.94% (2.27%, ×3.93 [3.81, 4.05]) |
+| 15 | 40 | 6.92% (1.55%, ×4.47 [4.31, 4.65]) | 6.41% (1.46%, ×4.39 [4.22, 4.58]) | 6.24% (1.44%, ×4.32 [4.15, 4.50]) |
+| 15 | 60 | 5.22% (1.14%, ×4.60 [4.39, 4.82]) | 4.93% (1.07%, ×4.60 [4.38, 4.84]) | 4.87% (1.06%, ×4.60 [4.36, 4.83]) |
+| 50 | 20 | 5.61% (1.22%, ×4.58 [4.49, 4.68]) | 5.15% (1.15%, ×4.46 [4.37, 4.55]) | 5.11% (1.14%, ×4.47 [4.38, 4.55]) |
+| 50 | 40 | 4.54% (0.95%, ×4.77 [4.66, 4.88]) | 4.18% (0.90%, ×4.67 [4.56, 4.78]) | 4.17% (0.89%, ×4.70 [4.58, 4.81]) |
+| 50 | 60 | 3.82% (0.78%, ×4.91 [4.78, 5.04]) | 3.49% (0.73%, ×4.76 [4.63, 4.90]) | 3.45% (0.73%, ×4.75 [4.61, 4.90]) |
+
+Figure: `results/figures/observer_by_build.png`.
+
+## Effect of each mechanism on the same records
+
+Device-level effect in points [95% CI], at R = 1 with 40 decoys and across all nine cells:
+
+| Vantage | Two-point hold, R = 1, 40 decoys | Two-point hold, range over cells | Registry bundling, R = 1, 40 decoys | Registry bundling, range over cells |
+|---|---|---|---|---|
+| Baseline | -0.76 [-1.00, -0.53] | -0.88 to -0.30 | -0.03 [-0.17, +0.13] | -0.20 to +0.04 |
+| First hop, credential | -0.75 [-0.97, -0.54] | -0.93 to -0.34 | -0.04 [-0.17, +0.09] | -0.19 to +0.02 |
+| First hop, content | -0.75 [-0.96, -0.54] | -0.93 to -0.34 | -0.04 [-0.18, +0.10] | -0.19 to +0.02 |
+| Credential processor | -0.75 [-0.98, -0.52] | -0.90 to -0.32 | -0.08 [-0.22, +0.07] | -0.21 to +0.00 |
+| Content server | -0.28 [-0.47, -0.08] | -0.64 to -0.13 | +0.07 [-0.13, +0.26] | -0.10 to +0.07 |
+| Validator | -0.52 [-0.82, -0.21] | -0.58 to -0.25 | -0.71 [-0.96, -0.44] | -1.15 to -0.38 |
+| Gatekeeper | -0.73 [-0.95, -0.53] | -1.05 to -0.34 | -0.09 [-0.21, +0.05] | -0.12 to +0.00 |
+
+Every cell is in `results/tables_twopoint.md` and `results/tables.md`.
+
+## Contribution over the passive observer, R = 1 with 40 decoys
+
+| Vantage | push | twopoint | regbundle |
+|---|---|---|---|
+| Content server | +0.83 | +1.31 | +1.40 |
+| Validator | +1.19 | +1.44 | +0.75 |
+| Every other vantage | within ±0.1 | within ±0.1 | within ±0.1 |
+
+The two-point hold lowers the observer more than it lowers the content server, so the content server's contribution over the observer grows. Registry bundling quantizes the record time to its 120-second schedule, which the validator's reply-to-record density depends on.
+
+## Gatekeeper hold shape
+
+| Hold | Mean | Coefficient of variation |
+|---|---|---|
+| Relay lottery, as the gatekeeper used before | 106.2 s | 0.84 |
+| Two-point | 119.8 s | 1.23 |
+
+- The specification's hand estimates were 120 seconds and 0.52 for the lottery, and 0.81 for the two-point hold. The lottery's mean is below 120 seconds because its 30-tick cap truncates the geometric draw.
+- In the simulator, the end-to-end delay stays continuous under the two-point hold. At R = 1 with 40 decoys, the fullest 10-second bin holds 2.79% of real transactions under twopoint and 3.14% under push, with 98 and 97 bins occupied. At R = 50 the figures are 2.54% and 2.77%, with 112 and 105 bins. Figure: `results/figures/latency_by_build.png`.
+
+## Registry bundle sizes
+
+Over the sweep's own runs (`results/registry_bundles.json`), 120-second bundles pooled across every content server:
+
+| R | Decoys | Submissions per bundle | Distinct transactions per bundle | Bundles with fewer than 2 transactions |
+|---|---|---|---|---|
+| 1 | 20 | 8.1 | 5.4 | 2.98% |
+| 1 | 40 | 15.7 | 10.5 | 0.029% |
+| 1 | 60 | 23.4 | 15.6 | under 0.001% |
+| 15 | 20 | 13.5 | 9.0 | 0.073% |
+| 15 | 40 | 21.2 | 14.2 | under 0.001% |
+| 15 | 60 | 28.9 | 19.3 | under 0.001% |
+| 50 | 20 | 26.8 | 17.8 | under 0.001% |
+| 50 | 40 | 34.4 | 23.0 | under 0.001% |
+| 50 | 60 | 42.1 | 28.1 | under 0.001% |
+
+For comparison, gatekeeper departure bundles at R = 1 with 40 decoys hold 1.97 postings on average, and 41.5% of them hold fewer than two.
+
+## Latency
+
+From a real capture to its registry finalization, at 40 decoys (`results/latency.json`, 20 runs per cell):
+
+| Build | R = 1: mean / median / 95th percentile | R = 15 | R = 50 |
+|---|---|---|---|
+| push | 625.5 / 618.2 / 892.2 s | 633.0 / 622.0 / 898.5 s | 628.1 / 618.7 / 889.7 s |
+| twopoint | 638.9 / 629.3 / 918.5 s | 647.4 / 636.7 / 935.8 s | 642.4 / 633.0 / 925.9 s |
+| regbundle | 698.2 / 686.4 / 996.2 s | 707.1 / 696.6 / 1005.7 s | 701.4 / 692.6 / 989.7 s |
+
+Mean stages at R = 1 with 40 decoys, with both mechanisms:
+
+| Stage | Mean |
+|---|---|
+| Capture to the gatekeepers (device hold, relay holds, validator round trip, fan-out hold) | 419.2 s |
+| Gatekeeper hold | 119.7 s |
+| Gatekeeper bundle wait | 15.0 s |
+| Quorum to the later content server's confirmation (its own hold and the board push) | 93.6 s |
+| Registry bundle wait | 61.7 s |
+| Capture to finalization | 698.2 s |
+
+Quorum forms on the second of three postings, so the stages do not sum exactly to the total.
+
+## Sensitivity control
+
+The control turns every hold off. Registry bundling is not a hold and stays on, so every record time is rounded up to the shared 120-second schedule. At R = 40 without decoys, the observer names the device 17.1% of the time against a random rate of 12.8%, down from 79.6% under push. The content server, which knows its own content arrival, keeps 98.5%. The control still shows that an attack with exact knowledge finds the link.
+
+## Checks and controls
+
+- **Pre-run checks** (regbundle, bundling on): every gatekeeper hold is immediate (60.3%) or at the cap (39.7%), with mean 119.1 seconds (check 8). Every registry submission departs on the shared grid, 0.2 to 119.4 seconds after confirmation (check 9). Every other check passes except the same marginal baseline failure as before (D's hold, AUC 0.488 [0.476, 0.500]).
+- **Outcome-shuffle control:** 5 of 63 stable cells under twopoint and 5 of 70 under regbundle have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin (largest 0.512).
+- **Rates.** Real and decoy rates are those of the push build. The longer delay therefore holds more transactions in flight in each cell, and part of the effects above comes from that, as summary point 2 describes.
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| M1. The two-point hold lowers the observer's device accuracy below 0 in every cell, with the interval wholly below 0 in at least 6 of 9 | Confirmed: below 0 in all 9, interval wholly below 0 in all 9. |
+| M2. The two-point hold's effect on the observer lies above -3 points in every cell | Confirmed. The lowest is -0.88. |
+| M3. Registry bundling's effect on the observer lies within ±1 point in every cell | Confirmed (-0.20 to +0.04). |
+| M4. Registry bundling lowers the validator's device accuracy in every cell | Confirmed (-1.15 to -0.38). |
+
+M1 to M4 follow development runs, as the plan discloses. M1 did not anticipate that most of the drop would come from a larger candidate set; that finding is reported in summary point 2.
+
+## Scope
+
+- **Window.** The 120-second registry window is sized to the 40-decoy target at R = 1. At the low end of the 40 ± 10 range (30 decoys), 0.33% of bundles would hold fewer than two transactions; about 150 seconds meets the 0.1% criterion there.
+- **One shared schedule.** Every content server uses one registry bundle schedule.
+- **Record time.** The observer times a record by its gossiped submissions. The registry's coarsened timestamp is not modelled.
