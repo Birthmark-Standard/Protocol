@@ -35,7 +35,7 @@ Each vantage is scored against the baseline on the same records. The difference 
 
 **Timing**
 - Timing lottery on every hold: 10-second ticks, 8.33% release per tick, 5-minute cap.
-- Each node holds on one clock. A gatekeeper holds with the two-point hold: it releases at once with probability 0.6, or holds the full 5-minute cap.
+- Each node holds on one clock; each gatekeeper holds on a dedicated clock.
 - The device holds each channel on a fresh phase.
 - Gatekeeper postings depart in 30-second bundles, on each gatekeeper's own grid.
 - Content servers hold first and never query a board. Each match board pushes its new matches to every content server every 10 seconds, on its own schedule. A content server confirms once its hold has released and two boards' pushes carry the match, and drops the packet after 30 minutes without quorum.
@@ -91,8 +91,10 @@ py -m sna analyze
 | `analyze` | Writes `results/summary.json`, `summary.csv`, `tables.md` and `figures/`. |
 | `volume` | Prints L against captures per day and devices. |
 | `latency` | Writes the capture-to-finalization time under each build, by stage, to `results/latency.json`. |
+| `bundles` | Writes registry bundle sizes over the sweep's runs to `results/registry_bundles_<build>.json`. |
+| `gatekeeper` | Writes each gatekeeper's own load and bundle sizes, by decoy target and window, to `results/gatekeeper_occupancy.json`. |
 
-`--cells bundle|nobundle|control` restricts a run to one part of the grid. `--build push|twopoint|regbundle` picks the protocol build (default regbundle, the latest specification).
+`--cells bundle|nobundle|control` restricts a run to one part of the grid. `--build` picks the protocol build: `push` (no registry bundling), `reg60`, `reg120`, `reg240` or `reg480` (registry bundling at that window; `reg120` is the default), or the two-point gatekeeper-hold builds `twopoint` and `regbundle`, kept to reproduce plan section 6d.
 
 ## Layout
 

@@ -390,7 +390,7 @@ P1 to P3 follow development runs, as the plan discloses.
 
 # Two-point gatekeeper hold and registry-level bundling
 
-Plan section 6d; full tables in `results/tables_twopoint.md` (two-point hold) and `results/tables.md` (two-point hold and registry bundling); checks in `results/checks.json` and `results/checks.log`, run on the build with both mechanisms.
+Plan section 6d; full tables in `results/tables_twopoint.md` (two-point hold) and `results/tables_regbundle.md` (two-point hold and registry bundling); checks and run log in `results/regbundle/`, run on the build with both mechanisms.
 
 Each build adds one mechanism to the one before it:
 - **push** is the build of the previous section.
@@ -440,7 +440,7 @@ Device-level effect in points [95% CI], at R = 1 with 40 decoys and across all n
 | Validator | -0.52 [-0.82, -0.21] | -0.58 to -0.25 | -0.71 [-0.96, -0.44] | -1.15 to -0.38 |
 | Gatekeeper | -0.73 [-0.95, -0.53] | -1.05 to -0.34 | -0.09 [-0.21, +0.05] | -0.12 to +0.00 |
 
-Every cell is in `results/tables_twopoint.md` and `results/tables.md`.
+Every cell is in `results/tables_twopoint.md` and `results/tables_regbundle.md`.
 
 ## Contribution over the passive observer, R = 1 with 40 decoys
 
@@ -464,7 +464,7 @@ The two-point hold lowers the observer more than it lowers the content server, s
 
 ## Registry bundle sizes
 
-Over the sweep's own runs (`results/registry_bundles.json`), 120-second bundles pooled across every content server:
+Over the sweep's own runs (`results/registry_bundles_regbundle.json`), 120-second bundles pooled across every content server:
 
 | R | Decoys | Submissions per bundle | Distinct transactions per bundle | Bundles with fewer than 2 transactions |
 |---|---|---|---|---|

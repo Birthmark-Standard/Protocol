@@ -8,7 +8,9 @@
   analyze    metrics, tables and figures from the records on disk
   volume     table of L to devices and captures per day at the measured end-to-end delay
   latency    capture-to-finalisation time under each build, by stage (results/latency.json)
-  bundles    registry-level bundle sizes over the sweep's runs (results/registry_bundles.json)
+  bundles    registry-level bundle sizes over the sweep's runs (results/registry_bundles_<build>.json)
+  gatekeeper each gatekeeper's own load and bundle sizes by decoy target and window
+             (results/gatekeeper_occupancy.json)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker
 count or the order runs finish in.
@@ -140,6 +142,10 @@ def cmd_bundles(a):
     CE.registry_bundles(Path(a.out or CE.RESULTS), runs=a.runs, build=a.build, workers=a.workers)
 
 
+def cmd_gatekeeper(a):
+    CE.gatekeeper_occupancy(Path(a.out or CE.RESULTS), workers=a.workers)
+
+
 def cmd_volume(a):
     from . import report
     print(report.volume_table(CE.calibrate(Path(a.out or CE.RESULTS))["D"]))
@@ -148,7 +154,7 @@ def cmd_volume(a):
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles"])
+    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles", "gatekeeper"])
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=100, help="runs per cell (run, estimate)")
@@ -161,5 +167,5 @@ def main(argv=None):
     ap.add_argument("--allrecords", action="store_true",
                     help="re-score the first hops and credential processor on every record (plan section 6a)")
     a = ap.parse_args(argv)
-    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles,
+    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles, gatekeeper=cmd_gatekeeper,
          volume=cmd_volume)[a.command](a)

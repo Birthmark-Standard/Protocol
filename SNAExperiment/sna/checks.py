@@ -241,7 +241,9 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     capd = (gk_hold >= P.GK_CAP_S + pm[0]) & (gk_hold <= P.GK_CAP_S + pm[1])
     res["gk_hold_shape"] = dict(immediate=float(imm.mean()), capped=float(capd.mean()), n=int(gk_hold.size),
                                 mean_s=float(gk_hold.mean()),
-                                passed=bool((imm | capd).all() and abs(capd.mean() - (1 - P.GK_IMMEDIATE_P)) < 0.03))
+                                applies=bool(run.cfg.gk_twopoint),
+                                passed=bool(not run.cfg.gk_twopoint or ((imm | capd).all()
+                                            and abs(capd.mean() - (1 - P.GK_IMMEDIATE_P)) < 0.03)))
     # 9. registry-level bundling: every submission departs on the shared grid
     W, ph = run.cfg.reg_bundle_s, run.reg_phase
     waits, offs = [], []
@@ -298,8 +300,11 @@ def print_checks(res):
           f"(least margin {bp['min_margin']:.3f} s); pushes wait up to {bp['max_push_wait']:.2f} s "
           f"(period {bp['period_s']:g} s)")
     gh = res["gk_hold_shape"]
-    print(f"[{mark(gh['passed'])}] gatekeeper hold shape: {100 * gh['immediate']:.1f}% immediate, "
-          f"{100 * gh['capped']:.1f}% at the cap, mean {gh['mean_s']:.1f} s")
+    if gh.get("applies", True):
+        print(f"[{mark(gh['passed'])}] gatekeeper hold shape: {100 * gh['immediate']:.1f}% immediate, "
+              f"{100 * gh['capped']:.1f}% at the cap, mean {gh['mean_s']:.1f} s")
+    else:
+        print(f"[n/a ] gatekeeper hold shape: this build uses the relay-lottery gatekeeper hold (mean {gh['mean_s']:.1f} s)")
     rb = res["registry_bundling"]
     print(f"[{mark(rb['passed'])}] registry bundling: every submission departs on the shared grid, "
           f"{rb['min_wait']:.2f} to {rb['max_wait']:.2f} s after confirmation (window {rb['window_s']:g} s)")

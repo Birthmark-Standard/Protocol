@@ -446,9 +446,9 @@
   "gatekeeper": {
    "features": {
     "GK arrival to board posting": {
-     "auc": 0.4974306351312087,
-     "lo": 0.48922513835453474,
-     "hi": 0.5056361319078827,
+     "auc": 0.497934926426568,
+     "lo": 0.4903863295196309,
+     "hi": 0.5054835233335051,
      "covers_half": true,
      "n_real": 12258,
      "n_decoy": 32907
@@ -468,8 +468,8 @@
  "runs": 12,
  "bundling": {
   "window_s": 30.0,
-  "max_wait": 29.28648369130906,
-  "min_wait": 6.684794557215355,
+  "max_wait": 29.47766801267062,
+  "min_wait": 0.08192200166377006,
   "proc_range": [
    0.0005004746017220896,
    0.002999582472966722
@@ -484,17 +484,16 @@
   "passed": true
  },
  "gk_hold_shape": {
-  "immediate": 0.0,
-  "capped": 0.0,
+  "immediate": 0.6030595813204509,
+  "capped": 0.3969404186795491,
   "n": 3726,
-  "mean_s": 108.21972970106033,
-  "applies": false,
+  "mean_s": 119.0876065722649,
   "passed": true
  },
  "registry_bundling": {
   "window_s": 120.0,
   "max_wait": 119.40953550959694,
-  "min_wait": 2.341301439460949,
+  "min_wait": 0.2066001862349367,
   "proc_range": [
    0.0005010251388739562,
    0.002999395198003185
@@ -506,6 +505,6 @@
   "decoys_in_flight": 40.0,
   "bundling": true,
   "background": true,
-  "build": "reg120"
+  "build": "regbundle"
  }
 }
