@@ -68,4 +68,13 @@ R = 1 with 40 decoys, bundling and board pushes on, relay-lottery gatekeeper hol
 | 240 s | 744.8 s | 8.03% | ×4.21 [4.02, 4.41] | +0.88 points | +1.06 points |
 | 480 s | 861.2 s | 7.19% | ×4.04 [3.82, 4.26] | +0.35 points | +1.41 points |
 
-A longer registry window moves the validator's edge to the content server. The strongest single component's edge is lowest at 240 seconds (1.06 points, against 1.09 at 120 seconds, within their intervals), and no window changes the passive observer's multiple of the random rate beyond its interval at this volume.
+A longer registry window moves the validator's edge over the observer to the content server. Measured by the strongest single component's own accuracy and its multiple of random, the windows rank differently:
+
+| Registry window | Strongest component | Its accuracy | Its multiple of random [95% CI] |
+|---|---|---|---|
+| none | validator | 9.85% | ×3.92 [3.77, 4.06] |
+| 120 s | validator | 9.61% | ×4.06 [3.90, 4.23] |
+| 240 s | content server | 9.09% | ×3.84 [3.71, 3.97] |
+| 480 s | content server | 8.60% | ×3.72 [3.58, 3.85] |
+
+The content server's own content arrival gives it 8.16% at this cell whatever the window, a floor no registry-side mechanism can lower.
