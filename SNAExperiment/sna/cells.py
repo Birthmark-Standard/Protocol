@@ -1,11 +1,11 @@
 """The experiment grid, per-cell configuration, seeds, the end-to-end delay calibration, model
 caching, and the per-run worker.
 
-A cell is a real volume R (real transactions in flight), with or without the decoy stream. The
-decoy stream is a steady 40 transactions in flight, independent of real traffic, so a decoy cell
-has T = R + 40 in flight. Rates follow from the measured end-to-end delay D (capture to registry
-finalisation): real rate R / D, decoy rate 40 / D. A decoy is a genuine transaction from one of the
-decoy infrastructure's registered identities, each capturing at a device's rate.
+A cell is a real volume R (real transactions in flight), a decoy target (decoy transactions in
+flight, a steady stream independent of real traffic), and gatekeeper departure bundling on or
+off. Rates follow from the measured end-to-end delay D (capture to registry finalisation): real
+rate R / D, decoy rate decoys / D. A decoy is a genuine transaction from one of the decoy
+infrastructure's registered identities, each capturing at a device's rate.
 """
 from __future__ import annotations
 
@@ -27,29 +27,29 @@ from .pools import Pools
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
-DECOY_R = (1, 5, 15, 45, 100)                    # real volumes run with the decoy stream
-NODECOY_R = (1, 15)                              # real volumes run without it (paired reference)
+REAL_R = (1, 15, 50)                             # real volumes
+DECOY_LEVELS = (20, 40, 60)                      # decoy targets, transactions in flight
 CONTROL_R = 40                                   # sensitivity control volume (every hold off)
 CAL_SEED0, MODEL_SEED0 = 2_000_000_000, 1_000_000_000
 
 
-def cell_key(R, decoys=False, control=False):
-    return f"R{R:g}" + ("_D40" if decoys else "") + ("_control" if control else "")
+def cell_key(R, decoys=0, bundle=False, control=False):
+    return f"R{R:g}" + (f"_D{decoys:g}" if decoys else "") + ("_B" if bundle else "") + ("_control" if control else "")
 
 
 def grid(which="all"):
-    """Cell specs. which: all | decoy | nodecoy | control."""
+    """Cell specs. which: all | bundle | nobundle | control."""
     specs = []
-    if which in ("all", "decoy"):
-        for R in DECOY_R:
-            specs.append(dict(key=cell_key(R, True), R=float(R), T=float(R + P.DECOYS_IN_FLIGHT), decoys=True,
-                              control=False))
-    if which in ("all", "nodecoy"):
-        for R in NODECOY_R:
-            specs.append(dict(key=cell_key(R), R=float(R), T=float(R), decoys=False, control=False))
+    for bundle in (False, True):
+        if which not in ("all", "bundle" if bundle else "nobundle"):
+            continue
+        for R in REAL_R:
+            for d in DECOY_LEVELS:
+                specs.append(dict(key=cell_key(R, d, bundle), R=float(R), T=float(R + d), decoys=float(d),
+                                  bundle=bundle, control=False))
     if which in ("all", "control"):
         specs.append(dict(key=cell_key(CONTROL_R, control=True), R=float(CONTROL_R), T=float(CONTROL_R),
-                          decoys=False, control=True))
+                          decoys=0.0, bundle=False, control=True))
     return specs
 
 
@@ -61,8 +61,8 @@ def window_s(R, D):
 
 def config_of(spec, D):
     R = spec["R"]
-    return P.Config(real_rate=R / D, decoy_rate=(P.DECOYS_IN_FLIGHT / D) if spec.get("decoys") else 0.0,
-                    measure_s=window_s(R, D),
+    return P.Config(real_rate=R / D, decoy_rate=float(spec.get("decoys", 0.0)) / D,
+                    bundle_s=P.BUNDLE_S if spec.get("bundle") else 0.0, measure_s=window_s(R, D),
                     lottery_enabled=not spec["control"], background_enabled=False, nonblending_enabled=False)
 
 
@@ -99,11 +99,15 @@ def calibrate(out=RESULTS, runs=10, force=False):
 
 
 # --------------------------------------------------------------------------- models
-TARGET = "link_genuine"     # record-to-device linking, genuine decoys; names every model and record file
+TARGET = "link_bundling"    # record-to-device linking, genuine decoys, bundling on/off; names every model and record file
 
 
-def model_path(out, control):
-    return Path(out) / "models" / (f"{TARGET}_control.pkl" if control else f"{TARGET}_main.pkl")
+def model_path(out, control, bundle=False):
+    """The attacker's likelihood models for a configuration: every hold off (control), or the
+    protocol with gatekeeper departure bundling on or off. An attacker knows the protocol, so each
+    configuration is attacked with models built under it."""
+    name = "control" if control else ("main_bundle" if bundle else "main")
+    return Path(out) / "models" / f"{TARGET}_{name}.pkl"
 
 
 ALL_RECORDS = ("baseline", "first_hop_cred", "first_hop_content", "cred_processor")
@@ -118,18 +122,19 @@ def allrecords_specs(specs):
     return [dict(s, allrecords=True, vantages=ALL_RECORDS) for s in specs]
 
 
-def ensure_models(out, control, pools=None):
-    p = model_path(out, control)
+def ensure_models(out, control, pools=None, bundle=False):
+    p = model_path(out, control, bundle)
     if p.exists():
         return
     p.parent.mkdir(parents=True, exist_ok=True)
     t = time.time()
-    m = AT.build_models(P.Config(lottery_enabled=not control), pools or Pools(), seed0=MODEL_SEED0)
+    m = AT.build_models(P.Config(lottery_enabled=not control, bundle_s=P.BUNDLE_S if bundle else 0.0),
+                        pools or Pools(), seed0=MODEL_SEED0)
     tmp = p.with_suffix(".tmp")
     with open(tmp, "wb") as f:
         pickle.dump(m, f)
     tmp.replace(p)
-    print(f"models ({'control' if control else 'main'}): {m.mc_runs} Monte Carlo runs, {time.time() - t:.0f} s",
+    print(f"models ({p.stem}): {m.mc_runs} Monte Carlo runs, {time.time() - t:.0f} s",
           flush=True)
 
 
@@ -141,7 +146,7 @@ def worker(out, spec, run_id, D):
     """One run of one cell: simulate once, score every vantage and its paired baseline."""
     if "pools" not in _W:
         _W["pools"] = Pools()
-    mp = model_path(out, spec["control"])
+    mp = model_path(out, spec["control"], spec.get("bundle", False))
     if _W.get("model_key") != str(mp):
         with open(mp, "rb") as f:
             _W["models"] = pickle.load(f)
@@ -152,8 +157,26 @@ def worker(out, spec, run_id, D):
     t_sim = time.time() - t
     recs = AT.compute(run, _W["pools"], _W["models"], spec.get("vantages", AT.VANTAGES), run_id)
     rec = dict(run=run_id, seconds=time.time() - t, sim_seconds=t_sim, vantages=recs,
-               n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum()))
+               n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum()),
+               bundles=bundle_sizes(run))
     return [(rec_name(spec), rec)]
+
+
+def bundle_sizes(run, window=P.BUNDLE_S):
+    """Histogram (sizes 0..63) of postings per departure bundle at each active gatekeeper, over the
+    scored window, on each gatekeeper's own grid. Computed whether or not bundling is on, so the
+    off cells report how large the bundles would have been."""
+    s = run.subs
+    lo_t, hi_t = P.WARMUP_S, P.WARMUP_S + run.cfg.measure_s
+    hist = np.zeros(64, np.int64)
+    for j, g in enumerate(run.gk_set):
+        ph = run.bundle_phase[g]
+        b = np.ceil((s["gk_release"][:, j] - ph) / window).astype(np.int64)
+        k0, k1 = int(np.ceil((lo_t - ph) / window)), int(np.floor((hi_t - ph) / window))
+        b = b[(b >= k0) & (b < k1)]
+        cnt = np.bincount(b - k0, minlength=k1 - k0)
+        hist += np.bincount(np.minimum(cnt, 63), minlength=64)
+    return hist
 
 
 def write_cells(out, specs, D):
@@ -177,7 +200,7 @@ def run_cells(out, specs, runs, workers="auto"):
         done = RN.done_runs(out, rec_name(spec))
         todo = [k for k in range(runs) if k not in done]
         if todo:
-            ensure_models(out, spec["control"], pools)
+            ensure_models(out, spec["control"], pools, spec.get("bundle", False))
         tasks += [(str(out), spec, k, D) for k in todo]
     tasks.sort(key=lambda t: (t[2], t[1]["T"], t[1]["key"]))
     RN.execute(tasks, worker, out, workers, label="run")
@@ -189,7 +212,8 @@ def probe_costs(out, specs, probe_runs=1, workers="auto"):
     1,000,000 up, never used by a sweep). Written to <out>/costs.json."""
     out = Path(out)
     D = calibrate(out)["D"]
-    ensure_models(out, False)
+    for b in sorted({bool(s.get("bundle")) for s in specs if not s["control"]}):
+        ensure_models(out, False, bundle=b)
     if any(s["control"] for s in specs):
         ensure_models(out, True)
     probe = out / "probe"

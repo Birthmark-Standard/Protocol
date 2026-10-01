@@ -606,11 +606,9 @@ def score_vantage(v, run, rec, cand, m: Models, base, run_id=0):
             o = np.argsort(post, kind="stable")
             mix = _MixtureV(cand["t"], post[o], np.ones(o.size), pdf["gk"], pdf["gk_q"], g)
             us = u[sel]
-            res = score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
-                               dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))
-            claim[sel] = mix.own_share(us, res["sub"]["pidx"]) > pi       # evidence favours its own transactions
-            outs.append((sel, res))
-        return ri, grp, _merge(outs, ri.size), dict(took_part=extra["took_part"], claim=claim), {}
+            outs.append((sel, score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
+                                           dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))))
+        return ri, grp, _merge(outs, ri.size), {}
     if v == "cred_processor":
         pi = 1.0 / (P.N_NODES - P.N_GATEKEEPERS)
         m_all = np.sort(s["gk_send"], 1)[:, 1]

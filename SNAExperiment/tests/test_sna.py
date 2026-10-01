@@ -63,3 +63,23 @@ def test_loader_skips_damaged_member(tmp_path):
 def test_seed_excludes_decoy_volume():
     assert CE.traffic_seed(4, 7) == CE.traffic_seed(4.0, 7)
     assert CE.traffic_seed(4, 7) != CE.traffic_seed(8, 7)
+
+
+def test_every_vantage_scores():
+    """Every vantage runs end to end on a small run, with small models."""
+    m = AT.build_models(P.Config(), POOLS, min_samples=3000, max_runs=3)
+    run = S.simulate(SMALL.with_(measure_s=900.0), 15, POOLS)
+    out = AT.compute(run, POOLS, m, run_id=1)
+    assert set(out) == set(AT.VANTAGES)
+    for v, r in out.items():
+        assert r["sub"].size > 0 and r["dev_v_correct"].size == r["sub"].size, v
+
+
+def test_bundling_moves_only_postings():
+    """Bundling on and off share every random draw: only postings and what follows them move."""
+    a = S.simulate(SMALL, 16, POOLS).subs
+    b = S.simulate(SMALL.with_(bundle_s=P.BUNDLE_S), 16, POOLS).subs
+    for k in ("t0", "gk_release", "gk_arr", "C", "F", "I"):
+        assert np.array_equal(a[k], b[k]), k
+    shift = b["posts"] - a["posts"]
+    assert (shift >= 0).all() and (shift < P.BUNDLE_S).all()

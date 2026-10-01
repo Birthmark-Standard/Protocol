@@ -246,6 +246,31 @@ The content server's rows are legitimate (it submitted those records, and the re
 
 S1 confirms the diagnostic above; it is not blind.
 
+## 6b. Gatekeeper departure bundling
+
+Written after the sweeps above and before the bundling sweep.
+
+**Mechanism.** Each gatekeeper's hold clock is unchanged. A posting the clock selects waits for the next boundary of a 30-second grid and departs with every posting selected since the previous boundary. Each gatekeeper has its own grid, with a random phase drawn on a separate random stream. So bundling on and off share every other random draw, and only the postings and what follows them move. Board postings are internal to the gatekeeper and are not on the observed wire. The relay-hop lottery is unchanged.
+
+**Cells.** Real volume R = 1, 15 and 50 × decoy target 20, 40 and 60 in flight × bundling on and off: 18 cells, plus the sensitivity control. 200 runs per cell, run ids 0 to 199, recorded here before the first run of this sweep. Within one R, every cell carries the same real traffic. Bundling on and off at one (R, decoy target) carry identical traffic.
+
+**Models.** An attacker knows the protocol, so cells with bundling are attacked with likelihood models built with bundling on. The first hops and the credential processor are scored on every record, as in section 6a.
+
+**Reported.**
+- The bundle-size distribution per gatekeeper over each cell's runs: mean, share of empty bundles, share of bundles of one, share of bundles with fewer than two, and share of postings that depart alone.
+- Each vantage's accuracy in every cell.
+- The paired effect of bundling: accuracy with bundling minus accuracy without, matched record by record, with a run-resampled interval.
+
+**Development runs**, made before this section was written:
+- One bundle-size measurement: 5 runs each at R = 1 with 10 to 40 decoys, and at R = 15 and R = 100 with 40 decoys. It showed about 2 postings per bundle at R = 1 with 40 decoys, and 40% of bundles with fewer than two.
+- 8 paired runs at R = 1 with 40 decoys and at R = 15 with 20 decoys. They showed the passive observer's device accuracy changing by under 0.4 points with bundling, and the content server losing about 1 point.
+- The pre-run checks were run with bundling on. Check 4 again fails marginally for the baseline's D hold, the same feature and seeds as in section 6, because bundling does not touch relay holds.
+
+**Predictions** (B1 confirms the development runs):
+- **B1.** The passive observer's device-level bundling effect lies within ±1 point in every cell.
+- **B2.** No vantage's device-level bundling effect interval lies wholly below -3 points in any cell.
+- **B3.** At each R, the share of bundles with fewer than two postings falls as the decoy target rises.
+
 ## 7. Deliverables
 
 - `README.md`

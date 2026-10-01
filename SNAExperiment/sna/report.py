@@ -29,7 +29,7 @@ def ci(r, k, lo, hi, d=2):
 def volume_table(D):
     lines = ["| L (in flight) | Captures per second | Captures per day | Devices (20-minute interval) |",
              "|---|---|---|---|"]
-    for L in sorted(set(CE.DECOY_R) | set(CE.NODECOY_R) | {int(P.DECOYS_IN_FLIGHT)}):
+    for L in sorted({R + d for R in CE.REAL_R for d in CE.DECOY_LEVELS} | set(CE.REAL_R)):
         rate = L / D
         lines.append(f"| {L} | {rate:.4f} | {rate * 86400:,.0f} | {rate * P.INTERVAL_MIN * 60:,.1f} |")
     return "\n".join(lines)
@@ -58,7 +58,7 @@ def build(out: Path):
     cells = json.loads((out / "cells.json").read_text())
     rows, effects = AN.analyze(out, cells, lambda k: _load(out, k))
     clean = [_clean(r) for r in rows]
-    (out / "summary.json").write_text(json.dumps(dict(rows=clean, decoy_effects=effects), indent=1, default=float))
+    (out / "summary.json").write_text(json.dumps(dict(rows=clean, bundling_effects=effects), indent=1, default=float))
     keys = sorted({k for r in clean for k in r if not isinstance(r[k], dict)},
                   key=lambda k: (k not in ("cell", "vantage", "R", "T"), k))
     with open(out / "summary.csv", "w", newline="") as f:
@@ -72,9 +72,10 @@ def build(out: Path):
     print(f"wrote {out / 'summary.json'}, summary.csv, tables.md and figures/")
 
 
-def _get(rows, v, R, T, control=False):
+def _get(rows, v, R, d, bundle, control=False):
     for r in rows:
-        if r["vantage"] == v and r["R"] == R and r["T"] == T and r["control"] == control:
+        if (r["vantage"] == v and r["R"] == R and r.get("decoys", 0) == d and r.get("bundle", False) == bundle
+                and r["control"] == control):
             return r
     return None
 
@@ -87,74 +88,63 @@ def _acc(r, lvl):
 
 
 def _cell_label(r):
-    return f"R = {r['R']:g}" + (f" + {P.DECOYS_IN_FLIGHT:g} decoys (T = {r['T']:g})" if r.get("T", r["R"]) > r["R"] else ", no decoys")
+    if r["control"]:
+        return f"R = {r['R']:g}, every hold off"
+    return f"R = {r['R']:g}, {r['decoys']:g} decoys, bundling {'on' if r['bundle'] else 'off'}"
 
 
 def tables(rows, effects, D, out):
-    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys. Measured end-to-end delay D = {D:.1f} s. "
-          "Per-decision attack; intervals resample whole runs. Device level (primary): the named device is the "
-          "record's. Submission level: the named submission group contains a packet of the record's capture. "
-          "Rows are real records only.\n"]
+    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, gatekeeper departure bundling on and off. "
+          f"Measured end-to-end delay D = {D:.1f} s. Per-decision attack; intervals resample whole runs. Device level "
+          "(primary): the named device is the record's. Submission level: the named submission group contains a "
+          "packet of the record's capture. Rows are real records only. The first hops and the credential processor "
+          "are scored on every record.\n"]
     md.append("## Volume\n\n" + volume_table(D) + "\n")
-    cells_ = sorted({(r["R"], r["T"], r["control"]) for r in rows if not r["control"]}, key=lambda x: (x[1] > x[0], x[0]))
+    md.append("## Departure bundle sizes\n")
+    md.append("Postings per 30-second bundle at one gatekeeper, on its own grid, over every run of the cell. Off cells "
+              "report the bundles the same selections would have formed.\n")
+    md.append("| R | Decoys | Mean per bundle | Empty | Exactly 1 | Fewer than 2 | 1, of non-empty | Postings departing alone | Bundles |")
+    md.append("|---|---|---|---|---|---|---|---|---|")
+    for R in CE.REAL_R:
+        for d in CE.DECOY_LEVELS:
+            r = _get(rows, "baseline", R, d, True)
+            if r and "bundle_mean" in r:
+                md.append(f"| {R} | {d} | {r['bundle_mean']:.2f} | {pct(r['bundle_p0'], 1)} | {pct(r['bundle_p1'], 1)} | "
+                          f"{pct(r['bundle_p_lt2'], 1)} | {pct(r['bundle_p1_nonempty'], 1)} | {pct(r['bundle_alone_share'], 1)} | "
+                          f"{r['bundle_bundles']:,} |")
+    md.append("")
+    md.append("## Effect of bundling on the same records\n")
+    md.append("Accuracy with bundling minus accuracy without, matched record by record on identical traffic "
+              "(percentage points).\n")
+    md.append("| Vantage | R | Decoys | Device effect [95% CI] | Submission effect [95% CI] | Matched rows |")
+    md.append("|---|---|---|---|---|---|")
+    for v in ORDER:
+        for R in CE.REAL_R:
+            for d in CE.DECOY_LEVELS:
+                e = effects.get(f"{v}.R{R:g}.D{d:g}")
+                if e:
+                    md.append(f"| {AT.LABEL[v]} | {R} | {d} | {100 * e['dev']['effect']:+.2f} [{100 * e['dev']['lo']:+.2f}, "
+                              f"{100 * e['dev']['hi']:+.2f}] | {100 * e['sub']['effect']:+.2f} [{100 * e['sub']['lo']:+.2f}, "
+                              f"{100 * e['sub']['hi']:+.2f}] | {e['dev']['n']} |")
+    md.append("")
     md.append("## Every cell\n")
     for v in ORDER:
         md.append(f"### {AT.LABEL[v]}\n")
-        md.append("| Cell | Device accuracy [95% CI] | Random device | Lift vs random | Baseline | Contribution [95% CI] | "
-                  "Submission accuracy [95% CI] | 1/T | Lift (x T) | Baseline | Contribution [95% CI] | "
+        md.append("| Cell | Device accuracy [95% CI] | Random device | Baseline | Contribution [95% CI] | "
+                  "Submission accuracy [95% CI] | 1/T | Baseline | Contribution [95% CI] | "
                   "AUC [95% CI] | Precision top 1% | Precision top 5% | Coverage at >50% | Runs | n |")
-        md.append("|" + "---|" * 17)
-        for R, T, _ in cells_:
-            r = _get(rows, v, R, T)
-            if not r or "dev_accuracy" not in r:
+        md.append("|" + "---|" * 15)
+        for r in sorted((x for x in rows if x["vantage"] == v),
+                        key=lambda x: (x["control"], x["R"], x.get("decoys", 0), x.get("bundle", False))):
+            if "dev_accuracy" not in r:
                 continue
-            md.append(f"| {_cell_label(r)} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {r['dev_lift_random']:.2f} | "
-                      f"{pct(r['dev_baseline'])} | {ci(r, 'dev_contribution', 'dev_contribution_lo', 'dev_contribution_hi')} | "
-                      f"{_acc(r, 'sub')} | {pct(1 / T)} | {r['sub_accuracy'] * T:.2f} | {pct(r['sub_baseline'])} | "
+            md.append(f"| {_cell_label(r)} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {pct(r['dev_baseline'])} | "
+                      f"{ci(r, 'dev_contribution', 'dev_contribution_lo', 'dev_contribution_hi')} | {_acc(r, 'sub')} | "
+                      f"{pct(1 / r['T'])} | {pct(r['sub_baseline'])} | "
                       f"{ci(r, 'sub_contribution', 'sub_contribution_lo', 'sub_contribution_hi')} | "
                       f"{r['auc']:.3f} [{r['auc_lo']:.3f}, {r['auc_hi']:.3f}] | {pct(r['p_at_1'], 1)} | "
                       f"{pct(r['p_at_5'], 1)} | {pct(r['coverage_p50'], 3)} | {r['runs']} | {r['n']} |")
         md.append("")
-    md.append("## First hops and credential processor scored on every record\n")
-    md.append("Each compromised server is scored on every real record, since it cannot identify the records it took "
-              "part in. Claimed: records where it claims the link. Took part: records it actually took part in, which "
-              "it cannot identify. Baseline figures are the passive observer on the same records. The two first-hop "
-              "rows are the same server; they differ only in which records count as taken part in.\n")
-    md.append("| Vantage | Cell | Level | All records [95% CI] | Baseline | Claim rate | Claimed [95% CI] | Baseline on claimed | "
-              "Took part [95% CI] | Baseline on took part |")
-    md.append("|" + "---|" * 10)
-    for v in ("first_hop_cred", "first_hop_content", "cred_processor"):
-        for R, T, _ in cells_:
-            r = _get(rows, v, R, T)
-            if not r or "claim_rate" not in r:
-                continue
-            for lvl in ("dev", "sub"):
-                cl = (f"{pct(r[f'{lvl}_claimed'])} [{pct(r[f'{lvl}_claimed_lo'])}, {pct(r[f'{lvl}_claimed_hi'])}] | "
-                      f"{pct(r[f'{lvl}_claimed_baseline'])}") if f"{lvl}_claimed" in r else "no claims | "
-                md.append(f"| {AT.LABEL[v]} | {_cell_label(r)} | {'device' if lvl == 'dev' else 'submission'} | "
-                          f"{_acc(r, lvl)} | {pct(r[f'{lvl}_baseline'])} | {pct(r['claim_rate'], 1)} | {cl} | "
-                          f"{pct(r[f'{lvl}_took_part'])} [{pct(r[f'{lvl}_took_part_lo'])}, {pct(r[f'{lvl}_took_part_hi'])}] | "
-                          f"{pct(r[f'{lvl}_took_part_baseline'])} |")
-    md.append("")
-    md.append("## Effect of the decoy stream on the same real records\n")
-    md.append("Accuracy with decoys minus accuracy without, matched record by record on identical real traffic.\n")
-    md.append("| Vantage | R | Device effect [95% CI] | Submission effect [95% CI] | Matched rows |")
-    md.append("|---|---|---|---|---|")
-    for v in ORDER:
-        for R in CE.NODECOY_R:
-            e = effects.get(f"{v}.R{R:g}")
-            if e:
-                md.append(f"| {AT.LABEL[v]} | {R} | {100 * e['dev']['effect']:+.2f} [{100 * e['dev']['lo']:+.2f}, {100 * e['dev']['hi']:+.2f}] | "
-                          f"{100 * e['sub']['effect']:+.2f} [{100 * e['sub']['lo']:+.2f}, {100 * e['sub']['hi']:+.2f}] | {e['dev']['n']} |")
-    md.append("")
-    md.append("## Sensitivity control (R = 40, every hold off)\n")
-    md.append("| Vantage | Device accuracy [95% CI] | Random device | Submission accuracy | 1/L |")
-    md.append("|---|---|---|---|---|")
-    for v in ORDER:
-        r = _get(rows, v, CE.CONTROL_R, CE.CONTROL_R, True)
-        if r and "dev_accuracy" in r:
-            md.append(f"| {AT.LABEL[v]} | {_acc(r, 'dev')} | {pct(r['dev_random'])} | {pct(r['sub_accuracy'])} | {pct(1 / CE.CONTROL_R)} |")
-    md.append("")
     md.append("## Outcome-shuffle control (stable cells)\n")
     st = [r for r in rows if r.get("stable")]
     bad = [r for r in st if not (r["shuffle_auc_lo"] <= 0.5 <= r["shuffle_auc_hi"])]
@@ -190,36 +180,24 @@ def figures(rows, fig_dir):
     fig_dir = Path(fig_dir)
     fig_dir.mkdir(parents=True, exist_ok=True)
     f = plt.figure(figsize=(10, 4.4), dpi=300, facecolor=SURFACE)
-    for i, (key, lo, hi, ylab) in enumerate((("dev_accuracy", "dev_ci_lo", "dev_ci_hi", "device accuracy"),
-                                             ("sub_accuracy", "sub_ci_lo", "sub_ci_hi", "submission accuracy"))):
+    cmap = plt.get_cmap("viridis")
+    for i, (key, ylab) in enumerate((("dev_accuracy", "passive observer: device accuracy"),
+                                     ("sub_accuracy", "passive observer: submission accuracy"))):
         ax = f.add_subplot(1, 2, i + 1)
         _style(ax)
-        for v in ORDER:
-            pts = sorted((r for r in rows if r["vantage"] == v and r["T"] > r["R"] and not r["control"] and key in r),
-                         key=lambda r: r["R"])
-            if not pts:
-                continue
-            x = np.array([r["R"] for r in pts])
-            ax.fill_between(x, [r[lo] for r in pts], [r[hi] for r in pts], color=SLOT[v], alpha=0.12, linewidth=0)
-            ax.plot(x, [r[key] for r in pts], "-", color=SLOT[v], linewidth=2, marker=MARK[v], markersize=4,
-                    markeredgecolor=SURFACE, label=AT.LABEL[v])
-            nd = sorted((r for r in rows if r["vantage"] == v and r["T"] == r["R"] and not r["control"] and key in r),
-                        key=lambda r: r["R"])
-            ax.plot([r["R"] for r in nd], [r[key] for r in nd], linestyle="none", color=SLOT[v], marker=MARK[v],
-                    markersize=5, markerfacecolor="none")
-        if i == 0:
-            pts = sorted((r for r in rows if r["vantage"] == "baseline" and r["T"] > r["R"] and not r["control"]),
-                         key=lambda r: r["R"])
-            ax.plot([r["R"] for r in pts], [r["dev_random"] for r in pts], ":", color=INK2, linewidth=1,
-                    label="random device")
-            ax.legend(fontsize=6.5, frameon=False, labelcolor=INK)
-        else:
-            Rs = np.array(sorted({r["R"] for r in rows if r["T"] > r["R"] and not r["control"]}))
-            ax.plot(Rs, 1 / (Rs + P.DECOYS_IN_FLIGHT), ":", color=INK2, linewidth=1)
-        ax.set_xscale("log")
+        for j, R in enumerate(CE.REAL_R):
+            col = cmap(j / max(len(CE.REAL_R) - 1, 1) * 0.85)
+            for bundle, ls in ((False, "--"), (True, "-")):
+                pts = sorted((r for r in rows if r["vantage"] == "baseline" and r["R"] == R and not r["control"]
+                              and r.get("bundle") == bundle and key in r), key=lambda r: r["decoys"])
+                if pts:
+                    ax.plot([r["decoys"] for r in pts], [r[key] for r in pts], ls, color=col, linewidth=2, marker="o",
+                            markersize=3.5, label=f"R = {R}, bundling {'on' if bundle else 'off'}")
         ax.set_yscale("log")
-        ax.set_xlabel("R (real transactions in flight), with 40 decoys in flight", color=INK, fontsize=8)
-        ax.set_ylabel(ylab + " (hollow: no decoys)", color=INK, fontsize=8)
+        ax.set_xlabel("decoys in flight", color=INK, fontsize=8)
+        ax.set_ylabel(ylab, color=INK, fontsize=8)
+        if i == 0:
+            ax.legend(fontsize=6.5, frameon=False, labelcolor=INK)
     f.tight_layout()
-    f.savefig(fig_dir / "accuracy_vs_R.png", facecolor=SURFACE)
+    f.savefig(fig_dir / "bundling_gpa.png", facecolor=SURFACE)
     plt.close(f)

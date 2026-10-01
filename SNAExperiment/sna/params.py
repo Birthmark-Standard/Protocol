@@ -27,8 +27,9 @@ NOISE_FRAME = 18           # libp2p Noise transport framing
 
 # --------------------------------------------------------------------------- devices and volume
 INTERVAL_MIN = 20.0        # mean interval between one device's captures
-DECOYS_IN_FLIGHT = 40.0    # decoy transactions in flight: a steady Poisson stream, independent of
+DECOYS_IN_FLIGHT = 40.0    # default decoy target (checks): decoy transactions in flight: a steady Poisson stream, independent of
                            #   real traffic; each decoy identity captures at a device's rate
+BUNDLE_S = 30.0            # gatekeeper departure bundling window (when bundling is on)
 QUORUM_TIMEOUT_S = 30 * 60 # content server drops a packet whose quorum has not formed in 30 minutes
 
 # --------------------------------------------------------------------------- background traffic
@@ -74,6 +75,7 @@ class Config:
                                        #   packets accompany each)
     measure_s: float = MEASURE_S
     lottery_enabled: bool = True       # False: no relay, device, gatekeeper or content-server hold
+    bundle_s: float = 0.0              # gatekeeper departure bundling window; 0 = off
     background_enabled: bool = True
     nonblending_enabled: bool = True
     bg_clients_per_node: int = BG_CLIENTS_PER_NODE

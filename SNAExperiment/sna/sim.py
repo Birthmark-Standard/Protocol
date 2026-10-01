@@ -72,15 +72,19 @@ class Run:
     gk_phase: np.ndarray    # gatekeeper hold-clock phases (per node; used for the active three)
     gk_set: np.ndarray
     horizon: float
+    bundle_phase: np.ndarray = None
 
 
 class World:
     def __init__(self, cfg: P.Config, seed: int, pools: Pools):
         self.cfg, self.pools = cfg, pools
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(5)
-        self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb = \
+        streams = ss.spawn(6)
+        self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle = \
             (np.random.default_rng(s) for s in streams)
+        # each gatekeeper's departure-bundle grid phase, on its own stream, so bundling on or off
+        # leaves every other draw unchanged
+        self.bundle_phase = rng_bundle.uniform(0, P.BUNDLE_S, P.N_NODES)
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -188,7 +192,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     # fan-out: each leg its own lottery draw on C's node clock; a dummy carries a same-size
     # placeholder in place of sigma_C, so the leg is drawn from the same class either way
     gk = np.broadcast_to(w.gk_set, (S, 3))
-    gk_send, gk_arr, posts = np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3))
+    gk_send, gk_arr, posts, gk_rel = np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3))
     ev_gk = np.empty((S, 3), np.int64)
     for j in range(3):
         g = int(w.gk_set[j])
@@ -198,7 +202,14 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         gk_send[:, j], gk_arr[:, j] = rel, arr
         # verify sigma_V and sigma_C, hold on the gatekeeper's own hold clock, post
         chk = arr + r.uniform(*P.GATEKEEPER_PROC_MS, S) / 1000
-        posts[:, j] = LT.release_time(r, chk, w.gk_phase[g], on) + _proc(r, S)
+        rel_gk = LT.release_time(r, chk, w.gk_phase[g], on)
+        gk_rel[:, j] = rel_gk
+        if cfg.bundle_s > 0:
+            # departure bundling: a selected posting waits for the next boundary of this
+            # gatekeeper's own grid and departs with every posting selected since the last one
+            ph = w.bundle_phase[g]
+            rel_gk = ph + cfg.bundle_s * np.ceil((rel_gk - ph) / cfg.bundle_s)
+        posts[:, j] = rel_gk + _proc(r, S)
     quorum = np.sort(posts, axis=1)[:, 1]          # second of three boards
 
     # content servers: hold on the node clock, then check the boards on each tick; submit on
@@ -216,7 +227,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
 
     return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh,
                 arr_c=arr_c, arr_f=arr_f, arr_i=arr_i, cv2_s=cv2_s, cv2_a=cv2_a,
-                gk_send=gk_send, gk_arr=gk_arr, posts=posts, quorum=quorum,
+                gk_send=gk_send, gk_arr=gk_arr, posts=posts, gk_release=gk_rel, quorum=quorum,
                 hold_f=out["f"][0], det_f=out["f"][1], reg_f=out["f"][2], ok_f=out["f"][3],
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk)
@@ -433,4 +444,5 @@ def simulate(cfg: P.Config, seed: int, pools: Pools) -> Run:
         if k.startswith("ev_"):
             subs[k] = np.where(v >= 0, rank[np.maximum(v, 0)], -1)
     return Run(cfg=cfg, events=events, subs=subs, phase=w.phase, gk_phase=w.gk_phase, gk_set=w.gk_set,
+               bundle_phase=w.bundle_phase,
                horizon=cfg.horizon_s)

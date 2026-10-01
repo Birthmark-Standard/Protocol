@@ -222,9 +222,9 @@ def _claims(t, rng, out):
 
 
 def decoy_effect(with_recs, without_recs, v, rng):
-    """Paired effect of the decoy stream on the same real records: accuracy with decoys minus
-    accuracy without, matched row by row on (run, transaction, group), with an interval from
-    resampling runs. Both cells carry identical real traffic."""
+    """Paired effect on the same real records: accuracy in one cell minus accuracy in its paired
+    cell (bundling on minus off), matched row by row on (run, transaction, group), with an
+    interval from resampling runs. Both cells carry identical traffic."""
     base = {}
     for r in without_recs:
         x = r["vantages"][v]
@@ -259,20 +259,37 @@ def analyze(out, cells, loader, seed=12345):
         if not recs:
             continue
         recs = sorted(recs, key=lambda r: r["run"])
+        bs = bundle_stats(recs)
         for v in AT.VANTAGES:
-            rows.append(metrics(recs, v, spec, rng))
+            r = metrics(recs, v, spec, rng)
+            r["decoys"], r["bundle"] = float(spec.get("decoys", 0.0)), bool(spec.get("bundle", False))
+            if bs:
+                r.update({f"bundle_{k}": x for k, x in bs.items() if k != "hist"})
+            rows.append(r)
     effects = {}
     by_key = {spec["key"]: spec for spec in cells.values()}
     for key, spec in by_key.items():
-        if not spec.get("decoys"):
+        if not spec.get("bundle"):
             continue
-        ref = next((k for k, sp in by_key.items() if sp["R"] == spec["R"] and not sp.get("decoys")
-                    and not sp["control"]), None)
+        ref = next((k for k, sp in by_key.items() if sp["R"] == spec["R"] and sp.get("decoys") == spec.get("decoys")
+                    and not sp.get("bundle") and not sp["control"]), None)
         if ref is None:
             continue
         w, wo = loader(key), loader(ref)
         if not w or not wo:
             continue
         for v in AT.VANTAGES:
-            effects[f"{v}.R{spec['R']:g}"] = decoy_effect(w, wo, v, rng)
+            effects[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = decoy_effect(w, wo, v, rng)
     return rows, effects
+
+
+def bundle_stats(records):
+    """Departure-bundle size distribution summed over a cell's runs (per gatekeeper bundle)."""
+    h = np.sum([r["bundles"] for r in records if "bundles" in r], axis=0)
+    if np.ndim(h) == 0 or h.sum() == 0:
+        return None
+    k = np.arange(h.size)
+    n, pk = h.sum(), (h * k).sum()
+    return dict(bundles=int(n), mean=float(pk / n), p0=float(h[0] / n), p1=float(h[1] / n),
+                p_lt2=float((h[0] + h[1]) / n), p1_nonempty=float(h[1] / max(n - h[0], 1)),
+                alone_share=float(h[1] / max(pk, 1)), hist=h.tolist())

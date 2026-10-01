@@ -10,7 +10,7 @@ A decoy here is a genuine transaction from a registered identity, running at a s
 - Intervals are 95% and resample whole runs.
 - The primary measure is device-level accuracy of the per-decision attack. The submission level (naming the capture itself) is secondary.
 - Rows are real records only.
-- Full tables: `results/tables.md`. Analysis plan: `ANALYSIS_PLAN.md`; its run count was recorded before the sweep, and its section 6a was written before the first hops and credential processor were re-scored.
+- Full tables: `results/genuine_decoys/tables.md`. Analysis plan: `ANALYSIS_PLAN.md`; its run count was recorded before the sweep, and its section 6a was written before the first hops and credential processor were re-scored.
 
 ## Summary
 
@@ -31,7 +31,7 @@ A decoy here is a genuine transaction from a registered identity, running at a s
 
 ## Pre-run checks
 
-Run with background traffic on, at R = 15 with the decoy stream, over 12 runs (`results/checks.json`, `results/checks.log`).
+Run with background traffic on, at R = 15 with the decoy stream, over 12 runs (`results/genuine_decoys/checks.json`, `results/genuine_decoys/checks.log`).
 
 | Check | Outcome |
 |---|---|
@@ -126,11 +126,11 @@ Accuracy [95% CI] (contribution over the baseline, in points):
 | Validator | 5.86% [5.65%, 6.08%] (+0.54) | 4.98% [4.76%, 5.21%] (+0.29) | 4.18% [4.01%, 4.34%] (+0.06) | 2.72% [2.63%, 2.81%] (+0.05) | 1.68% [1.64%, 1.72%] (+0.12) |
 | Gatekeeper | 5.34% [5.18%, 5.50%] (+0.02) | 4.79% [4.64%, 4.95%] (+0.10) | 4.00% [3.87%, 4.11%] (-0.12) | 2.63% [2.57%, 2.69%] (-0.05) | 1.56% [1.53%, 1.59%] (+0.01) |
 
-Figure: `results/figures/accuracy_vs_R.png` (hollow markers: without decoys).
+Figure: `results/genuine_decoys/figures/accuracy_vs_R.png` (hollow markers: without decoys).
 
 ## Calibrated confidence (device level)
 
-Selected cells; every cell is in `results/tables.md`.
+Selected cells; every cell is in `results/genuine_decoys/tables.md`.
 
 | Vantage | Cell | AUC [95% CI] | Precision, top 1% | Precision, top 5% | Largest coverage with precision > 50% |
 |---|---|---|---|---|---|

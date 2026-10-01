@@ -37,13 +37,15 @@ def cmd_quick(a):
     from . import params as P
     from .pools import Pools
     import pickle
-    p = CE.model_path(out, False)
-    if not p.exists():
-        p.parent.mkdir(parents=True, exist_ok=True)
-        m = AT.build_models(P.Config(), Pools(), seed0=CE.MODEL_SEED0, min_samples=40_000)
-        with open(p, "wb") as f:
-            pickle.dump(m, f)
-    specs = [s for s in CE.grid("all") if s["key"] in ("R15", "R15_D40")]
+    for bundle in (False, True):
+        p = CE.model_path(out, False, bundle)
+        if not p.exists():
+            p.parent.mkdir(parents=True, exist_ok=True)
+            m = AT.build_models(P.Config(bundle_s=P.BUNDLE_S if bundle else 0.0), Pools(), seed0=CE.MODEL_SEED0,
+                                min_samples=40_000)
+            with open(p, "wb") as f:
+                pickle.dump(m, f)
+    specs = [s for s in CE.grid("all") if s["key"] in ("R15_D40", "R15_D40_B")]
     for s in specs:
         s["key"] = s["key"] + "_quick"
     names = {s["key"]: CE.rec_name(s) for s in specs}
@@ -71,11 +73,11 @@ def _quick_worker(out, spec, run_id, D):
     from . import sim as S
     from .pools import Pools
     import pickle
-    with open(CE.model_path(out, False), "rb") as f:
+    with open(CE.model_path(out, False, spec.get("bundle", False)), "rb") as f:
         m = pickle.load(f)
     t = time.time()
     run = S.simulate(cfg, CE.traffic_seed(spec["R"], run_id), Pools())
-    recs = AT.compute(run, Pools(), m)
+    recs = AT.compute(run, Pools(), m, run_id=run_id)
     return [(CE.rec_name(spec), dict(run=run_id, seconds=time.time() - t, sim_seconds=0.0, vantages=recs,
                                n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum())))]
 
@@ -140,7 +142,7 @@ def main(argv=None):
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=100, help="runs per cell (run, estimate)")
-    ap.add_argument("--cells", default="all", choices=["all", "nodecoy", "decoy", "control"])
+    ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control"])
     ap.add_argument("--probe-runs", type=int, default=1)
     ap.add_argument("--check-runs", type=int, default=12)
     ap.add_argument("--allrecords", action="store_true",

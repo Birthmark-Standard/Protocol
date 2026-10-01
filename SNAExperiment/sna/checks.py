@@ -15,6 +15,8 @@ results/checks.json and reported, pass or fail.
    separates them.
 5. Decoys reach the registry: every decoy transaction reaches quorum and produces a registry
    record, as every real one does.
+6. Departure bundling: every gatekeeper posting departs on its gatekeeper's own 30-second grid,
+   at least 0 and under 30 seconds after the hold clock selected it.
 """
 from __future__ import annotations
 
@@ -103,7 +105,7 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
     pools = Pools()
     D = CE.calibrate(out)["D"]
     res = {}
-    spec = dict(key="check", R=15.0, T=15.0 + P.DECOYS_IN_FLIGHT, decoys=True, control=False)
+    spec = dict(key="check", R=15.0, T=15.0 + P.DECOYS_IN_FLIGHT, decoys=P.DECOYS_IN_FLIGHT, bundle=True, control=False)
     cfg = CE.config_of(spec, D).with_(background_enabled=True, nonblending_enabled=True, measure_s=P.MEASURE_S)
 
     # 1. padding classes -------------------------------------------------------------------
@@ -150,9 +152,9 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
                     and found == first_hops and bg_members == 0))
 
     # 3. background independence --------------------------------------------------------
-    CE.ensure_models(out, False, pools)
+    CE.ensure_models(out, False, pools, bundle=True)
     import pickle
-    with open(CE.model_path(out, False), "rb") as f:
+    with open(CE.model_path(out, False, True), "rb") as f:
         models = pickle.load(f)
     small = cfg.with_(measure_s=3600.0)
     on = AT.compute(S.simulate(small, CHECK_SEED0 + 1, pools), pools, models)
@@ -192,7 +194,20 @@ def run_checks(out=CE.RESULTS, runs=4, verbose=True):
         passed=bool((s["ok_f"] & s["ok_i"]).all()))
     res["n_feature_tests"] = n_tests
     res["runs"] = runs
-    res["cell"] = dict(R=15, decoys_in_flight=P.DECOYS_IN_FLIGHT, background=True)
+    # 6. departure bundling: every posting departs on its gatekeeper's own grid, within one window
+    # of its selection, and postings on one boundary share a departure time
+    off, wait = [], []
+    for j, g in enumerate(run.gk_set):
+        dep = np.ceil((s["gk_release"][:, j] - run.bundle_phase[g]) / P.BUNDLE_S) * P.BUNDLE_S + run.bundle_phase[g]
+        proc = s["posts"][:, j] - dep
+        off.append(proc)
+        wait.append(dep - s["gk_release"][:, j])
+    off, wait = np.concatenate(off), np.concatenate(wait)
+    res["bundling"] = dict(window_s=P.BUNDLE_S, max_wait=float(wait.max()), min_wait=float(wait.min()),
+                           proc_range=[float(off.min()), float(off.max())],
+                           passed=bool(wait.min() >= 0 and wait.max() < P.BUNDLE_S and off.min() >= 0
+                                       and off.max() <= P.PROC_MS[1] / 1000 + 1e-9))
+    res["cell"] = dict(R=15, decoys_in_flight=P.DECOYS_IN_FLIGHT, bundling=True, background=True)
     (out / "checks.json").write_text(json.dumps(res, indent=1, default=_json))
     if verbose:
         print_checks(res)
@@ -226,6 +241,9 @@ def print_checks(res):
         worst = max(r["features"].items(), key=lambda kv: abs(kv[1]["auc"] - 0.5))
         print(f"[{mark(r['passed'])}] cannot tell decoys, {v}: {len(r['features'])} features, "
               f"largest |AUC - 0.5| {worst[0]} AUC {worst[1]['auc']:.3f} [{worst[1]['lo']:.3f}, {worst[1]['hi']:.3f}]")
+    bnd = res["bundling"]
+    print(f"[{mark(bnd['passed'])}] departure bundling: every posting departs on its gatekeeper's grid, "
+          f"{bnd['min_wait']:.2f} to {bnd['max_wait']:.2f} s after selection (window {bnd['window_s']:g} s)")
     d = res["decoys_reach_registry"]
     print(f"[{mark(d['passed'])}] decoys reach the registry: {d['decoy_records']}/{d['decoys']} decoy and "
           f"{d['real_records']}/{d['real']} real transactions finalised")

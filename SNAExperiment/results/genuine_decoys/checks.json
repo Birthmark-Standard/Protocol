@@ -446,9 +446,9 @@
   "gatekeeper": {
    "features": {
     "GK arrival to board posting": {
-     "auc": 0.4974306351312087,
-     "lo": 0.48922513835453474,
-     "hi": 0.5056361319078827,
+     "auc": 0.497390164005759,
+     "lo": 0.4887740230220099,
+     "hi": 0.506006304989508,
      "covers_half": true,
      "n_real": 12258,
      "n_decoy": 32907
@@ -466,20 +466,9 @@
  },
  "n_feature_tests": 36,
  "runs": 12,
- "bundling": {
-  "window_s": 30.0,
-  "max_wait": 29.28648369130906,
-  "min_wait": 6.684794557215355,
-  "proc_range": [
-   0.0005004746017220896,
-   0.002999582472966722
-  ],
-  "passed": true
- },
  "cell": {
   "R": 15,
   "decoys_in_flight": 40.0,
-  "bundling": true,
   "background": true
  }
 }
