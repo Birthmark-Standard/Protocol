@@ -88,5 +88,15 @@
   "control": false,
   "window_s": 10800,
   "D": 625.5707921012813
+ },
+ "R40_control": {
+  "key": "R40_control",
+  "R": 40.0,
+  "T": 40.0,
+  "decoys": 0.0,
+  "bundle": false,
+  "control": true,
+  "window_s": 10800,
+  "D": 625.5707921012813
  }
 }

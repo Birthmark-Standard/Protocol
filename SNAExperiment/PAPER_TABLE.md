@@ -27,3 +27,19 @@ Passive observer, device named, R = 1 (paired effect of bundling on the same rec
 | 60 | 6.0% | 6.0% | +0.02 | 2.93 | 21.0% |
 
 Bundling changes no vantage's accuracy by more than half a point; the decoy target changes the observer's accuracy by more than 8 points between 20 and 60 decoys.
+
+## Match board pushes
+
+Device named, bundling on, with match boards pushing new matches to every content server every 10 seconds (contribution over the passive observer, in points):
+
+| Vantage | R = 1, 40 decoys (random 2.1%) | R = 15, 40 decoys (random 1.6%) | Push effect, R = 1, 40 decoys |
+|---|---|---|---|
+| Baseline | 8.7% (+0.0) | 6.9% (+0.0) | +0.04 |
+| First hop, credential | 8.7% (+0.0) | 6.9% (-0.0) | +0.07 |
+| First hop, content | 8.7% (+0.0) | 6.9% (-0.0) | +0.07 |
+| Credential processor | 8.6% (-0.0) | 6.9% (-0.0) | -0.04 |
+| Content server | 9.5% (+0.8) | 7.7% (+0.8) | +0.09 |
+| Validator | 9.9% (+1.2) | 8.0% (+1.1) | +0.04 |
+| Gatekeeper | 8.6% (-0.0) | 6.9% (-0.0) | +0.10 |
+
+Board pushes move no vantage's accuracy by more than 0.11 points in any cell.

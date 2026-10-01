@@ -306,3 +306,84 @@ B1 confirms development runs, as the plan discloses.
 - **Board postings are internal.** If postings crossed the wire to separate board hosts, the observer would see departures and bundling could remove an ordering signal it then has. That case is not tested here.
 - **Grids.** Each gatekeeper has its own 30-second grid phase. The relay-hop lottery is unchanged.
 - **Decoy stream.** The decoy stream at each target is a steady Poisson process, as in the sections above.
+
+# Match board pushes
+
+Plan section 6c; full tables in `results/tables.md`, checks in `results/checks.json` and `results/checks.log`.
+
+Content servers never query a board. Each board pushes every match posted since its previous push to every content server, every 10 seconds on its own schedule. A content server submits once its hold has released and pushes from two boards have carried the match. Pushes are internal to the board layer and are not on the observed wire. Bundling is on in every cell.
+
+- 200 runs per cell, 9 cells plus the sensitivity control: 2,000 runs. Every cell met the stability rule.
+- The push build carries the same traffic as the bundling sweep's bundling-on cells up to the content servers, so each effect below is a paired difference on the same records.
+- Likelihood models were rebuilt under the push build. The first hops and the credential processor are scored on every record.
+
+## Summary
+
+1. **Board pushes leave every vantage where it was.** Every vantage's device-level push effect lies between -0.04 and +0.11 points across the nine cells. The largest interval bound in either direction is 0.30 points.
+2. **The ranking of vantages is unchanged.** The validator and the content server add about 0.4 to 1.9 points over the passive observer. Every other vantage stays within 0.1 points of it.
+3. **The decoy target still dominates.** At R = 1, the observer names the device 14.4% of the time at 20 decoys, 8.7% at 40, and 6.0% at 60.
+
+## Effect of board pushes on every vantage
+
+The range of each vantage's device-level push effect across the nine cells, in points (accuracy with pushes minus accuracy with content servers checking the boards on their own clock, matched record by record):
+
+| Vantage | Smallest device effect [95% CI] | Largest device effect [95% CI] |
+|---|---|---|
+| Baseline | -0.01 [-0.10, +0.07] (R = 15, 60 decoys) | +0.06 [-0.02, +0.14] (R = 15, 40 decoys) |
+| First hop, credential | -0.00 [-0.04, +0.03] (R = 50, 40 decoys) | +0.07 [-0.02, +0.15] (R = 1, 40 decoys) |
+| First hop, content | -0.00 [-0.04, +0.03] (R = 50, 40 decoys) | +0.07 [-0.03, +0.15] (R = 1, 40 decoys) |
+| Credential processor | -0.04 [-0.11, +0.04] (R = 1, 40 decoys) | +0.03 [-0.05, +0.11] (R = 15, 20 decoys) |
+| Content server | -0.04 [-0.17, +0.10] (R = 15, 40 decoys) | +0.09 [-0.10, +0.28] (R = 1, 40 decoys) |
+| Validator | -0.04 [-0.16, +0.06] (R = 15, 20 decoys) | +0.11 [+0.01, +0.20] (R = 1, 60 decoys) |
+| Gatekeeper | -0.01 [-0.11, +0.08] (R = 15, 20 decoys) | +0.10 [+0.00, +0.20] (R = 1, 40 decoys) |
+
+## Device accuracy with board pushes
+
+Device accuracy (contribution over the baseline, in points):
+
+| Vantage | R = 1, 20 decoys | R = 1, 40 decoys | R = 1, 60 decoys | R = 15, 40 decoys | R = 50, 40 decoys |
+|---|---|---|---|---|---|
+| Baseline | 14.35% (+0.00) | 8.65% (+0.00) | 6.02% (+0.00) | 6.92% (+0.00) | 4.54% (+0.00) |
+| First hop, credential | 14.37% (+0.02) | 8.66% (+0.01) | 6.05% (+0.02) | 6.88% (-0.03) | 4.52% (-0.02) |
+| First hop, content | 14.37% (+0.02) | 8.66% (+0.01) | 6.05% (+0.02) | 6.88% (-0.03) | 4.52% (-0.02) |
+| Credential processor | 14.32% (-0.02) | 8.64% (-0.02) | 6.03% (+0.00) | 6.89% (-0.03) | 4.53% (-0.01) |
+| Content server | 16.15% (+1.80) | 9.48% (+0.83) | 6.70% (+0.68) | 7.68% (+0.76) | 5.09% (+0.56) |
+| Validator | 16.27% (+1.93) | 9.85% (+1.19) | 7.16% (+1.14) | 7.98% (+1.07) | 5.26% (+0.72) |
+| Gatekeeper | 14.35% (+0.00) | 8.61% (-0.04) | 5.94% (-0.09) | 6.89% (-0.02) | 4.51% (-0.02) |
+| Random device | 4.07% | 2.08% | 1.40% | 1.55% | 0.95% |
+
+The random rate is the baseline's. It is slightly higher for the content server and the validator, which are scored on the records they handled. Every cell is in `results/tables.md`.
+
+## Sensitivity control
+
+The control turns every hold off. It does not turn off the push schedule, which is not a hold, so each match still waits 0 to 10 seconds for its board's next push. At R = 40 without decoys:
+
+| Vantage | Control, bundling sweep | Control, push build |
+|---|---|---|
+| Baseline | 99.4% | 79.6% |
+| Content server | 99.5% | 98.5% |
+| Random device | | 73.7% |
+
+- With holds off, the remaining delays are network latencies of milliseconds. A push wait of up to 10 seconds is then the largest delay in the record time, and it costs the observer about 20 points.
+- The content server knows its own content arrival, so it keeps 98.5%.
+- The control still shows that the attacks find a link when the timing allows one.
+
+## Checks and controls
+
+- **Pre-run checks** (with bundling on): no content server acts before its hold releases or before its quorum push arrives, and pushes wait up to 9.4 seconds for their board's next slot (check 7). Every posting departs on its gatekeeper's own grid (check 6). Every other check passes except the same marginal baseline failure reported above (D's hold, AUC 0.488 [0.476, 0.500] over the same seeds), which pushes do not touch.
+- **Outcome-shuffle control:** 5 of 70 stable cells have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin (largest 0.513).
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| P1. The passive observer's device-level push effect within ±1 point in every cell | Confirmed (-0.01 to +0.06). |
+| P2. No vantage's device-level push effect interval wholly outside ±3 points in any cell | Confirmed. The interval bounds lie between -0.17 and +0.30. |
+| P3. The content server's device-level push effect within ±2 points in every cell | Confirmed (-0.04 to +0.09). |
+
+P1 to P3 follow development runs, as the plan discloses.
+
+## Scope
+
+- **Push schedule.** The 10-second period, the per-board phase, and keeping pushes off the observed wire are this build's choices. The specification states only that the boards regularly push all new matches to all servers.
+- **One validator.** Every cell has one validator.
