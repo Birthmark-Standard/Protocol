@@ -1,0 +1,101 @@
+{
+ "runs": 40,
+ "cells": {
+  "push.R1.D40": {
+   "build": "push",
+   "R": 1,
+   "decoys": 40,
+   "runs": 40,
+   "n": 16228,
+   "joint": 0.09686960808479171,
+   "record_time_only": 0.08737983731821543,
+   "arrival_only": 0.08158737983731822,
+   "random_arrival_band": 0.02252195698159206,
+   "random_record_band": 0.020863872938374377
+  },
+  "push.R15.D40": {
+   "build": "push",
+   "R": 15,
+   "decoys": 40,
+   "runs": 40,
+   "n": 27892,
+   "joint": 0.07987953535063817,
+   "record_time_only": 0.07192026387494622,
+   "arrival_only": 0.0650007170514843,
+   "random_arrival_band": 0.017135492663415998,
+   "random_record_band": 0.0159061762110077
+  },
+  "reg120.R1.D40": {
+   "build": "reg120",
+   "R": 1,
+   "decoys": 40,
+   "runs": 40,
+   "n": 16228,
+   "joint": 0.09988908060142963,
+   "record_time_only": 0.08503820557061868,
+   "arrival_only": 0.08158737983731822,
+   "random_arrival_band": 0.02252195698159206,
+   "random_record_band": 0.02061683302768382
+  },
+  "reg120.R15.D40": {
+   "build": "reg120",
+   "R": 15,
+   "decoys": 40,
+   "runs": 40,
+   "n": 27892,
+   "joint": 0.07887566327262298,
+   "record_time_only": 0.0707729815000717,
+   "arrival_only": 0.0650007170514843,
+   "random_arrival_band": 0.017135492663415998,
+   "random_record_band": 0.01571935552623322
+  },
+  "reg240.R1.D40": {
+   "build": "reg240",
+   "R": 1,
+   "decoys": 40,
+   "runs": 40,
+   "n": 16228,
+   "joint": 0.09686960808479171,
+   "record_time_only": 0.08676361843726892,
+   "arrival_only": 0.08158737983731822,
+   "random_arrival_band": 0.02252195698159206,
+   "random_record_band": 0.0191508769462516
+  },
+  "reg240.R15.D40": {
+   "build": "reg240",
+   "R": 15,
+   "decoys": 40,
+   "runs": 40,
+   "n": 27892,
+   "joint": 0.0766528036713036,
+   "record_time_only": 0.06711601893015919,
+   "arrival_only": 0.0650007170514843,
+   "random_arrival_band": 0.017135492663415998,
+   "random_record_band": 0.01460745955079884
+  },
+  "reg480.R1.D40": {
+   "build": "reg480",
+   "R": 1,
+   "decoys": 40,
+   "runs": 40,
+   "n": 16228,
+   "joint": 0.08774956864678334,
+   "record_time_only": 0.06938624599457727,
+   "arrival_only": 0.08158737983731822,
+   "random_arrival_band": 0.02252195698159206,
+   "random_record_band": 0.017861370723610367
+  },
+  "reg480.R15.D40": {
+   "build": "reg480",
+   "R": 15,
+   "decoys": 40,
+   "runs": 40,
+   "n": 27892,
+   "joint": 0.07123906496486447,
+   "record_time_only": 0.05714900329843683,
+   "arrival_only": 0.0650007170514843,
+   "random_arrival_band": 0.017135492663415998,
+   "random_record_band": 0.013622542734780908
+  }
+ }
+}

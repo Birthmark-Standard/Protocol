@@ -11,6 +11,8 @@
   bundles    registry-level bundle sizes over the sweep's runs (results/registry_bundles_<build>.json)
   gatekeeper each gatekeeper's own load and bundle sizes by decoy target and window
              (results/gatekeeper_occupancy.json)
+  diag-cs    exploratory: the content server's evidence split into record time and content arrival
+             (results/diag_content_server.json)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker
 count or the order runs finish in.
@@ -139,11 +141,17 @@ def cmd_latency(a):
 
 
 def cmd_bundles(a):
-    CE.registry_bundles(Path(a.out or CE.RESULTS), runs=a.runs, build=a.build, workers=a.workers)
+    CE.registry_bundles(Path(a.out or CE.RESULTS), runs=a.runs, build=a.build, workers=a.workers,
+                        which="extra" if a.cells == "extra" else "bundle")
 
 
 def cmd_gatekeeper(a):
     CE.gatekeeper_occupancy(Path(a.out or CE.RESULTS), workers=a.workers)
+
+
+def cmd_diag_cs(a):
+    from . import diagnostics
+    diagnostics.content_server_sources(Path(a.out or CE.RESULTS), workers=a.workers)
 
 
 def cmd_volume(a):
@@ -154,11 +162,11 @@ def cmd_volume(a):
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles", "gatekeeper"])
+    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles", "gatekeeper", "diag-cs"])
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=100, help="runs per cell (run, estimate)")
-    ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control"])
+    ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control", "extra"])
     ap.add_argument("--probe-runs", type=int, default=1)
     ap.add_argument("--check-runs", type=int, default=12)
     ap.add_argument("--build", default=CE.DEFAULT_BUILD, choices=list(CE.BUILDS),
@@ -167,5 +175,5 @@ def main(argv=None):
     ap.add_argument("--allrecords", action="store_true",
                     help="re-score the first hops and credential processor on every record (plan section 6a)")
     a = ap.parse_args(argv)
-    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles, gatekeeper=cmd_gatekeeper,
+    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles, gatekeeper=cmd_gatekeeper, **{"diag-cs": cmd_diag_cs},
          volume=cmd_volume)[a.command](a)

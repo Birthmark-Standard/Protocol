@@ -686,3 +686,86 @@ W1 to W4 follow development runs, as the plan discloses. The plan did not predic
 - **One shared schedule** for every content server, as in section 6d.
 - **Rates** are those of the push build. Longer windows hold more transactions in flight in each cell.
 - **The sensitivity control** was not rerun for these builds.
+
+## Correction: the strongest component in absolute terms
+
+The trade-off table above ranks windows by each component's edge over the passive observer. That edge is not the quantity the claim is about. Measured by the strongest single component's own accuracy, and as a multiple of its own random-pick rate [95% CI], the ranking changes:
+
+| Window | R = 1, 40 decoys | R = 15, 40 decoys | R = 50, 40 decoys |
+|---|---|---|---|
+| none (push) | validator 9.85%, ×3.92 [3.77, 4.06] | validator 7.98%, ×4.28 [4.15, 4.40] | validator 5.26%, ×4.58 [4.48, 4.68] |
+| 60 s | validator 9.78%, ×3.99 [3.84, 4.14] | validator 7.98%, ×4.38 [4.24, 4.52] | validator 5.20%, ×4.64 [4.54, 4.74] |
+| 120 s | validator 9.61%, ×4.06 [3.90, 4.23] | validator 7.84%, ×4.46 [4.32, 4.61] | validator 5.09%, ×4.71 [4.61, 4.80] |
+| 240 s | content server 9.09%, ×3.84 [3.71, 3.97] | content server 7.39%, ×4.19 [4.05, 4.34] | content server 4.91%, ×4.54 [4.46, 4.62] |
+| 480 s | content server 8.60%, ×3.72 [3.58, 3.85] | content server 6.93%, ×4.02 [3.89, 4.16] | content server 4.60%, ×4.35 [4.28, 4.43] |
+
+- In absolute accuracy, the strongest component falls at every window, and furthest at 480 seconds.
+- As a multiple of its own random rate, the strongest component does not improve at 60 or 120 seconds (the validator's random rate falls with its accuracy), improves slightly at 240 seconds, and improves most at 480 seconds. At R = 50, the 480-second interval lies wholly below the push interval.
+- The 480-second result is therefore not a regression in the strongest component's accuracy. What grows at 480 seconds is the content server's lead over the passive observer, because the observer loses more than the content server does.
+
+The statement above that the strongest component's edge is lowest at 240 seconds holds for the edge over the observer only.
+
+## Why the content server gains on the observer at long windows (exploratory)
+
+This diagnostic was run after the window sweep and is not pre-registered (`python -m sna diag-cs`, `results/diag_content_server.json`, run ids 0 to 39 of the sweep, each build's own models).
+
+**Hypothesis.** The content server holds two independent sources of timing evidence about which device produced a record:
+1. the record time, which the passive observer also has;
+2. its own content arrival, which only it has.
+
+The record time comes at the end of the credential path, which carries five lottery holds (device, A, B, the credential processor's fan-out, the gatekeeper) and, with registry bundling, the registry wait. The content arrival comes at the end of the content path, after three holds (device, D, E). Registry bundling degrades the first source and leaves the second untouched. At long windows the record time weakens below the content arrival, the content server leans on its private source, and its lead over the observer grows even as its own accuracy falls.
+
+**Test.** The diagnostic scores the content server's rows three ways: with both sources (as in the sweep), with the record time alone, and with the content arrival alone. Device accuracy at 40 decoys:
+
+| Build | R = 1: both / record time alone / arrival alone | R = 15: both / record time alone / arrival alone |
+|---|---|---|
+| push | 9.69% / 8.74% / 8.16% | 7.99% / 7.19% / 6.50% |
+| 120 s | 9.99% / 8.50% / 8.16% | 7.89% / 7.08% / 6.50% |
+| 240 s | 9.69% / 8.68% / 8.16% | 7.67% / 6.71% / 6.50% |
+| 480 s | 8.77% / 6.94% / 8.16% | 7.12% / 5.71% / 6.50% |
+
+- The arrival-alone score is identical at every window, as it must be: the content path does not depend on the registry schedule.
+- The record-time-alone score falls with the window and drops below the arrival-alone score at 480 seconds, at both volumes.
+- The content server's combined score tracks the stronger of the two.
+
+The hypothesis is consistent with every row. Over 40 runs, the differences between push, 120 and 240 seconds lie within run-to-run noise.
+
+**Consequences.**
+- **A floor for registry-side mechanisms.** No change downstream of the content servers can bring the content server below its arrival-alone accuracy: 8.16% at R = 1 with 40 decoys, about 3.6 times its random-pick rate. A registry window, a coarser registry timestamp or any added registry delay can only remove the record-time source.
+- **What would wake it.** Anything that blurs the record time more than the content arrival raises the content server's lead over the observer: a longer registry window; the registry's coarsened timestamp, if an observer had to rely on it instead of the gossiped submissions (the simulator does not model the coarsening); or more delay or variance between quorum and submission.
+- **What would counter it.** Only changes on the content path itself, before the content server: more or longer holds at the device's content hold, D or E. The content server's own hold comes after arrival and does not touch this source.
+
+## Relay lottery: current parameters
+
+The starting point for any change to the relay holds (`sna/params.py`, `sna/lottery.py`).
+
+| Parameter | Value |
+|---|---|
+| Tick | 10 s |
+| Release probability per tick | 8.33% |
+| Forced release | tick 30 (300 s cap) |
+| Clock | one clock per node with a random phase; each gatekeeper holds on a dedicated clock; a device holds each of its three channels on a fresh random phase |
+| Holds on the credential path | device, A, B, the credential processor's fan-out (one draw per gatekeeper leg), gatekeeper |
+| Holds on each content path | device, D (or G), E (or H), then the content server after arrival |
+| One hold, in isolation | mean 106.2 s, standard deviation 89.0 s, median 79.7 s, 95th percentile 293.7 s, coefficient of variation 0.84 |
+| Share released by the forced cap | 8.0% (0.9167^29) |
+
+Measured per stage in the simulator (R = 15, 40 decoys, 120-second registry window, 10 runs on run ids from 5,000,000 up):
+
+| Stage | Mean | SD | Median | 95th percentile |
+|---|---|---|---|---|
+| Device hold, credential channel | 105.0 s | 88.6 s | 78.6 s | 294.2 s |
+| A | 103.8 s | 88.6 s | 76.7 s | 293.2 s |
+| B | 105.3 s | 88.4 s | 79.7 s | 293.9 s |
+| Credential processor fan-out | 107.4 s | 89.9 s | 80.5 s | 294.0 s |
+| Gatekeeper | 107.0 s | 88.7 s | 80.8 s | 293.6 s |
+| Device hold, content channel | 107.8 s | 89.8 s | 80.6 s | 293.9 s |
+| D | 107.0 s | 90.1 s | 78.0 s | 294.3 s |
+| E | 107.3 s | 89.8 s | 82.4 s | 294.0 s |
+| Content server hold | 104.3 s | 88.2 s | 78.8 s | 294.0 s |
+| Content server: hold release to quorum push | 165.7 s | 182.0 s | 110.6 s | 527.8 s |
+| Registry wait (120 s window) | 58.2 s | 34.4 s | 60.0 s | 112.1 s |
+| Capture to record time (the observer's y) | 649.6 s | 149.2 s | 640.4 s | 907.8 s |
+
+- The content packet usually waits at the content server for quorum (about 166 seconds on average after its own hold), so the record time is set by the credential path.
+- The 8% point mass at the 300-second cap is present in every hold. It is the same shape the two-point gatekeeper hold placed at the cap with 40% weight.
