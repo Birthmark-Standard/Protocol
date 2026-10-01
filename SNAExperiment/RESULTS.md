@@ -197,3 +197,112 @@ R2, R3 and S1 were written after development runs or diagnostics that showed the
 - **Real traffic is a homogeneous Poisson process at a fixed rate,** with one transaction per capture. Bursty arrivals and sibling transactions (several candidate images per capture) are not modelled.
 - **Candidates are device packets grouped per source by timing.** 82.8% of groups hold a single capture; the rest are scored as mixed.
 - **Each vantage uses one timing observation beyond the baseline's.** Stronger attacks can only raise these accuracies, so every figure is a lower bound for its vantage.
+
+# Gatekeeper departure bundling
+
+Plan section 6b; full tables in `results/tables.md`, checks in `results/checks.json` (run with bundling on).
+
+Each gatekeeper's hold-clock selections wait for the next boundary of its own 30-second grid and depart together. Board postings are internal to the gatekeeper and are not on the observed wire. The sweep covered R = 1, 15 and 50 real transactions in flight, at decoy targets of 20, 40 and 60 in flight, with bundling on and off.
+
+- 200 runs per cell, 18 cells plus the sensitivity control: 3,800 runs. Every cell met the stability rule.
+- Bundling on and off carry identical traffic, so each effect below is a paired difference on the same records.
+- Cells with bundling are attacked with likelihood models built with bundling on.
+- The first hops and the credential processor are scored on every record.
+
+## Summary
+
+1. **Bundling does not protect against the passive observer here.** Its effect on the observer's device accuracy lies between -0.26 and +0.02 points in all nine (R, decoy) cells. Every vantage's effect lies between -0.42 and +0.19 points.
+2. **The reason is structural in this model.** Board postings never cross the observed wire, so the observer never sees a gatekeeper departure and has no ordering signal for bundling to remove. Bundling reaches the observer only as up to 30 seconds of extra delay before quorum, against a capture-to-registry delay of about 626 seconds that already carries several lottery holds.
+3. **The decoy target matters far more than bundling.** At R = 1 with bundling on, the observer names the device:
+   - 14.3% of the time at 20 decoys;
+   - 8.6% at 40 decoys;
+   - 6.0% at 60 decoys.
+4. **Bundles are small at the deployment volume.** At R = 1 with 40 decoys, a bundle holds 1.97 postings on average, and 41.5% of bundles hold fewer than two. Under 0.1% of bundles would hold fewer than two only at real volumes far above the deployment range. At R = 50 with 60 decoys the share is still 3.2%.
+   - The hand estimate of 10 per bundle counted all 40 decoys in flight as held at the gatekeeper.
+   - A transaction spends about 111 of its 626 seconds there, so about 7 postings wait at one gatekeeper at a time, and about 0.67 are released per 10-second tick.
+
+## Bundle sizes
+
+Postings per 30-second bundle at one gatekeeper, over every run of the bundling cells:
+
+| R | Decoys | Postings per bundle (mean) | Bundles with fewer than 2 | Non-empty bundles holding 1 | Postings departing alone |
+|---|---|---|---|---|---|
+| 1 | 20 | 1.01 | 73.3% | 57.9% | 36.5% |
+| 1 | 40 | 1.97 | 41.5% | 31.9% | 14.0% |
+| 1 | 60 | 2.93 | 21.0% | 16.5% | 5.4% |
+| 15 | 20 | 1.69 | 49.5% | 38.1% | 18.3% |
+| 15 | 40 | 2.65 | 25.8% | 20.1% | 7.0% |
+| 15 | 60 | 3.62 | 12.4% | 10.0% | 2.7% |
+| 50 | 20 | 3.35 | 15.3% | 12.2% | 3.5% |
+| 50 | 40 | 4.31 | 7.1% | 5.8% | 1.3% |
+| 50 | 60 | 5.26 | 3.2% | 2.7% | 0.5% |
+
+## Effect of bundling on the passive observer
+
+Accuracy with bundling minus accuracy without, matched record by record (percentage points):
+
+| R | Decoys | Device, off | Device, on | Device effect [95% CI] | Submission, off | Submission, on | Submission effect [95% CI] |
+|---|---|---|---|---|---|---|---|
+| 1 | 20 | 14.57% | 14.31% | -0.26 [-0.42, -0.11] | 10.37% | 10.23% | -0.15 [-0.44, +0.17] |
+| 1 | 40 | 8.75% | 8.61% | -0.14 [-0.26, -0.03] | 5.32% | 5.27% | -0.05 [-0.28, +0.20] |
+| 1 | 60 | 6.00% | 6.01% | +0.02 [-0.09, +0.11] | 3.68% | 3.49% | -0.19 [-0.43, +0.03] |
+| 15 | 20 | 9.89% | 9.79% | -0.10 [-0.21, +0.02] | 6.40% | 6.15% | -0.25 [-0.50, -0.02] |
+| 15 | 40 | 6.97% | 6.86% | -0.11 [-0.21, -0.01] | 4.12% | 4.01% | -0.11 [-0.30, +0.08] |
+| 15 | 60 | 5.32% | 5.24% | -0.08 [-0.17, +0.00] | 2.99% | 2.92% | -0.08 [-0.25, +0.09] |
+| 50 | 20 | 5.66% | 5.61% | -0.05 [-0.10, +0.00] | 3.13% | 3.13% | -0.01 [-0.10, +0.08] |
+| 50 | 40 | 4.59% | 4.54% | -0.06 [-0.10, -0.01] | 2.46% | 2.44% | -0.02 [-0.11, +0.08] |
+| 50 | 60 | 3.85% | 3.83% | -0.02 [-0.07, +0.02] | 2.01% | 2.01% | +0.00 [-0.09, +0.08] |
+
+Figure: `results/figures/bundling_gpa.png`.
+
+## Effect of bundling on every vantage
+
+The range of each vantage's device-level effect across the nine (R, decoy) cells:
+
+| Vantage | Smallest device effect [95% CI] | Largest device effect [95% CI] |
+|---|---|---|
+| Baseline | -0.26 [-0.42, -0.11] (R = 1, 20 decoys) | +0.02 [-0.09, +0.11] (R = 1, 60 decoys) |
+| First hop, credential | -0.23 [-0.35, -0.10] (R = 1, 20 decoys) | -0.02 [-0.10, +0.07] (R = 1, 60 decoys) |
+| First hop, content | -0.23 [-0.36, -0.10] (R = 1, 20 decoys) | -0.02 [-0.10, +0.07] (R = 1, 60 decoys) |
+| Credential processor | -0.17 [-0.31, -0.04] (R = 1, 20 decoys) | +0.02 [-0.07, +0.11] (R = 1, 60 decoys) |
+| Content server | -0.23 [-0.41, -0.05] (R = 1, 40 decoys) | +0.00 [-0.14, +0.15] (R = 15, 40 decoys) |
+| Validator | -0.00 [-0.15, +0.14] (R = 1, 40 decoys) | +0.19 [+0.08, +0.30] (R = 15, 40 decoys) |
+| Gatekeeper | -0.12 [-0.20, -0.04] (R = 15, 60 decoys) | -0.01 [-0.12, +0.11] (R = 15, 20 decoys) |
+
+Every cell is in `results/tables.md`.
+
+## Decoy target at R = 1 (bundling on)
+
+Device accuracy (contribution over the baseline, in points):
+
+| Vantage | R = 1, 20 decoys | R = 1, 40 decoys | R = 1, 60 decoys | Random device at 20 / 40 / 60 |
+|---|---|---|---|---|
+| Baseline | 14.31% (+0.00) | 8.61% (+0.00) | 6.01% (+0.00) | 4.08% / 2.08% / 1.40% |
+| First hop, credential | 14.34% (+0.03) | 8.60% (-0.01) | 6.03% (+0.02) | 4.08% / 2.08% / 1.40% |
+| First hop, content | 14.34% (+0.03) | 8.60% (-0.01) | 6.03% (+0.02) | 4.08% / 2.08% / 1.40% |
+| Credential processor | 14.32% (+0.01) | 8.68% (+0.07) | 6.00% (-0.01) | 4.08% / 2.08% / 1.40% |
+| Content server | 16.07% (+1.76) | 9.39% (+0.78) | 6.71% (+0.70) | 4.82% / 2.46% / 1.66% |
+| Validator | 16.18% (+1.87) | 9.81% (+1.20) | 7.06% (+1.05) | 4.91% / 2.50% / 1.69% |
+| Gatekeeper | 14.31% (-0.00) | 8.51% (-0.10) | 5.92% (-0.09) | 4.08% / 2.08% / 1.40% |
+
+## Checks and controls
+
+- **Pre-run checks** (with bundling on): every posting departs on its gatekeeper's own grid, 6.7 to 29.3 seconds after selection. Every other check passes except the same marginal baseline failure reported above (D's hold, AUC upper bound 0.4995 over the same seeds), which bundling does not touch.
+- **Outcome-shuffle control:** 9 of 133 stable cells have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin.
+- **Accuracy test:** every vantage's adjusted device-accuracy interval lies above the random-assignment rate in every cell.
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| B1. The passive observer's device-level bundling effect within ±1 point in every cell | Confirmed (-0.26 to +0.02). |
+| B2. No vantage's device-level bundling effect interval wholly below -3 points in any cell | Confirmed. The lowest interval bound is -0.42. |
+| B3. At each R, the share of bundles with fewer than two postings falls as the decoy target rises | Confirmed at R = 1, 15 and 50. |
+
+B1 confirms development runs, as the plan discloses.
+
+## Scope
+
+- **Board postings are internal.** If postings crossed the wire to separate board hosts, the observer would see departures and bundling could remove an ordering signal it then has. That case is not tested here.
+- **Grids.** Each gatekeeper has its own 30-second grid phase. The relay-hop lottery is unchanged.
+- **Decoy stream.** The decoy stream at each target is a steady Poisson process, as in the sections above.

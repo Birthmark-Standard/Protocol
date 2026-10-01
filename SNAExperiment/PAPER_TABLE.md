@@ -15,3 +15,15 @@ Each accuracy cell gives, in brackets, the contribution over a passive observer 
 | Gatekeeper | transit and countersignature keys | 8.6% (-0.1) | 6.9% (-0.1) | 5.3% (+0.0) | -79.2 points |
 
 With decoys, every component names the device behind a record at about 4 times the random-pick rate, and within about a point of what a passive observer achieves. Only the validator and the content server, which know which records they handled, add about a point. Decoys cut every component's accuracy at R = 1 by about 79 points.
+
+## Gatekeeper departure bundling
+
+Passive observer, device named, R = 1 (paired effect of bundling on the same records, in points). Board postings are internal, so the observer never sees a departure.
+
+| Decoys in flight | Bundling off | Bundling on | Effect | Postings per bundle | Bundles with fewer than 2 |
+|---|---|---|---|---|---|
+| 20 | 14.6% | 14.3% | -0.26 | 1.01 | 73.3% |
+| 40 | 8.8% | 8.6% | -0.14 | 1.97 | 41.5% |
+| 60 | 6.0% | 6.0% | +0.02 | 2.93 | 21.0% |
+
+Bundling changes no vantage's accuracy by more than half a point; the decoy target changes the observer's accuracy by more than 8 points between 20 and 60 decoys.

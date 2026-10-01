@@ -1,0 +1,192 @@
+{
+ "R1_D20": {
+  "key": "R1_D20",
+  "R": 1.0,
+  "T": 21.0,
+  "decoys": 20.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R1_D40": {
+  "key": "R1_D40",
+  "R": 1.0,
+  "T": 41.0,
+  "decoys": 40.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R1_D60": {
+  "key": "R1_D60",
+  "R": 1.0,
+  "T": 61.0,
+  "decoys": 60.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R15_D20": {
+  "key": "R15_D20",
+  "R": 15.0,
+  "T": 35.0,
+  "decoys": 20.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R15_D40": {
+  "key": "R15_D40",
+  "R": 15.0,
+  "T": 55.0,
+  "decoys": 40.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R15_D60": {
+  "key": "R15_D60",
+  "R": 15.0,
+  "T": 75.0,
+  "decoys": 60.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D20": {
+  "key": "R50_D20",
+  "R": 50.0,
+  "T": 70.0,
+  "decoys": 20.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D40": {
+  "key": "R50_D40",
+  "R": 50.0,
+  "T": 90.0,
+  "decoys": 40.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D60": {
+  "key": "R50_D60",
+  "R": 50.0,
+  "T": 110.0,
+  "decoys": 60.0,
+  "bundle": false,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R1_D20_B": {
+  "key": "R1_D20_B",
+  "R": 1.0,
+  "T": 21.0,
+  "decoys": 20.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R1_D40_B": {
+  "key": "R1_D40_B",
+  "R": 1.0,
+  "T": 41.0,
+  "decoys": 40.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R1_D60_B": {
+  "key": "R1_D60_B",
+  "R": 1.0,
+  "T": 61.0,
+  "decoys": 60.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R15_D20_B": {
+  "key": "R15_D20_B",
+  "R": 15.0,
+  "T": 35.0,
+  "decoys": 20.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R15_D40_B": {
+  "key": "R15_D40_B",
+  "R": 15.0,
+  "T": 55.0,
+  "decoys": 40.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R15_D60_B": {
+  "key": "R15_D60_B",
+  "R": 15.0,
+  "T": 75.0,
+  "decoys": 60.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D20_B": {
+  "key": "R50_D20_B",
+  "R": 50.0,
+  "T": 70.0,
+  "decoys": 20.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D40_B": {
+  "key": "R50_D40_B",
+  "R": 50.0,
+  "T": 90.0,
+  "decoys": 40.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D60_B": {
+  "key": "R50_D60_B",
+  "R": 50.0,
+  "T": 110.0,
+  "decoys": 60.0,
+  "bundle": true,
+  "control": false,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R40_control": {
+  "key": "R40_control",
+  "R": 40.0,
+  "T": 40.0,
+  "decoys": 0.0,
+  "bundle": false,
+  "control": true,
+  "window_s": 10800,
+  "D": 625.5707921012813
+ }
+}
