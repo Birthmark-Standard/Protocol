@@ -106,8 +106,16 @@ def model_path(out, control):
     return Path(out) / "models" / (f"{TARGET}_control.pkl" if control else f"{TARGET}_main.pkl")
 
 
+ALL_RECORDS = ("baseline", "first_hop_cred", "first_hop_content", "cred_processor")
+
+
 def rec_name(spec):
-    return f"{spec['key']}__{TARGET}"
+    return f"{spec['key']}__{TARGET}" + ("__allrecords" if spec.get("allrecords") else "")
+
+
+def allrecords_specs(specs):
+    """The same cells, re-scored for the vantages that are scored on every record."""
+    return [dict(s, allrecords=True, vantages=ALL_RECORDS) for s in specs]
 
 
 def ensure_models(out, control, pools=None):
@@ -142,7 +150,7 @@ def worker(out, spec, run_id, D):
     t = time.time()
     run = S.simulate(cfg, traffic_seed(spec["R"], run_id, spec["control"]), _W["pools"])
     t_sim = time.time() - t
-    recs = AT.compute(run, _W["pools"], _W["models"])
+    recs = AT.compute(run, _W["pools"], _W["models"], spec.get("vantages", AT.VANTAGES), run_id)
     rec = dict(run=run_id, seconds=time.time() - t, sim_seconds=t_sim, vantages=recs,
                n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum()))
     return [(rec_name(spec), rec)]
@@ -162,7 +170,7 @@ def run_cells(out, specs, runs, workers="auto"):
     together (run 0 of every cell first), so an interrupted sweep is balanced across cells."""
     out = Path(out)
     D = calibrate(out)["D"]
-    write_cells(out, specs, D)
+    write_cells(out, [s for s in specs if not s.get("allrecords")], D)
     pools = Pools()
     tasks = []
     for spec in specs:

@@ -156,7 +156,7 @@ All seven vantages are scored in every cell. Decoys are indistinguishable to eve
 
 **Scored window.** Real records whose capture falls in the scored window are scored; decoy records are never rows. The window is 3 hours, extended to hold 200 real transactions on average: 200 × D / R, which is 34.7 hours at R = 1. Warm-up is 20 minutes and cool-down 40 minutes.
 
-**Run count.** Recorded in section 8, before the first sweep run.
+**Run count.** Recorded in section 8, before the first sweep run. The re-scoring of section 6a uses the same 200 runs.
 
 Probe runs use run ids from 1,000,000 upward and are written to `results/probe/`. They are used only to measure cost and successes per run, and they are never reported as findings.
 
@@ -208,6 +208,43 @@ Predictions R2 and R3 confirm development observations; they are not blind.
 - **R4.** The gatekeeper's and the credential processor's device-level contribution is below +1 point in every cell.
 - **R5.** Every vantage's adjusted device-accuracy interval lies above the random-assignment rate in every cell.
 - **R6.** Sensitivity control: every vantage's device-accuracy interval lies above the random-assignment rate.
+
+## 6a. Scoring on every record (first hops and credential processor)
+
+Written after the sweep of section 5.1 and before the re-scoring it describes. The first scoring of the first hops and the credential processor used as rows only the records each server took part in, chosen from the simulator's truth. Neither vantage can identify those records: a registry record names F and I but no relay hop and no credential processor. A diagnostic on 10 runs at R = 1 with decoys showed the selection is what drove the first hops' submission-level advantage:
+
+| Records | First hop | Baseline |
+|---|---|---|
+| The ~5% it relayed | 13.4% | 5.5% |
+| The ~95% it did not relay | 4.9% | 5.5% |
+| All records | 5.4% | 5.5% |
+
+The content server's rows are legitimate (it submitted those records, and the record names it). So are the validator's and gatekeeper's (every record).
+
+**Re-scoring.**
+- **Rows.** Each first hop and each credential processor is scored on every real record in the scored window.
+- **Which servers.** Four servers per run are compromised in turn, rotating with the run id: server (4 × run + i) mod pool, for i = 0 to 3. The pool is all 20 nodes for a first hop and the 17 non-gatekeepers for a credential processor.
+- **Likelihoods.** Unchanged.
+- **Traffic.** The same runs (run ids 0 to 199, the same traffic seeds) are re-simulated and re-scored for these vantages and the baseline. These records replace the earlier rows of the first hops and the credential processor.
+- **The two first hops.** Scored on every record, the credential and content first hops are the same compromised server with the same knowledge, so their claims and accuracy are identical. They differ only in which records count as ones the server took part in: those whose credential it relayed, or those whose content it relayed.
+
+**Claims.**
+- A first hop claims a link when its top capture holds a packet it relayed.
+- A credential processor claims a link when the evidence at its pick favours its own transactions over the baseline. That is a likelihood ratio above 1, which is an own-transaction share of the pick's likelihood above its prior of 1/17.
+- The credential processor's rule was first set at an own share above 1/2. A single-run pipeline test showed that this can never fire, because the prior caps the share. The rule was changed to the likelihood ratio before any re-scoring run.
+
+**Reported, at both levels.**
+- Accuracy and contribution over the baseline on every record (the primary result for these vantages).
+- The claim rate.
+- Accuracy on claimed records, against the baseline's accuracy on the same records.
+- Accuracy on the records the server took part in, labelled as not identifiable to the server.
+
+**Predictions.**
+- **S1.** Over every record, each first hop's submission-level contribution interval lies within ±1 point at every cell with decoys.
+- **S2.** Over every record, the credential processor's device-level contribution lies within ±0.5 points in every cell.
+- No direction is predicted for the precision of claims.
+
+S1 confirms the diagnostic above; it is not blind.
 
 ## 7. Deliverables
 

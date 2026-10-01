@@ -189,7 +189,35 @@ def metrics(records, v, spec, rng):
         perm[m] = c[m][rng.permutation(m.size)]
     a = auc_clustered(conf, perm.astype(int), t["run"])
     out["shuffle_auc"], out["shuffle_auc_lo"], out["shuffle_auc_hi"] = a["auc"], a["auc"] - Z95 * a["se"], a["auc"] + Z95 * a["se"]
+    if "claim" in t:
+        _claims(t, rng, out)
     out["_per_run"] = dict(dev=(num, den), sub=(nums, dens))
+    return out
+
+
+def _claims(t, rng, out):
+    """For a vantage scored on every record: how many records it claims, how often a claim is
+    right, the baseline's accuracy on the same claimed records, and its accuracy on the records it
+    actually took part in (which it cannot identify)."""
+    cl = t["claim"].astype(bool)
+    part = t["took_part"].astype(bool)
+    n_runs = np.unique(t["run"]).size
+    nc, nd = per_run(cl, t["run"])
+    out["claim_rate"] = float(nc.sum() / nd.sum())
+    out["took_part_rate"] = float(part.mean())
+    out["claims_on_own_records"] = float((cl & part).sum() / max(cl.sum(), 1))
+    for lvl in ("dev", "sub"):
+        c = t[f"{lvl}_v_correct"].astype(bool)
+        b = t[f"{lvl}_b_correct"].astype(bool)
+        for name, m in (("claimed", cl), ("took_part", part)):
+            if m.sum() == 0:
+                continue
+            num, den = per_run(c[m], t["run"][m])
+            k = f"{lvl}_{name}"
+            out[k], out[k + "_lo"], out[k + "_hi"] = cluster_boot(num, den, rng)
+            nb, _ = per_run(b[m], t["run"][m])
+            out[k + "_baseline"] = float(nb.sum() / den.sum())
+            out[k + "_n"] = int(m.sum())
     return out
 
 

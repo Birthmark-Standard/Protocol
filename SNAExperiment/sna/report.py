@@ -35,6 +35,20 @@ def volume_table(D):
     return "\n".join(lines)
 
 
+def _load(out, key):
+    """A cell's run records. Where re-scored records of the vantages scored on every record exist,
+    they replace those vantages' rows run by run."""
+    recs = RN.load(out, f"{key}__{CE.TARGET}")
+    extra = {r["run"]: r for r in RN.load(out, f"{key}__{CE.TARGET}__allrecords")}
+    if extra:
+        recs = [r for r in recs if r["run"] in extra]
+        for r in recs:
+            for v in CE.ALL_RECORDS:
+                if v != "baseline":
+                    r["vantages"][v] = extra[r["run"]]["vantages"][v]
+    return recs
+
+
 def _clean(r):
     return {k: v for k, v in r.items() if not k.startswith("_")}
 
@@ -42,7 +56,7 @@ def _clean(r):
 def build(out: Path):
     out = Path(out)
     cells = json.loads((out / "cells.json").read_text())
-    rows, effects = AN.analyze(out, cells, lambda k: RN.load(out, f"{k}__{CE.TARGET}"))
+    rows, effects = AN.analyze(out, cells, lambda k: _load(out, k))
     clean = [_clean(r) for r in rows]
     (out / "summary.json").write_text(json.dumps(dict(rows=clean, decoy_effects=effects), indent=1, default=float))
     keys = sorted({k for r in clean for k in r if not isinstance(r[k], dict)},

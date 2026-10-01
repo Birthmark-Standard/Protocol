@@ -117,7 +117,10 @@ def _short(v):
 
 
 def cmd_run(a):
-    CE.run_cells(Path(a.out or CE.RESULTS), _specs(a.cells), a.runs, a.workers)
+    specs = _specs(a.cells)
+    if a.allrecords:
+        specs = CE.allrecords_specs(specs)
+    CE.run_cells(Path(a.out or CE.RESULTS), specs, a.runs, a.workers)
 
 
 def cmd_analyze(a):
@@ -140,6 +143,8 @@ def main(argv=None):
     ap.add_argument("--cells", default="all", choices=["all", "nodecoy", "decoy", "control"])
     ap.add_argument("--probe-runs", type=int, default=1)
     ap.add_argument("--check-runs", type=int, default=12)
+    ap.add_argument("--allrecords", action="store_true",
+                    help="re-score the first hops and credential processor on every record (plan section 6a)")
     a = ap.parse_args(argv)
     dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze,
          volume=cmd_volume)[a.command](a)
