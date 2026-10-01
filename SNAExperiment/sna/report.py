@@ -115,6 +115,27 @@ def tables(rows, effects, D, out):
                       f"{r['auc']:.3f} [{r['auc_lo']:.3f}, {r['auc_hi']:.3f}] | {pct(r['p_at_1'], 1)} | "
                       f"{pct(r['p_at_5'], 1)} | {pct(r['coverage_p50'], 3)} | {r['runs']} | {r['n']} |")
         md.append("")
+    md.append("## First hops and credential processor scored on every record\n")
+    md.append("Each compromised server is scored on every real record, since it cannot identify the records it took "
+              "part in. Claimed: records where it claims the link. Took part: records it actually took part in, which "
+              "it cannot identify. Baseline figures are the passive observer on the same records. The two first-hop "
+              "rows are the same server; they differ only in which records count as taken part in.\n")
+    md.append("| Vantage | Cell | Level | All records [95% CI] | Baseline | Claim rate | Claimed [95% CI] | Baseline on claimed | "
+              "Took part [95% CI] | Baseline on took part |")
+    md.append("|" + "---|" * 10)
+    for v in ("first_hop_cred", "first_hop_content", "cred_processor"):
+        for R, T, _ in cells_:
+            r = _get(rows, v, R, T)
+            if not r or "claim_rate" not in r:
+                continue
+            for lvl in ("dev", "sub"):
+                cl = (f"{pct(r[f'{lvl}_claimed'])} [{pct(r[f'{lvl}_claimed_lo'])}, {pct(r[f'{lvl}_claimed_hi'])}] | "
+                      f"{pct(r[f'{lvl}_claimed_baseline'])}") if f"{lvl}_claimed" in r else "no claims | "
+                md.append(f"| {AT.LABEL[v]} | {_cell_label(r)} | {'device' if lvl == 'dev' else 'submission'} | "
+                          f"{_acc(r, lvl)} | {pct(r[f'{lvl}_baseline'])} | {pct(r['claim_rate'], 1)} | {cl} | "
+                          f"{pct(r[f'{lvl}_took_part'])} [{pct(r[f'{lvl}_took_part_lo'])}, {pct(r[f'{lvl}_took_part_hi'])}] | "
+                          f"{pct(r[f'{lvl}_took_part_baseline'])} |")
+    md.append("")
     md.append("## Effect of the decoy stream on the same real records\n")
     md.append("Accuracy with decoys minus accuracy without, matched record by record on identical real traffic.\n")
     md.append("| Vantage | R | Device effect [95% CI] | Submission effect [95% CI] | Matched rows |")
