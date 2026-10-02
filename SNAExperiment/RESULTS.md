@@ -1203,7 +1203,7 @@ Plan section 6j, run on the second machine with `python -m sna sequence 6j` into
 3. **It costs less latency than the relay-hop version.** Mean capture to finalization at R = 1: 897.5 seconds under dev200 and 1,169.0 under dev300, against 1,013.6 and 1,425.0 for the relay-hop versions and 684.0 for reg120.
 4. **The post-match lottery separates F and I at the point of submission.** The share of real records whose two submissions are within 5 seconds of each other falls from 53.4% to 3.3% at R = 1 (53.7% to 3.4% and 53.9% to 3.3% at R = 15 and 50).
 5. **The 120-second registry window puts 27% to 29% of the separated pairs back into one bundle.** As the submissions leave, 29% to 31% of pairs still leave together under the lottery, against 65% to 67% without it.
-6. **The post-match lottery hands the lead to the content server.** It lowers the observer by 0.27 to 0.47 points and the validator's lead (1.09 to 0.52 points at R = 1 with 40 decoys), but the content server becomes the strongest component in all nine cells, leading the observer by 0.63 to 1.75 points. The strongest component's multiple of random falls slightly; its interval stays inside or touches reg120's except at R = 50, 40 decoys. Mean latency rises by about 141 seconds.
+6. **The post-match lottery hands the lead to the content server.** It lowers the observer by 0.27 to 0.47 points and the validator's lead (1.09 to 0.52 points at R = 1 with 40 decoys), but the content server becomes the strongest component in all nine cells, leading the observer by 0.63 to 1.75 points. The strongest component's multiple of random falls slightly in every cell; its interval lies wholly below reg120's at R = 50 (all three decoy levels) and overlaps it at R = 1 and 15. Mean latency rises by about 141 seconds.
 
 ## Content-side holds at the device and the content servers
 
@@ -1225,7 +1225,7 @@ Device accuracy, the strongest component and its multiple of random [95% CI], 40
 
 Against the relay-hop versions at the same factor, the role-aware builds leave the observer 0.27 to 0.74 points more accurate and the content server 0.69 to 1.38 points more accurate (paired, every interval above 0). The relay-hop result was therefore partly an effect of stretching holds that the specification does not allow; the part that survives is the validator's loss of its lead and the lower multiple of random.
 
-Why the content server keeps a lead: its own hold now comes between its content arrival and the record time, so the record time follows its own hold more often, and the content server knows when its content arrived. Under the relay-hop version, the extra delay sat before its arrival, where it hid the device's send time from the content server too.
+A likely reason the content server keeps a lead (not tested): its own hold now comes between its content arrival and the record time, so the record time follows its own hold more often, and the content server knows when its content arrived. Under the relay-hop version, the extra delay sat before its arrival, where it hid the device's send time from the content server too.
 
 ## The post-match lottery
 
@@ -1284,4 +1284,4 @@ Every cell of pm120, dev200 and dev300 passes the criterion of section 6i. The h
 | J4. Under dev200 and dev300, no component leads the observer by more than 1 point at every R | Confirmed: the largest lead is +0.40 (content server, dev200, R = 15). |
 | J5. Under pm120, the observer's effect against reg120 within ±1 point in every cell | Confirmed: -0.47 to -0.27. |
 
-J1 to J5 follow development runs, as the plan discloses. No prediction was made for the content server's lead under pm120; it rose in 8 of 9 cells.
+J1 to J5 follow development runs, as the plan discloses. No prediction was made for the content server's lead under pm120; it rose in all 9 cells.
