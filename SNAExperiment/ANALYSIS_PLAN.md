@@ -477,6 +477,22 @@ Written after section 6g and before the sweep below.
 - **S2.** The observer's device-level effect against content200 lies within ±1 point in every cell.
 - **S3.** Shortening the credential path saves little latency: at R = 1, the mean capture-to-finalization time of each new build is at most 60 seconds below content200's.
 
+## 6i. The claim criterion
+
+Written before the comparison below was run against it.
+
+**Criterion.** The paper's claim that no single compromised component can link a record to its device better than chance is tested as: no component can tell which of its own guesses are likely to be right. In a cell, a vantage passes when both hold:
+1. among its most confident 1% of decisions (by calibrated confidence), precision is below 50%, judged by the upper bound of its 95% Wilson interval;
+2. fewer than 0.1% of its decisions fall in the largest most-confident set whose precision exceeds 50%.
+
+A cell passes when every vantage passes. 50% is the point at which a guess is more likely right than wrong; no other threshold was considered.
+
+**Cells.** Primary: the settled configuration (120-second registry window, gatekeeper bundling, board pushes, relay-lottery holds) at 40 decoys, R = 1, 15 and 50. Secondary, reported but not part of the primary claim: the same build at 20, 30, 60, 100 and 150 decoys, and the hold builds of sections 6g and 6h.
+
+**The accuracy ratio is reported, not tested.** Accuracy as a multiple of the random-pick rate, against the feasible set and against every registered device, is reported for every cell as a description, without a pass or fail margin.
+
+**Disclosure.** The precision-at-coverage values of the settled configuration were already in RESULTS.md when this criterion was chosen (the highest top-1% precision at 40 decoys is 18.5% [15.0, 22.6]). The criterion was chosen as the natural "more likely right than wrong" line, not tuned to those values, but it was not chosen blind.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -505,3 +521,5 @@ A sixth amendment adds decoy targets of 30, 100 and 150 under the 120- and 480-s
 A seventh amendment adds longer device and relay holds (section 6g), written before any run of those builds. The precision-at-coverage metrics gain 10% and 25% coverage points and a count of decisions above 50% precision; re-analysing the committed sweeps with them changes no existing value.
 
 An eighth amendment adds the content-stretched, credential-shortened builds and the one-command sequence (section 6h), written before any run of those builds.
+
+A ninth amendment fixes the claim criterion (section 6i), written before the comparison against it.
