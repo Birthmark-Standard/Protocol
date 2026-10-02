@@ -120,3 +120,16 @@ R = 1, 40 decoys, 120-second registry window:
 | content ×2, credential ×0.25 | first hop, credential | 6.44% | ×3.68 [3.47, 3.87] | +0.02 points | 12.3% | 995 s |
 
 Shortening the credential path while the content paths are stretched keeps every component level with a passive observer, lowers accuracy slightly further, and costs no latency.
+
+## Content-side holds at role-aware stages, and the post-match lottery
+
+R = 1, 40 decoys, 120-second registry window:
+
+| Configuration | Strongest component | Device named | Multiple of random [95% CI] | Validator's lead | Content server's lead | Mean latency |
+|---|---|---|---|---|---|---|
+| current | validator | 9.61% | ×4.06 [3.90, 4.23] | +1.09 | +0.93 | 684 s |
+| device content hold and content-server hold ×2 | content server | 7.69% | ×3.56 [3.43, 3.71] | -0.09 | +0.37 | 898 s |
+| device content hold and content-server hold ×3 | content server | 6.51% | ×3.42 [3.27, 3.57] | -0.76 | +0.21 | 1,169 s |
+| post-match lottery | content server | 9.19% | ×3.89 [3.77, 4.02] | +0.52 | +0.94 | 825 s |
+
+Stretching the content-side holds where the specification allows it (the device's content channels and the content servers' own hold) removes the validator's lead and lowers the strongest component's multiple of random outside the current interval at every volume tested. The post-match lottery separates F's and I's submissions (3% within 5 seconds, against 53%) but leaves the content server as the strongest component.
