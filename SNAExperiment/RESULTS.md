@@ -868,3 +868,90 @@ The histogram is capped at 127 submissions, so the largest 480-second means are 
 | X5. Under 480 s, the content server is the strongest component in at least 7 of 9 cells | Confirmed in all 9, and in all 9 cells of section 6e as well. |
 
 X1 to X5 follow development runs, as the plan discloses.
+
+# Parameter decisions and the code behind them
+
+## Decisions
+
+| Parameter | Setting | Decided on |
+|---|---|---|
+| Registry-level bundling window | 120 s, one schedule shared by every content server | the author's decision, final |
+| Decoy target | 40 ± 10 in flight, a flat rate independent of real traffic | the specification; raising it is under consideration |
+| Gatekeeper departure bundling | 30 s window on each gatekeeper's own grid | the specification |
+| Board push | every 10 s, each board on its own schedule | this build's choice for the specification's "regularly" |
+| Gatekeeper hold | the relay lottery (the two-point hold is dropped) | section 6e |
+
+The registry window was decided with these results in view: under the 480-second window the strongest single component is lower than under the 120-second window in all 18 cells measured, in accuracy and as a multiple of random, at about 177 seconds more mean latency at 40 decoys. The 120-second window is the chosen setting.
+
+## Provenance of every result behind these decisions
+
+Every result used for these decisions was produced by code committed to this repository and present on `main`. No result comes from an uncommitted, interim or background version of the program. Each sweep ran against the commit named below; its results were committed afterwards.
+
+| Decision informed | Sweep | Code commit | Results commit | Run on |
+|---|---|---|---|---|
+| Gatekeeper departure bundling | section 6b | `e0709ec` | `0fb1fc2` | the analysis container |
+| Board push | section 6c | `a0cde30` | `c5ada93` | the analysis container |
+| Two-point gatekeeper hold (dropped) | section 6d | `df09686` | `f997284` | the analysis container |
+| Registry window: 60, 120, 240 and 480 s, 20 to 60 decoys | section 6e | `70b4aae` | `39891f0`, `f7da551` | the analysis container |
+| Registry window and decoy target: 30, 100 and 150 decoys | section 6f | `e9f27ab` | `10c5c17` | the author's machine |
+
+- The simulator and the attacks (`sna/sim.py`, `sna/attacks.py`, `sna/params.py`, `sna/lottery.py`) are unchanged from `df09686` through `10c5c17`. The changes in between touch only the cell grid, the command line, the reports and an exploratory diagnostic. So the section 6e and 6f sweeps ran the same simulator and attack code, on two machines.
+- Every result depends only on the cell, the build and the run id, never on the machine or the worker count. The two machines therefore produce identical numbers for the same cell and run.
+- The two 480-second sweeps agree with each other. Under 480 seconds the content server is the strongest component in every cell of both, with a lead over the passive observer of 0.90 to 2.34 points.
+- The re-analysis below (section "Precision at coverage") adds metrics without changing any existing value; it was checked field by field against the committed summaries.
+
+# Zero-access baseline
+
+Every random-pick rate above is random among the devices feasible for a record, which already assumes knowledge of which devices could have produced it. The zero-access baseline needs no such knowledge: a guess among every registered device, 1/N.
+
+In this model N is the number of identities that capture during a run: real devices (R / D × 1,200 seconds, each capturing every 20 minutes on average) plus the decoy infrastructure's identities (decoys / D × 1,200 seconds). A deployment with many registered devices that rarely capture would have a far larger N, so the zero-access multiples below are specific to this model's device population.
+
+Under the 120-second window, device level:
+
+| R | Decoys | Registered devices N | 1/N | Observer | Observer × N | Observer, feasible-set multiple | Strongest component | Its × N | Its feasible-set multiple |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 20 | 40 | 2.50% | 14.26% | 5.7 | 3.54 | content server 15.98% | 6.4 | 3.34 |
+| 1 | 30 | 60 | 1.67% | 10.57% | 6.3 | 3.89 | validator 12.22% | 7.3 | 3.91 |
+| 1 | 40 | 79 | 1.27% | 8.52% | 6.7 | 4.14 | validator 9.61% | 7.6 | 4.06 |
+| 1 | 60 | 117 | 0.85% | 5.98% | 7.0 | 4.32 | validator 6.90% | 8.1 | 4.33 |
+| 1 | 100 | 194 | 0.52% | 4.01% | 7.8 | 4.80 | validator 4.56% | 8.8 | 4.74 |
+| 1 | 150 | 290 | 0.34% | 2.80% | 8.1 | 5.00 | validator 3.30% | 9.6 | 5.13 |
+| 15 | 40 | 106 | 0.94% | 6.76% | 7.2 | 4.42 | validator 7.84% | 8.3 | 4.46 |
+| 15 | 150 | 317 | 0.32% | 2.66% | 8.4 | 5.21 | validator 3.26% | 10.3 | 5.54 |
+| 50 | 40 | 173 | 0.58% | 4.48% | 7.7 | 4.77 | validator 5.09% | 8.8 | 4.71 |
+| 50 | 150 | 384 | 0.26% | 2.17% | 8.3 | 5.13 | validator 2.58% | 9.9 | 5.30 |
+
+Every cell is in `results/zero_access.json`.
+
+- **The zero-access multiple rises with the decoy target, as the feasible-set multiple does.** It does not behave oppositely. At R = 1 the observer's zero-access multiple rises from 5.7 at 20 decoys to 8.1 at 150.
+- **The reason:** N grows in proportion to the decoy rate, while accuracy falls more slowly than in proportion. Each added decoy identity enlarges both baselines' denominators by about one, and takes less than its share of the attacker's correct guesses.
+- **The zero-access multiple is larger than the feasible-set multiple**, by a factor of 1.6 to 1.9. Knowing the feasible set is worth that much to a guesser on its own.
+
+# Precision at coverage
+
+Each vantage's calibrated confidence ranks its decisions. Precision at coverage q is the share of correct decisions among its most confident q of decisions [95% CI]. The largest coverage at more than 50% precision is the largest share of decisions, taken most confident first, that are right more often than not. These metrics are computed in every sweep; they are reported here at the settled configuration (120-second window, 40 decoys), with 10% and 25% coverage added.
+
+R = 1, 40 decoys:
+
+| Vantage | Accuracy (every decision) | Precision, top 1% | Top 5% | Top 10% | Top 25% | Decisions above 50% precision | AUC |
+|---|---|---|---|---|---|---|---|
+| Baseline | 8.52% | 14.0% [10.9, 17.7] | 13.2% [11.8, 14.8] | 12.7% | 11.5% | 0 of 39,962 | 0.569 |
+| First hop, credential | 8.50% | 15.5% [13.8, 17.3] | 13.2% [12.5, 13.9] | 12.6% | 11.4% | 0 of 159,848 | 0.571 |
+| First hop, content | 8.50% | 15.5% [13.8, 17.3] | 13.2% [12.5, 13.9] | 12.6% | 11.4% | 0 of 159,848 | 0.571 |
+| Credential processor | 8.57% | 14.4% [12.8, 16.2] | 13.0% [12.3, 13.8] | 12.8% | 11.4% | 0 of 159,848 | 0.568 |
+| Content server | 9.45% | 10.9% [8.9, 13.2] | 13.3% [12.2, 14.4] | 12.9% | 12.2% | 0 of 79,924 | 0.566 |
+| Validator | 9.61% | 18.5% [15.0, 22.6] | 15.2% [13.7, 16.9] | 14.5% | 12.9% | 3 of 39,962 | 0.574 |
+| Gatekeeper | 8.47% | 14.4% [12.6, 16.5] | 13.4% [12.6, 14.3] | 13.0% | 11.3% | 0 of 119,886 | 0.570 |
+
+At R = 15 and R = 50 with 40 decoys, the highest top-1% precision of any vantage is 14.6% [11.8, 17.9] and 9.8% [8.5, 11.3] (the validator), and at most 1 decision per vantage exceeds 50% precision. Every cell is in `results/tables.md`.
+
+Across decoy targets at R = 1 (120-second window), the highest top-1% precision of any vantage:
+
+| Decoys | 20 | 30 | 40 | 60 | 100 | 150 |
+|---|---|---|---|---|---|---|
+| Highest top-1% precision | 32.5% (validator) | 25.2% (observer) | 18.5% (validator) | 13.2% (validator) | 7.8% (credential processor) | 5.3% (first hop, credential) |
+| Decisions above 50% precision, any vantage | 0.058% | 0.053% | 0.008% | 0 | 0 | 0 |
+
+- **This supports a stronger claim than accuracy over random.** At the settled configuration, a compromised component that acts only on its most confident 1% of decisions is still wrong at least 77% of the time (the validator's 18.5% upper bound is 22.6%), and no component is right more often than not on more than 3 of about 40,000 decisions.
+- **Confidence buys the attacker little.** The most confident 1% of a vantage's decisions are at most about twice as accurate as its average decision (0.8 to 2.0 times across vantages at 40 decoys); the AUC of confidence against correctness lies between 0.539 and 0.574 in every vantage and cell at 40 decoys.
+- **The content server's confidence ranks poorly**: its top 1% is less precise than its top 5%, and at R = 50 less precise than its average decision.

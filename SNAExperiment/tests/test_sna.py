@@ -111,3 +111,20 @@ def test_new_mechanisms_move_only_their_stage():
     ok = b["ok_f"]
     w = c["reg_f"][ok] - b["reg_f"][ok]
     assert (w > -0.01).all() and (w < P.REG_BUNDLE_S + 0.01).all()
+
+
+def test_hold_scale_stretches_only_device_and_relay_holds():
+    """A hold scale k stretches the lottery's mean and cap by k on its path only; the gatekeeper,
+    credential processor and content server holds are unchanged in distribution."""
+    from sna import lottery as LT
+    rng = np.random.default_rng(5)
+    t = rng.uniform(0, 1e6, 400_000)
+    h1 = LT.release_time(rng, t, 3.0) - t
+    h2 = LT.release_time(rng, t, 3.0, True, 2.0) - t
+    assert abs(h2.mean() / h1.mean() - 2.0) < 0.05
+    assert h2.max() <= P.TICK_S * P.MAX_TICKS * 2 + 1e-6
+    assert abs((h2 > P.TICK_S * (P.MAX_TICKS * 2 - 1)).mean() - (h1 > P.TICK_S * (P.MAX_TICKS - 1)).mean()) < 0.01
+    cfg = SMALL.with_(bundle_s=P.BUNDLE_S, content_hold_scale=2.0)
+    s = S.simulate(cfg, 21, POOLS).subs
+    assert cfg.warmup_s == 2 * P.WARMUP_S
+    assert np.isfinite(s["reg_f"][s["ok_f"]]).all()

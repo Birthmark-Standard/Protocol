@@ -166,7 +166,7 @@ def main(argv=None):
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=100, help="runs per cell (run, estimate)")
-    ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control", "extra"])
+    ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control", "extra", "settled"])
     ap.add_argument("--probe-runs", type=int, default=1)
     ap.add_argument("--check-runs", type=int, default=12)
     ap.add_argument("--build", default=CE.DEFAULT_BUILD, choices=list(CE.BUILDS),

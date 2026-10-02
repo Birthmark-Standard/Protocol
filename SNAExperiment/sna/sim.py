@@ -136,18 +136,19 @@ def _roles(r, S, gk_set):
     return C, F, I, A, B, D, E, G, H
 
 
-def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub):
-    """Device (or decoy source) -> addressed hop -> random hop -> destination."""
+def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, scale=1.0):
+    """Device (or decoy source) -> addressed hop -> random hop -> destination. scale stretches the
+    device's hold and both relay hops' holds on this path."""
     cfg, n = w.cfg, t0.shape[0]
     on = cfg.lottery_enabled
-    dep = LT.device_release(r, t0, on) + _proc(r, n)
+    dep = LT.device_release(r, t0, on, scale) + _proc(r, n)
     arr = dep + lat_src[np.arange(n), first] + _jit(r, n)
     ids = [w.ev.add(dep, arr, EXT, first, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, legs[0], sub,
                     ext_src=src_id)]
     arrs = [arr]
     cur = first
     for nxt, leg in ((second, legs[1]), (dest, legs[2])):
-        rel = LT.release_time(r, arr, w.phase[cur], on) + _proc(r, n)
+        rel = LT.release_time(r, arr, w.phase[cur], on, scale) + _proc(r, n)
         arr = rel + w.lat_int[cur, nxt] + _jit(r, n)
         ids.append(w.ev.add(rel, arr, cur, nxt, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, leg, sub))
         arrs.append(arr)
@@ -196,9 +197,9 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     C, F, I, A, B, D, E, G, Hh = _roles(r, S, w.gk_set)
     on = cfg.lottery_enabled
 
-    (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub)
-    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub)
-    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub)
+    (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, cfg.cred_hold_scale)
+    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.content_hold_scale)
+    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, cfg.content_hold_scale)
 
     # C -> V -> C: CV-1 on receipt, V's reply after processing (APPROVED with sigma_V and the
     # plaintext real/dummy indicator; the reply is padded in the relay class either way)

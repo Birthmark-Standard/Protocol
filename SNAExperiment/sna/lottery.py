@@ -15,9 +15,13 @@ import numpy as np
 from . import params as P
 
 
-def draw_ticks(rng, n):
-    """Number of ticks until release: roll p each tick, forced release at tick 30."""
-    return np.minimum(rng.geometric(P.RELEASE_P, size=n), P.MAX_TICKS)
+def draw_ticks(rng, n, scale=1.0):
+    """Number of ticks until release: roll p each tick, forced release at tick 30. A scale k
+    stretches the lottery: release probability p / k and forced release at tick 30 k, so the mean
+    and the cap grow by k and the share released by the cap stays the same."""
+    if scale == 1.0:
+        return np.minimum(rng.geometric(P.RELEASE_P, size=n), P.MAX_TICKS)
+    return np.minimum(rng.geometric(P.RELEASE_P / scale, size=n), int(round(P.MAX_TICKS * scale)))
 
 
 def next_tick(t, phase):
@@ -25,23 +29,23 @@ def next_tick(t, phase):
     return phase + P.TICK_S * (np.floor((t - phase) / P.TICK_S) + 1.0)
 
 
-def release_time(rng, t_arrive, phase, enabled: bool = True):
+def release_time(rng, t_arrive, phase, enabled: bool = True, scale=1.0):
     """Release time of a packet that entered a holding pool at t_arrive, on a clock with the
     given phase."""
     t_arrive = np.asarray(t_arrive, dtype=float)
     if not enabled:
         return t_arrive.copy()
-    k = draw_ticks(rng, t_arrive.shape[0])
+    k = draw_ticks(rng, t_arrive.shape[0], scale)
     return next_tick(t_arrive, phase) + P.TICK_S * (k - 1)
 
 
-def device_release(rng, t0, enabled: bool = True):
+def device_release(rng, t0, enabled: bool = True, scale=1.0):
     """Release of one channel's first hop from the device, on a fresh random phase per channel."""
     t0 = np.asarray(t0, dtype=float)
     if not enabled:
         return t0.copy()
     phase = rng.uniform(0.0, P.TICK_S, size=t0.shape[0])
-    return next_tick(t0, phase) + P.TICK_S * (draw_ticks(rng, t0.shape[0]) - 1)
+    return next_tick(t0, phase) + P.TICK_S * (draw_ticks(rng, t0.shape[0], scale) - 1)
 
 
 def lottery_mean_s() -> float:
