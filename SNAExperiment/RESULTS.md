@@ -1132,3 +1132,62 @@ S1 to S3 follow development runs, as the plan discloses.
 ## Scope
 
 - **The credential path's own protection.** At ×0.25 a credential-path hold averages about 26 seconds. No vantage on that path gained on the observer here, but this sweep measures only the record-to-device link; it does not measure, for example, how well a first hop could link a device's credential packet to the validator's request.
+
+# The claim criterion
+
+Plan section 6i fixes the criterion before this comparison: in a cell, every vantage's most confident 1% of decisions must have precision below 50% (upper bound of the 95% Wilson interval), and fewer than 0.1% of its decisions may fall in the largest most-confident set whose precision exceeds 50%. Every cell below is from a committed sweep; the comparison is in `results/claim_criterion.json`.
+
+## Primary cells: 120-second window, 40 decoys
+
+| R | Result | Highest top-1% precision, any vantage [upper bound] | Largest share of decisions above 50% precision, any vantage |
+|---|---|---|---|
+| 1 | Pass | validator 18.5% [22.6%] | validator 0.008% (3 of 39,962) |
+| 15 | Pass | validator 14.6% [17.9%] | validator 0.002% (1 of 52,098) |
+| 50 | Pass | validator 9.8% [11.3%] | validator 0.001% (1 of 172,650) |
+
+## Secondary cells
+
+Every secondary cell passes as well: the 120-second build at 20, 30, 60, 100 and 150 decoys (R = 1, 15 and 50), and every hold build of sections 6g and 6h at 40 decoys. The closest to failing is the 120-second build at R = 1 with 20 decoys: the validator's top-1% precision is 32.5% with an upper bound of 37.2%, and 0.058% of its decisions fall above 50% precision.
+
+**The criterion does not separate the designs tested.** Every configuration in the experiment passes it, including those with no decoys above 20 in flight. The criterion establishes the claim; it does not rank mechanisms. The accuracy ratios, top-1% precision values and leads over the observer reported in the sections above remain the measures that distinguish one design from another.
+
+# Status reports
+
+## The validator and the credential processor: their own timing in the simulator
+
+Measured at R = 1 with 40 decoys under the 120-second build (10 runs on run ids from 7,000,000 up):
+
+| Step | What the simulator does | Measured |
+|---|---|---|
+| Validator: CV-1 arrival to CV-2 send | Processing time drawn uniformly from 5 to 50 ms; no hold | mean 26.2 ms, range 5.1 to 50.0 ms |
+| Credential processor: Cred-3 arrival to CV-1 send | Processing time drawn uniformly from 0.5 to 3 ms; no hold | mean 1.76 ms, range 0.5 to 3.0 ms |
+| Credential processor: CV-2 arrival to the first gatekeeper leg | Each of the three gatekeeper legs takes its own relay-lottery draw on C's node clock, starting at CV-2's arrival | mean 40.4 s (median 26.9 s in isolation), range 0.12 to 258 s |
+
+Every packet also carries network latency (5 to 80 ms between nodes, fixed per pair in a run) and per-packet jitter (exponential, mean 2 ms).
+
+- **The validator has no randomizing delay** beyond tens of milliseconds of processing and network time. The gap is real in the simulator.
+- **The credential processor's CV-1 send has none either**: it follows Cred-3's arrival by 0.5 to 3 ms.
+- **The credential processor's reaction to CV-2 is held in the simulator.** Because each gatekeeper leg is an independent lottery draw starting at CV-2's arrival, the first leg leaves after the shortest of three draws: 40 seconds on average. If the specification's "staggered fan-out clock" means legs spaced relative to each other after an unheld first departure, the simulator models more protection for C than the specification provides. The specification's wording leaves this open.
+
+## Decoy-identity pool size
+
+Nothing hardcodes a pool size. The simulator derives it from the decoy rate: each identity captures every 20 minutes on average, so the pool is the decoy rate times 1,200 seconds, rounded. At the decoy targets used: 38 identities at 20 decoys, 58 at 30, 77 at 40, 115 at 60, 192 at 100 and 288 at 150. No sweep of the pool size was run, and none is planned.
+
+## F and I submitting together
+
+Share of real records whose two registry submissions leave within 5 seconds of each other (10 runs per cell, 40 decoys):
+
+| Build | R | Within 5 s | Quorum outlasted both content servers' holds | Within 5 s, when it did | Within 5 s, when it did not |
+|---|---|---|---|---|---|
+| push (no registry bundling) | 1 | 51.3% | 49.6% | 100.0% | 3.4% |
+| push | 15 | 53.5% | 52.2% | 100.0% | 2.8% |
+| 120-second window | 1 | 64.4% | 49.6% | 100.0% | 29.4% |
+| 120-second window | 15 | 65.6% | 52.2% | 100.0% | 28.0% |
+
+- When quorum outlasts both content servers' holds, both learn of it from the same board pushes and submit within 5 seconds every time, as the specification's post-match lottery section describes.
+- Under the 120-second registry window, every pair within 5 seconds leaves at the same instant, on the same registry boundary. The window adds coincident pairs (29% of the records whose holds outlasted quorum) but rounds every submission time to its 120-second schedule.
+
+## Two earlier requests, already in this file
+
+- **The zero-access baseline** (a guess among every registered device) is in the section "Zero-access baseline", side by side with the feasible-set rate for every cell of the 120-second build.
+- **The cross-machine difference** is explained in "Provenance of every result behind these decisions": the second machine's rerun of section 6h matched content ×2 decision for decision and differed from reg120 in 1 of 172,650 passive-observer decisions and 1 credential-processor claim, which is floating-point tie-breaking between Linux and Windows. That rerun was of the 120-second build and content ×2, not of the 480-second build.

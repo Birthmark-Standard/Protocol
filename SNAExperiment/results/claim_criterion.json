@@ -1,0 +1,338 @@
+{
+ "reg120 core|R1_D20_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.325,
+  "worst_p1_hi": 0.3723760355854586,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.0005755467694309594
+ },
+ "reg120 core|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.185,
+  "worst_p1_hi": 0.22598577160107902,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 7.507131775186428e-05
+ },
+ "reg120 core|R1_D60_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.1325,
+  "worst_p1_hi": 0.1692463196966809,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 core|R15_D20_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.2034548944337812,
+  "worst_p1_hi": 0.2401345192148177,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.00013436216361472608
+ },
+ "reg120 core|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.14587332053742802,
+  "worst_p1_hi": 0.17877464379409677,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 1.919459480210373e-05
+ },
+ "reg120 core|R15_D60_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.09980806142034548,
+  "worst_p1_hi": 0.12854783843640077,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 1.919459480210373e-05
+ },
+ "reg120 core|R50_D20_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.11587485515643106,
+  "worst_p1_hi": 0.13183528532441655,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 core|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.0984936268829664,
+  "worst_p1_hi": 0.11345567453582767,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 5.792064871126557e-06
+ },
+ "reg120 core|R50_D60_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.06546929316338354,
+  "worst_p1_hi": 0.07813042495796853,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 extra|R1_D30_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.2525,
+  "worst_p1_hi": 0.29729164430340527,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.0005254992242630499
+ },
+ "reg120 extra|R1_D100_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.0775,
+  "worst_p1_hi": 0.10790495403563602,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 extra|R1_D150_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.05,
+  "worst_p1_hi": 0.07596363506371961,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 extra|R15_D30_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.18426103646833014,
+  "worst_p1_hi": 0.21982096872267526,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 9.597297401051864e-05
+ },
+ "reg120 extra|R15_D100_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.06333973128598848,
+  "worst_p1_hi": 0.08761777873021968,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 extra|R15_D150_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.046065259117082535,
+  "worst_p1_hi": 0.06762701818321369,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 extra|R50_D30_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.10834298957126304,
+  "worst_p1_hi": 0.12388539412522248,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 extra|R50_D100_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.0492468134414832,
+  "worst_p1_hi": 0.06049370859786726,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "reg120 extra|R50_D150_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.03707995365005794,
+  "worst_p1_hi": 0.04707160657162629,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "hold150|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.19799498746867167,
+  "worst_p1_hi": 0.23989447495700317,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.00042605448485000377
+ },
+ "hold150|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.1326923076923077,
+  "worst_p1_hi": 0.16456123930575928,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.00013449382289084866
+ },
+ "hold150|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.09170052234474753,
+  "worst_p1_hi": 0.10625108911911672,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 5.8024497943031545e-06
+ },
+ "hold200|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.18090452261306533,
+  "worst_p1_hi": 0.22171517584496664,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.00017592359889419452
+ },
+ "hold200|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.1,
+  "worst_p1_hi": 0.12879053134604695,
+  "worst_cov_vantage": "gatekeeper",
+  "worst_cov": 1.9228920296125374e-05
+ },
+ "hold200|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.07200929152148665,
+  "worst_p1_hi": 0.08519497930363944,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "hold300|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.10178117048346055,
+  "worst_p1_hi": 0.13563312576125133,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "hold300|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.0784313725490196,
+  "worst_p1_hi": 0.10504135888307092,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 9.809691975671964e-05
+ },
+ "hold300|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.06352941176470588,
+  "worst_p1_hi": 0.0761367889253013,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "content200|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.1457286432160804,
+  "worst_p1_hi": 0.1837789662605281,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.00047739892962134727
+ },
+ "content200|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.07884615384615384,
+  "worst_p1_hi": 0.10521865040542813,
+  "worst_cov_vantage": "cred_processor",
+  "worst_cov": 7.209181613703213e-05
+ },
+ "content200|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.07259001161440186,
+  "worst_p1_hi": 0.08581941598907725,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "content300|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.07268170426065163,
+  "worst_p1_hi": 0.10243371880490375,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "content300|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.06551059730250482,
+  "worst_p1_hi": 0.09015012951539039,
+  "worst_cov_vantage": "cred_processor",
+  "worst_cov": 2.4106144174027076e-05
+ },
+ "content300|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.039953676896352056,
+  "worst_p1_hi": 0.05025768144458011,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "c200_cr75|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.15577889447236182,
+  "worst_p1_hi": 0.19467898458682348,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.0003768938918063268
+ },
+ "c200_cr75|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.08461538461538462,
+  "worst_p1_hi": 0.11168815530180365,
+  "worst_cov_vantage": "content_server",
+  "worst_cov": 2.883672645481285e-05
+ },
+ "c200_cr75|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.08072009291521487,
+  "worst_p1_hi": 0.09453893862465365,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "c200_cr50|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.13316582914572864,
+  "worst_p1_hi": 0.17007610956718605,
+  "worst_cov_vantage": "validator",
+  "worst_cov": 0.00017588381617628584
+ },
+ "c200_cr50|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.08461538461538462,
+  "worst_p1_hi": 0.11168815530180365,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "c200_cr50|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.07259001161440186,
+  "worst_p1_hi": 0.08581941598907725,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "c200_cr25|R1_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.12311557788944724,
+  "worst_p1_hi": 0.15904524695948455,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "c200_cr25|R15_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "baseline",
+  "worst_p1": 0.08653846153846154,
+  "worst_p1_hi": 0.11383738962424084,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ },
+ "c200_cr25|R50_D40_B": {
+  "passed": true,
+  "worst_p1_vantage": "validator",
+  "worst_p1": 0.06678281068524972,
+  "worst_p1_hi": 0.07956448760505923,
+  "worst_cov_vantage": "baseline",
+  "worst_cov": 0.0
+ }
+}
