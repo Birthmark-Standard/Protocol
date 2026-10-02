@@ -1036,11 +1036,11 @@ Best top-1% precision of any vantage [95% CI], and the most decisions any vantag
 
 | Build | Best top-1% precision | Decisions above 50% precision | AUC of confidence, range over vantages |
 |---|---|---|---|
-| reg120 | 18.5% [15.0, 22.6] (validator) | 3 of 39,962 | 0.566 to 0.574 |
-| hold150 | 19.8% [16.2, 24.0] (validator) | 17 of 39,901 | 0.555 to 0.566 |
-| hold200 | 18.1% [14.6, 22.2] (validator) | 7 of 39,790 | 0.544 to 0.560 |
+| reg120 | 18.5% [15.0, 22.6] (validator) | 3 of 39,962 (validator) | 0.566 to 0.574 |
+| hold150 | 19.8% [16.2, 24.0] (validator) | 17 of 39,901 (validator) | 0.555 to 0.566 |
+| hold200 | 18.1% [14.6, 22.2] (validator) | 7 of 39,790 (validator) | 0.544 to 0.560 |
 | hold300 | 10.2% [7.6, 13.6] (validator) | 0 | 0.523 to 0.552 |
-| content200 | 15.1% [13.4, 16.9] (first hop, credential) | 19 of 159,848 | 0.545 to 0.567 |
+| content200 | 15.1% [13.4, 16.9] (first hop, credential) | 19 of 39,799 (validator) | 0.545 to 0.567 |
 | content300 | 7.8% [6.4, 9.4] (gatekeeper) | 0 | 0.526 to 0.545 |
 
 ## Checks and controls
