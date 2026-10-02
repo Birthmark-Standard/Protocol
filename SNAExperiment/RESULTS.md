@@ -769,3 +769,102 @@ Measured per stage in the simulator (R = 15, 40 decoys, 120-second registry wind
 
 - The content packet usually waits at the content server for quorum (about 166 seconds on average after its own hold), so the record time is set by the credential path.
 - The 8% point mass at the 300-second cap is present in every hold. It is the same shape the two-point gatekeeper hold placed at the cap with 40% weight.
+
+# Decoy targets from 20 to 150
+
+Plan section 6f. The 30-, 100- and 150-decoy cells were run on a second machine (`results/extra/`); the 20-, 40- and 60-decoy cells are those of section 6e. Results depend only on the cell, the build and the run id. Both builds use board pushes, gatekeeper departure bundling and the relay-lottery gatekeeper hold; reg120 and reg480 differ only in the registry window. 200 runs per cell; every cell met the stability rule.
+
+## Summary
+
+1. **Raising the decoy target lowers every component's absolute accuracy steadily.** At R = 1 under the 120-second window, the strongest single component names the device 12.2% of the time at 30 decoys, 9.6% at 40, 6.9% at 60, 4.6% at 100 and 3.3% at 150.
+2. **The multiple over random rises as decoys rise.** More decoys lower the random-pick rate faster than they lower accuracy. At R = 1 under the 120-second window, the passive observer is 3.9 times random at 30 decoys and 5.0 times at 150. A higher decoy target makes a record harder to trace in absolute terms, while each component's advantage over guessing grows.
+3. **The low end of 40 ± 10 costs about 2.6 points.** At 30 decoys and R = 1, the strongest component names the device 12.2% of the time (120-second window) or 10.9% (480-second window), against 9.6% and 8.6% at 40.
+4. **The 480-second window beats the 120-second window on the strongest component in all 18 cells**, in accuracy and as a multiple of random. The content server is the strongest component under 480 seconds in every cell, and the validator's lead over the observer falls to between -0.08 and +0.61 points.
+
+## The strongest single component
+
+Device accuracy and multiple of its own random rate [95% CI]:
+
+| R | Decoys | 120 s window | 480 s window |
+|---|---|---|---|
+| 1 | 20 | content server 15.98%, ×3.34 [3.26, 3.42] | content server 14.67%, ×3.23 [3.15, 3.32] |
+| 1 | 30 | validator 12.22%, ×3.91 [3.77, 4.05] | content server 10.89%, ×3.56 [3.44, 3.68] |
+| 1 | 40 | validator 9.61%, ×4.06 [3.90, 4.23] | content server 8.60%, ×3.72 [3.58, 3.85] |
+| 1 | 60 | validator 6.90%, ×4.33 [4.12, 4.53] | content server 6.13%, ×3.93 [3.76, 4.09] |
+| 1 | 100 | validator 4.56%, ×4.74 [4.41, 5.07] | content server 4.02%, ×4.27 [4.03, 4.51] |
+| 1 | 150 | validator 3.30%, ×5.13 [4.74, 5.52] | content server 2.94%, ×4.66 [4.37, 4.97] |
+| 15 | 20 | validator 10.96%, ×3.96 [3.85, 4.07] | content server 10.00%, ×3.69 [3.59, 3.79] |
+| 15 | 30 | content server 9.16%, ×4.13 [4.01, 4.24] | content server 8.25%, ×3.93 [3.83, 4.04] |
+| 15 | 40 | validator 7.84%, ×4.46 [4.32, 4.61] | content server 6.93%, ×4.02 [3.89, 4.16] |
+| 15 | 60 | validator 6.15%, ×4.77 [4.56, 4.98] | content server 5.47%, ×4.32 [4.16, 4.48] |
+| 15 | 100 | validator 4.37%, ×5.18 [4.95, 5.41] | content server 3.80%, ×4.61 [4.38, 4.83] |
+| 15 | 150 | validator 3.26%, ×5.54 [5.21, 5.85] | content server 2.74%, ×4.76 [4.49, 5.04] |
+| 50 | 20 | validator 6.35%, ×4.56 [4.48, 4.64] | content server 5.70%, ×4.18 [4.11, 4.25] |
+| 50 | 30 | validator 5.64%, ×4.64 [4.55, 4.73] | content server 5.07%, ×4.26 [4.17, 4.34] |
+| 50 | 40 | validator 5.09%, ×4.71 [4.61, 4.80] | content server 4.60%, ×4.35 [4.28, 4.43] |
+| 50 | 60 | validator 4.32%, ×4.89 [4.76, 5.01] | content server 3.85%, ×4.44 [4.35, 4.54] |
+| 50 | 100 | validator 3.30%, ×5.09 [4.93, 5.24] | content server 2.95%, ×4.64 [4.52, 4.77] |
+| 50 | 150 | validator 2.58%, ×5.30 [5.12, 5.48] | content server 2.30%, ×4.83 [4.67, 4.99] |
+
+## The passive observer
+
+Device accuracy, random-pick rate, and multiple of random [95% CI], at R = 1:
+
+| Decoys | 120 s window | 480 s window |
+|---|---|---|
+| 20 | 14.26%, 4.03%, ×3.54 [3.43, 3.65] | 12.32%, 3.49%, ×3.53 [3.39, 3.67] |
+| 30 | 10.57%, 2.72%, ×3.89 [3.75, 4.03] | 9.04%, 2.35%, ×3.85 [3.66, 4.02] |
+| 40 | 8.52%, 2.05%, ×4.14 [3.97, 4.32] | 7.19%, 1.78%, ×4.04 [3.82, 4.26] |
+| 60 | 5.98%, 1.39%, ×4.32 [4.09, 4.54] | 4.99%, 1.20%, ×4.16 [3.90, 4.42] |
+| 100 | 4.01%, 0.84%, ×4.80 [4.46, 5.13] | 3.43%, 0.72%, ×4.74 [4.36, 5.12] |
+| 150 | 2.80%, 0.56%, ×5.00 [4.57, 5.43] | 2.35%, 0.48%, ×4.85 [4.35, 5.34] |
+
+Every cell, and R = 15 and 50, is in `results/extra/tables.md`, `results/extra/tables_reg480.md` and the section 6e tables.
+
+## Effect of the 480-second window against the 120-second window
+
+Device level, in points [95% CI], matched record by record:
+
+| R | Decoys | Passive observer | Content server | Validator |
+|---|---|---|---|---|
+| 1 | 30 | -1.52 [-1.87, -1.19] | -0.85 [-1.10, -0.61] | -2.73 [-3.14, -2.33] |
+| 1 | 100 | -0.58 [-0.81, -0.36] | -0.32 [-0.47, -0.17] | -1.20 [-1.48, -0.92] |
+| 1 | 150 | -0.45 [-0.65, -0.25] | -0.19 [-0.32, -0.05] | -0.90 [-1.15, -0.66] |
+| 15 | 30 | -0.97 [-1.23, -0.75] | -0.90 [-1.08, -0.72] | -1.90 [-2.18, -1.61] |
+| 15 | 100 | -0.42 [-0.59, -0.24] | -0.28 [-0.40, -0.17] | -1.05 [-1.27, -0.82] |
+| 15 | 150 | -0.42 [-0.60, -0.25] | -0.31 [-0.42, -0.21] | -0.93 [-1.12, -0.74] |
+| 50 | 30 | -0.80 [-0.90, -0.70] | -0.45 [-0.53, -0.36] | -1.26 [-1.37, -1.15] |
+| 50 | 100 | -0.54 [-0.63, -0.45] | -0.22 [-0.29, -0.15] | -0.78 [-0.89, -0.68] |
+| 50 | 150 | -0.37 [-0.44, -0.29] | -0.18 [-0.25, -0.12] | -0.62 [-0.71, -0.53] |
+
+The content server loses the least in every cell, which is why it becomes the strongest component at 480 seconds, as the diagnostic above explains.
+
+## Registry bundle sizes
+
+Distinct transactions per bundle, and the share with fewer than two (`results/extra/registry_bundles_reg<window>.json`):
+
+| R | Decoys | 120 s | 480 s |
+|---|---|---|---|
+| 1 | 30 | 8.0 (0.30%) | 27.2 (under 0.001%) |
+| 1 | 100 | 26.1 (under 0.001%) | 88.6 (under 0.001%) |
+| 1 | 150 | 39.0 (under 0.001%) | 124.7 (under 0.001%) |
+| 15 | 30 | 11.7 (0.011%) | 39.7 (under 0.001%) |
+| 50 | 30 | 20.5 (under 0.001%) | 69.9 (under 0.001%) |
+
+The histogram is capped at 127 submissions, so the largest 480-second means are lower bounds.
+
+## Checks and controls
+
+- **Outcome-shuffle control:** 6 of 63 stable cells under the 120-second window and 3 of 63 under the 480-second window have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin (largest 0.515).
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| X1. At R = 1, the observer at 30 decoys lies between its 20- and 40-decoy values, in both builds | Confirmed: 10.57% (120 s) and 9.04% (480 s). |
+| X2. The observer is lower at 150 than at 100 decoys at every R, in both builds | Confirmed in all 6. |
+| X3. Under 120 s, the observer's multiple of random at 150 decoys is at least its 40-decoy value at R = 1 and 15 | Confirmed: ×5.00 against ×4.14, and ×5.21 against ×4.42. |
+| X4. The 480-second window lowers the validator against 120 seconds in every cell | Confirmed (-2.73 to -0.62). |
+| X5. Under 480 s, the content server is the strongest component in at least 7 of 9 cells | Confirmed in all 9, and in all 9 cells of section 6e as well. |
+
+X1 to X5 follow development runs, as the plan discloses.
