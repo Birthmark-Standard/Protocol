@@ -896,7 +896,7 @@ Every result used for these decisions was produced by code committed to this rep
 | Registry window and decoy target: 30, 100 and 150 decoys | section 6f | `e9f27ab` | `10c5c17` | the author's machine |
 
 - The simulator and the attacks (`sna/sim.py`, `sna/attacks.py`, `sna/params.py`, `sna/lottery.py`) are unchanged from `df09686` through `10c5c17`. The changes in between touch only the cell grid, the command line, the reports and an exploratory diagnostic. So the section 6e and 6f sweeps ran the same simulator and attack code, on two machines.
-- Every result depends only on the cell, the build and the run id, never on the worker count. Across the two machines (Linux and Windows) results agree to within floating-point ties: section 6h reran the reg120 and content200 cells on the second machine, and content200 matched every decision while reg120 differed in 1 of 172,650 passive-observer decisions (R = 50) and 1 credential-processor claim (R = 1). Resampled intervals also differ slightly when a different set of cells is analysed together, because the resampling draws are taken in cell order.
+- Every result depends only on the cell, the build and the run id, never on the worker count. Across the two machines (Linux and Windows) results agree to within floating-point ties, which can tip a near-equal pair of candidate scores one way or the other. Section 6h reran the reg120 and content200 cells on the second machine: content200 matched every decision, while reg120 differed in 1 of 172,650 passive-observer decisions (R = 50) and 1 credential-processor claim (R = 1). Section 6j reran reg120 at 20, 40 and 60 decoys and content200 and content300 at 40 decoys there: content200 again matched every decision; reg120 differed in 5 of 15,088,470 vantage decisions and content300 in 2 of 5,026,165, each by one correct decision more or fewer. No conclusion depends on these. Resampled intervals also differ slightly when a different set of cells is analysed together, because the resampling draws are taken in cell order.
 - The two 480-second sweeps agree with each other. Under 480 seconds the content server is the strongest component in every cell of both, with a lead over the passive observer of 0.90 to 2.34 points.
 - The re-analysis below (section "Precision at coverage") adds metrics without changing any existing value; it was checked field by field against the committed summaries.
 
@@ -1191,3 +1191,97 @@ Share of real records whose two registry submissions leave within 5 seconds of e
 
 - **The zero-access baseline** (a guess among every registered device) is in the section "Zero-access baseline", side by side with the feasible-set rate for every cell of the 120-second build.
 - **The cross-machine difference** is explained in "Provenance of every result behind these decisions": the second machine's rerun of section 6h matched content ×2 decision for decision and differed from reg120 in 1 of 172,650 passive-observer decisions and 1 credential-processor claim, which is floating-point tie-breaking between Linux and Windows. That rerun was of the 120-second build and content ×2, not of the 480-second build.
+
+# Content-side holds at role-aware stages, and the post-match lottery
+
+Plan section 6j, run on the second machine with `python -m sna sequence 6j` into `results/6j/` (code commit `79887d4`, results commit `c7124df`, both on `main`). Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold. 200 runs per cell; every cell met the stability rule. The reruns of reg120, content200 and content300 there match the committed results to within floating-point ties (see Provenance).
+
+## Summary
+
+1. **The content-path result survives at stages that know their role, in weaker form.** Stretching only the device's content-channel hold and the content servers' own hold by 2 (dev200) removes the validator's lead over the passive observer at every volume (-0.09, -0.17 and -0.16 points). The content server keeps a small lead (+0.37, +0.40 and +0.31 points, intervals above 0). The relay-hop version of section 6g, which the specification does not allow, had removed both.
+2. **It still lowers the ratio beyond the intervals.** The strongest component's multiple of random under dev200 is 3.56 [3.43, 3.71], 3.80 [3.67, 3.94] and 4.45 [4.35, 4.54] at R = 1, 15 and 50, against 4.06 [3.90, 4.23], 4.46 [4.32, 4.61] and 4.71 [4.61, 4.80] under reg120. The intervals do not overlap at any R.
+3. **It costs less latency than the relay-hop version.** Mean capture to finalization at R = 1: 897.5 seconds under dev200 and 1,169.0 under dev300, against 1,013.6 and 1,425.0 for the relay-hop versions and 684.0 for reg120.
+4. **The post-match lottery separates F and I at the point of submission.** The share of real records whose two submissions are within 5 seconds of each other falls from 53.4% to 3.3% at R = 1 (53.7% to 3.4% and 53.9% to 3.3% at R = 15 and 50).
+5. **The 120-second registry window puts 27% to 29% of the separated pairs back into one bundle.** As the submissions leave, 29% to 31% of pairs still leave together under the lottery, against 65% to 67% without it.
+6. **The post-match lottery hands the lead to the content server.** It lowers the observer by 0.27 to 0.47 points and the validator's lead (1.09 to 0.52 points at R = 1 with 40 decoys), but the content server becomes the strongest component in all nine cells, leading the observer by 0.63 to 1.75 points. The strongest component's multiple of random falls slightly; its interval stays inside or touches reg120's except at R = 50, 40 decoys. Mean latency rises by about 141 seconds.
+
+## Content-side holds at the device and the content servers
+
+Device accuracy, the strongest component and its multiple of random [95% CI], 40 decoys:
+
+| Build | R | Observer | Strongest component | Validator's lead | Content server's lead | Mean latency |
+|---|---|---|---|---|---|---|
+| reg120 | 1 | 8.52% | validator 9.61%, ×4.06 [3.90, 4.23] | +1.09 [+0.76, +1.42] | +0.93 [+0.70, +1.16] | 684.0 s |
+| reg120 | 15 | 6.76% | validator 7.84%, ×4.46 [4.32, 4.61] | +1.07 [+0.81, +1.35] | +0.87 [+0.70, +1.04] | 693.3 s |
+| reg120 | 50 | 4.48% | validator 5.09%, ×4.71 [4.61, 4.80] | +0.61 [+0.49, +0.73] | +0.53 [+0.45, +0.62] | 686.9 s |
+| dev200 | 1 | 7.32% | content server 7.69%, ×3.56 [3.43, 3.71] | -0.09 [-0.41, +0.24] | +0.37 [+0.14, +0.60] | 897.5 s |
+| dev200 | 15 | 5.71% | content server 6.11%, ×3.80 [3.67, 3.94] | -0.17 [-0.40, +0.05] | +0.40 [+0.23, +0.57] | 899.1 s |
+| dev200 | 50 | 4.08% | content server 4.39%, ×4.45 [4.35, 4.54] | -0.16 [-0.27, -0.05] | +0.31 [+0.23, +0.39] | 900.5 s |
+| dev300 | 1 | 6.30% | content server 6.51%, ×3.42 [3.27, 3.57] | -0.76 [-1.05, -0.49] | +0.21 [-0.03, +0.44] | 1,169.0 s |
+| dev300 | 15 | 4.83% | content server 5.18%, ×3.66 [3.53, 3.80] | -0.49 [-0.70, -0.29] | +0.34 [+0.18, +0.51] | 1,167.8 s |
+| dev300 | 50 | 3.40% | content server 3.64%, ×4.18 [4.09, 4.27] | -0.35 [-0.43, -0.26] | +0.24 [+0.17, +0.31] | 1,170.4 s |
+| content200 (relay hops; not allowed) | 1 | 6.81% | first hop, credential 6.82%, ×3.85 [3.64, 4.03] | -0.45 | -0.17 | 1,013.6 s |
+| content300 (relay hops; not allowed) | 1 | 5.56% | observer 5.56%, ×3.62 [3.39, 3.87] | -0.64 | -0.44 | 1,425.0 s |
+
+Against the relay-hop versions at the same factor, the role-aware builds leave the observer 0.27 to 0.74 points more accurate and the content server 0.69 to 1.38 points more accurate (paired, every interval above 0). The relay-hop result was therefore partly an effect of stretching holds that the specification does not allow; the part that survives is the validator's loss of its lead and the lower multiple of random.
+
+Why the content server keeps a lead: its own hold now comes between its content arrival and the record time, so the record time follows its own hold more often, and the content server knows when its content arrived. Under the relay-hop version, the extra delay sat before its arrival, where it hid the device's send time from the content server too.
+
+## The post-match lottery
+
+### F and I submitting together
+
+Real records, 40 decoys, 20 runs per cell (`results/6j/pair_gaps.json`). Real records' timing does not depend on the decoy stream, so one decoy level suffices.
+
+| Registry window | Post-match lottery | Within 5 s at submission (R = 1 / 15 / 50) | Within 5 s as they leave | Separated pairs put back in one bundle |
+|---|---|---|---|---|
+| none | off | 53.4% / 53.7% / 53.9% | the same | not applicable |
+| none | on | 3.3% / 3.4% / 3.3% | the same | not applicable |
+| 60 s | off | 53.4% / 53.7% / 53.9% | 58.8% / 60.0% / 59.7% | 11.9% / 13.6% / 12.9% |
+| 60 s | on | 3.3% / 3.4% / 3.3% | 16.7% / 16.7% / 17.0% | 14.1% / 14.0% / 14.3% |
+| 120 s | off | 53.4% / 53.7% / 53.9% | 65.2% / 66.5% / 65.4% | 25.5% / 27.8% / 25.1% |
+| 120 s | on | 3.3% / 3.4% / 3.3% | 29.3% / 31.4% / 30.2% | 27.0% / 29.0% / 27.9% |
+| 240 s | off | 53.4% / 53.7% / 53.9% | 74.8% / 75.7% / 75.5% | 46.2% / 47.5% / 46.9% |
+| 240 s | on | 3.3% / 3.4% / 3.3% | 50.6% / 50.2% / 50.1% | 49.0% / 48.5% / 48.4% |
+| 480 s | off | 53.4% / 53.7% / 53.9% | 85.4% / 86.4% / 86.0% | 68.7% / 70.6% / 69.6% |
+| 480 s | on | 3.3% / 3.4% / 3.3% | 71.1% / 72.2% / 71.9% | 70.1% / 71.2% / 71.0% |
+
+- **The lottery works at the point of submission.** Without it, F and I submit within 5 seconds whenever quorum outlasts both their holds (52% to 53% of records), and almost never otherwise. With it, 3.3% to 3.4% of pairs fall within 5 seconds, and the median gap is 103 to 108 seconds.
+- **The registry window undoes part of it downstream.** A pair separated at submission still shares a bundle if both draws end in the same window: 27% to 29% of separated pairs at 120 seconds, rising to about 70% at 480 seconds.
+- **What leaves together under the window is no longer a quorum marker.** Under the window, every pair in one bundle leaves at that bundle's boundary along with every other submission confirmed in the window, so a coincident pair marks the boundary, not the moment quorum completed.
+
+### Accuracy
+
+| Cell | Observer, reg120 → pm120 (effect [95% CI]) | Validator's lead, reg120 → pm120 | Content server's lead, reg120 → pm120 | Strongest component under pm120, multiple of random |
+|---|---|---|---|---|
+| R = 1, 20 decoys | 14.26% → 13.80% (-0.47 [-0.77, -0.18]) | +1.65 → +1.19 | +1.72 → +1.75 | content server ×3.36 [3.28, 3.44] |
+| R = 1, 40 decoys | 8.52% → 8.25% (-0.27 [-0.46, -0.07]) | +1.09 → +0.52 | +0.93 → +0.94 | content server ×3.89 [3.77, 4.02] |
+| R = 1, 60 decoys | 5.98% → 5.69% (-0.29 [-0.49, -0.08]) | +0.92 → +0.61 | +0.63 → +0.85 | content server ×4.11 [3.94, 4.28] |
+| R = 15, 20 decoys | 9.62% → 9.18% (-0.44 [-0.65, -0.23]) | +1.34 → +1.08 | +1.25 → +1.50 | content server ×3.87 [3.77, 3.96] |
+| R = 15, 40 decoys | 6.76% → 6.33% (-0.43 [-0.63, -0.24]) | +1.07 → +0.98 | +0.87 → +1.09 | content server ×4.22 [4.08, 4.37] |
+| R = 15, 60 decoys | 5.26% → 4.95% (-0.31 [-0.47, -0.14]) | +0.90 → +0.64 | +0.66 → +0.88 | content server ×4.53 [4.37, 4.69] |
+| R = 50, 20 decoys | 5.50% → 5.15% (-0.35 [-0.44, -0.25]) | +0.86 → +0.71 | +0.68 → +0.88 | content server ×4.35 [4.28, 4.41] |
+| R = 50, 40 decoys | 4.48% → 4.16% (-0.31 [-0.40, -0.23]) | +0.61 → +0.54 | +0.53 → +0.71 | content server ×4.52 [4.44, 4.60] |
+| R = 50, 60 decoys | 3.76% → 3.48% (-0.27 [-0.35, -0.20]) | +0.57 → +0.53 | +0.47 → +0.63 | content server ×4.66 [4.56, 4.75] |
+
+The lottery blurs the record time with two independent draws, which costs the observer and the validator (whose evidence is the record time) more than the content server, whose own content arrival is untouched. This is the same pattern as the 480-second window in section 6e. Mean capture to finalization at R = 1 rises from 684.0 to 825.3 seconds (95th percentile 955.6 to 1,138.6 seconds).
+
+## Claim criterion
+
+Every cell of pm120, dev200 and dev300 passes the criterion of section 6i. The highest top-1% precision is 28.4% (upper bound 31.0%, pm120 at R = 1 with 20 decoys); the largest share of decisions above 50% precision is 0.028% (pm120 at R = 1 with 40 decoys).
+
+## Checks and controls
+
+- **Outcome-shuffle control:** 8 of 63 stable cells under pm120 and 2 and 1 of 21 under dev200 and dev300 have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin.
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| J1. Under pm120, under 10% of pairs within 5 s at submission at every R, against over 40% under reg120 | Confirmed: 3.3% to 3.4%, against 53.4% to 53.9%. |
+| J2. Under pm120, 15% to 40% of separated pairs put back in one 120-second bundle at every R | Confirmed: 27.0% to 29.0%. |
+| J3. Under dev200 and dev300, the validator's lead at most +0.25 points at every R | Confirmed: -0.76 to -0.09. |
+| J4. Under dev200 and dev300, no component leads the observer by more than 1 point at every R | Confirmed: the largest lead is +0.40 (content server, dev200, R = 15). |
+| J5. Under pm120, the observer's effect against reg120 within ±1 point in every cell | Confirmed: -0.47 to -0.27. |
+
+J1 to J5 follow development runs, as the plan discloses. No prediction was made for the content server's lead under pm120; it rose in 8 of 9 cells.
