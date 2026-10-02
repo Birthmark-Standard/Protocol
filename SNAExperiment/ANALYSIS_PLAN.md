@@ -458,6 +458,25 @@ The content-only builds test the content server's arrival-alone floor (section "
 - **H3.** Under content200 and content300, the content server's device-level effect against reg120 is below 0 at every R.
 - **H4.** No prediction is made for the strongest component's multiple of random; the development runs were too noisy to support one. It is reported either way.
 
+## 6h. Content paths stretched, credential path shortened
+
+Written after section 6g and before the sweep below.
+
+**Question.** Section 6g found that stretching the content paths' holds by 2 or 3 removes every component's lead over the passive observer, at a cost in latency. This section tests whether shortening the credential path's holds at the same time keeps that result, and what it does to latency.
+
+**Builds.** Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold. The content paths' device and relay-hop holds are stretched by 2; the credential path's device and relay-hop holds (the device's credential channel, A and B) are scaled by 0.75, 0.5 or 0.25 (builds c200_cr75, c200_cr50, c200_cr25), using the same rule as section 6g: release probability 8.33% / k and forced release at tick round(30k). At 0.25 that is 33.3% per tick with forced release at tick 8. The credential processor's fan-out, the gatekeepers' and the content servers' holds are unchanged.
+
+**Cells and runs.** R = 1, 15 and 50 at 40 decoys, 200 runs per cell, run ids 0 to 199, recorded here before the first run. The sequence also reruns reg120 and content200 on the same cells, so the comparisons can be made in one results directory (`results/6h/`); those reruns reproduce the committed section 6g results exactly, because results depend only on the cell, build and run id. The whole section runs with one command, `python -m sna sequence 6h`: each build's runs, each build's analysis, then latency for every build.
+
+**Reported.** Each vantage's accuracy, the strongest component and its multiple of random, each vantage's lead over the observer, precision at coverage, each build's paired effect against reg120 and against content200, and capture-to-finalization latency.
+
+**Development runs**, made before this section was written: 8 runs per cell and build. Every vantage's lead over the observer was at most +0.44 points, and the observer's effect against content200 lay between -0.26 and +0.60 points. A 2-run check of the sequence measured a mean latency of 993 seconds under c200_cr50 at R = 1, against 1,014 seconds for content200 in section 6g.
+
+**Predictions:**
+- **S1.** In every cell of the three new builds, no vantage leads the observer by more than 0.5 points.
+- **S2.** The observer's device-level effect against content200 lies within ±1 point in every cell.
+- **S3.** Shortening the credential path saves little latency: at R = 1, the mean capture-to-finalization time of each new build is at most 60 seconds below content200's.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -467,7 +486,7 @@ The content-only builds test the content server's arrival-alone floor (section "
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6g record their own cells and run counts.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6h record their own cells and run counts.
 
 ## 9. Amendment record
 
@@ -484,3 +503,5 @@ A fifth amendment drops the two-point gatekeeper hold and sweeps the registry bu
 A sixth amendment adds decoy targets of 30, 100 and 150 under the 120- and 480-second registry windows. Section 6f was written before any run of these cells.
 
 A seventh amendment adds longer device and relay holds (section 6g), written before any run of those builds. The precision-at-coverage metrics gain 10% and 25% coverage points and a count of decisions above 50% precision; re-analysing the committed sweeps with them changes no existing value.
+
+An eighth amendment adds the content-stretched, credential-shortened builds and the one-command sequence (section 6h), written before any run of those builds.

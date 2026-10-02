@@ -13,6 +13,7 @@
              (results/gatekeeper_occupancy.json)
   diag-cs    exploratory: the content server's evidence split into record time and content arrival
              (results/diag_content_server.json)
+  sequence   every run, analysis and latency step of one plan section, in order (e.g. sequence 6h)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker
 count or the order runs finish in.
@@ -154,6 +155,27 @@ def cmd_diag_cs(a):
     diagnostics.content_server_sources(Path(a.out or CE.RESULTS), workers=a.workers)
 
 
+def cmd_sequence(a):
+    """Every step of one plan section, in order: each build's runs, then each build's analysis, then
+    the latency of every build. Resumable: rerunning the same command skips finished runs."""
+    from . import report
+    seq = CE.SEQUENCES[a.name]
+    out = Path(a.out or CE.ROOT / seq["out"])
+    out.mkdir(parents=True, exist_ok=True)
+    cal = out / "calibration.json"
+    if not cal.exists() and (CE.RESULTS / "calibration.json").exists():
+        cal.write_text((CE.RESULTS / "calibration.json").read_text())
+    t0 = time.time()
+    steps = [(f"run {b}", lambda b=b: CE.run_cells(out, CE.grid(seq["cells"], b), seq["runs"], a.workers))
+             for b in seq["builds"]]
+    steps += [(f"analyze {b}", lambda b=b: report.build(out, b)) for b in seq["builds"]]
+    steps += [("latency", lambda: CE.latency(out, runs=seq.get("latency_runs", 20), builds=seq["builds"]))]
+    for i, (name, fn) in enumerate(steps, 1):
+        print(f"\n=== step {i} of {len(steps)}: {name} ({(time.time() - t0) / 60:.1f} min elapsed) ===", flush=True)
+        fn()
+    print(f"\nsequence {a.name} done in {(time.time() - t0) / 60:.1f} min; results in {out}", flush=True)
+
+
 def cmd_volume(a):
     from . import report
     print(report.volume_table(CE.calibrate(Path(a.out or CE.RESULTS))["D"]))
@@ -162,18 +184,19 @@ def cmd_volume(a):
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles", "gatekeeper", "diag-cs"])
+    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles", "gatekeeper", "diag-cs", "sequence"])
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=100, help="runs per cell (run, estimate)")
     ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control", "extra", "settled"])
     ap.add_argument("--probe-runs", type=int, default=1)
     ap.add_argument("--check-runs", type=int, default=12)
+    ap.add_argument("name", nargs="?", default="6h", help="sequence name (sequence command only)")
     ap.add_argument("--build", default=CE.DEFAULT_BUILD, choices=list(CE.BUILDS),
                     help="protocol build (default: %(default)s): push; twopoint adds the two-point gatekeeper hold; "
                          "regbundle adds registry-level pooled bundling")
     ap.add_argument("--allrecords", action="store_true",
                     help="re-score the first hops and credential processor on every record (plan section 6a)")
     a = ap.parse_args(argv)
-    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles, gatekeeper=cmd_gatekeeper, **{"diag-cs": cmd_diag_cs},
+    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles, gatekeeper=cmd_gatekeeper, **{"diag-cs": cmd_diag_cs}, sequence=cmd_sequence,
          volume=cmd_volume)[a.command](a)

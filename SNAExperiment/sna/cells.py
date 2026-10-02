@@ -50,10 +50,22 @@ BUILDS.update({f"hold{int(k * 100)}": dict(target=f"link_hold{int(k * 100)}", re
                                           cred_hold_scale=k, content_hold_scale=k) for k in HOLD_SCALES})
 BUILDS.update({f"content{int(k * 100)}": dict(target=f"link_content{int(k * 100)}", reg_bundle_s=P.REG_BUNDLE_S,
                                              content_hold_scale=k) for k in (2.0, 3.0)})
+CRED_SHORT = (0.75, 0.5, 0.25)                   # credential-path hold factors with content x2 (section 6h)
+BUILDS.update({f"c200_cr{int(k * 100)}": dict(target=f"link_c200_cr{int(k * 100)}", reg_bundle_s=P.REG_BUNDLE_S,
+                                             content_hold_scale=2.0, cred_hold_scale=k) for k in CRED_SHORT})
 DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
 PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
                 **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120"),
-                **{b: ("reg120",) for b in ("hold150", "hold200", "hold300", "content200", "content300")}}
+                **{b: ("reg120",) for b in ("hold150", "hold200", "hold300", "content200", "content300")},
+                **{f"c200_cr{int(k * 100)}": ("reg120", "content200") for k in CRED_SHORT}}
+
+# Sequences: every step of one plan section, run one after another by `python -m sna sequence <name>`.
+SEQUENCES = {
+    "6h": dict(out="results/6h", cells="settled", runs=200,
+               builds=("reg120", "content200", "c200_cr75", "c200_cr50", "c200_cr25")),
+    "smoke": dict(out="results/quick/sequence", cells="settled", runs=2, latency_runs=2,
+                  builds=("reg120", "c200_cr50")),                  # checks the sequence itself; never reported
+}
 
 
 def build_kw(build):
@@ -302,14 +314,15 @@ def runs_needed(successes_per_run, min_successes):
 LATENCY_SEED0 = 3_000_000
 
 
-def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40))):
+def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40)), builds=None):
     """Capture-to-finalisation time of real transactions under each build, with the stages that
     make it up. Run ids from 3,000,000 up, never used by a sweep. Written to <out>/latency.json."""
     out = Path(out)
     D = calibrate(out)["D"]
     pools = Pools()
     res = {}
-    for build in BUILDS:
+    builds = tuple(builds or BUILDS)
+    for build in builds:
         for R, d in cells:
             spec = dict(R=float(R), decoys=float(d), bundle=True, control=False, build=build)
             cfg = config_of(spec, D)
@@ -347,11 +360,11 @@ def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40))):
             print(f"{build:9s} R={R:2d} decoys={d}: capture to finalisation mean {t['mean']:.1f} s, "
                   f"median {t['median']:.1f} s, p95 {t['p95']:.1f} s (n = {row['n']})", flush=True)
     (out / "latency.json").write_text(json.dumps(dict(runs=runs, rates_from_D=D, cells=res), indent=1))
-    _latency_figure(out, res, cells)
+    _latency_figure(out, res, cells, builds)
     return res
 
 
-def _latency_figure(out, res, cells):
+def _latency_figure(out, res, cells, builds):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -359,10 +372,10 @@ def _latency_figure(out, res, cells):
     f, ax = plt.subplots(figsize=(7, 3.6), dpi=300, facecolor="#fcfcfb")
     ax.set_facecolor("#fcfcfb")
     cmap = plt.get_cmap("viridis")
-    for j, build in enumerate(BUILDS):
+    for j, build in enumerate(builds):
         h = np.array(res[f"{build}.R{R}.D{d}"]["hist10"], float)
         x = np.arange(h.size) * 10 + 5
-        ax.plot(x, 100 * h / h.sum(), color=cmap(j / max(len(BUILDS) - 1, 1) * 0.85), linewidth=1.6, label=build)
+        ax.plot(x, 100 * h / h.sum(), color=cmap(j / max(len(builds) - 1, 1) * 0.85), linewidth=1.6, label=build)
     ax.set_xlim(0, 1600)
     ax.set_xlabel("capture to registry finalisation (s)", fontsize=8)
     ax.set_ylabel("share of real transactions per 10 s (%)", fontsize=8)
