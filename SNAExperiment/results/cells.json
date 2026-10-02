@@ -17,7 +17,7 @@
   "decoys": 40.0,
   "bundle": true,
   "control": false,
-  "build": "hold150",
+  "build": "content300",
   "window_s": 125114.15842025627,
   "D": 625.5707921012813
  },
@@ -50,7 +50,7 @@
   "decoys": 40.0,
   "bundle": true,
   "control": false,
-  "build": "hold150",
+  "build": "content300",
   "window_s": 10800,
   "D": 625.5707921012813
  },
@@ -83,7 +83,7 @@
   "decoys": 40.0,
   "bundle": true,
   "control": false,
-  "build": "hold150",
+  "build": "content300",
   "window_s": 10800,
   "D": 625.5707921012813
  },
