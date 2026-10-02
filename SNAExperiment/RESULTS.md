@@ -896,7 +896,7 @@ Every result used for these decisions was produced by code committed to this rep
 | Registry window and decoy target: 30, 100 and 150 decoys | section 6f | `e9f27ab` | `10c5c17` | the author's machine |
 
 - The simulator and the attacks (`sna/sim.py`, `sna/attacks.py`, `sna/params.py`, `sna/lottery.py`) are unchanged from `df09686` through `10c5c17`. The changes in between touch only the cell grid, the command line, the reports and an exploratory diagnostic. So the section 6e and 6f sweeps ran the same simulator and attack code, on two machines.
-- Every result depends only on the cell, the build and the run id, never on the machine or the worker count. The two machines therefore produce identical numbers for the same cell and run.
+- Every result depends only on the cell, the build and the run id, never on the worker count. Across the two machines (Linux and Windows) results agree to within floating-point ties: section 6h reran the reg120 and content200 cells on the second machine, and content200 matched every decision while reg120 differed in 1 of 172,650 passive-observer decisions (R = 50) and 1 credential-processor claim (R = 1). Resampled intervals also differ slightly when a different set of cells is analysed together, because the resampling draws are taken in cell order.
 - The two 480-second sweeps agree with each other. Under 480 seconds the content server is the strongest component in every cell of both, with a lead over the passive observer of 0.90 to 2.34 points.
 - The re-analysis below (section "Precision at coverage") adds metrics without changing any existing value; it was checked field by field against the committed summaries.
 
@@ -1063,3 +1063,72 @@ H1 to H3 follow development runs, as the plan discloses. The plan did not antici
 ## Scope
 
 - **Untested middle ground.** Only stretch factors 2 and 3 were tested on the content paths. A smaller content stretch, or stretching the content paths while shortening the credential path, might keep the content path in charge of the record time at less latency. The diagnostic above suggests the property that matters is how often the content path sets the record time.
+
+# Content paths stretched, credential path shortened
+
+Plan section 6h, run on the second machine with `python -m sna sequence 6h` into `results/6h/` (code commit `fbb5815`, results commit `5a40a4f`, both on `main`). The content paths' device and relay-hop holds are stretched by 2; the credential path's device and relay-hop holds are scaled by 0.75, 0.5 or 0.25. Every build has the 120-second registry window, 40 decoys; 200 runs per cell; every cell met the stability rule. The sequence also reran reg120 and content200; content200 reproduced the committed section 6g results decision for decision, and reg120 differed in one observer decision in 172,650 (see Provenance).
+
+## Summary
+
+1. **Shortening the credential path keeps the content-only result.** In every cell of all three builds, no component leads the passive observer by more than 0.02 points.
+2. **It lowers accuracy a little further, at no latency cost.** Against content ×2 alone, the observer loses up to 0.39 points at 0.25 (R = 1), and the strongest component's multiple of random falls from 3.85 to 3.68 at R = 1 and from 4.71 to 4.50 at R = 50.
+3. **It saves almost no latency.** Mean capture to finalization at R = 1 falls from 1,013.6 seconds (content ×2) to 1,002.0, 996.9 and 995.1 seconds; the 95th percentile is unchanged at 1,510.8 seconds in every build, because the slowest records follow the content path.
+4. **At 0.25, no component has a single decision above 50% precision**, and the best top-1% precision at R = 1 is 12.3% [9.4, 15.9], against 15.1% for content ×2 alone and 18.5% for reg120.
+
+## The strongest single component
+
+Device accuracy and multiple of its own random rate [95% CI], 40 decoys:
+
+| Build | R = 1 | R = 15 | R = 50 | Mean latency, R = 1 |
+|---|---|---|---|---|
+| reg120 | validator 9.61%, ×4.06 [3.90, 4.24] | validator 7.84%, ×4.46 [4.31, 4.61] | validator 5.09%, ×4.71 [4.61, 4.81] | 684.0 s |
+| content ×2 | first hop, credential 6.82%, ×3.85 [3.64, 4.03] | first hop, credential 5.29%, ×4.01 [3.84, 4.18] | observer 3.82%, ×4.71 [4.58, 4.84] | 1,013.6 s |
+| content ×2, credential ×0.75 | observer 6.84%, ×3.88 [3.65, 4.09] | observer 5.27%, ×4.01 [3.83, 4.19] | observer 3.81%, ×4.72 [4.60, 4.84] | 1,002.0 s |
+| content ×2, credential ×0.5 | first hop, credential 6.64%, ×3.78 [3.59, 3.97] | credential processor 5.17%, ×3.95 [3.76, 4.14] | observer 3.68%, ×4.58 [4.47, 4.70] | 996.9 s |
+| content ×2, credential ×0.25 | first hop, credential 6.44%, ×3.68 [3.47, 3.87] | observer 5.08%, ×3.89 [3.71, 4.07] | credential processor 3.61%, ×4.50 [4.39, 4.62] | 995.1 s |
+
+Where the strongest component is not the observer, it leads the observer by at most 0.02 points. Under content ×2 with credential ×0.25, the strongest component's interval lies wholly below reg120's at all three volumes.
+
+## Paired effects against content ×2 alone
+
+Device level, in points [95% CI]:
+
+| Build | R | Observer | First hop, credential | Validator | Content server |
+|---|---|---|---|---|---|
+| credential ×0.75 | 1 | +0.03 [-0.14, +0.19] | +0.01 [-0.12, +0.14] | -0.24 [-0.43, -0.04] | -0.02 [-0.19, +0.16] |
+| credential ×0.75 | 15 | +0.03 [-0.11, +0.16] | -0.03 [-0.14, +0.07] | -0.19 [-0.34, -0.05] | -0.14 [-0.28, -0.01] |
+| credential ×0.75 | 50 | -0.01 [-0.07, +0.06] | -0.03 [-0.07, +0.01] | -0.10 [-0.16, -0.04] | -0.09 [-0.16, -0.02] |
+| credential ×0.5 | 1 | -0.18 [-0.36, +0.01] | -0.18 [-0.32, -0.03] | -0.23 [-0.46, -0.01] | -0.21 [-0.39, -0.03] |
+| credential ×0.5 | 15 | -0.09 [-0.25, +0.07] | -0.16 [-0.29, -0.03] | -0.20 [-0.37, -0.02] | -0.32 [-0.46, -0.19] |
+| credential ×0.5 | 50 | -0.13 [-0.21, -0.06] | -0.14 [-0.19, -0.08] | -0.13 [-0.21, -0.06] | -0.17 [-0.23, -0.10] |
+| credential ×0.25 | 1 | -0.39 [-0.60, -0.18] | -0.38 [-0.56, -0.20] | -0.26 [-0.52, +0.02] | -0.58 [-0.76, -0.40] |
+| credential ×0.25 | 15 | -0.17 [-0.33, -0.00] | -0.28 [-0.41, -0.14] | -0.32 [-0.51, -0.12] | -0.38 [-0.55, -0.22] |
+| credential ×0.25 | 50 | -0.21 [-0.29, -0.14] | -0.22 [-0.28, -0.16] | -0.12 [-0.21, -0.04] | -0.23 [-0.31, -0.15] |
+
+## Precision at coverage, R = 1
+
+| Build | Best top-1% precision [95% CI] | Most decisions above 50% precision, any vantage |
+|---|---|---|
+| reg120 | 18.5% [15.0, 22.6] (validator) | 3 |
+| content ×2 | 15.1% [13.4, 16.9] (first hop, credential) | 19 |
+| credential ×0.75 | 15.6% [12.3, 19.5] (validator) | 17 |
+| credential ×0.5 | 13.3% [10.3, 17.0] (validator) | 7 |
+| credential ×0.25 | 12.3% [9.4, 15.9] (validator) | 0 |
+
+## Checks and controls
+
+- **Outcome-shuffle control:** 2, 2 and 0 of 21 stable cells under credential ×0.75, ×0.5 and ×0.25 have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin (largest 0.508).
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| S1. No vantage leads the observer by more than 0.5 points in any cell of the three new builds | Confirmed: the largest lead is +0.02. |
+| S2. The observer's effect against content ×2 lies within ±1 point in every cell | Confirmed (-0.39 to +0.03). |
+| S3. At R = 1, each new build's mean latency is at most 60 seconds below content ×2's | Confirmed: 11.6, 16.7 and 18.5 seconds below. |
+
+S1 to S3 follow development runs, as the plan discloses.
+
+## Scope
+
+- **The credential path's own protection.** At ×0.25 a credential-path hold averages about 26 seconds. No vantage on that path gained on the observer here, but this sweep measures only the record-to-device link; it does not measure, for example, how well a first hop could link a device's credential packet to the validator's request.
