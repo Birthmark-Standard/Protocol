@@ -1149,7 +1149,7 @@ Plan section 6i fixes the criterion before this comparison: in a cell, every van
 
 Every secondary cell passes as well: the 120-second build at 20, 30, 60, 100 and 150 decoys (R = 1, 15 and 50), and every hold build of sections 6g and 6h at 40 decoys. The closest to failing is the 120-second build at R = 1 with 20 decoys: the validator's top-1% precision is 32.5% with an upper bound of 37.2%, and 0.058% of its decisions fall above 50% precision.
 
-**The criterion does not separate the designs tested.** Every configuration in the experiment passes it, including those with no decoys above 20 in flight. The criterion establishes the claim; it does not rank mechanisms. The accuracy ratios, top-1% precision values and leads over the observer reported in the sections above remain the measures that distinguish one design from another.
+**The criterion does not separate the designs tested.** Every configuration tested passes it, including the lowest decoy target (20 in flight). The criterion establishes the claim; it does not rank mechanisms. The accuracy ratios, top-1% precision values and leads over the observer reported in the sections above remain the measures that distinguish one design from another.
 
 # Status reports
 
