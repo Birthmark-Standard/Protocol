@@ -78,3 +78,32 @@ A longer registry window moves the validator's edge over the observer to the con
 | 480 s | content server | 8.60% | ×3.72 [3.58, 3.85] |
 
 The content server's own content arrival gives it 8.16% at this cell whatever the window, a floor no registry-side mechanism can lower.
+
+## Decoy target
+
+Strongest single component, R = 1, device named (multiple of its own random rate):
+
+| Decoys in flight | 120 s registry window | 480 s registry window |
+|---|---|---|
+| 20 | 15.98% (×3.34) | 14.67% (×3.23) |
+| 30 | 12.22% (×3.91) | 10.89% (×3.56) |
+| 40 | 9.61% (×4.06) | 8.60% (×3.72) |
+| 60 | 6.90% (×4.33) | 6.13% (×3.93) |
+| 100 | 4.56% (×4.74) | 4.02% (×4.27) |
+| 150 | 3.30% (×5.13) | 2.94% (×4.66) |
+
+Mean capture to finalization at 40 decoys: 684 s (120 s window) and 861 s (480 s window). A higher decoy target lowers every component's absolute accuracy while its multiple over random rises; the 480-second window is lower than the 120-second window on both measures in every cell tested.
+
+## Longer device and relay holds
+
+R = 1, 40 decoys, 120-second registry window. Strongest single component, device named, and its multiple of random [95% CI]:
+
+| Holds stretched | Strongest component | Device named | Multiple of random | Its lead over the observer | Mean capture to finalization |
+|---|---|---|---|---|---|
+| none | validator | 9.61% | ×4.06 [3.90, 4.23] | +1.09 points | 684 s |
+| every path ×2 | validator | 7.61% | ×4.51 [4.30, 4.71] | +1.63 points | 1,142 s |
+| every path ×3 | validator | 6.32% | ×4.30 [4.07, 4.53] | +1.16 points | 1,595 s |
+| content paths ×2 | first hop, credential | 6.82% | ×3.85 [3.64, 4.03] | +0.01 points | 1,014 s |
+| content paths ×3 | none (observer) | 5.56% | ×3.62 [3.39, 3.87] | +0.00 points | 1,425 s |
+
+Stretching the content-path holds alone hands the record time to timing no credential-side component sees: no compromised component beats a passive observer, and the multiple over random falls outside its interval at every volume tested.

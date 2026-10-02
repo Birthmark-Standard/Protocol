@@ -45,9 +45,27 @@ BUILDS = {
     # registry-level bundling on the push build, without the two-point hold, at four windows
     **{f"reg{w}": dict(target=f"link_reg{w}", reg_bundle_s=float(w)) for w in REG_WINDOWS},
 }
+HOLD_SCALES = (1.5, 2.0, 3.0)                    # device and relay hold stretch factors (section 6g)
+BUILDS.update({f"hold{int(k * 100)}": dict(target=f"link_hold{int(k * 100)}", reg_bundle_s=P.REG_BUNDLE_S,
+                                          cred_hold_scale=k, content_hold_scale=k) for k in HOLD_SCALES})
+BUILDS.update({f"content{int(k * 100)}": dict(target=f"link_content{int(k * 100)}", reg_bundle_s=P.REG_BUNDLE_S,
+                                             content_hold_scale=k) for k in (2.0, 3.0)})
+CRED_SHORT = (0.75, 0.5, 0.25)                   # credential-path hold factors with content x2 (section 6h)
+BUILDS.update({f"c200_cr{int(k * 100)}": dict(target=f"link_c200_cr{int(k * 100)}", reg_bundle_s=P.REG_BUNDLE_S,
+                                             content_hold_scale=2.0, cred_hold_scale=k) for k in CRED_SHORT})
 DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
 PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
-                **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120")}
+                **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120"),
+                **{b: ("reg120",) for b in ("hold150", "hold200", "hold300", "content200", "content300")},
+                **{f"c200_cr{int(k * 100)}": ("reg120", "content200") for k in CRED_SHORT}}
+
+# Sequences: every step of one plan section, run one after another by `python -m sna sequence <name>`.
+SEQUENCES = {
+    "6h": dict(out="results/6h", cells="settled", runs=200,
+               builds=("reg120", "content200", "c200_cr75", "c200_cr50", "c200_cr25")),
+    "smoke": dict(out="results/quick/sequence", cells="settled", runs=2, latency_runs=2,
+                  builds=("reg120", "c200_cr50")),                  # checks the sequence itself; never reported
+}
 
 
 def build_kw(build):
@@ -73,6 +91,9 @@ def _grid(which):
     """which: all | bundle | nobundle | control use the core decoy levels; extra is the section 6f
     levels with bundling on."""
     specs = []
+    if which == "settled":
+        return [dict(key=cell_key(R, 40, True), R=float(R), T=float(R + 40), decoys=40.0, bundle=True,
+                     control=False) for R in REAL_R]
     if which == "extra":
         return [dict(key=cell_key(R, d, True), R=float(R), T=float(R + d), decoys=float(d), bundle=True,
                      control=False) for R in REAL_R for d in DECOY_EXTRA]
@@ -124,7 +145,7 @@ def calibrate(out=RESULTS, runs=10, force=False):
     for k in range(runs):
         run = S.simulate(cfg, CAL_SEED0 + k, pools)
         s = run.subs
-        m = (s["t0"] >= P.WARMUP_S) & (s["t0"] < P.WARMUP_S + cfg.measure_s) & ~s["decoy"]
+        m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s) & ~s["decoy"]
         d.append(s["final"][m] - s["t0"][m])
     d = np.concatenate(d)
     fin = d[np.isfinite(d)]
@@ -206,7 +227,7 @@ def bundle_sizes(run, window=P.BUNDLE_S):
     scored window, on each gatekeeper's own grid. Computed whether or not bundling is on, so the
     off cells report how large the bundles would have been."""
     s = run.subs
-    lo_t, hi_t = P.WARMUP_S, P.WARMUP_S + run.cfg.measure_s
+    lo_t, hi_t = run.cfg.warmup_s, run.cfg.warmup_s + run.cfg.measure_s
     hist = np.zeros(64, np.int64)
     for j, g in enumerate(run.gk_set):
         ph = run.bundle_phase[g]
@@ -293,14 +314,15 @@ def runs_needed(successes_per_run, min_successes):
 LATENCY_SEED0 = 3_000_000
 
 
-def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40))):
+def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40)), builds=None):
     """Capture-to-finalisation time of real transactions under each build, with the stages that
     make it up. Run ids from 3,000,000 up, never used by a sweep. Written to <out>/latency.json."""
     out = Path(out)
     D = calibrate(out)["D"]
     pools = Pools()
     res = {}
-    for build in BUILDS:
+    builds = tuple(builds or BUILDS)
+    for build in builds:
         for R, d in cells:
             spec = dict(R=float(R), decoys=float(d), bundle=True, control=False, build=build)
             cfg = config_of(spec, D)
@@ -308,7 +330,7 @@ def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40))):
                                   "quorum_to_confirmed", "registry_bundle_wait", "confirmed_to_final")}
             for k in range(runs):
                 s = S.simulate(cfg, traffic_seed(R, LATENCY_SEED0 + k), pools).subs
-                m = (s["t0"] >= P.WARMUP_S) & (s["t0"] < P.WARMUP_S + cfg.measure_s) & ~s["decoy"] \
+                m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s) & ~s["decoy"] \
                     & s["ok_f"] & s["ok_i"]
                 t0 = s["t0"][m]
                 acc["total"].append(s["final"][m] - t0)
@@ -338,11 +360,11 @@ def latency(out, runs=20, cells=((1, 40), (15, 40), (50, 40))):
             print(f"{build:9s} R={R:2d} decoys={d}: capture to finalisation mean {t['mean']:.1f} s, "
                   f"median {t['median']:.1f} s, p95 {t['p95']:.1f} s (n = {row['n']})", flush=True)
     (out / "latency.json").write_text(json.dumps(dict(runs=runs, rates_from_D=D, cells=res), indent=1))
-    _latency_figure(out, res, cells)
+    _latency_figure(out, res, cells, builds)
     return res
 
 
-def _latency_figure(out, res, cells):
+def _latency_figure(out, res, cells, builds):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -350,10 +372,10 @@ def _latency_figure(out, res, cells):
     f, ax = plt.subplots(figsize=(7, 3.6), dpi=300, facecolor="#fcfcfb")
     ax.set_facecolor("#fcfcfb")
     cmap = plt.get_cmap("viridis")
-    for j, build in enumerate(BUILDS):
+    for j, build in enumerate(builds):
         h = np.array(res[f"{build}.R{R}.D{d}"]["hist10"], float)
         x = np.arange(h.size) * 10 + 5
-        ax.plot(x, 100 * h / h.sum(), color=cmap(j / max(len(BUILDS) - 1, 1) * 0.85), linewidth=1.6, label=build)
+        ax.plot(x, 100 * h / h.sum(), color=cmap(j / max(len(builds) - 1, 1) * 0.85), linewidth=1.6, label=build)
     ax.set_xlim(0, 1600)
     ax.set_xlabel("capture to registry finalisation (s)", fontsize=8)
     ax.set_ylabel("share of real transactions per 10 s (%)", fontsize=8)
@@ -376,7 +398,7 @@ def _reg_bundle_one(args):
     det = np.concatenate([s["det_f"][s["ok_f"]], s["det_i"][s["ok_i"]]])
     sub = np.concatenate([np.nonzero(s["ok_f"])[0], np.nonzero(s["ok_i"])[0]])
     b = np.ceil((det - ph) / W).astype(np.int64)
-    k0, k1 = int(np.ceil((P.WARMUP_S - ph) / W)), int(np.floor((P.WARMUP_S + cfg.measure_s - ph) / W))
+    k0, k1 = int(np.ceil((cfg.warmup_s - ph) / W)), int(np.floor((cfg.warmup_s + cfg.measure_s - ph) / W))
     m = (b >= k0) & (b < k1)
     ns = np.bincount(b[m] - k0, minlength=k1 - k0)
     pairs = np.unique(np.c_[b[m] - k0, sub[m]], axis=0)
@@ -425,7 +447,7 @@ def _gk_one(args):
     cfg = config_of(spec, D).with_(measure_s=P.MEASURE_S)
     run = S.simulate(cfg, traffic_seed(R, GK_SEED0 + run_id), Pools())
     s = run.subs
-    a, b = P.WARMUP_S, P.WARMUP_S + cfg.measure_s
+    a, b = cfg.warmup_s, cfg.warmup_s + cfg.measure_s
     out = dict(arrivals=0, hold_sum=0.0, occ_samples=[], tick_counts=[], win={w: [] for w in windows})
     probes = np.linspace(a, b, 2000, endpoint=False)
     for j, g in enumerate(run.gk_set):

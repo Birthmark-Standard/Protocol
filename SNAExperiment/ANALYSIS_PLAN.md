@@ -418,6 +418,65 @@ Written after section 6e and before the sweep below.
 - **X4.** The 480-second window's device-level effect on the validator against reg120 is below 0 in every cell.
 - **X5.** Under reg480, the content server is the strongest single component in at least 7 of the 9 cells.
 
+## 6g. Longer device and relay holds
+
+Written after section 6f, with the registry window settled at 120 seconds, and before the sweep below.
+
+**Mechanism.** The device's holds and the relay hops' holds (A, B, D, E, G, H) are stretched by a factor k: the release probability per tick becomes 8.33% / k and the forced release moves from tick 30 to tick 30k, on the same 10-second ticks. Each stretched hold's mean and cap grow by k, and the share released by the cap stays about 8%. The credential processor's fan-out holds, the gatekeepers' holds and the content servers' holds are unchanged. The starting parameters are documented under "Relay lottery: current parameters" in RESULTS.md.
+
+**Builds.** Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold:
+
+| Build | Credential path stretched | Content paths stretched |
+|---|---|---|
+| reg120 | 1 | 1 |
+| hold150 | 1.5 | 1.5 |
+| hold200 | 2 | 2 |
+| hold300 | 3 | 3 |
+| content200 | 1 | 2 |
+| content300 | 1 | 3 |
+
+The content-only builds test the content server's arrival-alone floor (section "Why the content server gains on the observer at long windows"), which only content-path holds can move.
+
+**Simulation margins.** The warm-up before the scored window and the cool-down after it are multiplied by the largest stretch factor, so traffic reaches steady state before scoring and every scored chain completes. At k = 1 both are unchanged, and the default build reproduces the committed results exactly (checked by hashing a run's transactions and every vantage's decisions under the old and new code).
+
+**Attacker.** The attacker knows the protocol: models are rebuilt under each build, and the grouping of a source's first-hop packets into captures uses one stretched device hold as its span.
+
+**Rates.** Real and decoy rates stay those of the push build (R / D and decoys / D, D = 625.6 s), as the specification fixes the decoy stream as a flat rate. Longer holds therefore keep more transactions in flight, which is part of how they work; the latency report gives each build's end-to-end delay.
+
+**Cells.** R = 1, 15 and 50 at 40 decoys: 3 cells per build, 5 new builds. 200 runs per cell, run ids 0 to 199, recorded here before the first run of this sweep. Each build is compared with reg120 on the same records.
+
+**Reported.**
+- Each vantage's accuracy, the strongest component's accuracy and multiple of random, the passive observer's multiple of random, and precision at coverage.
+- Each build's paired effect against reg120, for every vantage.
+- Capture to finalization for each build (`python -m sna latency`).
+
+**Development runs**, made before this section was written: 8 runs per cell and build. The observer's device effect against reg120 ranged from -0.18 to -3.85 points, growing with k. The content server's lead over the observer was at or below 0.3 points in 13 of the 15 build-cells, against 0.53 to 0.93 under reg120. The strongest component's multiple of random moved in both directions.
+
+**Predictions:**
+- **H1.** The observer's device accuracy falls as k rises: at every R, reg120 > hold150 > hold200 > hold300.
+- **H2.** The content server's lead over the observer under hold200 and hold300 is below its reg120 value at every R.
+- **H3.** Under content200 and content300, the content server's device-level effect against reg120 is below 0 at every R.
+- **H4.** No prediction is made for the strongest component's multiple of random; the development runs were too noisy to support one. It is reported either way.
+
+## 6h. Content paths stretched, credential path shortened
+
+Written after section 6g and before the sweep below.
+
+**Question.** Section 6g found that stretching the content paths' holds by 2 or 3 removes every component's lead over the passive observer, at a cost in latency. This section tests whether shortening the credential path's holds at the same time keeps that result, and what it does to latency.
+
+**Builds.** Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold. The content paths' device and relay-hop holds are stretched by 2; the credential path's device and relay-hop holds (the device's credential channel, A and B) are scaled by 0.75, 0.5 or 0.25 (builds c200_cr75, c200_cr50, c200_cr25), using the same rule as section 6g: release probability 8.33% / k and forced release at tick round(30k). At 0.25 that is 33.3% per tick with forced release at tick 8. The credential processor's fan-out, the gatekeepers' and the content servers' holds are unchanged.
+
+**Cells and runs.** R = 1, 15 and 50 at 40 decoys, 200 runs per cell, run ids 0 to 199, recorded here before the first run. The sequence also reruns reg120 and content200 on the same cells, so the comparisons can be made in one results directory (`results/6h/`); those reruns reproduce the committed section 6g results exactly, because results depend only on the cell, build and run id. The whole section runs with one command, `python -m sna sequence 6h`: each build's runs, each build's analysis, then latency for every build.
+
+**Reported.** Each vantage's accuracy, the strongest component and its multiple of random, each vantage's lead over the observer, precision at coverage, each build's paired effect against reg120 and against content200, and capture-to-finalization latency.
+
+**Development runs**, made before this section was written: 8 runs per cell and build. Every vantage's lead over the observer was at most +0.44 points, and the observer's effect against content200 lay between -0.26 and +0.60 points. A 2-run check of the sequence measured a mean latency of 993 seconds under c200_cr50 at R = 1, against 1,014 seconds for content200 in section 6g.
+
+**Predictions:**
+- **S1.** In every cell of the three new builds, no vantage leads the observer by more than 0.5 points.
+- **S2.** The observer's device-level effect against content200 lies within ±1 point in every cell.
+- **S3.** Shortening the credential path saves little latency: at R = 1, the mean capture-to-finalization time of each new build is at most 60 seconds below content200's.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -427,7 +486,7 @@ Written after section 6e and before the sweep below.
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6f record their own cells and run counts.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6h record their own cells and run counts.
 
 ## 9. Amendment record
 
@@ -442,3 +501,7 @@ A fourth amendment followed two additions to the specification: the two-point ga
 A fifth amendment drops the two-point gatekeeper hold and sweeps the registry bundling window. Section 4 (check 8's scope) and section 6e were written before any sweep of these builds.
 
 A sixth amendment adds decoy targets of 30, 100 and 150 under the 120- and 480-second registry windows. Section 6f was written before any run of these cells.
+
+A seventh amendment adds longer device and relay holds (section 6g), written before any run of those builds. The precision-at-coverage metrics gain 10% and 25% coverage points and a count of decisions above 50% precision; re-analysing the committed sweeps with them changes no existing value.
+
+An eighth amendment adds the content-stretched, credential-shortened builds and the one-command sequence (section 6h), written before any run of those builds.

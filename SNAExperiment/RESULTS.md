@@ -769,3 +769,297 @@ Measured per stage in the simulator (R = 15, 40 decoys, 120-second registry wind
 
 - The content packet usually waits at the content server for quorum (about 166 seconds on average after its own hold), so the record time is set by the credential path.
 - The 8% point mass at the 300-second cap is present in every hold. It is the same shape the two-point gatekeeper hold placed at the cap with 40% weight.
+
+# Decoy targets from 20 to 150
+
+Plan section 6f. The 30-, 100- and 150-decoy cells were run on a second machine (`results/extra/`); the 20-, 40- and 60-decoy cells are those of section 6e. Results depend only on the cell, the build and the run id. Both builds use board pushes, gatekeeper departure bundling and the relay-lottery gatekeeper hold; reg120 and reg480 differ only in the registry window. 200 runs per cell; every cell met the stability rule.
+
+## Summary
+
+1. **Raising the decoy target lowers every component's absolute accuracy steadily.** At R = 1 under the 120-second window, the strongest single component names the device 12.2% of the time at 30 decoys, 9.6% at 40, 6.9% at 60, 4.6% at 100 and 3.3% at 150.
+2. **The multiple over random rises as decoys rise.** More decoys lower the random-pick rate faster than they lower accuracy. At R = 1 under the 120-second window, the passive observer is 3.9 times random at 30 decoys and 5.0 times at 150. A higher decoy target makes a record harder to trace in absolute terms, while each component's advantage over guessing grows.
+3. **The low end of 40 ± 10 costs about 2.6 points.** At 30 decoys and R = 1, the strongest component names the device 12.2% of the time (120-second window) or 10.9% (480-second window), against 9.6% and 8.6% at 40.
+4. **The 480-second window beats the 120-second window on the strongest component in all 18 cells**, in accuracy and as a multiple of random. The content server is the strongest component under 480 seconds in every cell, and the validator's lead over the observer falls to between -0.08 and +0.61 points.
+
+## The strongest single component
+
+Device accuracy and multiple of its own random rate [95% CI]:
+
+| R | Decoys | 120 s window | 480 s window |
+|---|---|---|---|
+| 1 | 20 | content server 15.98%, ×3.34 [3.26, 3.42] | content server 14.67%, ×3.23 [3.15, 3.32] |
+| 1 | 30 | validator 12.22%, ×3.91 [3.77, 4.05] | content server 10.89%, ×3.56 [3.44, 3.68] |
+| 1 | 40 | validator 9.61%, ×4.06 [3.90, 4.23] | content server 8.60%, ×3.72 [3.58, 3.85] |
+| 1 | 60 | validator 6.90%, ×4.33 [4.12, 4.53] | content server 6.13%, ×3.93 [3.76, 4.09] |
+| 1 | 100 | validator 4.56%, ×4.74 [4.41, 5.07] | content server 4.02%, ×4.27 [4.03, 4.51] |
+| 1 | 150 | validator 3.30%, ×5.13 [4.74, 5.52] | content server 2.94%, ×4.66 [4.37, 4.97] |
+| 15 | 20 | validator 10.96%, ×3.96 [3.85, 4.07] | content server 10.00%, ×3.69 [3.59, 3.79] |
+| 15 | 30 | content server 9.16%, ×4.13 [4.01, 4.24] | content server 8.25%, ×3.93 [3.83, 4.04] |
+| 15 | 40 | validator 7.84%, ×4.46 [4.32, 4.61] | content server 6.93%, ×4.02 [3.89, 4.16] |
+| 15 | 60 | validator 6.15%, ×4.77 [4.56, 4.98] | content server 5.47%, ×4.32 [4.16, 4.48] |
+| 15 | 100 | validator 4.37%, ×5.18 [4.95, 5.41] | content server 3.80%, ×4.61 [4.38, 4.83] |
+| 15 | 150 | validator 3.26%, ×5.54 [5.21, 5.85] | content server 2.74%, ×4.76 [4.49, 5.04] |
+| 50 | 20 | validator 6.35%, ×4.56 [4.48, 4.64] | content server 5.70%, ×4.18 [4.11, 4.25] |
+| 50 | 30 | validator 5.64%, ×4.64 [4.55, 4.73] | content server 5.07%, ×4.26 [4.17, 4.34] |
+| 50 | 40 | validator 5.09%, ×4.71 [4.61, 4.80] | content server 4.60%, ×4.35 [4.28, 4.43] |
+| 50 | 60 | validator 4.32%, ×4.89 [4.76, 5.01] | content server 3.85%, ×4.44 [4.35, 4.54] |
+| 50 | 100 | validator 3.30%, ×5.09 [4.93, 5.24] | content server 2.95%, ×4.64 [4.52, 4.77] |
+| 50 | 150 | validator 2.58%, ×5.30 [5.12, 5.48] | content server 2.30%, ×4.83 [4.67, 4.99] |
+
+## The passive observer
+
+Device accuracy, random-pick rate, and multiple of random [95% CI], at R = 1:
+
+| Decoys | 120 s window | 480 s window |
+|---|---|---|
+| 20 | 14.26%, 4.03%, ×3.54 [3.43, 3.65] | 12.32%, 3.49%, ×3.53 [3.39, 3.67] |
+| 30 | 10.57%, 2.72%, ×3.89 [3.75, 4.03] | 9.04%, 2.35%, ×3.85 [3.66, 4.02] |
+| 40 | 8.52%, 2.05%, ×4.14 [3.97, 4.32] | 7.19%, 1.78%, ×4.04 [3.82, 4.26] |
+| 60 | 5.98%, 1.39%, ×4.32 [4.09, 4.54] | 4.99%, 1.20%, ×4.16 [3.90, 4.42] |
+| 100 | 4.01%, 0.84%, ×4.80 [4.46, 5.13] | 3.43%, 0.72%, ×4.74 [4.36, 5.12] |
+| 150 | 2.80%, 0.56%, ×5.00 [4.57, 5.43] | 2.35%, 0.48%, ×4.85 [4.35, 5.34] |
+
+Every cell, and R = 15 and 50, is in `results/extra/tables.md`, `results/extra/tables_reg480.md` and the section 6e tables.
+
+## Effect of the 480-second window against the 120-second window
+
+Device level, in points [95% CI], matched record by record:
+
+| R | Decoys | Passive observer | Content server | Validator |
+|---|---|---|---|---|
+| 1 | 30 | -1.52 [-1.87, -1.19] | -0.85 [-1.10, -0.61] | -2.73 [-3.14, -2.33] |
+| 1 | 100 | -0.58 [-0.81, -0.36] | -0.32 [-0.47, -0.17] | -1.20 [-1.48, -0.92] |
+| 1 | 150 | -0.45 [-0.65, -0.25] | -0.19 [-0.32, -0.05] | -0.90 [-1.15, -0.66] |
+| 15 | 30 | -0.97 [-1.23, -0.75] | -0.90 [-1.08, -0.72] | -1.90 [-2.18, -1.61] |
+| 15 | 100 | -0.42 [-0.59, -0.24] | -0.28 [-0.40, -0.17] | -1.05 [-1.27, -0.82] |
+| 15 | 150 | -0.42 [-0.60, -0.25] | -0.31 [-0.42, -0.21] | -0.93 [-1.12, -0.74] |
+| 50 | 30 | -0.80 [-0.90, -0.70] | -0.45 [-0.53, -0.36] | -1.26 [-1.37, -1.15] |
+| 50 | 100 | -0.54 [-0.63, -0.45] | -0.22 [-0.29, -0.15] | -0.78 [-0.89, -0.68] |
+| 50 | 150 | -0.37 [-0.44, -0.29] | -0.18 [-0.25, -0.12] | -0.62 [-0.71, -0.53] |
+
+The content server loses the least in every cell, which is why it becomes the strongest component at 480 seconds, as the diagnostic above explains.
+
+## Registry bundle sizes
+
+Distinct transactions per bundle, and the share with fewer than two (`results/extra/registry_bundles_reg<window>.json`):
+
+| R | Decoys | 120 s | 480 s |
+|---|---|---|---|
+| 1 | 30 | 8.0 (0.30%) | 27.2 (under 0.001%) |
+| 1 | 100 | 26.1 (under 0.001%) | 88.6 (under 0.001%) |
+| 1 | 150 | 39.0 (under 0.001%) | 124.7 (under 0.001%) |
+| 15 | 30 | 11.7 (0.011%) | 39.7 (under 0.001%) |
+| 50 | 30 | 20.5 (under 0.001%) | 69.9 (under 0.001%) |
+
+The histogram is capped at 127 submissions, so the largest 480-second means are lower bounds.
+
+## Checks and controls
+
+- **Outcome-shuffle control:** 6 of 63 stable cells under the 120-second window and 3 of 63 under the 480-second window have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin (largest 0.515).
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| X1. At R = 1, the observer at 30 decoys lies between its 20- and 40-decoy values, in both builds | Confirmed: 10.57% (120 s) and 9.04% (480 s). |
+| X2. The observer is lower at 150 than at 100 decoys at every R, in both builds | Confirmed in all 6. |
+| X3. Under 120 s, the observer's multiple of random at 150 decoys is at least its 40-decoy value at R = 1 and 15 | Confirmed: ×5.00 against ×4.14, and ×5.21 against ×4.42. |
+| X4. The 480-second window lowers the validator against 120 seconds in every cell | Confirmed (-2.73 to -0.62). |
+| X5. Under 480 s, the content server is the strongest component in at least 7 of 9 cells | Confirmed in all 9, and in all 9 cells of section 6e as well. |
+
+X1 to X5 follow development runs, as the plan discloses.
+
+# Parameter decisions and the code behind them
+
+## Decisions
+
+| Parameter | Setting | Decided on |
+|---|---|---|
+| Registry-level bundling window | 120 s, one schedule shared by every content server | the author's decision, final |
+| Decoy target | 40 ± 10 in flight, a flat rate independent of real traffic | the specification; raising it is under consideration |
+| Gatekeeper departure bundling | 30 s window on each gatekeeper's own grid | the specification |
+| Board push | every 10 s, each board on its own schedule | this build's choice for the specification's "regularly" |
+| Gatekeeper hold | the relay lottery (the two-point hold is dropped) | section 6e |
+
+The registry window was decided with these results in view: under the 480-second window the strongest single component is lower than under the 120-second window in all 18 cells measured, in accuracy and as a multiple of random, at about 177 seconds more mean latency at 40 decoys. The 120-second window is the chosen setting.
+
+## Provenance of every result behind these decisions
+
+Every result used for these decisions was produced by code committed to this repository and present on `main`. No result comes from an uncommitted, interim or background version of the program. Each sweep ran against the commit named below; its results were committed afterwards.
+
+| Decision informed | Sweep | Code commit | Results commit | Run on |
+|---|---|---|---|---|
+| Gatekeeper departure bundling | section 6b | `e0709ec` | `0fb1fc2` | the analysis container |
+| Board push | section 6c | `a0cde30` | `c5ada93` | the analysis container |
+| Two-point gatekeeper hold (dropped) | section 6d | `df09686` | `f997284` | the analysis container |
+| Registry window: 60, 120, 240 and 480 s, 20 to 60 decoys | section 6e | `70b4aae` | `39891f0`, `f7da551` | the analysis container |
+| Registry window and decoy target: 30, 100 and 150 decoys | section 6f | `e9f27ab` | `10c5c17` | the author's machine |
+
+- The simulator and the attacks (`sna/sim.py`, `sna/attacks.py`, `sna/params.py`, `sna/lottery.py`) are unchanged from `df09686` through `10c5c17`. The changes in between touch only the cell grid, the command line, the reports and an exploratory diagnostic. So the section 6e and 6f sweeps ran the same simulator and attack code, on two machines.
+- Every result depends only on the cell, the build and the run id, never on the machine or the worker count. The two machines therefore produce identical numbers for the same cell and run.
+- The two 480-second sweeps agree with each other. Under 480 seconds the content server is the strongest component in every cell of both, with a lead over the passive observer of 0.90 to 2.34 points.
+- The re-analysis below (section "Precision at coverage") adds metrics without changing any existing value; it was checked field by field against the committed summaries.
+
+# Zero-access baseline
+
+Every random-pick rate above is random among the devices feasible for a record, which already assumes knowledge of which devices could have produced it. The zero-access baseline needs no such knowledge: a guess among every registered device, 1/N.
+
+In this model N is the number of identities that capture during a run: real devices (R / D × 1,200 seconds, each capturing every 20 minutes on average) plus the decoy infrastructure's identities (decoys / D × 1,200 seconds). A deployment with many registered devices that rarely capture would have a far larger N, so the zero-access multiples below are specific to this model's device population.
+
+Under the 120-second window, device level:
+
+| R | Decoys | Registered devices N | 1/N | Observer | Observer × N | Observer, feasible-set multiple | Strongest component | Its × N | Its feasible-set multiple |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 20 | 40 | 2.50% | 14.26% | 5.7 | 3.54 | content server 15.98% | 6.4 | 3.34 |
+| 1 | 30 | 60 | 1.67% | 10.57% | 6.3 | 3.89 | validator 12.22% | 7.3 | 3.91 |
+| 1 | 40 | 79 | 1.27% | 8.52% | 6.7 | 4.14 | validator 9.61% | 7.6 | 4.06 |
+| 1 | 60 | 117 | 0.85% | 5.98% | 7.0 | 4.32 | validator 6.90% | 8.1 | 4.33 |
+| 1 | 100 | 194 | 0.52% | 4.01% | 7.8 | 4.80 | validator 4.56% | 8.8 | 4.74 |
+| 1 | 150 | 290 | 0.34% | 2.80% | 8.1 | 5.00 | validator 3.30% | 9.6 | 5.13 |
+| 15 | 40 | 106 | 0.94% | 6.76% | 7.2 | 4.42 | validator 7.84% | 8.3 | 4.46 |
+| 15 | 150 | 317 | 0.32% | 2.66% | 8.4 | 5.21 | validator 3.26% | 10.3 | 5.54 |
+| 50 | 40 | 173 | 0.58% | 4.48% | 7.7 | 4.77 | validator 5.09% | 8.8 | 4.71 |
+| 50 | 150 | 384 | 0.26% | 2.17% | 8.3 | 5.13 | validator 2.58% | 9.9 | 5.30 |
+
+Every cell is in `results/zero_access.json`.
+
+- **The zero-access multiple rises with the decoy target, as the feasible-set multiple does.** It does not behave oppositely. At R = 1 the observer's zero-access multiple rises from 5.7 at 20 decoys to 8.1 at 150.
+- **The reason:** N grows in proportion to the decoy rate, while accuracy falls more slowly than in proportion. Each added decoy identity enlarges both baselines' denominators by about one, and takes less than its share of the attacker's correct guesses.
+- **The zero-access multiple is larger than the feasible-set multiple**, by a factor of 1.6 to 1.9. Knowing the feasible set is worth that much to a guesser on its own.
+
+# Precision at coverage
+
+Each vantage's calibrated confidence ranks its decisions. Precision at coverage q is the share of correct decisions among its most confident q of decisions [95% CI]. The largest coverage at more than 50% precision is the largest share of decisions, taken most confident first, that are right more often than not. These metrics are computed in every sweep; they are reported here at the settled configuration (120-second window, 40 decoys), with 10% and 25% coverage added.
+
+R = 1, 40 decoys:
+
+| Vantage | Accuracy (every decision) | Precision, top 1% | Top 5% | Top 10% | Top 25% | Decisions above 50% precision | AUC |
+|---|---|---|---|---|---|---|---|
+| Baseline | 8.52% | 14.0% [10.9, 17.7] | 13.2% [11.8, 14.8] | 12.7% | 11.5% | 0 of 39,962 | 0.569 |
+| First hop, credential | 8.50% | 15.5% [13.8, 17.3] | 13.2% [12.5, 13.9] | 12.6% | 11.4% | 0 of 159,848 | 0.571 |
+| First hop, content | 8.50% | 15.5% [13.8, 17.3] | 13.2% [12.5, 13.9] | 12.6% | 11.4% | 0 of 159,848 | 0.571 |
+| Credential processor | 8.57% | 14.4% [12.8, 16.2] | 13.0% [12.3, 13.8] | 12.8% | 11.4% | 0 of 159,848 | 0.568 |
+| Content server | 9.45% | 10.9% [8.9, 13.2] | 13.3% [12.2, 14.4] | 12.9% | 12.2% | 0 of 79,924 | 0.566 |
+| Validator | 9.61% | 18.5% [15.0, 22.6] | 15.2% [13.7, 16.9] | 14.5% | 12.9% | 3 of 39,962 | 0.574 |
+| Gatekeeper | 8.47% | 14.4% [12.6, 16.5] | 13.4% [12.6, 14.3] | 13.0% | 11.3% | 0 of 119,886 | 0.570 |
+
+At R = 15 and R = 50 with 40 decoys, the highest top-1% precision of any vantage is 14.6% [11.8, 17.9] and 9.8% [8.5, 11.3] (the validator), and at most 1 decision per vantage exceeds 50% precision. Every cell is in `results/tables.md`.
+
+Across decoy targets at R = 1 (120-second window), the highest top-1% precision of any vantage:
+
+| Decoys | 20 | 30 | 40 | 60 | 100 | 150 |
+|---|---|---|---|---|---|---|
+| Highest top-1% precision | 32.5% (validator) | 25.2% (observer) | 18.5% (validator) | 13.2% (validator) | 7.8% (credential processor) | 5.3% (first hop, credential) |
+| Decisions above 50% precision, any vantage | 0.058% | 0.053% | 0.008% | 0 | 0 | 0 |
+
+- **This supports a stronger claim than accuracy over random.** At the settled configuration, a compromised component that acts only on its most confident 1% of decisions is still wrong at least 77% of the time (the validator's 18.5% upper bound is 22.6%), and no component is right more often than not on more than 3 of about 40,000 decisions.
+- **Confidence buys the attacker little.** The most confident 1% of a vantage's decisions are at most about twice as accurate as its average decision (0.8 to 2.0 times across vantages at 40 decoys); the AUC of confidence against correctness lies between 0.539 and 0.574 in every vantage and cell at 40 decoys.
+- **The content server's confidence ranks poorly**: its top 1% is less precise than its top 5%, and at R = 50 less precise than its average decision.
+
+# Longer device and relay holds
+
+Plan section 6g. Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold. Device and relay-hop holds are stretched by k (release probability 8.33% / k, cap at tick 30k), on every path (hold150, hold200, hold300) or on the content paths only (content200, content300). R = 1, 15 and 50 at 40 decoys; 200 runs per cell; every cell met the stability rule. Each build is compared with reg120 on the same records. Full tables in `results/tables_hold150.md`, `tables_hold200.md`, `tables_hold300.md`, `tables_content200.md` and `tables_content300.md`.
+
+## Summary
+
+1. **Stretching only the content-path holds removes every component's advantage over the passive observer.** Under content300, no vantage beats the observer in any cell (the largest contribution over the observer is +0.00 points); under content200 the largest is +0.01. Under reg120 the validator leads by 0.61 to 1.09 points.
+2. **It also lowers the multiple over random, beyond the intervals.** The strongest component's multiple of its random rate under content300 is 3.62 [3.39, 3.87], 3.86 [3.67, 4.07] and 4.33 [4.19, 4.47] at R = 1, 15 and 50, against 4.06 [3.90, 4.23], 4.46 [4.32, 4.61] and 4.71 [4.61, 4.80] under reg120. The intervals do not overlap at any R. This is the first change in the experiment that moves the ratio and not only the absolute rate.
+3. **Stretching every path lowers absolute accuracy but raises the validator's multiple.** Under hold300 the observer falls 1.7 to 3.3 points, but the validator stays the strongest component and its multiple of random rises (4.30, 4.85 and 5.27 against 4.06, 4.46 and 4.71).
+4. **The cost is latency.** Mean capture to finalization at R = 1: 684 seconds under reg120, 1,014 under content200, 1,425 under content300, and 911, 1,142 and 1,595 under hold150, hold200 and hold300.
+5. **Precision at coverage improves most under the content-only builds.** At R = 1 the best top-1% precision of any vantage is 15.1% under content200 and 7.8% under content300, against 18.5% under reg120.
+
+## Why the content-only stretch works (exploratory)
+
+The record time follows whichever path finishes later: a content server submits only once its own hold has released and quorum has formed. The diagnostic below counts how often the content server's own hold release, not the quorum push, sets the moment it confirms (R = 15, 40 decoys, 5 runs on run ids from 6,000,000 up; not pre-registered):
+
+| Build | Confirmation set by the content path |
+|---|---|
+| reg120 | 32.0% |
+| hold200 | 40.1% |
+| hold300 | 44.1% |
+| content200 | 70.4% |
+| content300 | 85.6% |
+
+Under reg120 the credential path usually sets the record time, so the components on it (the validator above all) hold events whose timing predicts the record. Stretching every path keeps the credential path in charge, so the validator keeps its lead. Stretching the content paths alone hands the record time to holds that no credential-side component sees, and the content server's own arrival is followed by its own hold and the stretched path's spread. No single component then holds timing that predicts the record better than the observer's view of the device's first-hop sends.
+
+## The strongest single component
+
+Device accuracy and multiple of its own random rate [95% CI], 40 decoys:
+
+| Build | R = 1 | R = 15 | R = 50 | Mean latency, R = 1 |
+|---|---|---|---|---|
+| reg120 | validator 9.61%, ×4.06 [3.90, 4.23] | validator 7.84%, ×4.46 [4.32, 4.61] | validator 5.09%, ×4.71 [4.61, 4.80] | 684 s |
+| hold150 | validator 8.41%, ×4.48 [4.29, 4.68] | validator 6.76%, ×4.84 [4.67, 5.02] | validator 4.67%, ×5.45 [5.31, 5.58] | 911 s |
+| hold200 | validator 7.61%, ×4.51 [4.30, 4.71] | validator 5.92%, ×4.71 [4.50, 4.90] | validator 4.09%, ×5.30 [5.16, 5.45] | 1,142 s |
+| hold300 | validator 6.32%, ×4.30 [4.07, 4.53] | validator 5.31%, ×4.85 [4.64, 5.07] | validator 3.54%, ×5.27 [5.12, 5.43] | 1,595 s |
+| content200 | first hop, credential 6.82%, ×3.85 [3.64, 4.03] | first hop, credential 5.29%, ×4.01 [3.84, 4.18] | observer 3.82%, ×4.71 [4.58, 4.84] | 1,014 s |
+| content300 | observer 5.56%, ×3.62 [3.39, 3.87] | observer 4.41%, ×3.86 [3.67, 4.07] | observer 3.04%, ×4.33 [4.19, 4.47] | 1,425 s |
+
+## The passive observer
+
+Device accuracy, random-pick rate, multiple of random [95% CI]:
+
+| Build | R = 1 | R = 15 | R = 50 |
+|---|---|---|---|
+| reg120 | 8.52%, 2.05%, ×4.14 [3.97, 4.32] | 6.76%, 1.53%, ×4.42 [4.26, 4.59] | 4.48%, 0.94%, ×4.77 [4.65, 4.88] |
+| hold150 | 6.69%, 1.74%, ×3.85 [3.65, 4.05] | 5.52%, 1.29%, ×4.27 [4.08, 4.46] | 3.76%, 0.79%, ×4.73 [4.61, 4.86] |
+| hold200 | 5.98%, 1.59%, ×3.75 [3.52, 3.98] | 4.92%, 1.19%, ×4.15 [3.94, 4.37] | 3.38%, 0.73%, ×4.63 [4.51, 4.75] |
+| hold300 | 5.15%, 1.45%, ×3.55 [3.29, 3.80] | 4.08%, 1.08%, ×3.77 [3.56, 3.99] | 2.82%, 0.66%, ×4.25 [4.11, 4.40] |
+| content200 | 6.81%, 1.77%, ×3.84 [3.63, 4.05] | 5.24%, 1.32%, ×3.97 [3.79, 4.15] | 3.82%, 0.81%, ×4.71 [4.58, 4.84] |
+| content300 | 5.56%, 1.53%, ×3.62 [3.39, 3.87] | 4.41%, 1.14%, ×3.86 [3.67, 4.07] | 3.04%, 0.70%, ×4.33 [4.19, 4.47] |
+
+## Paired effects against reg120
+
+Device level, in points [95% CI]:
+
+| Build | R | Observer | Content server | Validator | Gatekeeper |
+|---|---|---|---|---|---|
+| hold150 | 1 | -1.78 [-2.22, -1.40] | -1.86 [-2.82, -0.88] | -1.13 [-1.63, -0.62] | -1.76 [-2.13, -1.38] |
+| hold150 | 15 | -1.26 [-1.56, -0.97] | -1.57 [-2.23, -0.94] | -1.08 [-1.40, -0.74] | -1.18 [-1.46, -0.89] |
+| hold150 | 50 | -0.72 [-0.86, -0.59] | -1.04 [-1.34, -0.72] | -0.40 [-0.57, -0.24] | -0.67 [-0.80, -0.54] |
+| hold200 | 1 | -2.46 [-2.88, -2.05] | -3.21 [-4.05, -2.35] | -1.92 [-2.38, -1.43] | -2.40 [-2.79, -2.01] |
+| hold200 | 15 | -1.89 [-2.30, -1.48] | -3.50 [-4.13, -2.87] | -1.98 [-2.35, -1.60] | -1.96 [-2.34, -1.60] |
+| hold200 | 50 | -1.12 [-1.26, -0.97] | -1.81 [-2.13, -1.48] | -0.97 [-1.13, -0.82] | -1.10 [-1.24, -0.96] |
+| hold300 | 1 | -3.30 [-3.73, -2.85] | -4.94 [-5.68, -4.13] | -3.20 [-3.67, -2.70] | -3.27 [-3.68, -2.86] |
+| hold300 | 15 | -2.90 [-3.23, -2.54] | -4.39 [-5.11, -3.67] | -2.58 [-2.95, -2.20] | -2.89 [-3.25, -2.56] |
+| hold300 | 50 | -1.69 [-1.86, -1.53] | -2.26 [-2.61, -1.91] | -1.50 [-1.67, -1.33] | -1.68 [-1.85, -1.52] |
+| content200 | 1 | -1.62 [-2.06, -1.17] | -3.00 [-3.85, -2.11] | -3.17 [-3.60, -2.73] | -1.58 [-1.99, -1.16] |
+| content200 | 15 | -1.56 [-1.92, -1.21] | -2.67 [-3.32, -2.04] | -2.71 [-3.06, -2.37] | -1.54 [-1.90, -1.20] |
+| content200 | 50 | -0.64 [-0.80, -0.49] | -1.57 [-1.88, -1.27] | -1.53 [-1.69, -1.37] | -0.62 [-0.77, -0.48] |
+| content300 | 1 | -2.91 [-3.33, -2.49] | -4.44 [-5.23, -3.59] | -4.64 [-5.07, -4.19] | -2.95 [-3.38, -2.51] |
+| content300 | 15 | -2.57 [-2.97, -2.17] | -3.96 [-4.67, -3.27] | -4.19 [-4.56, -3.80] | -2.63 [-3.00, -2.29] |
+| content300 | 50 | -1.45 [-1.61, -1.29] | -2.23 [-2.61, -1.92] | -2.27 [-2.45, -2.11] | -1.43 [-1.60, -1.27] |
+
+## Precision at coverage
+
+Best top-1% precision of any vantage [95% CI], and the most decisions any vantage gets right with more than 50% precision, at R = 1:
+
+| Build | Best top-1% precision | Decisions above 50% precision | AUC of confidence, range over vantages |
+|---|---|---|---|
+| reg120 | 18.5% [15.0, 22.6] (validator) | 3 of 39,962 (validator) | 0.566 to 0.574 |
+| hold150 | 19.8% [16.2, 24.0] (validator) | 17 of 39,901 (validator) | 0.555 to 0.566 |
+| hold200 | 18.1% [14.6, 22.2] (validator) | 7 of 39,790 (validator) | 0.544 to 0.560 |
+| hold300 | 10.2% [7.6, 13.6] (validator) | 0 | 0.523 to 0.552 |
+| content200 | 15.1% [13.4, 16.9] (first hop, credential) | 19 of 39,799 (validator) | 0.545 to 0.567 |
+| content300 | 7.8% [6.4, 9.4] (gatekeeper) | 0 | 0.526 to 0.545 |
+
+## Checks and controls
+
+- **Outcome-shuffle control:** 2, 0, 2, 0 and 4 of 21 stable cells under hold150, hold200, hold300, content200 and content300 have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin (largest 0.518).
+- **Simulation margins:** warm-up and cool-down scale with k; at k = 1 the build reproduces the committed reg120 results exactly.
+- **Rates** stay those of the push build, so longer holds keep more transactions in flight.
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| H1. The observer falls as k rises: reg120 > hold150 > hold200 > hold300 at every R | Confirmed at all three R. |
+| H2. The content server's lead over the observer under hold200 and hold300 is below its reg120 value at every R | Confirmed (-0.40 to +0.08, against +0.53 to +0.93). |
+| H3. Under content200 and content300, the content server's effect against reg120 is below 0 at every R | Confirmed (-4.44 to -1.57). |
+| H4. No prediction for the strongest component's multiple | Reported: it rises under hold150 to hold300 and falls under content200 and content300. |
+
+H1 to H3 follow development runs, as the plan discloses. The plan did not anticipate that the content-only builds would remove every component's lead over the observer.
+
+## Scope
+
+- **Untested middle ground.** Only stretch factors 2 and 3 were tested on the content paths. A smaller content stretch, or stretching the content paths while shortening the credential path, might keep the content path in charge of the record time at less latency. The diagnostic above suggests the property that matters is how often the content path sets the record time.

@@ -122,6 +122,12 @@ def _effect_table(md, effects):
 
 
 BUILD_TEXT = {
+    **{f"c200_cr{k}": f"the 120-second registry window, with the content paths' device and relay-hop holds stretched "
+                      f"2 times and the credential path's shortened to {k / 100:g} times" for k in (75, 50, 25)},
+    **{f"hold{k}": f"the 120-second registry window, with every device and relay-hop hold stretched {k / 100:g} times"
+       for k in (150, 200, 300)},
+    **{f"content{k}": f"the 120-second registry window, with the device and relay-hop holds on both content paths "
+                      f"stretched {k / 100:g} times" for k in (200, 300)},
     **{f"reg{w}": f"gatekeeper departure bundling, match board pushes, and {w}-second registry-level pooled bundling"
        for w in CE.REG_WINDOWS},
     "push": "gatekeeper departure bundling, and match boards pushing new matches to every content server",

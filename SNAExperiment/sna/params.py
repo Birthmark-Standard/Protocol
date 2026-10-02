@@ -82,13 +82,25 @@ class Config:
     bundle_s: float = 0.0              # gatekeeper departure bundling window; 0 = off
     gk_twopoint: bool = False          # gatekeeper hold: two-point shape instead of the relay lottery
     reg_bundle_s: float = 0.0          # registry-level pooled bundling window; 0 = off
+    cred_hold_scale: float = 1.0       # device and relay-hop holds on the credential path: mean and cap x this
+    content_hold_scale: float = 1.0    # device and relay-hop holds on both content paths: mean and cap x this
     background_enabled: bool = True
     nonblending_enabled: bool = True
     bg_clients_per_node: int = BG_CLIENTS_PER_NODE
 
     @property
+    def hold_scale_max(self) -> float:
+        return max(1.0, self.cred_hold_scale, self.content_hold_scale)
+
+    @property
+    def warmup_s(self) -> float:
+        """Warm-up before the scored window; lengthened with the relay holds so traffic in flight
+        reaches steady state first (unchanged at scale 1)."""
+        return WARMUP_S * self.hold_scale_max
+
+    @property
     def horizon_s(self) -> float:
-        return WARMUP_S + self.measure_s + COOLDOWN_S
+        return self.warmup_s + self.measure_s + COOLDOWN_S * self.hold_scale_max
 
     @property
     def real_devices(self) -> int:

@@ -116,7 +116,7 @@ def candidates(run, pools):
     records from an external host to a pool node; an external source that ever sends anything else
     (a handshake, a DNS lookup, a record outside the class) is not a device and is dropped. Each
     source's packets are grouped greedily in time order: a group holds up to three packets within
-    one device hold (310 s) of its first. A group is timed at its members' mean send time.
+    one device hold (310 s at hold scale 1) of its first. A group is timed at its members' mean send time.
     Returns groups sorted by that time, with truth labels (sub = -1 for a mixed group) and, per
     member, the first hop, the arrival and the first hop's forward time."""
     ev, s = run.events, run.subs
@@ -131,7 +131,7 @@ def candidates(run, pools):
     pk, src, t = pk[o], src[o], t[o]
     gid = np.empty(pk.size, np.int64)
     g, first, size = -1, 0.0, 3
-    span = P.TICK_S * (P.MAX_TICKS + 1)
+    span = P.TICK_S * (round(P.MAX_TICKS * run.cfg.hold_scale_max) + 1)   # one device hold, stretched with the holds
     for i in range(pk.size):                         # greedy grouping per source
         if i == 0 or src[i] != src[i - 1] or size >= 3 or t[i] - first > span:
             g += 1
@@ -642,7 +642,7 @@ def _merge(parts, n):
 
 def scored_mask(run, sub):
     t0 = run.subs["t0"][sub]
-    return (t0 >= P.WARMUP_S) & (t0 < P.WARMUP_S + run.cfg.measure_s) & ~run.subs["decoy"][sub]
+    return (t0 >= run.cfg.warmup_s) & (t0 < run.cfg.warmup_s + run.cfg.measure_s) & ~run.subs["decoy"][sub]
 
 
 def compute(run, pools, m: Models, vantages=VANTAGES, run_id=0):

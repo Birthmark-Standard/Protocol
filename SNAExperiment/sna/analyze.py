@@ -179,10 +179,12 @@ def metrics(records, v, spec, rng):
     out["auc_adj_lo"] = a["auc"] - Z_ADJ * a["se"]
     out["signal_auc"] = bool(enough and out["auc_adj_lo"] > 0.5 + AUC_MARGIN)
     out["signal"] = out["dev_signal_random"] or out["signal_auc"]
-    for q, name in ((0.01, "p_at_1"), (0.05, "p_at_5")):
+    for q, name in ((0.01, "p_at_1"), (0.05, "p_at_5"), (0.10, "p_at_10"), (0.25, "p_at_25")):
         p, lo, hi = precision_at(conf, c, q)
         out[name], out[name + "_lo"], out[name + "_hi"] = p, lo, hi
     out["coverage_p50"] = max_coverage_p50(conf, c)
+    out["count_p50"] = int(round(out["coverage_p50"] * conf.size))
+    out["decisions"] = int(conf.size)
     perm = c.copy()
     for rid in np.unique(t["run"]):
         m = np.nonzero(t["run"] == rid)[0]
