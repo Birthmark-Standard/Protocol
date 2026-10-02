@@ -128,3 +128,15 @@ def test_hold_scale_stretches_only_device_and_relay_holds():
     s = S.simulate(cfg, 21, POOLS).subs
     assert cfg.warmup_s == 2 * P.WARMUP_S
     assert np.isfinite(s["reg_f"][s["ok_f"]]).all()
+
+
+def test_post_match_lottery_starts_at_confirmation():
+    """The post-match lottery starts when the server confirms quorum, never before, and draws on its
+    own stream: everything up to confirmation is unchanged."""
+    a = S.simulate(SMALL.with_(bundle_s=P.BUNDLE_S), 22, POOLS).subs
+    b = S.simulate(SMALL.with_(bundle_s=P.BUNDLE_S, post_match=True), 22, POOLS).subs
+    for k in ("t0", "posts", "det_f", "det_i", "hold_f"):
+        assert np.array_equal(a[k], b[k], equal_nan=True), k
+    ok = b["ok_f"]
+    wait = b["ready_f"][ok] - b["det_f"][ok]
+    assert (wait >= 0).all() and (wait <= P.TICK_S * (P.MAX_TICKS + 1)).all()

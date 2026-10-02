@@ -81,9 +81,9 @@ class World:
     def __init__(self, cfg: P.Config, seed: int, pools: Pools):
         self.cfg, self.pools = cfg, pools
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(9)
+        streams = ss.spawn(10)
         (self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle, rng_push,
-         self.rng_gkhold, rng_reg) = (np.random.default_rng(s) for s in streams)
+         self.rng_gkhold, rng_reg, self.rng_post) = (np.random.default_rng(s) for s in streams)
         # each gatekeeper's departure-bundle grid phase, on its own stream, so bundling on or off
         # leaves every other draw unchanged
         self.bundle_phase = rng_bundle.uniform(0, P.BUNDLE_S, P.N_NODES)
@@ -136,12 +136,13 @@ def _roles(r, S, gk_set):
     return C, F, I, A, B, D, E, G, H
 
 
-def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, scale=1.0):
+def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, scale=1.0, device_scale=1.0):
     """Device (or decoy source) -> addressed hop -> random hop -> destination. scale stretches the
-    device's hold and both relay hops' holds on this path."""
+    device's hold and both relay hops' holds on this path; device_scale stretches the device's hold
+    further (the device knows which channel it is sending on; the relay hops do not)."""
     cfg, n = w.cfg, t0.shape[0]
     on = cfg.lottery_enabled
-    dep = LT.device_release(r, t0, on, scale) + _proc(r, n)
+    dep = LT.device_release(r, t0, on, scale * device_scale) + _proc(r, n)
     arr = dep + lat_src[np.arange(n), first] + _jit(r, n)
     ids = [w.ev.add(dep, arr, EXT, first, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, legs[0], sub,
                     ext_src=src_id)]
@@ -165,8 +166,8 @@ def _proc(r, n):
 
 
 def _content_server(w, r, arr, node):
-    """Hold on the node clock. Returns the hold release time."""
-    return LT.release_time(r, arr, w.phase[node], w.cfg.lottery_enabled)
+    """Hold on the node clock (stretched by cs_hold_scale). Returns the hold release time."""
+    return LT.release_time(r, arr, w.phase[node], w.cfg.lottery_enabled, w.cfg.cs_hold_scale)
 
 
 def _pushed(w, posts, node):
@@ -198,8 +199,10 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     on = cfg.lottery_enabled
 
     (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, cfg.cred_hold_scale)
-    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.content_hold_scale)
-    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, cfg.content_hold_scale)
+    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.content_hold_scale,
+                                  cfg.content_device_scale)
+    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, cfg.content_hold_scale,
+                                  cfg.content_device_scale)
 
     # C -> V -> C: CV-1 on receipt, V's reply after processing (APPROVED with sigma_V and the
     # plaintext real/dummy indicator; the reply is padded in the relay class either way)
@@ -246,21 +249,29 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         det = np.maximum(hold, _pushed(w, posts, node))
         ok = np.isfinite(quorum) & (det - arr <= P.QUORUM_TIMEOUT_S)
         det = np.where(ok, det, np.nan)
-        dep = det
+        ready = det
+        if cfg.post_match and on:
+            # post-match lottery: an independent relay-lottery draw on a fresh random phase, timed
+            # from the moment this server confirms quorum (the later of its own hold and the
+            # quorum push); drawn on its own stream so every other draw is unchanged
+            ready = LT.device_release(w.rng_post, np.where(ok, det, 0.0), on)
+            ready = np.where(ok, ready, np.nan)
+        dep = ready
         if cfg.reg_bundle_s > 0:
             # registry-level pooled bundling: a confirmed submission waits for the next boundary of
             # one schedule shared by every content server, and departs with every other
             # submission confirmed since the previous boundary, from every server
             ph = w.reg_phase
-            dep = ph + cfg.reg_bundle_s * np.ceil((det - ph) / cfg.reg_bundle_s)
+            dep = ph + cfg.reg_bundle_s * np.ceil((ready - ph) / cfg.reg_bundle_s)
         post = dep + _proc(r, S)
-        out[name] = (hold, det, post, ok)
+        out[name] = (hold, det, post, ok, ready)
 
     return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh,
                 arr_c=arr_c, arr_f=arr_f, arr_i=arr_i, cv2_s=cv2_s, cv2_a=cv2_a,
                 gk_send=gk_send, gk_arr=gk_arr, posts=posts, gk_release=gk_rel, quorum=quorum,
                 hold_f=out["f"][0], det_f=out["f"][1], reg_f=out["f"][2], ok_f=out["f"][3],
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
+                ready_f=out["f"][4], ready_i=out["i"][4],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk)
 
 

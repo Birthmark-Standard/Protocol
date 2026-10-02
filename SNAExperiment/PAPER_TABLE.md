@@ -107,3 +107,16 @@ R = 1, 40 decoys, 120-second registry window. Strongest single component, device
 | content paths ×3 | none (observer) | 5.56% | ×3.62 [3.39, 3.87] | +0.00 points | 1,425 s |
 
 Stretching the content-path holds alone hands the record time to timing no credential-side component sees: no compromised component beats a passive observer, and the multiple over random falls outside its interval at every volume tested.
+
+## Content paths stretched, credential path shortened
+
+R = 1, 40 decoys, 120-second registry window:
+
+| Holds | Strongest component | Device named | Multiple of random [95% CI] | Its lead over the observer | Best top-1% precision | Mean latency |
+|---|---|---|---|---|---|---|
+| unchanged | validator | 9.61% | ×4.06 [3.90, 4.24] | +1.09 points | 18.5% | 684 s |
+| content ×2 | first hop, credential | 6.82% | ×3.85 [3.64, 4.03] | +0.01 points | 15.1% | 1,014 s |
+| content ×2, credential ×0.5 | first hop, credential | 6.64% | ×3.78 [3.59, 3.97] | +0.01 points | 13.3% | 997 s |
+| content ×2, credential ×0.25 | first hop, credential | 6.44% | ×3.68 [3.47, 3.87] | +0.02 points | 12.3% | 995 s |
+
+Shortening the credential path while the content paths are stretched keeps every component level with a passive observer, lowers accuracy slightly further, and costs no latency.
