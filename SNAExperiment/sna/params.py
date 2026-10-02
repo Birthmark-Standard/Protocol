@@ -84,13 +84,17 @@ class Config:
     reg_bundle_s: float = 0.0          # registry-level pooled bundling window; 0 = off
     cred_hold_scale: float = 1.0       # device and relay-hop holds on the credential path: mean and cap x this
     content_hold_scale: float = 1.0    # device and relay-hop holds on both content paths: mean and cap x this
+    content_device_scale: float = 1.0  # the device's hold on its two content channels only: mean and cap x this
+    cs_hold_scale: float = 1.0         # the content servers' own pre-match node-clock hold: mean and cap x this
+    post_match: bool = False           # content servers' post-match lottery after quorum is confirmed
     background_enabled: bool = True
     nonblending_enabled: bool = True
     bg_clients_per_node: int = BG_CLIENTS_PER_NODE
 
     @property
     def hold_scale_max(self) -> float:
-        return max(1.0, self.cred_hold_scale, self.content_hold_scale)
+        return max(1.0, self.cred_hold_scale, self.content_hold_scale,
+                   self.content_hold_scale * self.content_device_scale, self.cs_hold_scale)
 
     @property
     def warmup_s(self) -> float:

@@ -493,6 +493,35 @@ A cell passes when every vantage passes. 50% is the point at which a guess is mo
 
 **Disclosure.** The precision-at-coverage values of the settled configuration were already in RESULTS.md when this criterion was chosen (the highest top-1% precision at 40 decoys is 18.5% [15.0, 22.6]). The criterion was chosen as the natural "more likely right than wrong" line, not tuned to those values, but it was not chosen blind.
 
+## 6j. Content-side holds at stages that know their role, and the post-match lottery
+
+Written after section 6i and before the sweep below.
+
+**Why the content-path result of section 6g has to be re-run.** Sections 6g and 6h stretched the relay holds at D, E, G and H on the content paths. The specification's path-blindness rule makes that impossible: an Addressed or Random hop cannot tell whether it is on a content path. A content-specific hold can sit only at a stage that knows its role. Two such stages exist on the content side: the device, which knows which channel it is sending on, and the content servers' own pre-match hold. Sections 6g and 6h are kept as recorded, but they test a configuration the specification does not allow.
+
+**Builds.** Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold.
+- **dev200, dev300.** The device's hold on its two content channels and the content servers' own pre-match hold are stretched by 2 or 3, using the stretching rule of section 6g (release probability 8.33% / k, forced release at tick 30k). The relay hops D, E, G and H, the credential path and every other hold are unchanged. Compared with reg120 and with the section 6g build stretched by the same factor (content200 or content300).
+- **pm120.** The post-match lottery of the specification: once a content server confirms quorum (the later of its own pre-match hold and the quorum push), it draws an independent delay from the relay lottery (10-second ticks, 8.33% per tick, 300-second cap) on a fresh random phase, then waits for the registry bundle. F and I draw independently. The draws come from a separate random stream, so every other draw is unchanged. Compared with reg120.
+
+**Pair gaps** (`python -m sna pairs`, simulation only, 20 runs per cell on run ids from 8,000,000 up). For the push build and the 60-, 120-, 240- and 480-second windows, each without and with the post-match lottery, at R = 1, 15 and 50:
+- the share of real records whose two submissions are within 5 seconds of each other at the point of submission, before any registry wait;
+- the same share as the submissions leave, after the registry wait;
+- of the pairs more than 5 seconds apart at the point of submission, the share that the registry window puts back in one bundle.
+
+Real records' timing does not depend on the decoy stream (the two streams are drawn separately), so these shares are measured at 40 decoys only.
+
+**Cells and runs.** reg120 and pm120 at R = 1, 15 and 50 × 20, 40 and 60 decoys; content200, content300, dev200 and dev300 at R = 1, 15 and 50 with 40 decoys. 200 runs per cell, run ids 0 to 199, recorded here before the first run. The whole section runs with one command, `python -m sna sequence 6j`, into `results/6j/`. The reg120, content200 and content300 runs there repeat committed cells, so every comparison can be made in one directory.
+
+**Development runs**, made before this section was written: 8 runs per cell. Under dev200 and dev300 the validator's lead over the observer was at or below 0 in every cell, and the content server's lead lay between -0.26 and +0.55 points. Under pm120 the observer's effect against reg120 lay between -0.70 and +0.20 points; the content server's lead over the observer lay between +0.18 and +3.56 points. A 2-run check of the sequence measured, at the point of submission, 51% of pairs within 5 seconds under reg120 and 4% under pm120, and 22% to 30% of the separated pairs put back in one bundle by the 120-second window.
+
+**Predictions:**
+- **J1.** Under pm120, fewer than 10% of real records' submission pairs are within 5 seconds of each other at the point of submission, at every R, against more than 40% under reg120.
+- **J2.** Under pm120, between 15% and 40% of the pairs separated at the point of submission are put back in one 120-second bundle, at every R.
+- **J3.** Under dev200 and dev300, the validator's lead over the observer is at most +0.25 points at every R.
+- **J4.** Under dev200 and dev300, no component leads the observer by more than 1 point at every R.
+- **J5.** Under pm120, the observer's device-level effect against reg120 lies within ±1 point in every cell.
+- No prediction is made for the content server's lead under pm120; the development runs were too noisy to support one.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -502,7 +531,7 @@ A cell passes when every vantage passes. 50% is the point at which a guess is mo
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6h record their own cells and run counts.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6j record their own cells and run counts.
 
 ## 9. Amendment record
 
@@ -523,3 +552,5 @@ A seventh amendment adds longer device and relay holds (section 6g), written bef
 An eighth amendment adds the content-stretched, credential-shortened builds and the one-command sequence (section 6h), written before any run of those builds.
 
 A ninth amendment fixes the claim criterion (section 6i), written before the comparison against it.
+
+A tenth amendment re-runs the content-side holds at stages that know their role and adds the post-match lottery (section 6j), written before any run of those builds.

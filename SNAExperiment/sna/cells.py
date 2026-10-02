@@ -53,18 +53,31 @@ BUILDS.update({f"content{int(k * 100)}": dict(target=f"link_content{int(k * 100)
 CRED_SHORT = (0.75, 0.5, 0.25)                   # credential-path hold factors with content x2 (section 6h)
 BUILDS.update({f"c200_cr{int(k * 100)}": dict(target=f"link_c200_cr{int(k * 100)}", reg_bundle_s=P.REG_BUNDLE_S,
                                              content_hold_scale=2.0, cred_hold_scale=k) for k in CRED_SHORT})
+# section 6j: content-side stretching at stages that know their role (the device's content channels
+# and the content servers' own hold), and the post-match lottery
+BUILDS.update({f"dev{int(k * 100)}": dict(target=f"link_dev{int(k * 100)}", reg_bundle_s=P.REG_BUNDLE_S,
+                                         content_device_scale=k, cs_hold_scale=k) for k in (2.0, 3.0)})
+BUILDS["pm120"] = dict(target="link_pm120", reg_bundle_s=P.REG_BUNDLE_S, post_match=True)
+BUILDS["pm_push"] = dict(target="link_pm_push", post_match=True)
+BUILDS.update({f"pm{w}": dict(target=f"link_pm{w}", reg_bundle_s=float(w), post_match=True) for w in (60, 240, 480)})
 DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
 PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
                 **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120"),
                 **{b: ("reg120",) for b in ("hold150", "hold200", "hold300", "content200", "content300")},
-                **{f"c200_cr{int(k * 100)}": ("reg120", "content200") for k in CRED_SHORT}}
+                **{f"c200_cr{int(k * 100)}": ("reg120", "content200") for k in CRED_SHORT},
+                "dev200": ("reg120", "content200"), "dev300": ("reg120", "content300"), "pm120": ("reg120",)}
 
 # Sequences: every step of one plan section, run one after another by `python -m sna sequence <name>`.
 SEQUENCES = {
-    "6h": dict(out="results/6h", cells="settled", runs=200,
-               builds=("reg120", "content200", "c200_cr75", "c200_cr50", "c200_cr25")),
-    "smoke": dict(out="results/quick/sequence", cells="settled", runs=2, latency_runs=2,
-                  builds=("reg120", "c200_cr50")),                  # checks the sequence itself; never reported
+    "6h": dict(out="results/6h", runs=200,
+               steps=[(b, "settled") for b in ("reg120", "content200", "c200_cr75", "c200_cr50", "c200_cr25")]),
+    "6j": dict(out="results/6j", runs=200,
+               steps=[("reg120", "bundle"), ("pm120", "bundle"), ("content200", "settled"), ("content300", "settled"),
+                      ("dev200", "settled"), ("dev300", "settled")],
+               pairs=dict(builds=("push", "pm_push", "reg60", "pm60", "reg120", "pm120", "reg240", "pm240",
+                                  "reg480", "pm480"))),
+    "smoke": dict(out="results/quick/sequence", runs=2, latency_runs=2,     # checks the sequence itself; never reported
+                  steps=[("reg120", "settled"), ("pm120", "settled")], pairs=dict(builds=("reg120", "pm120"), runs=2)),
 }
 
 
@@ -515,4 +528,66 @@ def gatekeeper_occupancy(out, runs=50, R=1, decoys=(20, 30, 40, 50, 60, 100, 150
         print("    " + "  ".join(f"W={w}: {row['windows'][str(w)]['mean']:.1f}/{100 * row['windows'][str(w)]['p_lt2']:.2f}%"
                                  for w in windows), flush=True)
     (out / "gatekeeper_occupancy.json").write_text(json.dumps(dict(runs=runs, rates_from_D=D, cells=rows), indent=1))
+    return rows
+
+
+
+# --------------------------------------------------------------------------- F and I submitting together
+PAIRS_SEED0 = 8_000_000
+
+
+def _pairs_one(args):
+    build, R, d, run_id, D = args
+    spec = dict(R=float(R), decoys=float(d), bundle=True, control=False, build=build)
+    cfg = config_of(spec, D)
+    run = S.simulate(cfg, traffic_seed(R, PAIRS_SEED0 + run_id), Pools())
+    s = run.subs
+    m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s) & ~s["decoy"] & s["ok_f"] & s["ok_i"]
+    sub_gap = np.abs(s["reg_f"][m] - s["reg_i"][m])            # as the two submissions leave
+    ready_gap = np.abs(s["ready_f"][m] - s["ready_i"][m])      # at the point of submission, before any registry wait
+    waited = (s["det_f"][m] > s["hold_f"][m] + 1e-9) & (s["det_i"][m] > s["hold_i"][m] + 1e-9)
+    W = cfg.reg_bundle_s
+    if W > 0:
+        bf = np.ceil((s["ready_f"][m] - run.reg_phase) / W)
+        bi = np.ceil((s["ready_i"][m] - run.reg_phase) / W)
+        same = bf == bi
+    else:
+        same = np.zeros(m.sum(), bool)
+    return build, R, d, sub_gap, ready_gap, waited, same
+
+
+def pair_gaps(out, builds, runs=20, cells=None, workers="auto"):
+    """How often a record's two registry submissions leave together. For every build and cell: the
+    share of real records whose submissions leave within 5 s of each other; the same at the point
+    of submission, before any registry wait; and, of the pairs separated by more than 5 s at that
+    point, the share that a registry window puts back in one bundle. Run ids from 8,000,000 up,
+    never used by a sweep. Written to <out>/pair_gaps.json."""
+    import multiprocessing as mp
+    out = Path(out)
+    D = calibrate(out)["D"]
+    # real records' timing does not depend on the decoy stream, so one decoy level suffices
+    cells = cells or [(R, 40) for R in REAL_R]
+    tasks = [(b, R, d, k, D) for b in builds for R, d in cells for k in range(runs)]
+    with mp.Pool(RN.resolve_workers(workers)) as pool:
+        res = pool.map(_pairs_one, tasks, chunksize=1)
+    rows = {}
+    for b in builds:
+        for R, d in cells:
+            x = [r for r in res if r[0] == b and r[1] == R and r[2] == d]
+            sg, rg, wt, sm = (np.concatenate([r[i] for r in x]) for i in (3, 4, 5, 6))
+            sep = rg > 5.0
+            row = dict(build=b, R=R, decoys=d, records=int(sg.size), runs=runs,
+                       within5_at_departure=float((sg <= 5.0).mean()),
+                       within5_at_submission=float((rg <= 5.0).mean()),
+                       quorum_outlasted_both_holds=float(wt.mean()),
+                       within5_at_submission_when_outlasted=float((rg[wt] <= 5.0).mean()) if wt.any() else float("nan"),
+                       separated=int(sep.sum()),
+                       separated_same_bundle=float(sm[sep].mean()) if sep.any() and BUILDS[b].get("reg_bundle_s") else float("nan"),
+                       median_gap_at_submission=float(np.median(rg)))
+            rows[f"{b}.R{R}.D{d}"] = row
+            sb = row["separated_same_bundle"]
+            print(f"{b:8s} R={R:2d} decoys={d:2d}: within 5 s at submission {100 * row['within5_at_submission']:5.1f}%, "
+                  f"as they leave {100 * row['within5_at_departure']:5.1f}%; separated pairs put back in one bundle "
+                  f"{'n/a' if np.isnan(sb) else f'{100 * sb:.1f}%'} (n = {row['records']})", flush=True)
+    (out / "pair_gaps.json").write_text(json.dumps(dict(runs=runs, cells=rows), indent=1))
     return rows
