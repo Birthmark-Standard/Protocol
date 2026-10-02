@@ -1087,7 +1087,7 @@ Device accuracy and multiple of its own random rate [95% CI], 40 decoys:
 | content ×2, credential ×0.5 | first hop, credential 6.64%, ×3.78 [3.59, 3.97] | credential processor 5.17%, ×3.95 [3.76, 4.14] | observer 3.68%, ×4.58 [4.47, 4.70] | 996.9 s |
 | content ×2, credential ×0.25 | first hop, credential 6.44%, ×3.68 [3.47, 3.87] | observer 5.08%, ×3.89 [3.71, 4.07] | credential processor 3.61%, ×4.50 [4.39, 4.62] | 995.1 s |
 
-Where the strongest component is not the observer, it leads the observer by at most 0.02 points. Under content ×2 with credential ×0.25, the strongest component's interval lies wholly below reg120's at all three volumes.
+Where the strongest component is not the observer, it leads the observer by at most 0.04 points (content ×2 alone, R = 15) and by at most 0.02 points in the three new builds. Under content ×2 with credential ×0.25, the strongest component's interval lies wholly below reg120's at R = 1 and 15; at R = 50 the two intervals touch (4.62 against 4.61).
 
 ## Paired effects against content ×2 alone
 
