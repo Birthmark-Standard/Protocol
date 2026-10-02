@@ -1,0 +1,101 @@
+{
+ "R1_D30_B": {
+  "key": "R1_D30_B",
+  "R": 1.0,
+  "T": 31.0,
+  "decoys": 30.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R1_D100_B": {
+  "key": "R1_D100_B",
+  "R": 1.0,
+  "T": 101.0,
+  "decoys": 100.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R1_D150_B": {
+  "key": "R1_D150_B",
+  "R": 1.0,
+  "T": 151.0,
+  "decoys": 150.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R15_D30_B": {
+  "key": "R15_D30_B",
+  "R": 15.0,
+  "T": 45.0,
+  "decoys": 30.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R15_D100_B": {
+  "key": "R15_D100_B",
+  "R": 15.0,
+  "T": 115.0,
+  "decoys": 100.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R15_D150_B": {
+  "key": "R15_D150_B",
+  "R": 15.0,
+  "T": 165.0,
+  "decoys": 150.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D30_B": {
+  "key": "R50_D30_B",
+  "R": 50.0,
+  "T": 80.0,
+  "decoys": 30.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D100_B": {
+  "key": "R50_D100_B",
+  "R": 50.0,
+  "T": 150.0,
+  "decoys": 100.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D150_B": {
+  "key": "R50_D150_B",
+  "R": 50.0,
+  "T": 200.0,
+  "decoys": 150.0,
+  "bundle": true,
+  "control": false,
+  "build": "reg480",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "runs": 200,
+ "build": "reg120",
+ "cells": {
+  "R1_D30_B": {
+   "R": 1.0,
+   "decoys": 30.0,
+   "window_s": 120.0,
+   "bundles": 208317,
+   "mean_submissions": 11.903618043654623,
+   "mean_transactions": 8.00144971365755,
+   "p_lt2_submissions": 0.0017233351094725826,
+   "p_lt2_transactions": 0.0030050355947906318,
+   "p_empty": 0.0002736214519218307
+  },
+  "R1_D100_B": {
+   "R": 1.0,
+   "decoys": 100.0,
+   "window_s": 120.0,
+   "bundles": 208317,
+   "mean_submissions": 38.763600666292234,
+   "mean_transactions": 26.050087126830743,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R1_D150_B": {
+   "R": 1.0,
+   "decoys": 150.0,
+   "window_s": 120.0,
+   "bundles": 208317,
+   "mean_submissions": 57.95069053413788,
+   "mean_transactions": 38.95448283145399,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R15_D30_B": {
+   "R": 15.0,
+   "decoys": 30.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 17.39943820224719,
+   "mean_transactions": 11.68314606741573,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.00011235955056179776,
+   "p_empty": 0.0
+  },
+  "R15_D100_B": {
+   "R": 15.0,
+   "decoys": 100.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 44.227134831460674,
+   "mean_transactions": 29.745337078651687,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R15_D150_B": {
+   "R": 15.0,
+   "decoys": 150.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 63.4385393258427,
+   "mean_transactions": 42.60831460674157,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D30_B": {
+   "R": 50.0,
+   "decoys": 30.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 30.601179775280897,
+   "mean_transactions": 20.54943820224719,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D100_B": {
+   "R": 50.0,
+   "decoys": 100.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 57.38308988764045,
+   "mean_transactions": 38.53314606741573,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  },
+  "R50_D150_B": {
+   "R": 50.0,
+   "decoys": 150.0,
+   "window_s": 120.0,
+   "bundles": 17800,
+   "mean_submissions": 76.55966292134832,
+   "mean_transactions": 51.373820224719104,
+   "p_lt2_submissions": 0.0,
+   "p_lt2_transactions": 0.0,
+   "p_empty": 0.0
+  }
+ }
+}
