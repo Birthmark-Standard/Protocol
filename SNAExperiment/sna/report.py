@@ -125,6 +125,8 @@ BUILD_TEXT = {
     "r150": "the 120-second registry window, with every relay hop's hold stretched 1.5 times on every path",
     "r200": "the 120-second registry window, with every relay hop's hold stretched 2 times on every path",
     "rmix": "the 120-second registry window, with every relay hop's hold drawn from a fixed-mean short/long mixture",
+    "dev200_r150": "the 120-second registry window, with the device's content-channel hold and the content servers' own "
+                   "hold stretched 2 times and every relay hop's hold stretched 1.5 times on every path",
     **{f"{v}_s": f"the {v} relay hold and a static content-server hold" for v in ("r150", "r200", "rmix")},
     **{f"{v}_sp": f"the {v} relay hold, a static content-server hold, and the post-match lottery in the residual case"
        for v in ("r150", "r200", "rmix")},
