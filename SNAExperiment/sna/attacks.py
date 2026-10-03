@@ -131,7 +131,10 @@ def candidates(run, pools):
     pk, src, t = pk[o], src[o], t[o]
     gid = np.empty(pk.size, np.int64)
     g, first, size = -1, 0.0, 3
-    span = P.TICK_S * (round(P.MAX_TICKS * run.cfg.hold_scale_max) + 1)   # one device hold, stretched with the holds
+    if run.cfg.timing == "run10":                 # one device hold: cap 3x the longest channel mean
+        span = 3.0 * max(run.cfg.dev_cred_mean, run.cfg.dev_content_mean) + P.TICK_S
+    else:
+        span = P.TICK_S * (round(P.MAX_TICKS * run.cfg.hold_scale_max) + 1)   # one device hold, stretched with the holds
     for i in range(pk.size):                         # greedy grouping per source
         if i == 0 or src[i] != src[i - 1] or size >= 3 or t[i] - first > span:
             g += 1

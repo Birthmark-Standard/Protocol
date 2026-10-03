@@ -90,7 +90,7 @@ py -m sna analyze
 | `run` | Runs the sweep. It is resumable: an interrupted run loses at most the runs in flight, and rerunning the same command continues it. Results are identical for any `--workers` value. |
 | `analyze` | Writes `results/summary.json`, `summary.csv`, `tables.md` and `figures/`. |
 | `volume` | Prints L against captures per day and devices. |
-| `sequence` | Runs every step of one plan section in order: each build's runs, each build's analysis, then latency. `python -m sna sequence 6j` runs section 6j into `results/6j/`. Resumable. |
+| `sequence` | Runs every step of one plan section in order: each build's runs, each build's analysis, then latency. `python -m sna sequence run10` runs Run10, the experiment the paper reports, into `results/run10/` and writes `results/run10/RUN10_TABLES.md`. Resumable. |
 | `pairs` | Writes how often a record's two registry submissions leave together, for one build, to `results/pair_gaps.json`. |
 | `latency` | Writes the capture-to-finalization time under each build, by stage, to `results/latency.json`. |
 | `bundles` | Writes registry bundle sizes over the sweep's runs to `results/registry_bundles_<build>.json`. |

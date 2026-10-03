@@ -81,9 +81,12 @@ class World:
     def __init__(self, cfg: P.Config, seed: int, pools: Pools):
         self.cfg, self.pools = cfg, pools
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(11)
+        streams = ss.spawn(13)
         (self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle, rng_push,
-         self.rng_gkhold, rng_reg, self.rng_post, self.rng_relay) = (np.random.default_rng(s) for s in streams)
+         self.rng_gkhold, rng_reg, self.rng_post, self.rng_relay, self.rng_incl, rng_v) = \
+            (np.random.default_rng(s) for s in streams)
+        # Run10: the validator's hold clock phase, on its own stream
+        self.v_phase = float(rng_v.uniform(0, P.TICK_S))
         # each gatekeeper's departure-bundle grid phase, on its own stream, so bundling on or off
         # leaves every other draw unchanged
         self.bundle_phase = rng_bundle.uniform(0, P.BUNDLE_S, P.N_NODES)
@@ -142,7 +145,11 @@ def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, scale=1.0,
     further (the device knows which channel it is sending on; the relay hops do not)."""
     cfg, n = w.cfg, t0.shape[0]
     on = cfg.lottery_enabled
-    dep = LT.device_release(r, t0, on, scale * device_scale) + _proc(r, n)
+    if cfg.timing == "run10":
+        # scale carries the device's own mean for this channel under Run10
+        dep = LT.hold(r, t0, None, on, scale) + _proc(r, n)
+    else:
+        dep = LT.device_release(r, t0, on, scale * device_scale) + _proc(r, n)
     arr = dep + lat_src[np.arange(n), first] + _jit(r, n)
     ids = [w.ev.add(dep, arr, EXT, first, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, legs[0], sub,
                     ext_src=src_id)]
@@ -162,6 +169,8 @@ def _relay_hold(w, r, arr, node, on, scale):
     path. relay_mix draws each hold from a short lottery or, with probability RELAY_MIX_P, a long one;
     the long draws and the choice come from their own stream, so every other draw is unchanged."""
     cfg = w.cfg
+    if cfg.timing == "run10":
+        return LT.hold(r, arr, w.phase[node], on, cfg.relay_mean)
     k = scale * cfg.relay_scale
     if not cfg.relay_mix:
         return LT.release_time(r, arr, w.phase[node], on, k)
@@ -212,18 +221,24 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     C, F, I, A, B, D, E, G, Hh = _roles(r, S, w.gk_set)
     on = cfg.lottery_enabled
 
-    (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, cfg.cred_hold_scale)
-    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.content_hold_scale,
+    r10 = cfg.timing == "run10"
+    sc_cred = cfg.dev_cred_mean if r10 else cfg.cred_hold_scale
+    sc_cont = cfg.dev_content_mean if r10 else cfg.content_hold_scale
+    (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, sc_cred)
+    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, sc_cont,
                                   cfg.content_device_scale)
-    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, cfg.content_hold_scale,
+    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, sc_cont,
                                   cfg.content_device_scale)
 
     # C -> V -> C: CV-1 on receipt, V's reply after processing (APPROVED with sigma_V and the
     # plaintext real/dummy indicator; the reply is padded in the relay class either way)
-    cv1_s = arr_c + _proc(r, S)
+    cv1_s = (LT.hold(r, arr_c, w.phase[C], on, cfg.c_hold_mean) if r10 else arr_c) + _proc(r, S)
     cv1_a = cv1_s + w.lat_int[C, VAL] + _jit(r, S)
     ev_cv1 = w.ev.add(cv1_s, cv1_a, C, VAL, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV1, sub)
     cv2_s = cv1_a + r.uniform(*P.VALIDATOR_PROC_MS, S) / 1000
+    if r10:
+        # Run10: the validator holds on its own clock before replying
+        cv2_s = LT.hold(r, cv2_s, w.v_phase, on, cfg.v_hold_mean)
     cv2_a = cv2_s + w.lat_int[VAL, C] + _jit(r, S)
     ev_cv2 = w.ev.add(cv2_s, cv2_a, VAL, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
 
@@ -234,13 +249,15 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     ev_gk = np.empty((S, 3), np.int64)
     for j in range(3):
         g = int(w.gk_set[j])
-        rel = LT.release_time(r, cv2_a, w.phase[C], on) + _proc(r, S)
+        rel = (LT.hold(r, cv2_a, w.phase[C], on, cfg.fanout_mean) if r10
+               else LT.release_time(r, cv2_a, w.phase[C], on)) + _proc(r, S)
         arr = rel + w.lat_int[C, g] + _jit(r, S)
         ev_gk[:, j] = w.ev.add(rel, arr, C, g, w.size(r, "GK", S), P.RT_APPDATA, K_BIRTHMARK, GK1 + j, sub)
         gk_send[:, j], gk_arr[:, j] = rel, arr
         # verify sigma_V and sigma_C, hold on the gatekeeper's own hold clock, post
         chk = arr + r.uniform(*P.GATEKEEPER_PROC_MS, S) / 1000
-        rel_gk = LT.release_time(r, chk, w.gk_phase[g], on)
+        rel_gk = (LT.hold(r, chk, w.gk_phase[g], on, cfg.gk_mean) if r10
+                  else LT.release_time(r, chk, w.gk_phase[g], on))
         if cfg.gk_twopoint and on:
             # two-point hold: release at once, or hold the full cap. Drawn on its own stream (the
             # lottery draw above is still consumed), so every other draw is unchanged
@@ -248,10 +265,17 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
             rel_gk = chk + np.where(cap, P.GK_CAP_S, 0.0)
         gk_rel[:, j] = rel_gk
         if cfg.bundle_s > 0:
-            # departure bundling: a selected posting waits for the next boundary of this
-            # gatekeeper's own grid and departs with every posting selected since the last one
             ph = w.bundle_phase[g]
-            rel_gk = ph + cfg.bundle_s * np.ceil((rel_gk - ph) / cfg.bundle_s)
+            if r10 and cfg.gk_inclusion:
+                # Run10 departure bundling: at each boundary of this gatekeeper's grid the ready
+                # posting draws for a place in that boundary's bundle; boarding forced at the 12th.
+                # The draws come from their own stream.
+                incl = LT.inclusion_departure(w.rng_incl, rel_gk, ph, cfg.bundle_s, P.INCLUSION_P, P.INCLUSION_MAX)
+                rel_gk = incl if on else rel_gk
+            else:
+                # departure bundling: a selected posting waits for the next boundary of this
+                # gatekeeper's own grid and departs with every posting selected since the last one
+                rel_gk = ph + cfg.bundle_s * np.ceil((rel_gk - ph) / cfg.bundle_s)
         posts[:, j] = rel_gk + _proc(r, S)
     quorum = np.sort(posts, axis=1)[:, 1]          # second of three boards
 
@@ -259,7 +283,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     # pushes have shown quorum, whichever is later; drop after 30 minutes without quorum
     out = {}
     for name, arr, node in (("f", arr_f, F), ("i", arr_i, I)):
-        hold = _content_server(w, r, arr, node)
+        hold = LT.hold(r, arr, w.phase[node], on, cfg.cs_mean) if r10 else _content_server(w, r, arr, node)
         if cfg.cs_static_s > 0 and on:
             # static pre-match hold: a fixed, public wait after the content arrives (the lottery draw
             # above is still consumed, so every other draw is unchanged)
@@ -273,7 +297,8 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
             # post-match lottery: an independent relay-lottery draw on a fresh random phase, timed
             # from the moment this server confirms quorum (the later of its own hold and the
             # quorum push); drawn on its own stream so every other draw is unchanged
-            ready = LT.device_release(w.rng_post, np.where(ok, det, 0.0), on)
+            ready = (LT.hold(w.rng_post, np.where(ok, det, 0.0), None, on, cfg.pm_mean) if r10
+                     else LT.device_release(w.rng_post, np.where(ok, det, 0.0), on))
             if cfg.post_match_residual and not cfg.post_match:
                 # only in the residual case: quorum reached this server after its static hold ended
                 ready = np.where(known > hold, ready, det)
@@ -289,7 +314,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         out[name] = (hold, det, post, ok, ready, known)
 
     return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh,
-                arr_c=arr_c, arr_f=arr_f, arr_i=arr_i, cv2_s=cv2_s, cv2_a=cv2_a,
+                arr_c=arr_c, arr_f=arr_f, arr_i=arr_i, cv1_s=cv1_s, cv2_s=cv2_s, cv2_a=cv2_a,
                 gk_send=gk_send, gk_arr=gk_arr, posts=posts, gk_release=gk_rel, quorum=quorum,
                 hold_f=out["f"][0], det_f=out["f"][1], reg_f=out["f"][2], ok_f=out["f"][3],
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],

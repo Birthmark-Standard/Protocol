@@ -32,6 +32,9 @@ DECOYS_IN_FLIGHT = 40.0    # default decoy target (checks): decoy transactions i
 BUNDLE_S = 30.0            # gatekeeper departure bundling window (when bundling is on)
 GK_IMMEDIATE_P = 0.6       # two-point gatekeeper hold: release at once with this probability,
 GK_CAP_S = 300.0           #   otherwise hold the full 5-minute cap (mean 120 s)
+RUN10_MARGIN = 3.0         # Run10: warm-up and cool-down 3 times the default (60 and 120 minutes)
+INCLUSION_P = 0.25         # Run10 departure bundling: chance of boarding at each 30-second boundary,
+INCLUSION_MAX = 12         #   forced at the 12th boundary (360 s, 3 times the 120 s nominal mean)
 RELAY_MIX_P = 0.15         # relay-hop mixture: share of holds drawn from the long lottery,
 RELAY_MIX_LONG = 4.0       #   which is stretched this much,
 RELAY_MIX_SHORT = 0.47     #   the rest from a lottery shortened this much (mean kept at about 106 s)
@@ -94,6 +97,18 @@ class Config:
     relay_mix: bool = False            # every relay hop's hold is a fixed-mean mixture of a short and a long lottery
     cs_static_s: float = 0.0           # content servers' static pre-match hold after content arrival (s); 0 = lottery hold
     post_match_residual: bool = False  # post-match lottery only when quorum outlasted the static hold
+    # Run10 timing (the specification's Hold timing table): every hold has its own mean, cap 3x mean
+    timing: str = "legacy"             # "legacy" (sections 6a to 6l) or "run10"
+    relay_mean: float = 120.0          # A, B, D, E, G, H, every path
+    dev_cred_mean: float = 120.0       # the device's credential-channel hold
+    dev_content_mean: float = 240.0    # the device's two content-channel holds
+    c_hold_mean: float = 30.0          # C's hold before sending CV-1 (0 = none)
+    v_hold_mean: float = 30.0          # V's hold before sending CV-2 (0 = none)
+    fanout_mean: float = 60.0          # C's fan-out, each gatekeeper leg independently
+    gk_mean: float = 30.0              # the gatekeeper's own hold
+    gk_inclusion: bool = True          # departure bundling by inclusion lottery (False: next boundary)
+    cs_mean: float = 240.0             # F's and I's pre-match hold
+    pm_mean: float = 30.0              # post-match lottery
     background_enabled: bool = True
     nonblending_enabled: bool = True
     bg_clients_per_node: int = BG_CLIENTS_PER_NODE
@@ -106,6 +121,8 @@ class Config:
     @property
     def chain_scale_max(self) -> float:
         """How much longer than the default a transaction's chain can run; sets the simulation margins."""
+        if self.timing == "run10":
+            return RUN10_MARGIN
         return max(self.hold_scale_max, self.relay_scale, RELAY_MIX_LONG if self.relay_mix else 1.0,
                    1.0 + self.cs_static_s / (TICK_S * MAX_TICKS))
 
