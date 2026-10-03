@@ -153,7 +153,8 @@ CHANGE_TEXT = {
 
 
 def tables(rows, effects, D, out, changes=None, build=CE.DEFAULT_BUILD):
-    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, {BUILD_TEXT[build]}. "
+    btext = BUILD_TEXT.get(build, "build " + build)
+    md = [f"# Tables\n\nRecord-to-device linking with genuine decoys, {btext}. "
           f"Measured end-to-end delay D = {D:.1f} s. Per-decision attack; intervals resample whole runs. Device level "
           "(primary): the named device is the record's. Submission level: the named submission group contains a "
           "packet of the record's capture. Rows are real records only. The first hops and the credential processor "

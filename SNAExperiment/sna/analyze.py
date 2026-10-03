@@ -185,6 +185,16 @@ def metrics(records, v, spec, rng):
     out["coverage_p50"] = max_coverage_p50(conf, c)
     out["count_p50"] = int(round(out["coverage_p50"] * conf.size))
     out["decisions"] = int(conf.size)
+    # the attacker's own confidence that its match is right (calibrated, cross-fitted by run parity):
+    # its distribution, and how well it tracks the actual hit rate (reliability by confidence decile)
+    out["conf_mean"] = float(conf.mean())
+    for q in (50, 90, 99):
+        out[f"conf_p{q}"] = float(np.percentile(conf, q))
+    out["conf_max"] = float(conf.max())
+    order = np.argsort(conf, kind="stable")
+    bins = np.array_split(order, 10)
+    out["reliability"] = [dict(conf=float(conf[b].mean()), hit=float(c[b].mean()), n=int(b.size)) for b in bins if b.size]
+    out["calibration_error"] = float(sum(abs(x["conf"] - x["hit"]) * x["n"] for x in out["reliability"]) / conf.size)
     perm = c.copy()
     for rid in np.unique(t["run"]):
         m = np.nonzero(t["run"] == rid)[0]

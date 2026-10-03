@@ -165,20 +165,30 @@ def cmd_sequence(a):
     out = Path(a.out or CE.ROOT / seq["out"])
     out.mkdir(parents=True, exist_ok=True)
     cal = out / "calibration.json"
-    if not cal.exists() and (CE.RESULTS / "calibration.json").exists():
+    if seq.get("calibrate"):
+        # rates follow from the end-to-end delay measured under this sequence's own base build
+        print(f"calibration under {seq['calibrate']}: D = {CE.calibrate(out, build=seq['calibrate'])['D']:.1f} s", flush=True)
+    elif not cal.exists() and (CE.RESULTS / "calibration.json").exists():
         cal.write_text((CE.RESULTS / "calibration.json").read_text())
     t0 = time.time()
     builds = list(dict.fromkeys(b for b, _ in seq["steps"]))
     steps = []
+    if "timing" in seq:
+        steps += [("timing check", lambda: CE.timing_check(out, seq["timing"]["builds"],
+                                                           runs=seq["timing"].get("runs", 10), workers=a.workers))]
     if "quorum" in seq:
         steps += [("quorum timing", lambda: CE.quorum_timing(out, seq["quorum"]["builds"], runs=seq.get("latency_runs", 20), workers=a.workers))]
     steps += [(f"run {b} ({c} cells)", lambda b=b, c=c: CE.run_cells(out, CE.grid(c, b), seq["runs"], a.workers))
              for b, c in seq["steps"]]
     steps += [(f"analyze {b}", lambda b=b: report.build(out, b)) for b in builds]
-    steps += [("latency", lambda: CE.latency(out, runs=seq.get("latency_runs", 20), builds=builds))]
+    steps += [("latency", lambda: CE.latency(out, runs=seq.get("latency_runs", 20), builds=builds,
+                                             **({"cells": seq["latency_cells"]} if "latency_cells" in seq else {})))]
     if "pairs" in seq:
         steps += [("pair gaps", lambda: CE.pair_gaps(out, seq["pairs"]["builds"], runs=seq["pairs"].get("runs", 20),
-                                                     workers=a.workers))]
+                                                     cells=seq["pairs"].get("cells"), workers=a.workers))]
+    if seq.get("report") == "run10":
+        from . import run10report
+        steps += [("Run10 report", lambda: run10report.write(out))]
     for i, (name, fn) in enumerate(steps, 1):
         print(f"\n=== step {i} of {len(steps)}: {name} ({(time.time() - t0) / 60:.1f} min elapsed) ===", flush=True)
         fn()
@@ -205,7 +215,7 @@ def main(argv=None):
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=100, help="runs per cell (run, estimate)")
-    ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control", "extra", "settled"])
+    ap.add_argument("--cells", default="all", choices=["all", "bundle", "nobundle", "control", "extra", "settled", "run10"])
     ap.add_argument("--probe-runs", type=int, default=1)
     ap.add_argument("--check-runs", type=int, default=12)
     ap.add_argument("name", nargs="?", default="6h", help="sequence name (sequence command only)")

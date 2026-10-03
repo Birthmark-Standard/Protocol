@@ -153,3 +153,17 @@ def test_static_hold_and_residual_lottery():
     late = ok & (s2["known_f"] > s2["arr_f"] + 600.0)
     assert np.array_equal(s2["ready_f"][ok & ~late], s2["det_f"][ok & ~late])
     assert (s2["ready_f"][late] >= s2["det_f"][late]).all()
+
+
+def test_run10_holds_meet_their_means_and_caps():
+    """Every Run10 hold has its target mean and a cap at three times it; the inclusion lottery
+    departs on a boundary of the gatekeeper's grid, at most 12 boundaries after the posting is ready."""
+    from sna import lottery as LT
+    rng = np.random.default_rng(7)
+    t = rng.uniform(0, 1e6, 300_000)
+    for m in (30.0, 60.0, 120.0, 240.0):
+        h = LT.hold(rng, t, 3.0, True, m) - t
+        assert abs(h.mean() - m) < 0.02 * m and h.max() <= 3 * m + 1e-6
+    d = LT.inclusion_departure(rng, t, 7.0, 30.0, P.INCLUSION_P, P.INCLUSION_MAX)
+    assert ((d - 7.0) % 30.0 < 1e-6).all() or np.allclose((d - 7.0) / 30.0, np.round((d - 7.0) / 30.0))
+    assert (d >= t).all() and (d - t <= 30.0 * P.INCLUSION_MAX + 1e-6).all()

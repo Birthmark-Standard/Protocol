@@ -586,6 +586,71 @@ The credential processor's fan-out holds and the gatekeepers' holds stay on the 
 
 **Predictions.** None. No development runs were made.
 
+## Run10. The settled specification, with each mechanism removed in turn
+
+Written before any Run10 sweep run. Run10 is the experiment the paper reports; the sections before it are the development history that led to its configuration.
+
+**What Run10 measures.**
+1. **The adversary's correlation between device submissions and the posted registry record.** For each single compromised component (first hop for credentials or content, credential processor, validator, gatekeeper, content server) and for a passive observer of the whole network: how often, given a public registry record, it names the device that produced it. This is reported against two chance rates: a guess among the devices that could have produced that record, and a guess among every registered device.
+2. **The adversary's confidence that a match it attempts is correct.** Each component's calibrated confidence in its own match (cross-fitted by run parity, as in section 5.2): its mean, 99th percentile and maximum; how well it tracks the actual hit rate (ten confidence deciles, and the mean gap between confidence and hit rate); precision among its most confident 1%, 5%, 10% and 25% of matches; and how many of its matches fall in a most-confident set that is right more than half the time.
+
+**Configuration: the specification's Hold timing table.** Every hold uses 10-second ticks and geometric release, with its own per-tick probability and a cap at three times its mean (the probability solves the stage's mean exactly, given the cap and the wait to the first tick):
+
+| Stage | Mean | Cap | Per-tick release |
+|---|---|---|---|
+| Relay hops (A, B, D, E, G, H), every path | 120 s | 360 s | 7.52% |
+| Device, credential channel | 120 s | 360 s | 7.52% |
+| Device, both content channels | 240 s | 720 s | 3.84% |
+| C before CV-1 | 30 s | 90 s | 26.86% |
+| V before CV-2 | 30 s | 90 s | 26.86% |
+| C fan-out, each gatekeeper leg independently | 60 s | 180 s | 14.46% |
+| Gatekeeper's own hold | 30 s | 90 s | 26.86% |
+| F's and I's pre-match hold | 240 s | 720 s | 3.84% |
+| Post-match lottery | 30 s | 90 s | 26.86% |
+
+- **Departure bundling.** After its hold, a posting draws 25% at each boundary of its gatekeeper's 30-second grid for a place in that boundary's bundle, and boards at the 12th boundary if it has not before. This is the specification's mechanism; its measured mean wait is 101 seconds, not the nominal 120, because the forced boarding at 360 seconds truncates the draw and the first boundary comes on average 15 seconds after the posting is ready.
+- **Registry-level bundling.** One 120-second schedule shared by every content server, as in sections 6d to 6l. The wait has mean 60 seconds, as the specification's table states; its coefficient of variation is 0.58 (uniform), not the table's 0.84, which a shared schedule cannot produce.
+- **Board pushes** every 10 seconds, each board on its own schedule. **Decoys** are genuine transactions from registered identities, as throughout.
+- **Rates.** The end-to-end delay is measured under Run10 itself (D = 1,036.6 seconds; `python -m sna sequence run10` measures it first), and rates are R / D and 60 / D, so R real and 60 decoy transactions are in flight.
+
+**Measured before this section was written** (`timing_check`, R = 20, 10 runs on run ids from 11,000,000 up): every stage's mean lies within 1.2 seconds of its target and its maximum at its cap. Postings per departure bundle at one gatekeeper average 2.33, with 32.4% of bundles holding fewer than two and 10.0% empty; the same with next-boundary bundling. In steady state each posting boards exactly once, so the mean per bundle is the gatekeeper's posting rate times 30 seconds whatever the inclusion rule; the specification's expectation of 4.8 per boundary counted every transaction in flight as waiting at one gatekeeper.
+
+**Builds.** Run10, then five exclusions, each removing one mechanism and leaving the rest; all five removed together; and three variations proposed to check whether Run10's settings are the best way forward.
+
+| Build | Change from Run10 |
+|---|---|
+| run10 | none |
+| run10_no_vc | V's and C's holds removed |
+| run10_no_incl | departure bundling at the next boundary instead of by inclusion lottery |
+| run10_no_pm | post-match lottery removed |
+| run10_no_reg | registry-level bundling removed |
+| run10_no_role | device content channels and F/I pre-match hold at 120 s, like every other stage |
+| run10_none | all five removed |
+| run10_relay180 | relay hops at 180 s mean (the relay widening of section 6l) |
+| run10_role360 | device content channels and F/I pre-match hold at 360 s (role-aware ×3 of section 6j) |
+| run10_gk120 | gatekeeper hold at 120 s |
+
+Every build uses Run10's rates, so every build carries the same traffic and each is compared with Run10 record by record. The removals and variations draw from the same random streams as Run10, so they change only what they remove or vary.
+
+**Cells and runs.** R = 1, 20 and 100, with 60 decoys in flight. 200 runs per cell, run ids 0 to 199, recorded here before the first run. The whole experiment runs with one command, `python -m sna sequence run10`, into `results/run10/`: calibration, the timing check, every build's runs and analysis, latency (20 runs per cell), pair gaps (20 runs per cell), and `results/run10/RUN10_TABLES.md` with its figures.
+
+**Claim.** The criterion of section 6i applies unchanged: in a cell, every component's most confident 1% of matches must be right less than half the time (upper bound of the 95% interval), and fewer than 0.1% of its matches may fall in a most-confident set right more than half the time.
+
+**Development runs**, made before this section was written: 8 runs per cell and build.
+- Under Run10 no component led the observer by more than +0.78 points (validator, R = 1).
+- Removing the role-aware holds raised the validator's lead to +3.40, +0.82 and +0.55 points at R = 1, 20 and 100.
+- Removing all five mechanisms raised the observer by 0.54 to 2.02 points.
+- Role-aware 360 s lowered the observer by 0.59 to 2.05 points.
+- Mean capture to finalization (5 runs): 1,023 to 1,041 seconds under Run10; 806 without role-aware holds; 646 to 651 with all five removed; 1,181 to 1,197 with relay hops at 180 s; 1,305 to 1,336 with role-aware 360 s; 1,049 to 1,068 with the gatekeeper at 120 s.
+- The other exclusions moved the observer by less than the development runs could resolve.
+
+**Predictions:**
+- **P10-1.** Run10 passes the claim criterion at R = 1, 20 and 100.
+- **P10-2.** Removing the role-aware holds raises the validator's lead over the observer at every R.
+- **P10-3.** Removing all five mechanisms raises the observer's accuracy at every R (paired effect above 0).
+- **P10-4.** Role-aware 360 s lowers the observer's accuracy at every R (paired effect below 0).
+- No prediction is made for the four single exclusions other than the role-aware holds, or for relay 180 s and gatekeeper 120 s; they are reported either way.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -622,3 +687,5 @@ A tenth amendment re-runs the content-side holds at stages that know their role 
 An eleventh amendment adds widened relay-hop holds and the static content-server hold (section 6k), written before any run of those builds.
 
 A twelfth amendment adds role-aware ×2 together with relay-hop holds widened ×1.5 (section 6l), written before any run of that build.
+
+A thirteenth amendment adds Run10, the settled specification with each mechanism removed in turn, written before any Run10 run.

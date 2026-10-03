@@ -75,8 +75,30 @@ for _v, _sv in STATIC_S.items():
 # with every relay hop widened x1.5 as in r150, without the static hold
 BUILDS["dev200_r150"] = dict(target="link_dev200_r150", reg_bundle_s=P.REG_BUNDLE_S, content_device_scale=2.0,
                              cs_hold_scale=2.0, relay_scale=1.5)
+# Run10: the specification's settled Hold timing, the inclusion-lottery departure bundling, V's and C's
+# holds, the post-match lottery and the 120-second registry window; then each mechanism removed in
+# turn, all removed together, and three variations
+_R10 = dict(timing="run10", reg_bundle_s=P.REG_BUNDLE_S, post_match=True)
+RUN10_BUILDS = {
+    "run10": {},
+    "run10_no_vc": dict(c_hold_mean=0.0, v_hold_mean=0.0),
+    "run10_no_incl": dict(gk_inclusion=False),
+    "run10_no_pm": dict(post_match=False),
+    "run10_no_reg": dict(reg_bundle_s=0.0),
+    "run10_no_role": dict(dev_content_mean=120.0, cs_mean=120.0),
+    "run10_none": dict(c_hold_mean=0.0, v_hold_mean=0.0, gk_inclusion=False, post_match=False, reg_bundle_s=0.0,
+                       dev_content_mean=120.0, cs_mean=120.0),
+    "run10_relay180": dict(relay_mean=180.0),
+    "run10_role360": dict(dev_content_mean=360.0, cs_mean=360.0),
+    "run10_gk120": dict(gk_mean=120.0),
+}
+for _b, _kw in RUN10_BUILDS.items():
+    BUILDS[_b] = dict(target=f"link_{_b}", **{**_R10, **_kw})
+RUN10_R = (1, 20, 100)
+RUN10_DECOYS = 60
 DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
-PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
+PRIOR_BUILDS = {
+    **{b: ("run10",) for b in RUN10_BUILDS if b != "run10"},"twopoint": ("push",), "regbundle": ("twopoint", "push"),
                 **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120"),
                 **{b: ("reg120",) for b in ("hold150", "hold200", "hold300", "content200", "content300")},
                 **{f"c200_cr{int(k * 100)}": ("reg120", "content200") for k in CRED_SHORT},
@@ -104,6 +126,17 @@ SEQUENCES = {
     "6l": dict(out="results/6l", runs=200,
                steps=[(b, "settled") for b in ("dev200", "dev300", "dev200_r150")],
                pairs=dict(builds=("dev200", "dev300", "dev200_r150"))),
+    "run10": dict(out="results/run10", runs=200, calibrate="run10",
+                  timing=dict(builds=("run10", "run10_no_incl")),
+                  steps=[(b, "run10") for b in RUN10_BUILDS],
+                  latency_cells=tuple((R, RUN10_DECOYS) for R in RUN10_R),
+                  pairs=dict(builds=tuple(RUN10_BUILDS), cells=tuple((R, RUN10_DECOYS) for R in RUN10_R)),
+                  report="run10"),
+    "smoke10": dict(out="results/quick/run10", runs=2, latency_runs=2, calibrate="run10",
+                    timing=dict(builds=("run10",), runs=2),
+                    steps=[("run10", "run10"), ("run10_no_vc", "run10")],
+                    latency_cells=((20, 60),), pairs=dict(builds=("run10",), runs=2, cells=((20, 60),)),
+                    report="run10"),                                       # checks the sequence itself; never reported
     "smoke": dict(out="results/quick/sequence", runs=2, latency_runs=2,     # checks the sequence itself; never reported
                   steps=[("reg120", "settled"), ("r150_sp", "settled")], quorum=dict(builds=("r150",)),
                   pairs=dict(builds=("reg120", "r150_sp"), runs=2)),
@@ -133,6 +166,9 @@ def _grid(which):
     """which: all | bundle | nobundle | control use the core decoy levels; extra is the section 6f
     levels with bundling on."""
     specs = []
+    if which == "run10":
+        return [dict(key=cell_key(R, RUN10_DECOYS, True), R=float(R), T=float(R + RUN10_DECOYS),
+                     decoys=float(RUN10_DECOYS), bundle=True, control=False) for R in RUN10_R]
     if which == "settled":
         return [dict(key=cell_key(R, 40, True), R=float(R), T=float(R + 40), decoys=40.0, bundle=True,
                      control=False) for R in REAL_R]
@@ -175,14 +211,18 @@ def traffic_seed(R, run_id, control=False):
 
 
 # --------------------------------------------------------------------------- calibration
-def calibrate(out=RESULTS, runs=10, force=False):
+def calibrate(out=RESULTS, runs=10, force=False, build=None):
     """Mean end-to-end delay D (capture to registry finalisation, the later of the two
-    submissions) over real transactions in the scored window, from seeded runs."""
+    submissions) over real transactions in the scored window, from seeded runs. With a build, D is
+    measured under that build (with departure bundling on), so rates R / D and decoys / D give R and
+    decoys transactions in flight under it."""
     p = Path(out) / "calibration.json"
     if p.exists() and not force:
         return json.loads(p.read_text())
     pools = Pools()
     cfg = P.Config(real_rate=0.2, background_enabled=False, nonblending_enabled=False)
+    if build:
+        cfg = cfg.with_(bundle_s=P.BUNDLE_S, **build_kw(build))
     d = []
     for k in range(runs):
         run = S.simulate(cfg, CAL_SEED0 + k, pools)
@@ -192,7 +232,7 @@ def calibrate(out=RESULTS, runs=10, force=False):
     d = np.concatenate(d)
     fin = d[np.isfinite(d)]
     cal = dict(D=float(fin.mean()), D_median=float(np.median(fin)), D_p95=float(np.percentile(fin, 95)),
-               n=int(fin.size), dropped=int((~np.isfinite(d)).sum()), runs=runs)
+               n=int(fin.size), dropped=int((~np.isfinite(d)).sum()), runs=runs, build=build or "default")
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(cal, indent=1))
     return cal
@@ -661,4 +701,74 @@ def quorum_timing(out, builds, runs=20, R=15, d=40, workers="auto"):
               f"p95 {q['p95']:6.1f}, p99 {q['p99']:6.1f}; already known at arrival {100 * rows[b]['already_known']:.1f}% "
               f"(n = {x.size})", flush=True)
     (out / "quorum_timing.json").write_text(json.dumps(dict(runs=runs, R=R, decoys=d, builds=rows), indent=1))
+    return rows
+
+
+# --------------------------------------------------------------------------- Run10 timing check
+TIMING_SEED0 = 11_000_000
+
+
+def _timing_one(args):
+    build, R, d, run_id, D = args
+    cfg = config_of(dict(R=float(R), decoys=float(d), bundle=True, control=False, build=build), D)
+    run = S.simulate(cfg, traffic_seed(R, TIMING_SEED0 + run_id), Pools())
+    s, ev = run.subs, run.events
+    a, b = cfg.warmup_s, cfg.warmup_s + cfg.measure_s
+    m = (s["t0"] >= a) & (s["t0"] < b) & s["ok_f"] & s["ok_i"]
+    ts, ta = ev["t_send"], ev["t_arr"]
+    cr, ca, cb = s["ev_cred"][m], s["ev_ca"][m], s["ev_cb"][m]
+    st = {
+        "device, credential channel": ts[cr[:, 0]] - s["t0"][m],
+        "device, content channels": np.r_[ts[ca[:, 0]], ts[cb[:, 0]]] - np.r_[s["t0"][m], s["t0"][m]],
+        "relay hops": np.r_[ts[cr[:, 1]] - ta[cr[:, 0]], ts[cr[:, 2]] - ta[cr[:, 1]], ts[ca[:, 1]] - ta[ca[:, 0]],
+                            ts[ca[:, 2]] - ta[ca[:, 1]], ts[cb[:, 1]] - ta[cb[:, 0]], ts[cb[:, 2]] - ta[cb[:, 1]]],
+        "C before CV-1": s["cv1_s"][m] - s["arr_c"][m],
+        "V before CV-2": ts[s["ev_cv2"][m]] - ta[s["ev_cv1"][m]],
+        "C fan-out, per leg": (s["gk_send"][m] - s["cv2_a"][m][:, None]).ravel(),
+        "gatekeeper hold": (s["gk_release"][m] - s["gk_arr"][m]).ravel(),
+        "departure bundling wait": (s["posts"][m] - s["gk_release"][m]).ravel(),
+        "F/I pre-match hold": np.r_[s["hold_f"][m] - s["arr_f"][m], s["hold_i"][m] - s["arr_i"][m]],
+        "post-match lottery": np.r_[s["ready_f"][m] - s["det_f"][m], s["ready_i"][m] - s["det_i"][m]],
+        "registry bundle wait": np.r_[s["reg_f"][m] - s["ready_f"][m], s["reg_i"][m] - s["ready_i"][m]],
+        "capture to finalisation": s["final"][m] - s["t0"][m],
+    }
+    # postings per departure bundle at each gatekeeper (every transaction, real and decoy)
+    counts = []
+    for j, g in enumerate(run.gk_set):
+        dep = s["posts"][:, j] - 0.0
+        W, ph = cfg.bundle_s, run.bundle_phase[g]
+        k = np.round((dep - ph) / W).astype(np.int64)      # posts sit just after a boundary (processing)
+        k0, k1 = int(np.ceil((a - ph) / W)), int(np.floor((b - ph) / W))
+        k = k[(k >= k0) & (k < k1)] - k0
+        counts.append(np.bincount(k, minlength=k1 - k0))
+    return build, st, np.concatenate(counts)
+
+
+def timing_check(out, builds=("run10",), R=20, d=None, runs=10, workers="auto"):
+    """Every Run10 stage's measured hold (mean, standard deviation, maximum) against the
+    specification, and postings per departure bundle. Run ids from 11,000,000 up, never used by a
+    sweep. Written to <out>/timing_check.json."""
+    import multiprocessing as mp
+    out = Path(out)
+    D = calibrate(out)["D"]
+    d = RUN10_DECOYS if d is None else d
+    with mp.Pool(RN.resolve_workers(workers)) as pool:
+        res = pool.map(_timing_one, [(b, R, d, k, D) for b in builds for k in range(runs)], chunksize=1)
+    rows = {}
+    for b in builds:
+        x = [r for r in res if r[0] == b]
+        stages = {}
+        for name in x[0][1]:
+            v = np.concatenate([r[1][name] for r in x])
+            v = v[np.isfinite(v)]
+            stages[name] = dict(mean=float(v.mean()), sd=float(v.std()), max=float(v.max()), n=int(v.size))
+        c = np.concatenate([r[2] for r in x])
+        rows[b] = dict(stages=stages, bundle=dict(mean=float(c.mean()), p_lt2=float((c < 2).mean()),
+                                                   p_empty=float((c == 0).mean()), bundles=int(c.size)))
+        print(f"== {b}")
+        for name, v in stages.items():
+            print(f"   {name:28s} mean {v['mean']:7.1f} s  sd {v['sd']:6.1f}  max {v['max']:7.1f}")
+        print(f"   postings per departure bundle: mean {c.mean():.2f}, fewer than 2 {100 * (c < 2).mean():.1f}%, "
+              f"empty {100 * (c == 0).mean():.1f}%", flush=True)
+    (out / "timing_check.json").write_text(json.dumps(dict(R=R, decoys=d, runs=runs, builds=rows), indent=1))
     return rows
