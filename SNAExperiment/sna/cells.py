@@ -60,12 +60,26 @@ BUILDS.update({f"dev{int(k * 100)}": dict(target=f"link_dev{int(k * 100)}", reg_
 BUILDS["pm120"] = dict(target="link_pm120", reg_bundle_s=P.REG_BUNDLE_S, post_match=True)
 BUILDS["pm_push"] = dict(target="link_pm_push", post_match=True)
 BUILDS.update({f"pm{w}": dict(target=f"link_pm{w}", reg_bundle_s=float(w), post_match=True) for w in (60, 240, 480)})
+# section 6k: every relay hop's hold widened alike on every path, then a static content-server hold
+BUILDS.update({"r150": dict(target="link_r150", reg_bundle_s=P.REG_BUNDLE_S, relay_scale=1.5),
+               "r200": dict(target="link_r200", reg_bundle_s=P.REG_BUNDLE_S, relay_scale=2.0),
+               "rmix": dict(target="link_rmix", reg_bundle_s=P.REG_BUNDLE_S, relay_mix=True)})
+# static hold: the 95th percentile of quorum after content arrival under each relay variant, rounded up
+# to 10 s (measured with quorum_timing before section 6k was written)
+STATIC_S = {"r150": 740.0, "r200": 870.0, "rmix": 970.0}
+for _v, _sv in STATIC_S.items():
+    _base = {k: x for k, x in BUILDS[_v].items() if k != "target"}
+    BUILDS[f"{_v}_s"] = dict(target=f"link_{_v}_s", cs_static_s=_sv, **_base)
+    BUILDS[f"{_v}_sp"] = dict(target=f"link_{_v}_sp", cs_static_s=_sv, post_match_residual=True, **_base)
 DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
 PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
                 **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120"),
                 **{b: ("reg120",) for b in ("hold150", "hold200", "hold300", "content200", "content300")},
                 **{f"c200_cr{int(k * 100)}": ("reg120", "content200") for k in CRED_SHORT},
-                "dev200": ("reg120", "content200"), "dev300": ("reg120", "content300"), "pm120": ("reg120",)}
+                "dev200": ("reg120", "content200"), "dev300": ("reg120", "content300"), "pm120": ("reg120",),
+                **{v: ("reg120",) for v in ("r150", "r200", "rmix")},
+                **{f"{v}_s": ("reg120", v) for v in ("r150", "r200", "rmix")},
+                **{f"{v}_sp": ("reg120", f"{v}_s") for v in ("r150", "r200", "rmix")}}
 
 # Sequences: every step of one plan section, run one after another by `python -m sna sequence <name>`.
 SEQUENCES = {
@@ -76,8 +90,15 @@ SEQUENCES = {
                       ("dev200", "settled"), ("dev300", "settled")],
                pairs=dict(builds=("push", "pm_push", "reg60", "pm60", "reg120", "pm120", "reg240", "pm240",
                                   "reg480", "pm480"))),
+    "6k": dict(out="results/6k", runs=200,
+               quorum=dict(builds=("reg120", "r150", "r200", "rmix")),
+               steps=[(b, "settled") for b in ("reg120", "r150", "r150_s", "r150_sp", "r200", "r200_s", "r200_sp",
+                                               "rmix", "rmix_s", "rmix_sp")],
+               pairs=dict(builds=("reg120", "r150", "r150_s", "r150_sp", "r200", "r200_s", "r200_sp",
+                                  "rmix", "rmix_s", "rmix_sp"))),
     "smoke": dict(out="results/quick/sequence", runs=2, latency_runs=2,     # checks the sequence itself; never reported
-                  steps=[("reg120", "settled"), ("pm120", "settled")], pairs=dict(builds=("reg120", "pm120"), runs=2)),
+                  steps=[("reg120", "settled"), ("r150_sp", "settled")], quorum=dict(builds=("r150",)),
+                  pairs=dict(builds=("reg120", "r150_sp"), runs=2)),
 }
 
 
@@ -546,6 +567,8 @@ def _pairs_one(args):
     sub_gap = np.abs(s["reg_f"][m] - s["reg_i"][m])            # as the two submissions leave
     ready_gap = np.abs(s["ready_f"][m] - s["ready_i"][m])      # at the point of submission, before any registry wait
     waited = (s["det_f"][m] > s["hold_f"][m] + 1e-9) & (s["det_i"][m] > s["hold_i"][m] + 1e-9)
+    either = (s["det_f"][m] > s["hold_f"][m] + 1e-9) | (s["det_i"][m] > s["hold_i"][m] + 1e-9)
+    per_server = np.r_[s["det_f"][m] > s["hold_f"][m] + 1e-9, s["det_i"][m] > s["hold_i"][m] + 1e-9]
     W = cfg.reg_bundle_s
     if W > 0:
         bf = np.ceil((s["ready_f"][m] - run.reg_phase) / W)
@@ -553,7 +576,7 @@ def _pairs_one(args):
         same = bf == bi
     else:
         same = np.zeros(m.sum(), bool)
-    return build, R, d, sub_gap, ready_gap, waited, same
+    return build, R, d, sub_gap, ready_gap, waited, same, either, per_server
 
 
 def pair_gaps(out, builds, runs=20, cells=None, workers="auto"):
@@ -574,12 +597,14 @@ def pair_gaps(out, builds, runs=20, cells=None, workers="auto"):
     for b in builds:
         for R, d in cells:
             x = [r for r in res if r[0] == b and r[1] == R and r[2] == d]
-            sg, rg, wt, sm = (np.concatenate([r[i] for r in x]) for i in (3, 4, 5, 6))
+            sg, rg, wt, sm, ei, ps = (np.concatenate([r[i] for r in x]) for i in (3, 4, 5, 6, 7, 8))
             sep = rg > 5.0
             row = dict(build=b, R=R, decoys=d, records=int(sg.size), runs=runs,
                        within5_at_departure=float((sg <= 5.0).mean()),
                        within5_at_submission=float((rg <= 5.0).mean()),
                        quorum_outlasted_both_holds=float(wt.mean()),
+                       quorum_outlasted_either_hold=float(ei.mean()),
+                       quorum_outlasted_hold_per_server=float(ps.mean()),
                        within5_at_submission_when_outlasted=float((rg[wt] <= 5.0).mean()) if wt.any() else float("nan"),
                        separated=int(sep.sum()),
                        separated_same_bundle=float(sm[sep].mean()) if sep.any() and BUILDS[b].get("reg_bundle_s") else float("nan"),
@@ -590,4 +615,42 @@ def pair_gaps(out, builds, runs=20, cells=None, workers="auto"):
                   f"as they leave {100 * row['within5_at_departure']:5.1f}%; separated pairs put back in one bundle "
                   f"{'n/a' if np.isnan(sb) else f'{100 * sb:.1f}%'} (n = {row['records']})", flush=True)
     (out / "pair_gaps.json").write_text(json.dumps(dict(runs=runs, cells=rows), indent=1))
+    return rows
+
+
+
+# --------------------------------------------------------------------------- quorum timing at the content servers
+QUORUM_SEED0 = 9_000_000
+
+
+def _quorum_one(args):
+    build, R, d, run_id, D = args
+    cfg = config_of(dict(R=float(R), decoys=float(d), bundle=True, control=False, build=build), D)
+    s = S.simulate(cfg, traffic_seed(R, QUORUM_SEED0 + run_id), Pools()).subs
+    m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s)
+    out = []
+    for nm, arr in (("f", "arr_f"), ("i", "arr_i")):
+        ok = m & np.isfinite(s[f"known_{nm}"])
+        out.append(s[f"known_{nm}"][ok] - s[arr][ok])
+    return build, np.concatenate(out)
+
+
+def quorum_timing(out, builds, runs=20, R=15, d=40, workers="auto"):
+    """When quorum reaches a content server, measured from its content's arrival there (negative:
+    quorum was already known). Every transaction, real and decoy. Run ids from 9,000,000 up, never
+    used by a sweep. Written to <out>/quorum_timing.json."""
+    import multiprocessing as mp
+    out = Path(out)
+    D = calibrate(out)["D"]
+    with mp.Pool(RN.resolve_workers(workers)) as pool:
+        res = pool.map(_quorum_one, [(b, R, d, k, D) for b in builds for k in range(runs)], chunksize=1)
+    rows = {}
+    for b in builds:
+        x = np.concatenate([r[1] for r in res if r[0] == b])
+        q = {f"p{p}": float(np.percentile(x, p)) for p in (50, 75, 90, 95, 99)}
+        rows[b] = dict(n=int(x.size), mean=float(x.mean()), already_known=float((x <= 0).mean()), **q)
+        print(f"{b:8s} quorum after content arrival: mean {x.mean():6.1f} s, median {q['p50']:6.1f}, p90 {q['p90']:6.1f}, "
+              f"p95 {q['p95']:6.1f}, p99 {q['p99']:6.1f}; already known at arrival {100 * rows[b]['already_known']:.1f}% "
+              f"(n = {x.size})", flush=True)
+    (out / "quorum_timing.json").write_text(json.dumps(dict(runs=runs, R=R, decoys=d, builds=rows), indent=1))
     return rows

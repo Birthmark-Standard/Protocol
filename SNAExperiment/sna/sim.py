@@ -81,9 +81,9 @@ class World:
     def __init__(self, cfg: P.Config, seed: int, pools: Pools):
         self.cfg, self.pools = cfg, pools
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(10)
+        streams = ss.spawn(11)
         (self.rng_world, self.rng_real, self.rng_decoy, self.rng_bg, self.rng_nb, rng_bundle, rng_push,
-         self.rng_gkhold, rng_reg, self.rng_post) = (np.random.default_rng(s) for s in streams)
+         self.rng_gkhold, rng_reg, self.rng_post, self.rng_relay) = (np.random.default_rng(s) for s in streams)
         # each gatekeeper's departure-bundle grid phase, on its own stream, so bundling on or off
         # leaves every other draw unchanged
         self.bundle_phase = rng_bundle.uniform(0, P.BUNDLE_S, P.N_NODES)
@@ -149,12 +149,26 @@ def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, scale=1.0,
     arrs = [arr]
     cur = first
     for nxt, leg in ((second, legs[1]), (dest, legs[2])):
-        rel = LT.release_time(r, arr, w.phase[cur], on, scale) + _proc(r, n)
+        rel = _relay_hold(w, r, arr, cur, on, scale) + _proc(r, n)
         arr = rel + w.lat_int[cur, nxt] + _jit(r, n)
         ids.append(w.ev.add(rel, arr, cur, nxt, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, leg, sub))
         arrs.append(arr)
         cur = nxt
     return arrs, np.stack(ids, 1)
+
+
+def _relay_hold(w, r, arr, node, on, scale):
+    """One relay hop's hold on its node clock. relay_scale stretches every relay hop alike, on every
+    path. relay_mix draws each hold from a short lottery or, with probability RELAY_MIX_P, a long one;
+    the long draws and the choice come from their own stream, so every other draw is unchanged."""
+    cfg = w.cfg
+    k = scale * cfg.relay_scale
+    if not cfg.relay_mix:
+        return LT.release_time(r, arr, w.phase[node], on, k)
+    short = LT.release_time(r, arr, w.phase[node], on, k * P.RELAY_MIX_SHORT)
+    long = LT.release_time(w.rng_relay, arr, w.phase[node], on, k * P.RELAY_MIX_LONG)
+    pick = w.rng_relay.random(arr.shape[0]) < P.RELAY_MIX_P
+    return np.where(pick, long, short)
 
 
 def _jit(r, n):
@@ -246,15 +260,23 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     out = {}
     for name, arr, node in (("f", arr_f, F), ("i", arr_i, I)):
         hold = _content_server(w, r, arr, node)
-        det = np.maximum(hold, _pushed(w, posts, node))
+        if cfg.cs_static_s > 0 and on:
+            # static pre-match hold: a fixed, public wait after the content arrives (the lottery draw
+            # above is still consumed, so every other draw is unchanged)
+            hold = arr + cfg.cs_static_s
+        known = _pushed(w, posts, node)
+        det = np.maximum(hold, known)
         ok = np.isfinite(quorum) & (det - arr <= P.QUORUM_TIMEOUT_S)
         det = np.where(ok, det, np.nan)
         ready = det
-        if cfg.post_match and on:
+        if (cfg.post_match or cfg.post_match_residual) and on:
             # post-match lottery: an independent relay-lottery draw on a fresh random phase, timed
             # from the moment this server confirms quorum (the later of its own hold and the
             # quorum push); drawn on its own stream so every other draw is unchanged
             ready = LT.device_release(w.rng_post, np.where(ok, det, 0.0), on)
+            if cfg.post_match_residual and not cfg.post_match:
+                # only in the residual case: quorum reached this server after its static hold ended
+                ready = np.where(known > hold, ready, det)
             ready = np.where(ok, ready, np.nan)
         dep = ready
         if cfg.reg_bundle_s > 0:
@@ -264,14 +286,14 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
             ph = w.reg_phase
             dep = ph + cfg.reg_bundle_s * np.ceil((ready - ph) / cfg.reg_bundle_s)
         post = dep + _proc(r, S)
-        out[name] = (hold, det, post, ok, ready)
+        out[name] = (hold, det, post, ok, ready, known)
 
     return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh,
                 arr_c=arr_c, arr_f=arr_f, arr_i=arr_i, cv2_s=cv2_s, cv2_a=cv2_a,
                 gk_send=gk_send, gk_arr=gk_arr, posts=posts, gk_release=gk_rel, quorum=quorum,
                 hold_f=out["f"][0], det_f=out["f"][1], reg_f=out["f"][2], ok_f=out["f"][3],
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
-                ready_f=out["f"][4], ready_i=out["i"][4],
+                ready_f=out["f"][4], ready_i=out["i"][4], known_f=out["f"][5], known_i=out["i"][5],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk)
 
 

@@ -15,6 +15,7 @@
              (results/diag_content_server.json)
   sequence   every run, analysis and latency step of one plan section, in order (e.g. sequence 6j)
   pairs      how often a record's two registry submissions leave together (results/pair_gaps.json)
+  quorum     when quorum reaches a content server, from its content's arrival (results/quorum_timing.json)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker
 count or the order runs finish in.
@@ -168,7 +169,10 @@ def cmd_sequence(a):
         cal.write_text((CE.RESULTS / "calibration.json").read_text())
     t0 = time.time()
     builds = list(dict.fromkeys(b for b, _ in seq["steps"]))
-    steps = [(f"run {b} ({c} cells)", lambda b=b, c=c: CE.run_cells(out, CE.grid(c, b), seq["runs"], a.workers))
+    steps = []
+    if "quorum" in seq:
+        steps += [("quorum timing", lambda: CE.quorum_timing(out, seq["quorum"]["builds"], runs=seq.get("latency_runs", 20), workers=a.workers))]
+    steps += [(f"run {b} ({c} cells)", lambda b=b, c=c: CE.run_cells(out, CE.grid(c, b), seq["runs"], a.workers))
              for b, c in seq["steps"]]
     steps += [(f"analyze {b}", lambda b=b: report.build(out, b)) for b in builds]
     steps += [("latency", lambda: CE.latency(out, runs=seq.get("latency_runs", 20), builds=builds))]
@@ -185,6 +189,10 @@ def cmd_pairs(a):
     CE.pair_gaps(Path(a.out or CE.RESULTS), [a.build], workers=a.workers)
 
 
+def cmd_quorum(a):
+    CE.quorum_timing(Path(a.out or CE.RESULTS), [a.build], workers=a.workers)
+
+
 def cmd_volume(a):
     from . import report
     print(report.volume_table(CE.calibrate(Path(a.out or CE.RESULTS))["D"]))
@@ -193,7 +201,7 @@ def cmd_volume(a):
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles", "gatekeeper", "diag-cs", "sequence", "pairs"])
+    ap.add_argument("command", choices=["quick", "checks", "estimate", "run", "analyze", "volume", "latency", "bundles", "gatekeeper", "diag-cs", "sequence", "pairs", "quorum"])
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=100, help="runs per cell (run, estimate)")
@@ -207,5 +215,5 @@ def main(argv=None):
     ap.add_argument("--allrecords", action="store_true",
                     help="re-score the first hops and credential processor on every record (plan section 6a)")
     a = ap.parse_args(argv)
-    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles, gatekeeper=cmd_gatekeeper, **{"diag-cs": cmd_diag_cs}, sequence=cmd_sequence, pairs=cmd_pairs,
+    dict(quick=cmd_quick, checks=cmd_checks, estimate=cmd_estimate, run=cmd_run, analyze=cmd_analyze, latency=cmd_latency, bundles=cmd_bundles, gatekeeper=cmd_gatekeeper, **{"diag-cs": cmd_diag_cs}, sequence=cmd_sequence, pairs=cmd_pairs, quorum=cmd_quorum,
          volume=cmd_volume)[a.command](a)

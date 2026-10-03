@@ -522,6 +522,52 @@ Real records' timing does not depend on the decoy stream (the two streams are dr
 - **J5.** Under pm120, the observer's device-level effect against reg120 lies within ±1 point in every cell.
 - No prediction is made for the content server's lead under pm120; the development runs were too noisy to support one.
 
+## 6k. Relay-hop variability and a static content-server hold
+
+Written after section 6j and before the sweep below.
+
+**Baseline relay-hop hold.** Every relay hop (A, B, D, E, G, H) holds on its node's clock: 10-second ticks, release probability 8.33% per tick, forced release at tick 30 (300 seconds). One hold has mean 106.2 seconds, standard deviation 89.1 seconds (coefficient of variation 0.84), median 79.7 seconds, 95th percentile 293.8 seconds; 8.0% of holds end at the cap. The same lottery serves the gatekeepers, the credential processor's fan-out legs, the device's first-hop holds and the content servers' pre-match hold.
+
+**Widened relay-hop holds**, applied identically to every relay hop on every path (the device's holds and every other hold unchanged):
+
+| Build | Rule | Mean | Standard deviation | Coefficient of variation | Cap |
+|---|---|---|---|---|---|
+| reg120 | baseline | 106.2 s | 89.1 s | 0.84 | 300 s |
+| r150 | lottery stretched 1.5 times (section 6g's rule) | 161.3 s | 134.9 s | 0.84 | 450 s |
+| r200 | lottery stretched 2 times | 216.7 s | 180.8 s | 0.83 | 600 s |
+| rmix | with probability 0.15 a lottery stretched 4 times, otherwise one stretched 0.47 times | 106.4 s | 202.1 s | 1.90 | 1,200 s |
+
+r150 and r200 widen the spread by stretching, so the mean grows with it. rmix keeps the mean and more than doubles the spread, which is the property the specification names. The mixture's long draws and its choice come from a separate random stream.
+
+**Static content-server hold.** A content server waits a fixed, public duration S after its content arrives, then waits for quorum, as before. S is the 95th percentile of the time from content arrival to the moment quorum reaches the server, measured under each widened relay hold before this section was written (`python -m sna quorum`, R = 15, 40 decoys, 20 runs on run ids from 9,000,000 up), rounded up to 10 seconds:
+
+| Relay hold | Quorum after arrival: median | 90th percentile | 95th percentile | 99th percentile | Already known at arrival | S |
+|---|---|---|---|---|---|---|
+| reg120 | 221.2 s | 529.2 s | 615.2 s | 779.5 s | 17.4% | (not used) |
+| r150 | 225.7 s | 621.6 s | 737.1 s | 945.6 s | 23.4% | 740 s |
+| r200 | 222.6 s | 724.6 s | 862.3 s | 1,132.0 s | 28.6% | 870 s |
+| rmix | 220.4 s | 654.8 s | 967.3 s | 1,440.4 s | 20.7% | 970 s |
+
+The 95th percentile is this build's reading of the specification's "with high probability". By construction, quorum outlasts the static hold at about 5% of content servers.
+
+**Builds.** Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold. For each widened relay hold V in r150, r200 and rmix: V alone (the content servers keep their lottery pre-match hold); V_s (the static hold); V_sp (the static hold, with the post-match lottery of section 6j drawn only by a server that quorum reached after its static hold ended).
+
+**A risk the plan records in advance.** A static hold makes a content server's confirmation time its content's arrival time plus a public constant, whenever quorum came first. An observer can then subtract S from the submission time to recover the content arrival time, up to the registry window, and the content arrival follows the device's first-hop send by only the content path's two relay holds.
+
+**Cells and runs.** R = 1, 15 and 50 at 40 decoys, 200 runs per cell, run ids 0 to 199, recorded here before the first run. The whole section runs with one command, `python -m sna sequence 6k`, into `results/6k/`: the quorum measurement, every build's runs (with reg120 repeated for pairing), every build's analysis, latency, and pair gaps. The benchmark against the role-aware builds uses the committed section 6j results (dev200, dev300).
+
+**Reported**, side by side for reg120, dev200, dev300 and the nine new builds: the validator's lead, the content server's lead, the strongest component's multiple of random, and mean latency; the residual-case frequency; and the pair gaps of section 6j for every new build.
+
+**Development runs**, made before this section was written: 8 runs per cell.
+- Under rmix the observer's multiple of random rose above reg120's at every R (4.51, 4.65 and 6.02 against 4.14, 4.42 and 4.77), and the strongest component's reached 5.9 to 7.6.
+- Under every static-hold build the validator's lead was below 0 at every R (-3.65 to -0.34 points); the content server's lead ranged from -0.34 to +1.16 points.
+
+**Predictions:**
+- **K1.** Under r150_s, r200_s and rmix_s, the validator's lead over the observer is below 0 at every R.
+- **K2.** Under rmix, the observer's accuracy as a multiple of random is above reg120's at every R.
+- **K3.** Quorum outlasts the static hold at between 3% and 8% of content-server confirmations in every static-hold build and cell.
+- No prediction is made on whether any new build beats dev200 or dev300 on the strongest component; the development runs were too noisy to support one. The comparison is reported either way.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -531,7 +577,7 @@ Real records' timing does not depend on the decoy stream (the two streams are dr
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6j record their own cells and run counts.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6k record their own cells and run counts.
 
 ## 9. Amendment record
 
@@ -554,3 +600,5 @@ An eighth amendment adds the content-stretched, credential-shortened builds and 
 A ninth amendment fixes the claim criterion (section 6i), written before the comparison against it.
 
 A tenth amendment re-runs the content-side holds at stages that know their role and adds the post-match lottery (section 6j), written before any run of those builds.
+
+An eleventh amendment adds widened relay-hop holds and the static content-server hold (section 6k), written before any run of those builds.
