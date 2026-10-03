@@ -133,3 +133,19 @@ R = 1, 40 decoys, 120-second registry window:
 | post-match lottery | content server | 9.19% | ×3.89 [3.77, 4.02] | +0.52 | +0.94 | 825 s |
 
 Stretching the content-side holds where the specification allows it (the device's content channels and the content servers' own hold) removes the validator's lead and lowers the strongest component's multiple of random outside the current interval at every volume tested. The post-match lottery separates F's and I's submissions (3% within 5 seconds, against 53%) but leaves the content server as the strongest component.
+
+## Relay-hop variability and a static content-server hold, against role-aware scaling
+
+R = 1, 40 decoys, 120-second registry window:
+
+| Configuration | Validator's lead | Content server's lead | Strongest component | Multiple of random [95% CI] | Mean latency |
+|---|---|---|---|---|---|
+| current | +1.09 | +0.93 | validator 9.61% | ×4.06 [3.90, 4.24] | 684 s |
+| role-aware ×2 | -0.09 | +0.37 | content server 7.69% | ×3.56 [3.43, 3.71] | 897 s |
+| role-aware ×3 | -0.76 | +0.21 | content server 6.51% | ×3.42 [3.27, 3.57] | 1,169 s |
+| relay ×1.5, static hold | -2.08 | +0.06 | content server 8.16% | ×3.74 [3.60, 3.87] | 1,349 s |
+| relay ×2, static hold | -1.53 | -0.05 | gatekeeper 6.98% | ×3.71 [3.54, 3.88] | 1,625 s |
+| relay ×2, static hold, residual lottery | -1.53 | -0.10 | observer 6.99% | ×3.71 [3.52, 3.90] | 1,629 s |
+| relay mixture, static hold | -2.70 | +1.67 | content server 10.37% | ×6.56 [6.37, 6.75] | 1,499 s |
+
+The static hold leaves no component ahead of a passive observer, but partly by making the observer more accurate, and at 1.5 to 2.4 times the current latency; role-aware scaling reaches a lower strongest-component accuracy and multiple of random at less latency. The fixed-mean relay mixture raises every multiple.

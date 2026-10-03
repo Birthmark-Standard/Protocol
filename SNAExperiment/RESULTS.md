@@ -896,7 +896,7 @@ Every result used for these decisions was produced by code committed to this rep
 | Registry window and decoy target: 30, 100 and 150 decoys | section 6f | `e9f27ab` | `10c5c17` | the author's machine |
 
 - The simulator and the attacks (`sna/sim.py`, `sna/attacks.py`, `sna/params.py`, `sna/lottery.py`) are unchanged from `df09686` through `10c5c17`. The changes in between touch only the cell grid, the command line, the reports and an exploratory diagnostic. So the section 6e and 6f sweeps ran the same simulator and attack code, on two machines.
-- Every result depends only on the cell, the build and the run id, never on the worker count. Across the two machines (Linux and Windows) results agree to within floating-point ties, which can tip a near-equal pair of candidate scores one way or the other. Section 6h reran the reg120 and content200 cells on the second machine: content200 matched every decision, while reg120 differed in 1 of 172,650 passive-observer decisions (R = 50) and 1 credential-processor claim (R = 1). Section 6j reran reg120 at 20, 40 and 60 decoys and content200 and content300 at 40 decoys there: content200 again matched every decision; reg120 differed in 5 of 15,088,470 vantage decisions and content300 in 2 of 5,026,165, each by one correct decision more or fewer. No conclusion depends on these. Resampled intervals also differ slightly when a different set of cells is analysed together, because the resampling draws are taken in cell order.
+- Every result depends only on the cell, the build and the run id, never on the worker count. Across the two machines (Linux and Windows) results agree to within floating-point ties, which can tip a near-equal pair of candidate scores one way or the other. Section 6h reran the reg120 and content200 cells on the second machine: content200 matched every decision, while reg120 differed in 1 of 172,650 passive-observer decisions (R = 50) and 1 credential-processor claim (R = 1). Section 6j reran reg120 at 20, 40 and 60 decoys and content200 and content300 at 40 decoys there: content200 again matched every decision; reg120 differed in 5 of 15,088,470 vantage decisions and content300 in 2 of 5,026,165, each by one correct decision more or fewer. Section 6k reran reg120 at 40 decoys there: it differed in 3 of 5,029,490 vantage decisions (the same R = 50 observer decision as before, which the two first hops share). No conclusion depends on these. Resampled intervals also differ slightly when a different set of cells is analysed together, because the resampling draws are taken in cell order.
 - The two 480-second sweeps agree with each other. Under 480 seconds the content server is the strongest component in every cell of both, with a lead over the passive observer of 0.90 to 2.34 points.
 - The re-analysis below (section "Precision at coverage") adds metrics without changing any existing value; it was checked field by field against the committed summaries.
 
@@ -1285,3 +1285,111 @@ Every cell of pm120, dev200 and dev300 passes the criterion of section 6i. The h
 | J5. Under pm120, the observer's effect against reg120 within ±1 point in every cell | Confirmed: -0.47 to -0.27. |
 
 J1 to J5 follow development runs, as the plan discloses. No prediction was made for the content server's lead under pm120; it rose in all 9 cells.
+
+# Relay-hop variability and a static content-server hold
+
+Plan section 6k, run on the second machine with `python -m sna sequence 6k` into `results/6k/` (code commit `bced0c9`, results commit `0751a73`, both on `main`). Every build has the 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold; R = 1, 15 and 50 at 40 decoys; 200 runs per cell; every cell met the stability rule. The quorum-timing measurement on the second machine reproduced the one used to size the static holds exactly.
+
+## Summary
+
+1. **The combined mechanism does not beat role-aware scaling.** On the strongest single component's accuracy, its multiple of random and latency, the role-aware builds of section 6j are better at every volume: the static-hold builds reach ×3.71 to ×4.56 at 1,349 to 1,627 seconds of mean latency, against ×3.56 to ×4.45 at about 898 seconds for role-aware ×2 and ×3.42 to ×4.18 at about 1,169 seconds for role-aware ×3.
+2. **The static hold does remove every component's lead over the observer.** Under r150_s and r200_s no component leads the passive observer by more than 0.06 points at any R; the validator falls 0.9 to 2.1 points below it. Role-aware ×2 and ×3 leave the content server 0.21 to 0.40 points ahead.
+3. **It does so partly by helping the observer.** Against the same relay hold without it, the static hold raises the passive observer's accuracy by 0.22 to 2.04 points (every interval above 0). As the plan anticipated, a public constant after content arrival lets the observer recover the content's arrival time from the submission time.
+4. **Widening the relay holds alone lowers absolute accuracy but strengthens the validator.** r150 and r200 lower the observer by 0.64 to 2.32 points, but the validator's lead grows (to +0.92 to +1.73 points) and its multiple of random rises at R = 50, as in section 6g.
+5. **The fixed-mean mixture is counterproductive.** rmix raises the strongest component's multiple of random to ×6.36 to ×7.50 (content server), against ×4.06 to ×4.71 for reg120. Most of its holds are shorter than the baseline's (median 44 seconds against 80), and the long tail does not make up for them.
+6. **The residual case is rare, and the backup lottery is harmless and nearly useless.** Quorum outlasts the static hold at 4.7% to 5.3% of content-server confirmations. Keeping the post-match lottery for that case moves no vantage by more than 0.12 points, and lowers pairs within 5 seconds at submission from 3.0% to 5.7% down to 1.2% to 2.1%.
+
+## Side by side
+
+R = 1, 15 and 50 at 40 decoys. Leads are over the passive observer, in points [95% CI]; the multiple is the strongest single component's accuracy over its own random rate.
+
+| Build | R | Validator's lead | Content server's lead | Strongest component | Multiple of random | Mean latency |
+|---|---|---|---|---|---|---|
+| reg120 | 1 | +1.09 [+0.78, +1.42] | +0.93 [+0.71, +1.16] | validator 9.61% | ×4.06 [3.90, 4.24] | 684 s |
+| reg120 | 15 | +1.07 [+0.82, +1.34] | +0.87 [+0.71, +1.05] | validator 7.84% | ×4.46 [4.31, 4.61] | 693 s |
+| reg120 | 50 | +0.61 [+0.50, +0.72] | +0.53 [+0.44, +0.61] | validator 5.09% | ×4.71 [4.61, 4.81] | 687 s |
+| role-aware ×2 (dev200) | 1 | -0.09 [-0.41, +0.24] | +0.37 [+0.14, +0.60] | content server 7.69% | ×3.56 [3.43, 3.71] | 897 s |
+| role-aware ×2 | 15 | -0.17 [-0.40, +0.05] | +0.40 [+0.23, +0.57] | content server 6.11% | ×3.80 [3.67, 3.94] | 899 s |
+| role-aware ×2 | 50 | -0.16 [-0.27, -0.05] | +0.31 [+0.23, +0.39] | content server 4.39% | ×4.45 [4.35, 4.54] | 900 s |
+| role-aware ×3 (dev300) | 1 | -0.76 [-1.05, -0.49] | +0.21 [-0.03, +0.44] | content server 6.51% | ×3.42 [3.27, 3.57] | 1,169 s |
+| role-aware ×3 | 15 | -0.49 [-0.70, -0.29] | +0.34 [+0.18, +0.51] | content server 5.18% | ×3.66 [3.53, 3.80] | 1,168 s |
+| role-aware ×3 | 50 | -0.35 [-0.43, -0.26] | +0.24 [+0.17, +0.31] | content server 3.64% | ×4.18 [4.09, 4.27] | 1,170 s |
+| relay ×1.5 (r150) | 1 | +1.73 [+1.38, +2.08] | +0.70 [+0.48, +0.92] | validator 8.59% | ×4.30 [4.13, 4.47] | 838 s |
+| relay ×1.5 | 15 | +1.37 [+1.10, +1.64] | +0.55 [+0.39, +0.71] | validator 6.93% | ×4.66 [4.51, 4.82] | 845 s |
+| relay ×1.5 | 50 | +0.96 [+0.84, +1.07] | +0.31 [+0.23, +0.38] | validator 4.81% | ×5.26 [5.14, 5.38] | 839 s |
+| relay ×1.5, static (r150_s) | 1 | -2.08 [-2.39, -1.78] | +0.06 [-0.14, +0.26] | content server 8.16% | ×3.74 [3.60, 3.87] | 1,349 s |
+| relay ×1.5, static | 15 | -1.75 [-2.02, -1.49] | +0.03 [-0.13, +0.18] | content server 6.62% | ×4.08 [3.95, 4.22] | 1,347 s |
+| relay ×1.5, static | 50 | -1.23 [-1.34, -1.12] | -0.07 [-0.15, +0.00] | observer 4.39% | ×4.56 [4.45, 4.66] | 1,354 s |
+| relay ×1.5, static, residual lottery (r150_sp) | 1 | -2.03 [-2.33, -1.74] | +0.01 [-0.20, +0.21] | content server 8.04% | ×3.80 [3.67, 3.93] | 1,353 s |
+| relay ×1.5, static, residual lottery | 15 | -1.73 [-2.01, -1.45] | +0.09 [-0.07, +0.25] | content server 6.64% | ×4.23 [4.09, 4.37] | 1,352 s |
+| relay ×1.5, static, residual lottery | 50 | -1.17 [-1.28, -1.06] | -0.08 [-0.15, -0.01] | observer 4.38% | ×4.78 [4.67, 4.89] | 1,358 s |
+| relay ×2 (r200) | 1 | +1.66 [+1.28, +2.05] | +0.47 [+0.26, +0.69] | validator 7.77% | ×4.12 [3.93, 4.31] | 1,000 s |
+| relay ×2 | 15 | +1.27 [+1.00, +1.55] | +0.25 [+0.09, +0.42] | validator 6.17% | ×4.39 [4.22, 4.56] | 1,001 s |
+| relay ×2 | 50 | +0.92 [+0.79, +1.03] | +0.12 [+0.05, +0.20] | validator 4.37% | ×5.06 [4.93, 5.20] | 1,001 s |
+| relay ×2, static (r200_s) | 1 | -1.53 [-1.87, -1.18] | -0.05 [-0.26, +0.18] | gatekeeper 6.98% | ×3.71 [3.54, 3.88] | 1,625 s |
+| relay ×2, static | 15 | -1.15 [-1.41, -0.87] | -0.03 [-0.19, +0.12] | first hop, credential 5.54% | ×3.96 [3.78, 4.13] | 1,621 s |
+| relay ×2, static | 50 | -0.92 [-1.01, -0.82] | -0.02 [-0.10, +0.05] | first hop, credential 3.74% | ×4.35 [4.25, 4.45] | 1,627 s |
+| relay ×2, static, residual lottery (r200_sp) | 1 | -1.53 [-1.86, -1.19] | -0.10 [-0.30, +0.13] | observer 6.99% | ×3.71 [3.52, 3.90] | 1,629 s |
+| relay ×2, static, residual lottery | 15 | -1.10 [-1.38, -0.82] | -0.02 [-0.19, +0.14] | first hop, credential 5.54% | ×3.95 [3.78, 4.13] | 1,625 s |
+| relay ×2, static, residual lottery | 50 | -0.89 [-0.98, -0.78] | -0.02 [-0.09, +0.05] | first hop, credential 3.72% | ×4.33 [4.23, 4.44] | 1,631 s |
+| relay mixture (rmix) | 1 | +1.77 [+1.37, +2.15] | +2.90 [+2.61, +3.17] | content server 9.59% | ×6.36 [6.16, 6.57] | 788 s |
+| relay mixture | 15 | +1.26 [+0.99, +1.52] | +1.99 [+1.78, +2.20] | content server 7.54% | ×6.71 [6.52, 6.91] | 780 s |
+| relay mixture | 50 | +0.82 [+0.72, +0.92] | +1.46 [+1.38, +1.54] | content server 5.16% | ×7.50 [7.36, 7.62] | 785 s |
+| relay mixture, static (rmix_s) | 1 | -2.70 [-3.06, -2.35] | +1.67 [+1.40, +1.93] | content server 10.37% | ×6.56 [6.37, 6.75] | 1,499 s |
+| relay mixture, static | 15 | -2.33 [-2.55, -2.12] | +1.17 [+0.98, +1.37] | content server 8.39% | ×7.13 [6.92, 7.32] | 1,495 s |
+| relay mixture, static | 50 | -1.53 [-1.63, -1.43] | +0.81 [+0.73, +0.89] | content server 5.70% | ×7.89 [7.77, 8.01] | 1,495 s |
+| relay mixture, static, residual lottery (rmix_sp) | 1 | -2.53 [-2.88, -2.18] | +1.74 [+1.49, +1.99] | content server 10.35% | ×6.54 [6.35, 6.73] | 1,505 s |
+| relay mixture, static, residual lottery | 15 | -2.19 [-2.41, -1.98] | +1.21 [+1.02, +1.40] | content server 8.33% | ×7.07 [6.88, 7.27] | 1,501 s |
+| relay mixture, static, residual lottery | 50 | -1.48 [-1.59, -1.38] | +0.81 [+0.74, +0.89] | content server 5.68% | ×7.86 [7.75, 7.99] | 1,502 s |
+
+## Paired effects of the static hold
+
+Passive observer's device accuracy, static hold minus the same relay hold without it, in points [95% CI]:
+
+| Relay hold | R = 1 | R = 15 | R = 50 |
+|---|---|---|---|
+| ×1.5 | +1.24 [+0.81, +1.70] | +1.02 [+0.63, +1.40] | +0.60 [+0.44, +0.76] |
+| ×2 | +0.83 [+0.44, +1.21] | +0.58 [+0.19, +0.96] | +0.22 [+0.06, +0.37] |
+| mixture | +2.04 [+1.65, +2.45] | +1.67 [+1.37, +1.96] | +1.17 [+1.04, +1.29] |
+
+The validator falls 1.18 to 2.54 points under the static hold. The lead disappears because the observer gains and the validator loses, not because every component gets worse.
+
+## The residual case and the backup lottery
+
+From `results/6k/pair_gaps.json` (real records, 40 decoys, 20 runs per cell):
+
+| Build | Quorum outlasts one server's static hold | Outlasts either server's | Outlasts both | Pairs within 5 s at submission | Pairs within 5 s as they leave | Separated pairs put back in one bundle |
+|---|---|---|---|---|---|---|
+| reg120 (lottery hold) | 67.8% to 68.2% | 83.0% to 83.7% | 52.1% to 52.6% | 53.4% to 53.9% | 65.2% to 66.5% | 25.1% to 27.8% |
+| r150_s | 4.7% to 5.1% | 7.5% to 8.1% | 1.8% to 2.2% | 3.1% to 3.4% | 17.7% to 18.2% | 14.8% to 15.6% |
+| r150_sp | the same | the same | the same | 1.2% to 1.5% | 16.8% to 17.4% | 15.6% to 16.5% |
+| r200_s | 4.9% to 5.3% | 7.9% to 8.6% | 2.0% to 2.1% | 3.0% to 3.5% | 14.5% to 15.0% | 11.6% to 12.1% |
+| r200_sp | the same | the same | the same | 1.2% to 1.5% | 13.7% to 14.1% | 12.6% to 12.9% |
+| rmix_s | 4.7% to 5.0% | 5.6% to 6.2% | 3.8% | 5.6% to 5.7% | 24.1% to 24.3% | 19.6% to 19.9% |
+| rmix_sp | the same | the same | the same | 2.0% to 2.1% | 22.0% to 22.3% | 20.4% to 20.8% |
+
+- The static hold alone already cuts pairs within 5 seconds at submission from about 54% to 3% to 6%: once both servers confirm on their own static clocks, they submit at their own content arrival times plus the constant, which differ.
+- Keeping the post-match lottery for the residual case moves every vantage's device accuracy by at most 0.12 points against the static hold alone (the observer by -0.09 to +0.03, intervals at or near 0), and cuts the remaining coincident pairs by about half. Its downside in section 6j came from applying it to every confirmation; applied to 5% of them, it nearly vanishes, and so does its effect.
+
+## Claim criterion
+
+Every cell of the nine new builds passes the criterion of section 6i. The highest top-1% precision is 20.3% (upper bound 22.6%, rmix_s at R = 1); the largest share of decisions above 50% precision is 0.048% (r200 at R = 1).
+
+## Checks and controls
+
+- **Outcome-shuffle control:** between 1 and 5 of 21 stable cells per build have a shuffled-outcome AUC interval excluding 0.5, all within the plan's 0.03 margin.
+
+## Predictions
+
+| Prediction | Outcome |
+|---|---|
+| K1. Under r150_s, r200_s and rmix_s, the validator's lead is below 0 at every R | Confirmed: -2.70 to -0.92. |
+| K2. Under rmix, the observer's multiple of random is above reg120's at every R | Confirmed: ×4.59, ×5.11 and ×5.57 against ×4.14, ×4.42 and ×4.77. |
+| K3. Quorum outlasts the static hold at 3% to 8% of content-server confirmations | Confirmed: 4.7% to 5.3%. |
+
+K1 to K3 follow development runs, as the plan discloses.
+
+## Scope
+
+- **One sizing rule.** The static hold was sized at the 95th percentile of quorum after arrival. A shorter static hold would cost less latency and leave quorum outlasting it more often; a longer one the reverse. Only the 95th percentile was tested.
+- **Static hold on the baseline relay hold.** The static hold was tested only together with widened relay holds, as the specification pairs them. Its effect on the baseline relay hold, or together with the role-aware holds of section 6j, was not tested.
