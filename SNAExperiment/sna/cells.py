@@ -71,6 +71,10 @@ for _v, _sv in STATIC_S.items():
     _base = {k: x for k, x in BUILDS[_v].items() if k != "target"}
     BUILDS[f"{_v}_s"] = dict(target=f"link_{_v}_s", cs_static_s=_sv, **_base)
     BUILDS[f"{_v}_sp"] = dict(target=f"link_{_v}_sp", cs_static_s=_sv, post_match_residual=True, **_base)
+# section 6l: role-aware x2 (device content channels and content servers' own lottery hold) together
+# with every relay hop widened x1.5 as in r150, without the static hold
+BUILDS["dev200_r150"] = dict(target="link_dev200_r150", reg_bundle_s=P.REG_BUNDLE_S, content_device_scale=2.0,
+                             cs_hold_scale=2.0, relay_scale=1.5)
 DEFAULT_BUILD = f"reg{int(P.REG_BUNDLE_S)}"
 PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
                 **{f"reg{w}": ("push",) for w in REG_WINDOWS}, "reg480": ("push", "reg120"),
@@ -79,7 +83,8 @@ PRIOR_BUILDS = {"twopoint": ("push",), "regbundle": ("twopoint", "push"),
                 "dev200": ("reg120", "content200"), "dev300": ("reg120", "content300"), "pm120": ("reg120",),
                 **{v: ("reg120",) for v in ("r150", "r200", "rmix")},
                 **{f"{v}_s": ("reg120", v) for v in ("r150", "r200", "rmix")},
-                **{f"{v}_sp": ("reg120", f"{v}_s") for v in ("r150", "r200", "rmix")}}
+                **{f"{v}_sp": ("reg120", f"{v}_s") for v in ("r150", "r200", "rmix")},
+                "dev200_r150": ("dev200", "dev300")}
 
 # Sequences: every step of one plan section, run one after another by `python -m sna sequence <name>`.
 SEQUENCES = {
@@ -96,6 +101,9 @@ SEQUENCES = {
                                                "rmix", "rmix_s", "rmix_sp")],
                pairs=dict(builds=("reg120", "r150", "r150_s", "r150_sp", "r200", "r200_s", "r200_sp",
                                   "rmix", "rmix_s", "rmix_sp"))),
+    "6l": dict(out="results/6l", runs=200,
+               steps=[(b, "settled") for b in ("dev200", "dev300", "dev200_r150")],
+               pairs=dict(builds=("dev200", "dev300", "dev200_r150"))),
     "smoke": dict(out="results/quick/sequence", runs=2, latency_runs=2,     # checks the sequence itself; never reported
                   steps=[("reg120", "settled"), ("r150_sp", "settled")], quorum=dict(builds=("r150",)),
                   pairs=dict(builds=("reg120", "r150_sp"), runs=2)),
