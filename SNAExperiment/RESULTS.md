@@ -1393,3 +1393,88 @@ K1 to K3 follow development runs, as the plan discloses.
 
 - **One sizing rule.** The static hold was sized at the 95th percentile of quorum after arrival. A shorter static hold would cost less latency and leave quorum outlasting it more often; a longer one the reverse. Only the 95th percentile was tested.
 - **Static hold on the baseline relay hold.** The static hold was tested only together with widened relay holds, as the specification pairs them. Its effect on the baseline relay hold, or together with the role-aware holds of section 6j, was not tested.
+
+# Role-aware ×2 with relay-hop holds widened ×1.5
+
+Plan section 6l, run with `python -m sna sequence 6l` into `results/6l/` (code commit `19ba5b8`; the table label for the new build was added in the commit after it, which changes no number). R = 1, 15 and 50 at 40 decoys; 200 runs per cell; every cell met the stability rule. The reruns of dev200 and dev300 there reproduce the committed section 6j values exactly, so the new build is paired run by run against both.
+
+## Summary
+
+1. **The combination removes the content server's lead, and does so more completely than role-aware ×3.** Its lead over the passive observer is +0.06, +0.05 and +0.05 points at R = 1, 15 and 50 (every interval contains 0), against +0.37, +0.40 and +0.31 under role-aware ×2 and +0.21, +0.34 and +0.24 under ×3. The validator stays at or below the observer (-0.11 to -0.03 points).
+2. **It costs less latency than ×3.** Mean capture to finalization is 1,037 to 1,042 seconds, about 130 seconds less than ×3 (1,168 to 1,170) and about 140 seconds more than ×2 (898 to 901).
+3. **It does not lower the strongest component's multiple of random below ×2's.** ×3.56, ×3.76 and ×4.33, against ×3.56, ×3.80 and ×4.45 under ×2 and ×3.42, ×3.66 and ×4.18 under ×3. Every interval overlaps both. The lead disappears because the content server falls further than the observer, not because the best attacker does much better or worse against random.
+4. **It does not help the observer, unlike the static hold.** Against ×2, the relay widening lowers the observer by 0.35 to 0.59 points and the content server by 0.61 to 0.91 points (paired, every interval below 0).
+5. **Role-aware holds alone already separate F and I in part.** Pairs within 5 seconds of each other at the point of submission: 20.1% to 22.9% under ×2, 9.1% to 9.8% under ×3, and 22.1% to 24.2% under the combination. The figures are 53.4% to 53.9% under reg120 and 3.3% to 3.4% under the post-match lottery.
+
+## Side by side
+
+R = 1, 15 and 50 at 40 decoys. Leads are over the passive observer, in points [95% CI]; the multiple is the strongest single component's accuracy over its own random rate. r150_s is the committed section 6k result.
+
+| Build | R | Validator's lead | Content server's lead | Strongest component | Multiple of random | Mean latency |
+|---|---|---|---|---|---|---|
+| role-aware ×2 (dev200) | 1 | -0.09 [-0.41, +0.24] | +0.37 [+0.14, +0.60] | content server 7.69% | ×3.56 [3.43, 3.71] | 898 s |
+| role-aware ×2 | 15 | -0.17 [-0.40, +0.05] | +0.40 [+0.23, +0.57] | content server 6.11% | ×3.80 [3.67, 3.94] | 899 s |
+| role-aware ×2 | 50 | -0.16 [-0.27, -0.05] | +0.31 [+0.23, +0.39] | content server 4.39% | ×4.45 [4.35, 4.54] | 901 s |
+| role-aware ×3 (dev300) | 1 | -0.76 [-1.05, -0.49] | +0.21 [-0.03, +0.44] | content server 6.51% | ×3.42 [3.27, 3.57] | 1,169 s |
+| role-aware ×3 | 15 | -0.49 [-0.70, -0.29] | +0.34 [+0.18, +0.51] | content server 5.18% | ×3.66 [3.53, 3.80] | 1,168 s |
+| role-aware ×3 | 50 | -0.35 [-0.43, -0.26] | +0.24 [+0.17, +0.31] | content server 3.64% | ×4.18 [4.09, 4.27] | 1,170 s |
+| relay ×1.5, static (r150_s) | 1 | -2.08 [-2.39, -1.78] | +0.06 [-0.14, +0.26] | content server 8.16% | ×3.74 [3.60, 3.87] | 1,349 s |
+| relay ×1.5, static | 15 | -1.75 [-2.02, -1.49] | +0.03 [-0.13, +0.18] | content server 6.62% | ×4.08 [3.95, 4.22] | 1,347 s |
+| relay ×1.5, static | 50 | -1.23 [-1.34, -1.12] | -0.07 [-0.15, +0.00] | observer 4.39% | ×4.56 [4.45, 4.66] | 1,354 s |
+| role-aware ×2 + relay ×1.5 (dev200_r150) | 1 | -0.11 [-0.45, +0.23] | +0.06 [-0.15, +0.27] | content server 6.79% | ×3.56 [3.41, 3.73] | 1,037 s |
+| role-aware ×2 + relay ×1.5 | 15 | -0.08 [-0.35, +0.16] | +0.05 [-0.12, +0.22] | content server 5.34% | ×3.76 [3.62, 3.91] | 1,042 s |
+| role-aware ×2 + relay ×1.5 | 50 | -0.03 [-0.13, +0.07] | +0.05 [-0.02, +0.11] | content server 3.78% | ×4.33 [4.24, 4.42] | 1,042 s |
+
+Passive observer's device accuracy: 7.32%, 5.71% and 4.08% under ×2; 6.30%, 4.83% and 3.40% under ×3; 8.10%, 6.59% and 4.39% under r150_s; 6.73%, 5.29% and 3.73% under the combination.
+
+## Paired effects against role-aware ×2 and ×3
+
+Device accuracy, dev200_r150 minus the earlier build, in points [95% CI]:
+
+| Against | Vantage | R = 1 | R = 15 | R = 50 |
+|---|---|---|---|---|
+| ×2 | observer | -0.59 [-0.78, -0.40] | -0.42 [-0.55, -0.27] | -0.35 [-0.42, -0.27] |
+| ×2 | content server | -0.91 [-1.11, -0.69] | -0.77 [-0.93, -0.61] | -0.61 [-0.69, -0.54] |
+| ×2 | validator | -0.61 [-0.88, -0.35] | -0.32 [-0.50, -0.14] | -0.22 [-0.30, -0.13] |
+| ×3 | observer | +0.40 [+0.01, +0.79] | +0.58 [+0.25, +0.94] | +0.37 [+0.24, +0.50] |
+| ×3 | content server | -0.56 [-1.38, +0.23] | +0.29 [-0.26, +0.85] | +0.29 [+0.04, +0.54] |
+| ×3 | validator | +1.04 [+0.64, +1.46] | +0.98 [+0.66, +1.30] | +0.70 [+0.56, +0.84] |
+
+Against ×2, the relay widening lowers every vantage, and the content server most: its lead falls by 0.26 to 0.35 points. Against ×3, the combination leaves every vantage's absolute accuracy higher at R = 15 and 50, which means it hides the device less in absolute terms, but it leaves the content server with less of an edge over the observer.
+
+## F and I submitting together
+
+Real records, 40 decoys, 20 runs per cell (`results/6l/pair_gaps.json`). Section 6j's values for reg120 and pm120 are repeated for reference.
+
+| Build | Within 5 s at submission (R = 1 / 15 / 50) | Within 5 s as they leave | Separated pairs put back in one bundle | Quorum outlasted both servers' holds |
+|---|---|---|---|---|
+| reg120 | 53.4% / 53.7% / 53.9% | 65.2% / 66.5% / 65.4% | 25.5% / 27.8% / 25.1% | 52.1% to 52.6% (R = 1 to 50) |
+| pm120 | 3.3% / 3.4% / 3.3% | 29.3% / 31.4% / 30.2% | 27.0% / 29.0% / 27.9% | not reported |
+| role-aware ×2 | 22.9% / 20.1% / 21.2% | 33.8% / 30.7% / 32.1% | 14.2% / 13.4% / 13.9% | 21.5% / 19.1% / 20.2% |
+| role-aware ×3 | 9.8% / 9.1% / 9.4% | 16.9% / 17.5% / 17.3% | 7.8% / 9.3% / 8.8% | 9.0% / 8.3% / 8.7% |
+| role-aware ×2 + relay ×1.5 | 24.2% / 22.1% / 22.9% | 34.2% / 32.2% / 32.5% | 13.1% / 13.1% / 12.4% | 23.4% / 21.2% / 21.9% |
+
+- F and I submit together exactly when quorum reaches both after their own holds have released: every such pair is within 5 seconds, under every build here. Stretching the content servers' own hold makes that rarer, so the role-aware holds cut the coincident pairs by more than half at ×2 and by more than four fifths at ×3, without a post-match lottery.
+- The relay widening slightly raises the share (by 1.3 to 2.0 points against ×2): quorum outlasts both servers' holds at 21.2% to 23.4% of records, against 19.1% to 21.5% under ×2. A likely reason (not tested): the credential path has two relay hops before the gatekeepers, so the widening delays quorum by more than it delays content arrival.
+- None of these reaches the post-match lottery's 3.3% to 3.4% at submission. As the submissions leave, after the 120-second window, ×3 (about 17%) is below the lottery (29% to 31%), and ×2 and the combination (31% to 34%) are close to it.
+
+## Claim criterion
+
+Every cell of dev200_r150 passes the criterion of section 6i. The highest top-1% precision is 16.1% (upper bound 20.0%, passive observer at R = 1); the largest share of decisions above 50% precision is 0.053%.
+
+## Checks and controls
+
+- **Outcome-shuffle control:** none of the 21 stable cells under dev200_r150 has a shuffled-outcome AUC interval excluding 0.5; the largest distance from 0.5 is 0.010.
+
+## Against the decision rule of section 6l
+
+The rule stated before the run: adopt the combination if the content server's lead reaches ×3's level (about +0.21 or lower) at meaningfully less than ×3's 1,169 seconds. Its lead is +0.05 to +0.06 at every R, below ×3's at every R, at 1,037 to 1,042 seconds, about 11% less latency than ×3. The rule is met.
+
+Two qualifications the rule does not cover:
+- **The multiple of random does not improve on ×2.** On the accuracy-ratio description of section 6i, the combination sits with ×2, and ×3 stays lowest at every R (intervals overlapping). If the ratio matters as much as the lead, ×3 remains the stronger build.
+- **Absolute accuracy is higher than under ×3.** Against ×3, the observer and validator are 0.37 to 1.04 points more accurate under the combination. The combination is better at keeping any one component level with the observer, and worse at hiding the device from everyone.
+
+## Scope
+
+- **One factor pair.** Only ×2 role-aware with ×1.5 relay was tested. Other pairs (×2 with ×1.25, ×1.5 role-aware with ×1.5 relay) were not.
+- **The credential processor's fan-out and the gatekeepers are not widened**, as under r150. The request for this run listed the credential processor (C) among the relay hops, but it also asked for the r150 hop set; the build follows r150.
