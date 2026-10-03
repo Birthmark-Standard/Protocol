@@ -568,6 +568,24 @@ The 95th percentile is this build's reading of the specification's "with high pr
 - **K3.** Quorum outlasts the static hold at between 3% and 8% of content-server confirmations in every static-hold build and cell.
 - No prediction is made on whether any new build beats dev200 or dev300 on the strongest component; the development runs were too noisy to support one. The comparison is reported either way.
 
+## 6l. Role-aware ×2 with relay-hop holds widened ×1.5
+
+Written after section 6k and before the sweep below.
+
+**Build.** dev200_r150 combines two pieces that sections 6j and 6k tested apart, with nothing else changed:
+- **Role-aware ×2, as dev200.** The device's hold on its two content channels and the content servers' own pre-match node-clock hold are stretched by 2 (release probability 8.33% / 2, forced release at tick 60). Both stay random lottery draws.
+- **Relay-hop holds widened ×1.5, as r150.** Every relay hop (A, B, D, E, G, H) holds on a lottery stretched by 1.5, identically on every path. There is no static content-server hold and no post-match lottery.
+
+The credential processor's fan-out holds and the gatekeepers' holds stay on the baseline lottery, as they did under r150. The 120-second registry window, gatekeeper departure bundling, board pushes and the relay-lottery gatekeeper hold are unchanged.
+
+**Cells and runs.** R = 1, 15 and 50 at 40 decoys, 200 runs per cell, run ids 0 to 199, recorded here before the first run. The whole section runs with one command, `python -m sna sequence 6l`, into `results/6l/`. dev200 and dev300 are repeated there, so the new build's effect against each is paired run by run. The r150_s benchmark uses the committed section 6k results.
+
+**Reported**, side by side for dev200, dev300, r150_s and dev200_r150: the validator's lead, the content server's lead, the strongest component and its multiple of random [95% CI], and mean capture-to-finalization latency. The pair gaps of section 6j are reported for dev200, dev300 and dev200_r150; they have not been measured for any role-aware build before.
+
+**Decision rule**, stated before the run. The combination is worth adopting if the content server's lead reaches dev300's level (about +0.21 points or lower) at a mean latency meaningfully below dev300's 1,169 seconds. If its content-server lead is not meaningfully below dev200's (+0.31 to +0.40 points) while its latency rises, the relay-hop widening adds cost without adding protection.
+
+**Predictions.** None. No development runs were made.
+
 ## 7. Deliverables
 
 - `README.md`
@@ -577,7 +595,7 @@ The 95th percentile is this build's reading of the specification's "with high pr
 
 ## 8. Run count
 
-200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6k record their own cells and run counts.
+200 runs per cell, run ids 0 to 199, for the 8 cells in section 5 (5 with decoys, 2 without, and the sensitivity control). Recorded before the first sweep run. Sections 6b to 6l record their own cells and run counts.
 
 ## 9. Amendment record
 
@@ -602,3 +620,5 @@ A ninth amendment fixes the claim criterion (section 6i), written before the com
 A tenth amendment re-runs the content-side holds at stages that know their role and adds the post-match lottery (section 6j), written before any run of those builds.
 
 An eleventh amendment adds widened relay-hop holds and the static content-server hold (section 6k), written before any run of those builds.
+
+A twelfth amendment adds role-aware ×2 together with relay-hop holds widened ×1.5 (section 6l), written before any run of that build.

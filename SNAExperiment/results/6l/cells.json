@@ -1,0 +1,35 @@
+{
+ "R1_D40_B": {
+  "key": "R1_D40_B",
+  "R": 1.0,
+  "T": 41.0,
+  "decoys": 40.0,
+  "bundle": true,
+  "control": false,
+  "build": "dev200_r150",
+  "window_s": 125114.15842025627,
+  "D": 625.5707921012813
+ },
+ "R15_D40_B": {
+  "key": "R15_D40_B",
+  "R": 15.0,
+  "T": 55.0,
+  "decoys": 40.0,
+  "bundle": true,
+  "control": false,
+  "build": "dev200_r150",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ },
+ "R50_D40_B": {
+  "key": "R50_D40_B",
+  "R": 50.0,
+  "T": 90.0,
+  "decoys": 40.0,
+  "bundle": true,
+  "control": false,
+  "build": "dev200_r150",
+  "window_s": 10800,
+  "D": 625.5707921012813
+ }
+}
