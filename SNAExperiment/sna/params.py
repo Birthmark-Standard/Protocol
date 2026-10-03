@@ -32,6 +32,9 @@ DECOYS_IN_FLIGHT = 40.0    # default decoy target (checks): decoy transactions i
 BUNDLE_S = 30.0            # gatekeeper departure bundling window (when bundling is on)
 GK_IMMEDIATE_P = 0.6       # two-point gatekeeper hold: release at once with this probability,
 GK_CAP_S = 300.0           #   otherwise hold the full 5-minute cap (mean 120 s)
+RELAY_MIX_P = 0.15         # relay-hop mixture: share of holds drawn from the long lottery,
+RELAY_MIX_LONG = 4.0       #   which is stretched this much,
+RELAY_MIX_SHORT = 0.47     #   the rest from a lottery shortened this much (mean kept at about 106 s)
 REG_BUNDLE_S = 120.0       # registry-level pooled bundling window (sized against the measured submission rate)
 BOARD_PUSH_S = 10.0        # each match board pushes its new matches to every content server on this period
 QUORUM_TIMEOUT_S = 30 * 60 # content server drops a packet whose quorum has not formed in 30 minutes
@@ -87,6 +90,10 @@ class Config:
     content_device_scale: float = 1.0  # the device's hold on its two content channels only: mean and cap x this
     cs_hold_scale: float = 1.0         # the content servers' own pre-match node-clock hold: mean and cap x this
     post_match: bool = False           # content servers' post-match lottery after quorum is confirmed
+    relay_scale: float = 1.0           # every relay hop's hold (A, B, D, E, G, H), every path alike: mean and cap x this
+    relay_mix: bool = False            # every relay hop's hold is a fixed-mean mixture of a short and a long lottery
+    cs_static_s: float = 0.0           # content servers' static pre-match hold after content arrival (s); 0 = lottery hold
+    post_match_residual: bool = False  # post-match lottery only when quorum outlasted the static hold
     background_enabled: bool = True
     nonblending_enabled: bool = True
     bg_clients_per_node: int = BG_CLIENTS_PER_NODE
@@ -97,14 +104,20 @@ class Config:
                    self.content_hold_scale * self.content_device_scale, self.cs_hold_scale)
 
     @property
+    def chain_scale_max(self) -> float:
+        """How much longer than the default a transaction's chain can run; sets the simulation margins."""
+        return max(self.hold_scale_max, self.relay_scale, RELAY_MIX_LONG if self.relay_mix else 1.0,
+                   1.0 + self.cs_static_s / (TICK_S * MAX_TICKS))
+
+    @property
     def warmup_s(self) -> float:
         """Warm-up before the scored window; lengthened with the relay holds so traffic in flight
         reaches steady state first (unchanged at scale 1)."""
-        return WARMUP_S * self.hold_scale_max
+        return WARMUP_S * self.chain_scale_max
 
     @property
     def horizon_s(self) -> float:
-        return self.warmup_s + self.measure_s + COOLDOWN_S * self.hold_scale_max
+        return self.warmup_s + self.measure_s + COOLDOWN_S * self.chain_scale_max
 
     @property
     def real_devices(self) -> int:

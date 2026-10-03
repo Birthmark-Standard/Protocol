@@ -140,3 +140,16 @@ def test_post_match_lottery_starts_at_confirmation():
     ok = b["ok_f"]
     wait = b["ready_f"][ok] - b["det_f"][ok]
     assert (wait >= 0).all() and (wait <= P.TICK_S * (P.MAX_TICKS + 1)).all()
+
+
+def test_static_hold_and_residual_lottery():
+    """The static hold confirms at the later of arrival plus the static wait and the quorum push; the
+    residual-case lottery delays only servers that waited on quorum."""
+    cfg = SMALL.with_(bundle_s=P.BUNDLE_S, relay_scale=1.5, cs_static_s=600.0)
+    s = S.simulate(cfg, 23, POOLS).subs
+    ok = s["ok_f"]
+    assert np.allclose(s["det_f"][ok], np.maximum(s["arr_f"][ok] + 600.0, s["known_f"][ok]))
+    s2 = S.simulate(cfg.with_(post_match_residual=True), 23, POOLS).subs
+    late = ok & (s2["known_f"] > s2["arr_f"] + 600.0)
+    assert np.array_equal(s2["ready_f"][ok & ~late], s2["det_f"][ok & ~late])
+    assert (s2["ready_f"][late] >= s2["det_f"][late]).all()

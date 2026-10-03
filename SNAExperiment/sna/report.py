@@ -122,6 +122,12 @@ def _effect_table(md, effects):
 
 
 BUILD_TEXT = {
+    "r150": "the 120-second registry window, with every relay hop's hold stretched 1.5 times on every path",
+    "r200": "the 120-second registry window, with every relay hop's hold stretched 2 times on every path",
+    "rmix": "the 120-second registry window, with every relay hop's hold drawn from a fixed-mean short/long mixture",
+    **{f"{v}_s": f"the {v} relay hold and a static content-server hold" for v in ("r150", "r200", "rmix")},
+    **{f"{v}_sp": f"the {v} relay hold, a static content-server hold, and the post-match lottery in the residual case"
+       for v in ("r150", "r200", "rmix")},
     **{f"dev{k}": f"the 120-second registry window, with the device's content-channel hold and the content servers' "
                   f"own hold stretched {k / 100:g} times" for k in (200, 300)},
     "pm120": "the 120-second registry window and the content servers' post-match lottery",
