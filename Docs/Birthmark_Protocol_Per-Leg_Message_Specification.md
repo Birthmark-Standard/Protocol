@@ -120,7 +120,7 @@ The system injects decoy transactions to enlarge the candidate pool available to
 
 A decoy transaction is a genuine transaction from a genuinely registered device credential, not a distinguishable, invalid, or specially marked one. The credentials belong to a pool of identities operated by the same infrastructure that generates decoy traffic and distributes the routing-code table, registered with a validator the same way any other device is. Nothing about a decoy transaction differs structurally from a real one at any stage: V approves it normally, C fans it out normally, every signature is genuinely valid, gatekeeper verification and board quorum proceed normally, and F and I finalize a registry record for it exactly as they would for real content. No party, including V, C, and the gatekeepers, has any way to distinguish a decoy transaction from a real one, because there is nothing structurally different to distinguish. The decoy-identity pool must be large enough that no single identity's submission rate looks statistically different from a plausible device's. The pool size is expected to vary with the deployment's own phase and scale, and is not meant to be fixed to a single documented number; it is an operating parameter the deploying infrastructure adjusts as needed, using as many rotating identities as the deployment's own scale calls for.
 
-Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: 60 ± 10 transactions in flight at any given time, regardless of how much real traffic exists. Decoy volume is added on top of real traffic at every level of real traffic, never reduced to make room for it. The randomized range, rather than a single exact constant, keeps the target from being a precisely known value an observer could characterize and subtract out exactly; it does not eliminate the risk that enough observed windows could statistically narrow the underlying distribution.
+Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: 40 ± 10 transactions in flight at any given time, regardless of how much real traffic exists. Decoy volume tops up whatever real traffic falls short of this target. The randomized range, rather than a single exact constant, keeps the target from being a precisely known value an observer could characterize and subtract out exactly; it does not eliminate the risk that enough observed windows could statistically narrow the underlying distribution.
 
 Every decoy-produced registry record is permanent, exactly like a real one; none are ever removed. Whether and how to prune decoy records to manage hot-storage growth is an open implementation question, deferred rather than specified here.
 
@@ -128,33 +128,31 @@ The Random relay hops (B, E, H) see no difference between decoy and real traffic
 
 ## Hold timing
 
-Every hold in this spec draws from the same lottery shape: a 10-second tick and geometric release, capped at three times that stage's own mean. Each stage has its own mean; its per-tick release probability is set so that, with the cap, the hold averages exactly that mean. The departure bundle inclusion lottery uses a 30-second tick (one per bundle boundary), a 25% chance of boarding at each boundary, and a cap at 12 boundaries. Settled values:
+Every hold in this spec draws from the same lottery shape — a 10-second tick, geometric release, with a cap at 30 ticks — but no longer shares one baseline mean. Each stage's per-tick release probability and cap are set independently to hit that stage's own target mean. The departure bundle inclusion lottery uses a 30-second tick (one per bundle boundary) with a cap at 12 ticks (3× its mean). Settled means:
 
-| Stage | Mean | Std dev | CoV | Release probability per tick | Cap |
-| --- | --- | --- | --- | --- | --- |
-| Relay hops (A, B, D, E, G, H), every path | 120 s | 103.1 s | 0.86 | 7.52% | 360 s (36 ticks) |
-| Device's credential-channel hold | 120 s | 103.1 s | 0.86 | 7.52% | 360 s (36 ticks) |
-| Device's content-channel holds (both) | 240 s | 206.9 s | 0.86 | 3.84% | 720 s (72 ticks) |
-| C's hold before sending CV-1 | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
-| V's hold before sending CV-2 | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
-| C's fan-out to each gatekeeper (independent per leg) | 60 s | 51.3 s | 0.85 | 14.46% | 180 s (18 ticks) |
-| Gatekeeper's own hold | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
-| Departure bundle inclusion lottery | 101 s | 90.8 s | 0.90 | 25% per 30 s boundary | 12 boundaries (360 s) |
-| F/I's pre-match hold | 240 s | 206.9 s | 0.86 | 3.84% | 720 s (72 ticks) |
-| Post-match lottery | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
-| Registry bundle wait | 60 s | 34.6 s | 0.58 | shared 120 s schedule | 120 s |
+| Stage | Mean | Std dev | CoV |
+| --- | --- | --- | --- |
+| Relay hops (A, B, D, E, G, H), every path | 120 s | 100.7 s | 0.84 |
+| Device's credential-channel hold | 120 s | 100.7 s | 0.84 |
+| Device's content-channel holds (both) | 240 s | 201.4 s | 0.84 |
+| C's hold before sending CV-1 | 30 s | 25.2 s | 0.84 |
+| V's hold before sending CV-2 | 30 s | 25.2 s | 0.84 |
+| C's fan-out to each gatekeeper (independent per leg) | 60 s | 50.3 s | 0.84 |
+| Gatekeeper's own hold | 30 s | 25.2 s | 0.84 |
+| Departure bundle inclusion lottery | 120 s | 93.5 s | 0.78 |
+| F/I's pre-match hold | 240 s | 201.4 s | 0.84 |
+| Post-match lottery | 30 s | 25.2 s | 0.84 |
+| Registry bundle wait | 60 s | 50.3 s | 0.84 |
 
-Each hold starts at the next tick of the holding node's own 10-second clock, so its spread includes the wait for that first tick. The registry bundle wait is uniform between 0 and 120 seconds, because every content server's submissions leave on one shared 120-second schedule.
-
-Only stages with a legitimate basis for knowing their own role carry a value different from the shared 120 s figure: the device knows which channel it is constructing a packet for, and F/I know they are F or I. Relay hops cannot carry a role-specific parameter at all, per the Addressed hop's path-blindness constraint below, so every relay hop and the device's own credential channel share the same, unelevated 120 s mean. The device's content channels and F/I's pre-match hold share the elevated 240 s mean, exactly double the shared baseline.
+Only stages with a legitimate basis for knowing their own role carry a value different from the shared 120 s figure: the device knows which channel it is constructing a packet for, and F/I know they are F or I. Relay hops cannot carry a role-specific parameter at all, per the Addressed hop's path-blindness constraint below, so every relay hop and the device's own credential channel share the same, unelevated 120 s mean. The device's content channels and F/I's pre-match hold share the elevated 240 s mean — exactly double the shared baseline, settling the earlier open choice between that figure and a higher one.
 
 ## Departure bundling
 
 The gatekeeper's own hold (see Hold timing) already randomizes when a given packet is selected for release. Departure bundling changes what happens after selection, not the selection itself.
 
-Once a packet's own hold has expired, it does not depart in the next bundle automatically. Instead, at each successive 30-second boundary it draws independently for inclusion in that boundary's bundle: 25% chance of boarding, 75% chance of carrying over to the next boundary. The cap is 12 boundaries, at which the packet is included unconditionally, so no packet waits more than 360 seconds after it is ready. The first boundary comes on average 15 seconds after a packet is ready, and the cap cuts off the draw's long tail, so the mean inclusion-lottery wait is 101 seconds with a CoV of 0.90 (see Hold timing). Bundles therefore contain a mix of packets from a range of arrival times: packets that became ready moments apart can land in different bundles, and packets that became ready up to 360 seconds apart can land in the same one. Boarding at the very next boundary would narrow this mixing window to near zero, handing a patient observer direct correspondence between "ready time" and "departure bundle."
+Once a packet's own hold has expired, it does not depart in the next bundle automatically. Instead, at each successive 30-second boundary it draws independently for inclusion in that boundary's bundle: 25% chance of boarding, 75% chance of carrying over to the next boundary. The cap is 12 boundaries (360 seconds, exactly 3× the 120-second mean), after which the packet is included unconditionally. This gives a mean inclusion-lottery wait of 120 seconds with a CoV of 0.78 (see Hold timing). Bundles therefore contain a mix of packets from a range of arrival times — packets that became ready moments apart can land in different bundles, and packets that became ready up to 360 seconds apart can land in the same one. The earlier, simpler version (every ready packet joined the very next boundary) narrowed this mixing window to near zero, handing a patient observer direct correspondence between "ready time" and "departure bundle."
 
-Packets within the same bundle have no observable order relative to each other, since they depart at the same moment. Each packet boards exactly once, so the mean bundle size is the gatekeeper's posting rate times 30 seconds, whatever the inclusion rule. Measured in the simulator at 60 decoy transactions and 20 real transactions in flight, a gatekeeper's bundles hold 2.33 postings on average; 32.4% hold fewer than two, and 10.0% are empty.
+Packets within the same bundle have no observable order relative to each other, since they depart at the same moment. The expected bundle size and degenerate-bundle probability under this mechanism need to be measured from the simulator directly — the earlier arithmetic assumed immediate, guaranteed boarding and is no longer valid.
 
 Whether the first-hop relay lottery should receive the same bundling treatment is open.
 

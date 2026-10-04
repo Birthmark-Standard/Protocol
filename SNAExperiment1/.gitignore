@@ -1,8 +1,0 @@
-__pycache__/
-results/raw/
-results/probe/
-results/models/
-results/quick/
-results/*/raw/
-results/*/probe/
-results/*/models/

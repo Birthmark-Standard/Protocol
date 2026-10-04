@@ -1,9 +1,0 @@
-| Role | Knows exactly | Label | L = 4 (1/L = 25.0%) | L = 8 (1/L = 12.5%) | L = 24 (1/L = 4.2%) | L = 40 (1/L = 2.5%) | L = 200 (1/L = 0.5%) | L = 1000 (1/L = 0.1%) | AUC, L = 4 |
-|---|---|---|---|---|---|---|---|---|---|
-| N | sizes and timing on every link; no keys | none | 8.15% [7.68%, 8.62%] | 4.17% [3.82%, 4.54%] | 1.34% [1.27%, 1.42%] | 0.82% [0.76%, 0.87%] | 0.09% [0.08%, 0.10%] | 0.00% [0.00%, 0.01%] | 0.57 [0.56, 0.59] |
-| A | credential packet's source address and arrival; its own hold and forward times | network address | 7.25% [6.87%, 7.63%] | 3.91% [3.59%, 4.22%] | 1.26% [1.15%, 1.37%] | 0.75% [0.68%, 0.82%] | 0.10% [0.09%, 0.11%] | 0.01% [0.00%, 0.01%] | 0.56 [0.54, 0.58] |
-| D | one content copy's source address and arrival; its own hold and forward times | network address | 5.24% [4.93%, 5.55%] | 2.74% [2.45%, 3.03%] | 0.88% [0.81%, 0.96%] | 0.50% [0.44%, 0.55%] | 0.07% [0.06%, 0.07%] | 0.00% [0.00%, 0.00%] | 0.56 [0.54, 0.58] |
-| C | PacketHash, key_ref, its own GK-leg sends and CV-2 arrival | transaction (manufacturer) | 9.11% [8.65%, 9.59%] | 4.61% [4.27%, 4.93%] | 1.51% [1.37%, 1.64%] | 0.80% [0.73%, 0.87%] | 0.12% [0.11%, 0.13%] | 0.00% [0.00%, 0.01%] | 0.57 [0.55, 0.58] |
-| F | ContentHash, content arrival, its quorum-detection tick, board postings | content | 13.65% [13.12%, 14.22%] | 6.81% [6.41%, 7.21%] | 2.34% [2.22%, 2.47%] | 1.30% [1.20%, 1.39%] | 0.21% [0.20%, 0.23%] | 0.04% [0.03%, 0.04%] | 0.63 [0.62, 0.64] |
-| V | device identity, CV-1 arrival, CV-2 send, C's address | device identity | 8.48% [7.96%, 9.02%] | 4.07% [3.80%, 4.36%] | 1.25% [1.15%, 1.35%] | 0.74% [0.67%, 0.81%] | 0.11% [0.09%, 0.12%] | 0.01% [0.00%, 0.01%] | 0.57 [0.56, 0.59] |
-| GK | PacketHash, vk_id, C's address, its GK-leg arrival, own hold and post | transaction (manufacturer) | 9.38% [9.04%, 9.75%] | 3.90% [3.68%, 4.15%] | 1.34% [1.29%, 1.38%] | 0.68% [0.64%, 0.71%] | 0.06% [0.05%, 0.06%] | 0.00% [0.00%, 0.01%] | 0.58 [0.57, 0.59] |
