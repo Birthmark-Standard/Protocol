@@ -146,7 +146,7 @@ def write(out):
         for k, v in pairs.items():
             md.append(f"| {v['build']} | {v['R']} | {_pct(v['within5_at_submission'], 1)} | {_pct(v['within5_at_departure'], 1)} |")
         md.append("")
-    (out / "RUN10_TABLES.md").write_text("\n".join(md))
+    (out / "RUN10_TABLES.md").write_text("\n".join(md), encoding="utf-8")
     if base:
         _figures(out, base)
     print(f"wrote {out / 'RUN10_TABLES.md'}", flush=True)
