@@ -2,7 +2,7 @@
 
 InternalCompromiseRun tests the Semantic Non-Assembly property of the Birthmark Protocol: whether any single compromised component can take a public registry record and name the device that produced it more often than a passive network observer can.
 
-The protocol is designed so that no single component's compromise is sufficient to link a registry record to its source device. The experiment simulates the protocol's full message flow, with real and decoy traffic, and attacks it from each internal vantage point. Each attacker has:
+The experiment simulates the protocol's full message flow, with real and decoy traffic, and attacks it from each internal vantage point. Each attacker has:
 - every key its component holds;
 - its component's exact event timing;
 - a passive view of the sizes and timing of all traffic on every link.
@@ -17,7 +17,7 @@ Each attacker is compared with chance and with a passive observer on the same re
 
 **Primary measure: how often the attacker names the right device.** Every vantage starts from a registry record and names one device. A decision is right when the named device produced the record.
 
-**Second measure: whether the attacker can identify its correct guesses.** Each vantage's match score is converted to a calibrated probability that the match is right, fitted on half the runs and applied to the other half (cross-fitted by run parity). This answers how sure an attacker can be about any single match it attempts.
+**Second measure: whether the attacker can identify its correct guesses.** Each vantage's match score is converted to a calibrated probability that the match is right, fitted on half the runs and applied to the other half (cross-fitted by run parity).
 
 Accuracy is read against three references:
 
@@ -72,14 +72,9 @@ Accuracy is read against three references:
 
 ## Hold timing
 
-Every hold uses the same lottery shape:
-- a 10-second tick on the holding node's own clock;
-- geometric release at a fixed probability per tick;
-- unconditional release at three times the hold's own mean.
+Every hold is a geometric lottery on a 10-second tick, released unconditionally at three times its own mean. Each stage's release probability is set to hit its target mean.
 
-The release probability is set so that, with the cap, the hold averages its target mean.
-
-**Departure bundling.** After the gatekeeper's own hold, a posting draws for a place in each 30-second bundle of that gatekeeper's grid. Its chance is 25% at each boundary, and it boards unconditionally at the 12th boundary. The design target for this lottery was 120 s; the cap's truncation of the geometric tail brings the realized mean to 101 s.
+**Departure bundling.** After the gatekeeper's own hold, a posting draws for a place in each 30-second bundle of that gatekeeper's grid: 25% chance at each boundary, unconditional at the 12th.
 
 **Registry bundling.** Confirmed submissions from every content server leave together on one shared 120-second schedule.
 
@@ -107,7 +102,7 @@ Departure bundles at one gatekeeper hold 2.33 postings on average. 32.4% of them
 
 - **Records.** Each record is a registry entry whose two submissions (F's and I's) a passive observer finds in the gossip traffic. The record names both servers, so its two submissions are paired and timed at their midpoint.
 - **Candidates.** The candidates are device submissions on the wire: each source's first-hop packets, grouped into captures. Decoy identities' packets are included for every vantage, because no vantage can tell them apart.
-- **Scoring.** Each vantage scores every candidate by the likelihood of the record time given that candidate. The likelihoods are built by Monte Carlo simulation of the protocol on seeds separate from every scored run. Each vantage's likelihood adds its own exact knowledge to the observer's.
+- **Scoring.** Each vantage scores every candidate by the likelihood of the record time given that candidate. The likelihoods are built by Monte Carlo simulation of the protocol on seeds separate from every scored run.
 - **Decision.** For each record, a vantage names the device with the highest summed posterior.
 - **Pairing.** Every vantage is paired with the passive observer on the same records.
 
@@ -122,9 +117,7 @@ A vantage that passes cannot identify any meaningful subset of its own guesses a
 
 ## Builds and cells
 
-**InternalCompromiseRun** (build `internal_compromise`) is the protocol with every hold at the timing above.
-
-Each other build changes one thing and is paired against InternalCompromiseRun record by record. Every build carries the same traffic in the same cell and run.
+Each build changes one thing from InternalCompromiseRun and is paired against it record by record, on identical traffic.
 
 | Build | Change |
 |---|---|
@@ -162,18 +155,7 @@ python -m sna reproduce
 
 On Windows, use `py -m pip install -r requirements.txt` and `py -m sna reproduce`.
 
-**What `reproduce` does**
-- It runs the whole experiment in order:
-  1. calibration;
-  2. the hold-timing measurement;
-  3. every build's 200 runs per cell;
-  4. every build's analysis;
-  5. latency;
-  6. F/I pair timing;
-  7. `results/TABLES.md` and the figures.
-- It took 116 minutes on 16 worker processes.
-- It is resumable: an interrupted run loses at most the runs in flight, and rerunning the same command continues.
-- Results depend only on the cell and run id, never on the worker count or the order runs finish in.
+`reproduce` runs calibration, the hold-timing measurement, every build's 200 runs per cell, analysis, latency, F/I pair timing, and finally generates `results/TABLES.md` and the figures. It took 116 minutes on 16 worker processes. An interrupted run loses at most the runs in flight; rerunning the same command continues from there. Results depend only on the cell and run id, not on the worker count or completion order.
 
 **Reproduction across platforms**
 - The committed results were produced on Windows.
@@ -198,7 +180,6 @@ Fast tests: `python -m pytest tests -q`.
 
 | Path | Contents |
 |---|---|
-| `README.md` | this description |
 | `RESULTS.md` | every finding |
 | `PAPER_TABLE.md` | headline tables |
 | `results/TABLES.md` | full generated tables |
