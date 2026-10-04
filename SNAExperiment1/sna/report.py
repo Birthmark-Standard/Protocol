@@ -80,7 +80,7 @@ def build(out: Path, build=CE.DEFAULT_BUILD):
         w.writerows(clean)
     D = CE.calibrate(out)["D"]
     md = tables(clean, effects, D, out, changes, build)
-    (out / f"tables{sx}.md").write_text(md)
+    (out / f"tables{sx}.md").write_text(md, encoding="utf-8")
     figures(clean, out / "figures", sx)
     build_figure(out)
     print(f"wrote {out / f'summary{sx}.json'}, summary{sx}.csv, tables{sx}.md and figures/")

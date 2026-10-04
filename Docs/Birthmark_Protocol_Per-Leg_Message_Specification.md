@@ -11,11 +11,7 @@ Every key has one purpose. No key is used both to decrypt and to sign, and no no
 | Device | cred\_D | secret credential | Proves membership to its validator | Validator (key table), no one else |
 | Device | key\_ref | identifier | Tells the validator which key-table entry to use | Validator |
 | Validator V | V-token\_sk / pk | ECIES | Decrypts the device token | Devices (provisioned) |
-<<<<<<< HEAD
 | Validator V | V-sign\_sk / pk | ring member key | Member key in Ring V, for signing an approval | C, gatekeepers |
-=======
-| Validator V | V-sign\_sk / pk | Ed25519 | Signs approvals only | C, gatekeepers, revocation registry |
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
 | Validator V | V-transit\_sk / pk | ECIES | Terminates the C→V leg | C |
 | Credential processor C | C-device\_sk / pk | ECIES | Relay terminus for the credential packet | Devices (device table) |
 | Credential processor C | C-ring\_sk / pk | ring member key | Member key in ring R for signing PacketHash | Gatekeepers, F, I (as part of R) |
@@ -35,11 +31,8 @@ Every key has one purpose. No key is used both to decrypt and to sign, and no no
 
 **Ring R:** the ring public keys of the C-candidate pool minus the three currently active gatekeepers. Verifiers check against the ring that is current at verification time. Ring keys are separate from every other node key. Over a 17-node pool, σ\_C is 576 bytes.
 
-<<<<<<< HEAD
 **Ring V:** the ring public keys of every registered validator. Unlike Ring R, whose size is fixed by the submission-server pool, its size is the number of registered validators, which starts at one and grows only as more validators register; an unlinkable ring signature over a one-member ring carries no anonymity benefit across validators (there is only one to hide among) and is close to the cost of a plain signature, well under σ\_C's 576 bytes. Hiding which validator signed is a benefit that strengthens only as more validators join.
 
-=======
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
 ## Device-side construction
 
 The device builds one credential packet and two content packets per transaction, then wraps each for its first relay hop. C, not the device, generates the blinding key and the blinded commitment, once it receives PacketHash from the device; the device never computes or holds either.
@@ -87,26 +80,17 @@ Each server in the pool holds a **stack of tables**, one per server in the pool.
 
 Resolving `rc_C` (or `rc_F`, `rc_I`) is a local, offline lookup against this stack. Whoever the device picked as the Random hop for a given path holds the table containing that path's routing line, since it is essentially never the same server as that path's Addressed hop, and resolves normally. The Addressed hop itself is the one server in the entire pool whose stack is missing precisely the table containing its own transaction's line, so it cannot resolve the code even given full access to everything it holds. This gives a cryptographic-strength guarantee from a routing property, not a policy one: there is no check to bypass, because the information simply is not present.
 
-<<<<<<< HEAD
 The cost is a stack roughly twenty times the size of a single routing table, and a rebuild of the whole stack whenever the device table or the pool composition changes. How often this happens is not yet fixed; the natural triggers are gatekeeper rotation, device-table updates, or both. When gatekeeper rotation triggers a rebuild, the new stack uses a fresh set of routing codes that does not overlap any code from the previous set, rather than reassigning the same codes to a new gatekeeper set: a packet carrying an old-generation code continues to resolve to the old gatekeeper set until it drains from the system, while a packet carrying a new-generation code resolves to the new set, so the handover is gradual rather than a synchronized cutover. How long an old-generation code remains routable, bounding how long the old set stays live, is not yet decided.
 
 ## Per-leg message table
 
 There are 19 legs per transaction on the wire, plus board reads by F and I. Every leg except the registry submissions is padded inside its transit encryption to a size drawn uniformly from its class: **420–460 B** for all legs except the gatekeeper fan-out, which uses **820–860 B**. Raw sizes marked \* are estimates (32-byte cred\_D, 16-byte tx\_id, 8-byte key\_ref); unmarked sizes are measured directly.
-=======
-The cost is a stack roughly twenty times the size of a single routing table, and a rebuild of the whole stack whenever the device table or the pool composition changes. Rebuild cadence is not yet fixed; the natural candidates are gatekeeper rotation, device-table updates, or both.
-
-## Per-leg message table
-
-There are 19 legs per transaction on the wire, plus board reads by F and I. Every leg except the registry submissions is padded inside its transit encryption to a size drawn uniformly from its class: **420–460 B** for all legs except the gatekeeper fan-out, which uses **820–860 B**. Raw sizes marked \* are estimates (32-byte cred\_D, 16-byte tx\_id, 8-byte key\_ref and vk\_id); unmarked sizes are measured directly.
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
 
 | Leg | From → To | Contents | Encrypted under | Receiver learns | Raw size |
 | --- | --- | --- | --- | --- | --- |
 | Cred-1 | Device → A | rc\_C, P\_C | A-transit | Device IP; nothing else readable | 251 B\* |
 | Cred-2 | A → B (random) | rc\_C, P\_C | B-transit | A's address; rc\_C | 251 B\* |
 | Cred-3 | B → C | P\_C | C-transit | B's address; P\_C contents: Token (opaque), key\_ref, PacketHash | 235 B\* |
-<<<<<<< HEAD
 | ContA-1 | Device → D | rc\_F, P\_F | D-transit | Device IP | 163 B |
 | ContA-2 | D → E (random) | rc\_F, P\_F | E-transit | D's address; rc\_F | 163 B |
 | ContA-3 | E → F | P\_F | F-transit | E's address; ContentHash, n, mod\_level, and any optional fields | 147 B |
@@ -118,19 +102,6 @@ There are 19 legs per transaction on the wire, plus board reads by F and I. Ever
 | Post-k | G\_k → Board\_k | PacketHash, σ\_C, σ\_Gk | Registry-node access only | — | 32 + 576 + 64 B |
 | Reg-F | F → Registry | ContentHash, mod\_level, [h(metadata)], [parent ContentHash], σ\_F | Registry transport | ContentHash and the other submitted fields; F's identity | 98 B, plus 32 B per optional field |
 | Reg-I | I → Registry | ContentHash, mod\_level, [h(metadata)], [parent ContentHash], σ\_I | Registry transport | ContentHash and the other submitted fields; I's identity | 98 B, plus 32 B per optional field |
-=======
-| ContA-1 | Device → D | rc\_F, P\_F | D-transit | Device IP | 162 B |
-| ContA-2 | D → E (random) | rc\_F, P\_F | E-transit | D's address; rc\_F | 162 B |
-| ContA-3 | E → F | P\_F | F-transit | E's address; ContentHash, n, mod\_level, and any optional fields | 146 B |
-| ContB-1–3 | Device → G → H → I | as ContA, with rc\_I and P\_I | G-, H-, I-transit | as ContA, for I | 162 / 162 / 146 B |
-| CV-1 | C → V | tx\_id, Token, key\_ref, EncPH | V-transit | cred\_D, tx\_nonce, EncPH (opaque without BK) | 218 B\* |
-| CV-2 (approve) | V → C | tx\_id, APPROVED, σ\_V | C-transit | Approval and σ\_V; EncPH is not sent again, since C already holds it from step 2 | 133 B\* |
-| CV-2 (reject) | V → C | tx\_id, REJECTED | C-transit | Rejection. **No signature.** Padded to the same class as an approval. | 69 B\* |
-| GK-k (k = 1..3) | C → G\_k | PacketHash, σ\_V, vk\_id, BK, σ\_C | Gk-term | PacketHash; manufacturer (via vk\_id); that some ring member signed; EncPH is not sent, since the gatekeeper recomputes it from BK and PacketHash | 761 B\* |
-| Post-k | G\_k → Board\_k | PacketHash, σ\_C, σ\_Gk | Registry-node access only | — | 32 + 576 + 64 B |
-| Reg-F | F → Registry | ContentHash, mod\_level, [h(metadata)], [parent ContentHash], σ\_F | Registry transport | ContentHash and the other submitted fields; F's identity | 97 B, plus 32 B per optional field |
-| Reg-I | I → Registry | ContentHash, mod\_level, [h(metadata)], [parent ContentHash], σ\_I | Registry transport | ContentHash and the other submitted fields; I's identity | 97 B, plus 32 B per optional field |
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
 
 **Signatures:**
 
@@ -139,41 +110,80 @@ There are 19 legs per transaction on the wire, plus board reads by F and I. Ever
 - `σ_Gk = Sign(Gk-sign_sk; PacketHash || σ_C)`.
 - `σ_F = Sign(F-id_sk; ContentHash || mod_level || [h(metadata)] || [parent ContentHash])`, and σ\_I the same under I-id\_sk. Signing every field the record carries means neither content server can be made to vouch for a record whose optional fields differ from what the device sent.
 
-<<<<<<< HEAD
 `tx_id` is 16 random bytes generated by C per transaction.
-=======
-`tx_id` is 16 random bytes generated by C per transaction. `vk_id` identifies which V-sign\_pk to verify against; it reveals the manufacturer, which is an accepted, per-manufacturer anonymity set.
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
 
 **Public verification** is not part of a transaction: a verifier sends a locally computed ContentHash to the registry and receives the record, if one exists.
 
-## Dummy traffic
+## Decoy traffic
 
-The system injects dummy transactions to enlarge the candidate pool available to a single compromised component beyond whatever real traffic volume happens to be, and to prevent an observer from estimating real traffic volume from total traffic volume.
+The system injects decoy transactions to enlarge the candidate pool available to a single compromised component beyond whatever real traffic volume happens to be, and to prevent an observer from estimating real traffic volume from total traffic volume.
 
-<<<<<<< HEAD
-A dummy credential-side transaction is constructed exactly as a real one is and passes through C and V exactly as a real one would. V signs every approval identically, real or dummy, as a member of Ring V; there is no second key and nothing in the signature itself distinguishes the two, but V's reply to C also carries a plaintext indicator of whether cred\_D is a real device's or one of the disposable credentials issued for dummy traffic, since V already determines this to check membership in the first place. C is informed by this indicator, and this is accepted rather than hidden: on a real credential C proceeds as already described; on a dummy credential C still sends the same fan-out, on the same schedule, carrying PacketHash and BK, but with no valid σ\_C. C cannot be fooled by content alone into treating a stolen dummy credential as real, or a real one as dummy, because the indicator traces to cred\_D's own registration status in V's table, fixed at credential-issuance time, not to anything a device or an attacker holding a stolen credential chooses afterward. Each gatekeeper's own signature verification, which it already performs for entirely ordinary reasons, is what then rejects an unsigned fan-out; no separate detection step is needed. On a failed σ\_C, the gatekeeper does not treat the transaction as a candidate for a real posting, but computes `hash(PacketHash || BK)`, identically across all three gatekeepers since they share the same PacketHash and BK, and posts that value with its own genuine σ\_Gk on the same hold-and-post schedule a real posting would use, so that board-posting volume and timing continue undisturbed. F and I's own quorum check requires a valid σ\_C against the current ring, so this posting is never mistaken for a real one regardless of any coincidental match, and no party holding only a stolen disposable credential, whatever content it chooses, can ever predict the value that gets posted. A dummy content-side packet is constructed in the same size class and follows the same timing distribution as a real content packet, and is delivered to F and I exactly as a real one would be. Nothing distinguishes it from a real content packet to F or I at receipt.
+A decoy transaction is a genuine transaction from a genuinely registered device credential, not a distinguishable, invalid, or specially marked one. The credentials belong to a pool of identities operated by the same infrastructure that generates decoy traffic and distributes the routing-code table, registered with a validator the same way any other device is. Nothing about a decoy transaction differs structurally from a real one at any stage: V approves it normally, C fans it out normally, every signature is genuinely valid, gatekeeper verification and board quorum proceed normally, and F and I finalize a registry record for it exactly as they would for real content. No party, including V, C, and the gatekeepers, has any way to distinguish a decoy transaction from a real one, because there is nothing structurally different to distinguish. The decoy-identity pool must be large enough that no single identity's submission rate looks statistically different from a plausible device's. The pool size is expected to vary with the deployment's own phase and scale, and is not meant to be fixed to a single documented number; it is an operating parameter the deploying infrastructure adjusts as needed, using as many rotating identities as the deployment's own scale calls for.
 
-Dummy traffic originates outside the submission-server pool, from the same infrastructure that distributes the routing-code table stack (and the device table) to the pool, rather than from the pool members themselves. This gives the injection rate the same reliability and central control a pool member generating its own traffic would have. A stolen dummy credential cannot forge a submission regardless of who held it, since that protection now traces to V's own determination rather than to custody; what external origination still avoids is the network-observable inbound/outbound asymmetry a pool member originating traffic mid-relay would create: the traffic enters the system the same way a device's traffic does, as a genuine inbound arrival at whichever Addressed hop it is sent to.
-=======
-A dummy credential-side transaction is constructed exactly as a real one is and passes through C, V, and the gatekeepers exactly as a real one would: it receives genuine validator approval, carries a genuine ring signature, and is countersigned and posted by the gatekeepers. Nothing distinguishes it from a real transaction to C, V, or a gatekeeper. A dummy content-side packet is constructed in the same size class and follows the same timing distribution as a real content packet, and is delivered to F and I exactly as a real one would be. Nothing distinguishes it from a real content packet to F or I at receipt.
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
+Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: 60 ± 10 transactions in flight at any given time, regardless of how much real traffic exists. Decoy volume is added on top of real traffic at every level of real traffic, never reduced to make room for it. The randomized range, rather than a single exact constant, keeps the target from being a precisely known value an observer could characterize and subtract out exactly; it does not eliminate the risk that enough observed windows could statistically narrow the underlying distribution.
 
-Dummy credential-side and dummy content-side transactions are not paired with each other, and a dummy posting on a board is never matched by any content submission. This is not observable: a match board issues its posted list to F and I without tracking which entries are later matched, so match status never exists at the board itself, and determining that a specific posting went unmatched would require comparing the private results of every F/I-eligible server, a pool-wide compromise outside the scope of any single component.
+Every decoy-produced registry record is permanent, exactly like a real one; none are ever removed. Whether and how to prune decoy records to manage hot-storage growth is an open implementation question, deferred rather than specified here.
 
-Dummy traffic is injected in a fixed 2:1 ratio of content-side to credential-side transactions, matching the ratio real traffic already produces on its own (one credential-side transaction generates exactly two content packets, one to F and one to I). This holds the aggregate content-to-credential ratio at 2:1 regardless of what fraction of total traffic is dummy, so that ratio cannot be used to estimate the real-to-dummy split.
+The Random relay hops (B, E, H) see no difference between decoy and real traffic at any injection rate, since they only ever observe opaque ciphertext.
 
-<<<<<<< HEAD
-The Random relay hops (B, E, H) see no difference between dummy and real traffic at any injection rate, since they only ever observe opaque ciphertext.
+## Hold timing
 
-The injection rate scales with real traffic volume rather than holding a fixed floor. This gives up the direct protection a fixed floor would provide a low-volume deployment's worst case, in exchange for not handing an adversary a constant it could characterize during a period of near-zero real traffic and subtract out.
+Every hold in this spec draws from the same lottery shape: a 10-second tick and geometric release, capped at three times that stage's own mean. Each stage has its own mean; its per-tick release probability is set so that, with the cap, the hold averages exactly that mean. The departure bundle inclusion lottery uses a 30-second tick (one per bundle boundary), a 25% chance of boarding at each boundary, and a cap at 12 boundaries. Settled values:
 
-Two things are not yet decided: who issues a dummy credential-side transaction's disposable credential, and how that issuance relates to the manufacturer identity key\_ref otherwise reveals about a real device; and the exact function the gatekeeper uses to compute the substitute value it posts in place of an unsigned transaction's PacketHash. `hash(PacketHash || BK)` is a candidate, stated above; it has not been confirmed.
-=======
-The Addressed and Random relay hops (A, B, D, E, G, H) see no difference between dummy and real traffic at any injection rate, since they only ever observe opaque ciphertext.
+| Stage | Mean | Std dev | CoV | Release probability per tick | Cap |
+| --- | --- | --- | --- | --- | --- |
+| Relay hops (A, B, D, E, G, H), every path | 120 s | 103.1 s | 0.86 | 7.52% | 360 s (36 ticks) |
+| Device's credential-channel hold | 120 s | 103.1 s | 0.86 | 7.52% | 360 s (36 ticks) |
+| Device's content-channel holds (both) | 240 s | 206.9 s | 0.86 | 3.84% | 720 s (72 ticks) |
+| C's hold before sending CV-1 | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
+| V's hold before sending CV-2 | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
+| C's fan-out to each gatekeeper (independent per leg) | 60 s | 51.3 s | 0.85 | 14.46% | 180 s (18 ticks) |
+| Gatekeeper's own hold | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
+| Departure bundle inclusion lottery | 101 s | 90.8 s | 0.90 | 25% per 30 s boundary | 12 boundaries (360 s) |
+| F/I's pre-match hold | 240 s | 206.9 s | 0.86 | 3.84% | 720 s (72 ticks) |
+| Post-match lottery | 30 s | 25.3 s | 0.84 | 26.86% | 90 s (9 ticks) |
+| Registry bundle wait | 60 s | 34.6 s | 0.58 | shared 120 s schedule | 120 s |
 
-Two things are not yet decided. Whether the injection rate is a fixed floor or scales with real traffic volume: a fixed floor protects a low-volume deployment's worst case directly, but an adversary who characterizes it during a period of near-zero real traffic can subtract it out; a rate that scales with real volume avoids that, at the cost of the least protection exactly when real volume is smallest. And who issues a dummy credential-side transaction's disposable credential, and how that issuance relates to the manufacturer identity vk\_id and key\_ref otherwise reveal about a real device.
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
+Each hold starts at the next tick of the holding node's own 10-second clock, so its spread includes the wait for that first tick. The registry bundle wait is uniform between 0 and 120 seconds, because every content server's submissions leave on one shared 120-second schedule.
+
+Only stages with a legitimate basis for knowing their own role carry a value different from the shared 120 s figure: the device knows which channel it is constructing a packet for, and F/I know they are F or I. Relay hops cannot carry a role-specific parameter at all, per the Addressed hop's path-blindness constraint below, so every relay hop and the device's own credential channel share the same, unelevated 120 s mean. The device's content channels and F/I's pre-match hold share the elevated 240 s mean, exactly double the shared baseline.
+
+## Departure bundling
+
+The gatekeeper's own hold (see Hold timing) already randomizes when a given packet is selected for release. Departure bundling changes what happens after selection, not the selection itself.
+
+Once a packet's own hold has expired, it does not depart in the next bundle automatically. Instead, at each successive 30-second boundary it draws independently for inclusion in that boundary's bundle: 25% chance of boarding, 75% chance of carrying over to the next boundary. The cap is 12 boundaries, at which the packet is included unconditionally, so no packet waits more than 360 seconds after it is ready. The first boundary comes on average 15 seconds after a packet is ready, and the cap cuts off the draw's long tail, so the mean inclusion-lottery wait is 101 seconds with a CoV of 0.90 (see Hold timing). Bundles therefore contain a mix of packets from a range of arrival times: packets that became ready moments apart can land in different bundles, and packets that became ready up to 360 seconds apart can land in the same one. Boarding at the very next boundary would narrow this mixing window to near zero, handing a patient observer direct correspondence between "ready time" and "departure bundle."
+
+Packets within the same bundle have no observable order relative to each other, since they depart at the same moment. Each packet boards exactly once, so the mean bundle size is the gatekeeper's posting rate times 30 seconds, whatever the inclusion rule. Measured in the simulator at 60 decoy transactions and 20 real transactions in flight, a gatekeeper's bundles hold 2.33 postings on average; 32.4% hold fewer than two, and 10.0% are empty.
+
+Whether the first-hop relay lottery should receive the same bundling treatment is open.
+
+## Registry-level bundling
+
+A content server's own confirmed submission, once quorum forms, does not submit to the registry immediately. Instead, it waits for the next registry-level departure bundle, which pools confirmed submissions from every F/I server in the pool, not just the submitting server's own, and commits them together on a shared schedule.
+
+Pooling across the whole F/I population rather than bundling each server's own submissions separately gives a materially larger, more reliable bundle size, for the same reason the decoy target's volume is what makes gatekeeper-level bundling work at all: a bundle drawn from one server's own share of traffic is far smaller than one drawn from the whole pool's aggregate rate.
+
+This does not conflict with the registry's own finalization rule. Two distinct identities agreeing on a record is a property of who submitted it; a shared commit schedule governs only when the registry acts on submissions that already satisfy that rule, not whether they satisfy it.
+
+Decoy transactions, which now complete the full pipeline through to a genuine registry record (see Decoy traffic), participate in registry-level bundling the same way they participate in gatekeeper bundling, and for the same reason: they are what gives any given window enough volume to bundle meaningfully.
+
+The wait for this bundle has a mean of 60 seconds (see Hold timing), settling the window size against the measured rate of confirmed submissions arriving at the registry.
+
+This is an additional hold on top of every other hold already in the pipeline; a real submission does not finalize until the gatekeeper's own hold and bundle, the content server's own node-clock hold, and this registry-level bundle have each had their turn. The added latency is real and has not been bounded here.
+
+## Post-match lottery
+
+F and I each independently watch the same boards for the same quorum condition. If quorum takes
+longer to form than either server's own pre-match hold (see the content servers' own steps), both
+servers spend that time simply waiting on the same external event, and the instant it resolves,
+both detect it and both submit at essentially the same moment. Two registry submissions arriving
+together is itself a precise, directly observable marker of when quorum completed, and this
+marker's quality gets worse as credential-side processing gets slower: at a quorum-formation time
+of several minutes, the two submissions land within 5 seconds of each other more than three
+quarters of the time.
+
+Each server draws its own, independent delay after quorum is confirmed — mean 30 seconds (see Hold timing) — timed from the moment quorum is actually confirmed rather than from its own, earlier pre-match hold. This keeps F's and I's relative submission timing independent of quorum-formation speed even in the worst case (slow credential-side processing, where both pre-match holds get overtaken by the wait for quorum), and adds further separation on top of the pre-match hold's own randomness in the common, faster case. Keeping the pre-match hold and adding this lottery therefore performs at least as well as the lottery alone everywhere, and strictly better wherever the pre-match hold still matters.
 
 ## Checks and actions at each party
 
@@ -181,60 +191,42 @@ Any failed check drops the transaction and triggers that party's discard obligat
 
 ### Relay hops
 
-- **Addressed hop (A, D, G):** decrypts its transit layer, reads the routing code but cannot resolve it (its own stack is missing exactly this line), picks a random next hop (never itself), re-encrypts `rc || payload` for it, holds per the relay timing lottery, then forwards.
+- **Addressed hop (A, D, G):** decrypts its transit layer, reads the routing code but cannot resolve it (its own stack is missing exactly this line), picks a random next hop (never itself), re-encrypts `rc || payload` for it, holds per the relay timing lottery, then forwards. An Addressed hop cannot tell which of A, D, or G it is playing for a given transaction: its payload is opaque ciphertext regardless of path, and its routing code is deliberately unresolvable and carries no visible tag distinguishing credential-path from content-path codes, since such a tag would itself be observable. Path-specific timing therefore lives elsewhere — see Hold timing.
 - **Random hop (B, E, H):** decrypts, resolves the routing code to the destination using its own table stack, holds, then forwards the payload alone under the destination's transit key.
 
 ### Credential processor C
 
 1. Decrypts Cred-3, then P\_C. Obtains Token, key\_ref, PacketHash.
 2. Generates BK, computes `EncPH = AEAD(BK; PacketHash)`. A fixed AEAD nonce is safe because BK is single-use.
-3. Generates tx\_id and sends CV-1 (tx\_id, Token, key\_ref, EncPH) to the validator that key\_ref designates.
+3. Generates tx\_id. Holds (see Hold timing), then sends CV-1 (tx\_id, Token, key\_ref, EncPH) to the validator that key\_ref designates.
 4. On **REJECTED**: drops the transaction.
-<<<<<<< HEAD
-5. On **APPROVED**: proceeds without independently verifying σ\_V; the gatekeepers verify it, and nothing downstream depends on C having checked it too.
-6. For a real device's credential, computes `σ_C = RSign(R; PacketHash)`. For a disposable dummy credential, per V's indicator, omits a valid σ\_C, sending a placeholder of the same size instead so the leg's byte length carries no signal.
-7. Sends GK-1, GK-2 and GK-3, each carrying PacketHash, σ\_V, BK and whatever step 6 produced, encrypted separately, on its staggered fan-out clock.
-=======
-5. On **APPROVED**: verifies σ\_V under that validator's current V-sign\_pk, over `"APPROVED" || EncPH` using the EncPH it already holds from step 2. Failure drops the transaction.
-6. Computes `σ_C = RSign(R; PacketHash)`.
-7. Sends GK-1, GK-2 and GK-3, each encrypted separately, on its staggered fan-out clock.
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
+5. On **APPROVED**: proceeds without independently verifying σ\_V; the gatekeepers verify it, and nothing downstream depends on C having checked it too. Computes `σ_C = RSign(R; PacketHash)`.
+6. Sends GK-1, GK-2 and GK-3, each carrying PacketHash, σ\_V, BK and σ\_C, encrypted separately. Each of the three legs draws its own, independent delay (see Hold timing) starting from when C received CV-2 in step 3; this is what "staggered" means here, not spacing the three legs relative to each other after an unheld first send.
 
 ### Validator V
 
 1. Decrypts CV-1's transit layer, obtaining tx\_id, Token (still opaque), key\_ref, EncPH. Decrypts Token to obtain cred\_D, tx\_nonce.
 2. Checks membership of cred\_D in the key-table entry that key\_ref names.
 3. Checks that tx\_nonce is not in its transaction log, then logs `(tx_id, tx_nonce)` for up to 3 years.
-<<<<<<< HEAD
-4. Both pass: signs `"APPROVED" || EncPH` and replies APPROVED with σ\_V, together with a plaintext indicator of whether cred\_D is a real device's or one of the disposable credentials issued for dummy traffic. Either fails: replies REJECTED with no signature.
+4. Holds (see Hold timing), then: both pass, signs `"APPROVED" || EncPH` and replies APPROVED with σ\_V; either fails, replies REJECTED with no signature.
 
 ### Gatekeeper G\_k
 
 1. Decrypts GK-k. Obtains PacketHash, σ\_V, BK, σ\_C.
 2. Recomputes `EncPH = AEAD(BK; PacketHash)` from the BK and PacketHash it just received, then verifies σ\_V, over `"APPROVED" || EncPH`, against Ring V. A mismatched BK or PacketHash would produce a different EncPH than the one V actually signed, so this single check does the work a separate decrypt-and-compare step would otherwise duplicate.
 3. Verifies σ\_C against the current ring R.
-4. Holds on its own hold clock (10-second ticks, 8.33% release per tick, 5-minute cap).
-5. If step 3 succeeded, posts `(PacketHash, σ_C, σ_Gk)` to Board\_k.
-6. If step 3 failed, does not treat this as a candidate for a real posting; instead computes `hash(PacketHash || BK)` and posts that value with its own genuine σ\_Gk but no valid σ\_C, on the same schedule step 5 would have used.
-=======
-4. Both pass: signs `"APPROVED" || EncPH` and replies APPROVED with σ\_V. Either fails: replies REJECTED with no signature.
-
-### Gatekeeper G\_k
-
-1. Decrypts GK-k. Obtains PacketHash, σ\_V, vk\_id, BK, σ\_C.
-2. Recomputes `EncPH = AEAD(BK; PacketHash)` from the BK and PacketHash it just received, then verifies σ\_V, over `"APPROVED" || EncPH`, under the V-sign\_pk named by vk\_id, checking that key is not revoked. A mismatched BK or PacketHash would produce a different EncPH than the one V actually signed, so this single check does the work a separate decrypt-and-compare step would otherwise duplicate.
-3. Verifies σ\_C against the current ring R.
-4. Holds on its own hold clock (10-second ticks, 8.33% release per tick, 5-minute cap).
-5. Posts `(PacketHash, σ_C, σ_Gk)` to Board\_k.
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
+4. Holds on its own hold clock (see Hold timing), then waits for the next departure bundle per Departure bundling.
+5. Posts `(PacketHash, σ_C, σ_Gk)` to Board\_k, together with every other packet in the same departure bundle.
 
 ### Content servers F and I
 
 1. Decrypt the last content leg, then P\_F. Obtain ContentHash, n, mod\_level and any optional fields.
 2. Compute `PH' = SHA-256(ContentHash || n)`.
-3. Hold on their own node clock before checking the boards.
+3. Holds on its own node clock before checking the boards (see Hold timing).
 4. Proceed once PH' appears on at least two distinct boards, each posting with a valid σ\_Gk and a valid σ\_C against the current ring. If quorum does not form within 30 minutes, drop.
-5. Submit Reg-F (or Reg-I).
+5. Holds again, per Post-match lottery.
+6. Waits for the next registry-level departure bundle per Registry-level bundling.
+7. Submit Reg-F (or Reg-I), together with every other submission in the same registry-level bundle.
 
 ### Registry
 
@@ -253,11 +245,7 @@ No party keeps any value that would let it, or a later inspector, pair one leg o
 | Random hop (B, E, H) | Routing code and resolved destination for the packet | On forwarding | Same | Submitter-initiated routing-code sweep |
 | C | Token, key\_ref, PacketHash, BK, tx\_id, EncPH, σ\_V | After the last GK leg is sent, or at once on rejection or failure | Nothing per transaction | PacketHash / BK / EncPH sweep |
 | V | EncPH, σ\_V | After sending CV-2 | Log entry `(tx_id, tx_nonce)` for up to 3 years. **Never** stored with cred\_D, key\_ref or EncPH. | Schema attestation |
-<<<<<<< HEAD
 | G\_k | BK, EncPH, σ\_V | After posting, or at once on failure | Its own posting on Board\_k | PacketHash / BK / EncPH sweep |
-=======
-| G\_k | BK, EncPH, σ\_V, vk\_id | After posting, or at once on failure | Its own posting on Board\_k | PacketHash / BK / EncPH sweep |
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
 | Board\_k | — | — | Postings, for 30 minutes | — |
 | F, I | n, PH', and ContentHash if not submitted | After submitting, or on quorum timeout | Nothing per transaction | Submitter-initiated n sweep |
 | Registry | — | — | Finalized record, permanently | Public |
@@ -275,11 +263,7 @@ No single party holds both a device identity (cred\_D) and anything that leads t
 | Random hop (B, E, H) | Previous hop's address; destination | Device IP; credential; content | Informal (structural) |
 | C | Token (opaque), key\_ref (manufacturer), PacketHash, BK, EncPH, σ\_V, tx\_id | cred\_D; ContentHash | Property D |
 | V | cred\_D, tx\_nonce, EncPH (opaque), tx\_id, C's network address | PacketHash; ContentHash | Property E |
-<<<<<<< HEAD
-| G\_k | PacketHash, EncPH, BK, σ\_V, whether σ\_C is valid, σ\_C, C's network address | cred\_D; ContentHash; which validator signed | Property J |
-=======
-| G\_k | PacketHash, EncPH, BK, σ\_V, vk\_id (manufacturer), σ\_C, C's network address | cred\_D; ContentHash | Property J |
->>>>>>> 57d61254b85d3a3f79b8b325fd78b4b45c87a4a6
+| G\_k | PacketHash, EncPH, BK, σ\_V, σ\_C, C's network address | cred\_D; ContentHash; which validator signed | Property J |
 | Board reader | PacketHash, σ\_C, σ\_Gk | Device; manufacturer; ContentHash | Access is restricted to registry nodes by policy, not formally verified |
 | F or I | ContentHash, n, PH', mod\_level, any optional fields, E's (or H's) address, board postings | Credential; manufacturer | Property F |
 | Global passive observer | Sizes and timing only | Everything readable | Properties A–F, J (content); empirical timing evaluation separately |
