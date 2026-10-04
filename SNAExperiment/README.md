@@ -1,8 +1,8 @@
 # SNA Experiment: InternalCompromiseRun
 
-InternalCompromiseRun tests one property of the Birthmark Protocol: whether any single compromised component can take a public registry record and name the device that produced it more often than a passive network observer can.
+InternalCompromiseRun tests the Semantic Non-Assembly property of the Birthmark Protocol: whether any single compromised component can take a public registry record and name the device that produced it more often than a passive network observer can.
 
-A record reaching the registry should not be traceable to its device. The experiment simulates the protocol's full message flow, with real and decoy traffic, and attacks it from each internal vantage point. Each attacker has:
+The protocol is designed so that no single component's compromise is sufficient to link a registry record to its source device. The experiment simulates the protocol's full message flow, with real and decoy traffic, and attacks it from each internal vantage point. Each attacker has:
 - every key its component holds;
 - its component's exact event timing;
 - a passive view of the sizes and timing of all traffic on every link.
@@ -15,9 +15,9 @@ Each attacker is compared with chance and with a passive observer on the same re
 
 ## What is measured
 
-**Primary measure: how often the attacker names the right device.** Every vantage starts from a registry record and names one device. A decision is right when the named device produced the record. This is the correlation an attacker achieves between device submissions and the posted record.
+**Primary measure: how often the attacker names the right device.** Every vantage starts from a registry record and names one device. A decision is right when the named device produced the record.
 
-**Second measure: the attacker's confidence that a match is right.** Each vantage's match score is turned into a calibrated probability that the match is right. It is fitted on half the runs and applied to the other half (cross-fitted by run parity). This answers how sure an attacker can be about any single match it attempts.
+**Second measure: whether the attacker can identify its correct guesses.** Each vantage's match score is converted to a calibrated probability that the match is right, fitted on half the runs and applied to the other half (cross-fitted by run parity). This answers how sure an attacker can be about any single match it attempts.
 
 Accuracy is read against three references:
 
@@ -39,7 +39,7 @@ Accuracy is read against three references:
 | Gatekeeper | transit and countersignature keys | packet hash, sender's address, its own arrival, hold release and posting |
 | Content server (F or I) | transit and registry-signing keys | content hash, content arrival, when the board pushes showed quorum, its own submission |
 
-- **First hops and the credential processor** cannot tell which records they took part in. They are therefore scored on every record. Four servers per run are compromised in turn, rotating with the run id.
+- **First hops and the credential processor** cannot tell which records they took part in. They are scored on every record. Four servers per run are compromised in turn, rotating with the run id.
 - **The content server** is scored on the records it submitted, which it can identify because the record names it.
 - **The gatekeeper** is scored once for each of the three active gatekeepers.
 
@@ -58,7 +58,7 @@ Accuracy is read against three references:
 
 **Decoys**
 - A decoy is a genuine transaction from a registered identity held by the decoy infrastructure. It is approved, fanned out, posted and finalized exactly as a real transaction, and it produces a permanent registry record.
-- 60 decoy transactions are in flight at every level of real traffic. The specification sets the target at 60 ± 10; the simulation holds it at the centre of that range.
+- 60 decoy transactions are in flight at every level of real traffic.
 - Each decoy identity captures at a device's rate (every 20 minutes on average), so 69 decoy identities share the stream.
 
 **Board and registry**
@@ -75,17 +75,17 @@ Accuracy is read against three references:
 Every hold uses the same lottery shape:
 - a 10-second tick on the holding node's own clock;
 - geometric release at a fixed probability per tick;
-- unconditional release at three times the hold's mean.
+- unconditional release at three times the hold's own mean.
 
 The release probability is set so that, with the cap, the hold averages its target mean.
 
-**Departure bundling.** After the gatekeeper's own hold, a posting draws for a place in each 30-second bundle of that gatekeeper's grid. Its chance is 25% at each boundary, and it boards unconditionally at the 12th boundary.
+**Departure bundling.** After the gatekeeper's own hold, a posting draws for a place in each 30-second bundle of that gatekeeper's grid. Its chance is 25% at each boundary, and it boards unconditionally at the 12th boundary. The design target for this lottery was 120 s; the cap's truncation of the geometric tail brings the realized mean to 101 s.
 
 **Registry bundling.** Confirmed submissions from every content server leave together on one shared 120-second schedule.
 
 Measured values come from 10 runs at R = 20 (`results/timing_check.json`).
 
-| Stage | Target mean (spec) | Tick | Release probability per tick | Cap | Measured mean | Measured std dev |
+| Stage | Target mean | Tick | Release probability per tick | Cap | Measured mean | Measured std dev |
 |---|---|---|---|---|---|---|
 | Relay hops (A, B, D, E, G, H), every path | 120 s | 10 s | 7.52% | 360 s | 119.7 s | 103.0 s |
 | Device's credential-channel hold | 120 s | 10 s | 7.52% | 360 s | 118.8 s | 103.1 s |
@@ -94,7 +94,7 @@ Measured values come from 10 runs at R = 20 (`results/timing_check.json`).
 | V's hold before sending CV-2 | 30 s | 10 s | 26.86% | 90 s | 30.2 s | 25.3 s |
 | C's fan-out to each gatekeeper (independent per leg) | 60 s | 10 s | 14.46% | 180 s | 59.6 s | 51.2 s |
 | Gatekeeper's own hold | 30 s | 10 s | 26.86% | 90 s | 30.4 s | 25.3 s |
-| Departure bundle inclusion lottery | 101 s | 30 s | 25% | 12 boundaries | 101.0 s | 90.9 s |
+| Departure bundle inclusion lottery | 120 s (measured 101 s) | 30 s | 25% | 12 boundaries | 101.0 s | 90.9 s |
 | F/I's pre-match hold | 240 s | 10 s | 3.84% | 720 s | 240.8 s | 206.9 s |
 | Post-match lottery | 30 s | 10 s | 26.86% | 90 s | 30.1 s | 25.3 s |
 | Registry bundle wait | 60 s | shared 120 s schedule | not applicable | 120 s | 60.1 s | 34.7 s |
@@ -116,9 +116,9 @@ Departure bundles at one gatekeeper hold 2.33 postings on average. 32.4% of them
 In a cell, the claim holds when both conditions are met for every vantage:
 
 1. **Top 1% precision.** Take the 1% of the vantage's matches that it is most confident in. The upper bound of the 95% interval on the share of them that are right must be below 50%.
-2. **Coverage.** Fewer than 0.1% of the vantage's matches may fall in a most-confident set whose matches are right more than half the time.
+2. **Coverage.** Fewer than 0.1% of the vantage's matches may belong to any most-confident group in which the matches are right more than half the time.
 
-A vantage that passes cannot select any meaningful set of its own matches and be right about most of them.
+A vantage that passes cannot identify any meaningful subset of its own guesses and be right about most of them.
 
 ## Builds and cells
 
