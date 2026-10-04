@@ -7,9 +7,7 @@ this folder.
 
 For the architecture these models formalize — the capture device, the credential
 processor (C), the credential validator, the three gatekeepers and their paired match
-boards, the two content-channel servers, and the registry — see the paper itself. This
-README indexes what each model tests and what result to expect; it isn't a substitute
-for reading the paper.
+boards, the two content-channel servers, and the registry — see the paper.
 
 ## Running a model
 
@@ -36,7 +34,7 @@ proverif BM_Baseline_Noncorrelation.pv
 
 ## Reading the results
 
-Three different proof techniques are used, and they answer different kinds of questions:
+Three proof techniques are used:
 
 - **Observational equivalence** (Properties A–F): the model runs two scenarios side by
   side — e.g., a device authenticating one piece of content versus another — and asks
@@ -61,8 +59,3 @@ submission-server signing key, `f_device_sk`/`i_device_sk` for the two content-c
 servers' keys, `blindshare_key` for BlindShare_key, and `g1_sk`/`g1_sign_sk`,
 `g2_sk`/`g2_sign_sk`, `g3_sk`/`g3_sign_sk` for the three gatekeepers' terminus and
 signing keys respectively.
-
-Property and file names are otherwise independent of each other by design: a file is
-named for what it tests, not for a letter, so that the mapping in the table above is the
-only place that pairing needs to be looked up.
-
