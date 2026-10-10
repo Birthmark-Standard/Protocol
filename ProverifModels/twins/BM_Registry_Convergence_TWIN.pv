@@ -1,25 +1,24 @@
-(* BM_Baseline_Noncorrelation.pv   (v90 design, identity swap)
-Property B: with no party compromised, an observer of the network and the registry cannot tell which device submitted which content.
+(* BM_Registry_Convergence.pv   (v90 design)
+Property H: one compromised content server F cannot, on its own, make the registry finalise a record I did not sign; and what I signs is bound to what the device sent.
 
-Vantage point: a passive observer of the public channel and the public registry.
-Leaked keys: none.
-The boards and the quorum output are private. The observer sees the encrypted packets and the registry records.
+Leaked keys: f_device_sk, f_id_sk, c_sign_sk (F fully compromised; c_sign_sk stands for F's ring key). I is honest. The full honest pipeline runs behind them (device, C, V, three gatekeepers, quorum). The attacker plays F: it reads content packets, boards and quorum output, and may send I any packet.
 
-What is swapped: the device identity. T1, T2, imgX, imgY are PUBLIC names.
-device(choice[T1,T2], imgX, claimX) | device(choice[T2,T1], imgY, claimY):
-the same contents with the same claims are submitted in both worlds; only the
-credentials trade places. Pipeline outputs (boards, registry) are therefore
-the same in both worlds unless the credential leaks into them.
-With private T1, T2 the two worlds would be one world with two names
-exchanged, and the model would be true for any protocol.
+The content packet carries an optional field m (metadata hash), and PacketHash covers it. The registry
+accepts a record when it holds two signatures, one under F's registry key and
+one under I's, over the same (ContentHash, verdict, m).
 
-What "true" means: nothing visible from this vantage point separates
-T1-then-T2 from T2-then-T1. It is token confidentiality at this vantage point.
-It says nothing about content, because the contents are the same in both worlds.
-
-The twin (twins/ folder) makes V fold the credential into the verdict. The
-credential then reaches the boards, F and the registry. The twin must come out
-NOT equivalent, or this model's "true" proves nothing. *)
+Queries and expected answers.
+ a  registry_final(h,v,m) ==> i_signed(h,v,m)      expected: true
+    The registry cannot finalise a record I did not sign.
+ c  i_signed_n(h,n,v,m) ==> device_sent(h,n,m)      expected: true
+    F knows (h,n) and can send I a packet with a different m. PacketHash
+    = hash(h,n,m) covers m, so I computes a different PacketHash, finds no
+    quorum and signs nothing. The one-byte presence flags of the spec are not
+    modelled: the model has a single optional field.
+ d  i_signed_n(h,n,v,m) ==> device_sent_hn(h,n)      expected: true
+    ContentHash and the nonce, and so the verdict, are bound to a real device submission.
+ s  event(registry_final(h,v,m))      expected: "not event(...) is false" (sanity)
+THIS FILE IS THE TWIN. Fault: the registry accepts two signatures from the same signer (both under F's key). Query a must FAIL. Expected: NOT equivalent (or the query FAILS). *)
 
 type skey.
 type pkey.
@@ -41,9 +40,9 @@ fun judge(bitstring): bitstring.
 free pub: channel.
 free c_to_val: channel [private].
 free val_to_c: channel [private].
-free match_board_1: channel [private].
-free match_board_2: channel [private].
-free match_board_3: channel [private].
+free match_board_1: channel.
+free match_board_2: channel.
+free match_board_3: channel.
 free quorum_out: channel [private].
 free registry: channel.
 
@@ -59,9 +58,11 @@ free g2_sk: skey [private].
 free g2_sign_sk: skey [private].
 free g3_sk: skey [private].
 free g3_sign_sk: skey [private].
+free f_id_sk: skey [private].
+free i_id_sk: skey [private].
 
-free T1: bitstring.
-free T2: bitstring.
+free T1: bitstring [private].
+free T2: bitstring [private].
 free imgX: bitstring.
 free imgY: bitstring.
 free claimX: bitstring.
@@ -70,18 +71,38 @@ free v_ok: bitstring.
 free v_no: bitstring.
 free no_sig: bitstring.
 
-let device(token: bitstring, content: bitstring, claim: bitstring) =
+free meta_a: bitstring.
+
+event v_issued(bitstring, bitstring).
+event c_asked(bitstring, bitstring).
+event c_checked(bitstring, bitstring).
+event c_checked_w(bitstring, bitstring, bitstring).
+event quorum_reached(bitstring, bitstring).
+event device_sent(bitstring, bitstring, bitstring).
+event device_sent_hn(bitstring, bitstring).
+event i_signed(bitstring, bitstring, bitstring).
+event i_signed_n(bitstring, bitstring, bitstring, bitstring).
+event registry_final(bitstring, bitstring, bitstring).
+
+query h: bitstring, v: bitstring, m: bitstring; event(registry_final(h, v, m)) ==> event(i_signed(h, v, m)).
+query h: bitstring, n: bitstring, v: bitstring, m: bitstring; event(i_signed_n(h, n, v, m)) ==> event(device_sent(h, n, m)).
+query h: bitstring, n: bitstring, v: bitstring, m: bitstring; event(i_signed_n(h, n, v, m)) ==> event(device_sent_hn(h, n)).
+query h: bitstring, v: bitstring, m: bitstring; event(registry_final(h, v, m)).
+
+let device_rc(token: bitstring, content: bitstring, claim: bitstring, meta: bitstring) =
     let h = hash(content) in
     new n: bitstring;
-    let packethash = hash((h, n)) in
+    event device_sent(h, n, meta);
+    event device_sent_hn(h, n);
+    let packethash = hash((h, n, meta)) in
     new rnd_token: bitstring;
     let enc_token = aenc((token, claim), pk(v_token_sk), rnd_token) in
     new rnd_bundle: bitstring;
     let enc_bundle = aenc((enc_token, packethash), pk(c_device_sk), rnd_bundle) in
     new rnd_f: bitstring;
-    let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
+    let enc_content_f = aenc((h, n, meta), pk(f_device_sk), rnd_f) in
     new rnd_i: bitstring;
-    let enc_content_i = aenc((h, n), pk(i_device_sk), rnd_i) in
+    let enc_content_i = aenc((h, n, meta), pk(i_device_sk), rnd_i) in
     out(pub, enc_content_i);
     out(pub, enc_content_f);
     out(pub, enc_bundle).
@@ -92,6 +113,7 @@ let credential_processor =
     let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
     new blindshare_key: key;
     let wrapped = senc(packethash_in, blindshare_key) in
+    event c_asked(packethash_in, wrapped);
     out(c_to_val, (enc_token_in, wrapped));
     in(val_to_c, (decision: bitstring, sig_in: bitstring));
     if decision = v_ok then
@@ -100,6 +122,8 @@ let credential_processor =
         let packethash_confirmed = sdec(wrapped_checked, blindshare_key) in
         if packethash_confirmed = packethash_in then
         (
+            event c_checked(packethash_in, verdict_in);
+            event c_checked_w(packethash_in, verdict_in, wrapped_checked);
             let c_signed = sign((packethash_in, verdict_in), c_sign_sk) in
             new rnd_g1: bitstring;
             let pkt_g1 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
@@ -117,6 +141,7 @@ let validator =
     let (token_in: bitstring, claim_in: bitstring) = adec(enc_token_in, v_token_sk) in
     if (token_in = T1) || (token_in = T2) then
     (
+        event v_issued(judge(claim_in), wrapped_in);
         out(val_to_c, (v_ok, sign((judge(claim_in), wrapped_in), v_sign_sk)))
     )
     else
@@ -179,7 +204,7 @@ let quorum_12 =
     let c2 = checksign(s2, pk(g2_sign_sk)) in
     let (p2: bitstring, v2: bitstring) = checksign(c2, pk(c_sign_sk)) in
     if (p1 = p2) && (v1 = v2) then
-    ( ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(pub, (p1, v1)) ) ).
 
 let quorum_13 =
     !
@@ -190,7 +215,7 @@ let quorum_13 =
     let c3 = checksign(s3, pk(g3_sign_sk)) in
     let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
     if (p1 = p3) && (v1 = v3) then
-    ( ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(pub, (p1, v1)) ) ).
 
 let quorum_23 =
     !
@@ -201,36 +226,36 @@ let quorum_23 =
     let c3 = checksign(s3, pk(g3_sign_sk)) in
     let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
     if (p2 = p3) && (v2 = v3) then
-    ( ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
+    ( event quorum_reached(p2, v2); ( out(quorum_out, (p2, v2)) | out(pub, (p2, v2)) ) ).
 
-let content_matcher_f =
+let content_matcher_i_rc =
     !
     in(pub, enc_content_in: bitstring);
-    let (h: bitstring, n: bitstring) = adec(enc_content_in, f_device_sk) in
-    let candidate = hash((h, n)) in
+    let (h: bitstring, n: bitstring, m: bitstring) = adec(enc_content_in, i_device_sk) in
+    let candidate = hash((h, n, m)) in
     in(quorum_out, (posted: bitstring, v_posted: bitstring));
     if candidate = posted then
     (
-        out(registry, (h, v_posted))
+        event i_signed_n(h, n, v_posted, m);
+        event i_signed(h, v_posted, m);
+        out(pub, sign((h, v_posted, m), i_id_sk))
     ).
 
-let content_matcher_i =
+let registry_rule =
     !
-    in(pub, enc_content_in: bitstring);
-    let (h: bitstring, n: bitstring) = adec(enc_content_in, i_device_sk) in
-    let candidate = hash((h, n)) in
-    in(quorum_out, (posted: bitstring, v_posted: bitstring));
-    if candidate = posted then
-    (
-        out(registry, (h, v_posted))
-    ).
+    in(pub, (s1: bitstring, s2: bitstring));
+    let (h1: bitstring, v1: bitstring, m1: bitstring) = checksign(s1, pk(f_id_sk)) in
+    let (h2: bitstring, v2: bitstring, m2: bitstring) = checksign(s2, pk(f_id_sk)) in
+    if (h1 = h2) && (v1 = v2) && (m1 = m2) then
+        event registry_final(h1, v1, m1);
+        out(registry, (h1, v1, m1)).
 
 process
     out(pub, pk(v_token_sk));
     out(pub, pk(v_sign_sk));
     out(pub, pk(c_device_sk));
-    out(pub, pk(c_sign_sk));
-    out(pub, pk(f_device_sk));
+    out(pub, c_sign_sk);
+    out(pub, f_device_sk);
     out(pub, pk(i_device_sk));
     out(pub, pk(g1_sk));
     out(pub, pk(g1_sign_sk));
@@ -238,9 +263,10 @@ process
     out(pub, pk(g2_sign_sk));
     out(pub, pk(g3_sk));
     out(pub, pk(g3_sign_sk));
+    out(pub, f_id_sk);
+    out(pub, pk(i_id_sk));
     (
-        device(choice[T1,T2], imgX, claimX)
-        | device(choice[T2,T1], imgY, claimY)
+        !(in(pub, claim_a: bitstring); device_rc(T1, imgX, claim_a, meta_a))
         | credential_processor
         | validator
         | gatekeeper_1
@@ -249,6 +275,6 @@ process
         | quorum_12
         | quorum_13
         | quorum_23
-        | content_matcher_f
-        | content_matcher_i
+        | content_matcher_i_rc
+        | registry_rule
     )

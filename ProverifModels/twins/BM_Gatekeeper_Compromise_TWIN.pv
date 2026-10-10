@@ -1,9 +1,9 @@
-(* BM_Baseline_Noncorrelation.pv   (v90 design, identity swap)
-Property B: with no party compromised, an observer of the network and the registry cannot tell which device submitted which content.
+(* BM_Gatekeeper_Compromise.pv   (v90 design, identity swap)
+Property J: a fully compromised gatekeeper G1 learns nothing about which device a token belongs to.
 
-Vantage point: a passive observer of the public channel and the public registry.
-Leaked keys: none.
-The boards and the quorum output are private. The observer sees the encrypted packets and the registry records.
+Vantage point: gatekeeper G1, with its own keys, plus the public channel, all three match boards and the registry.
+Leaked keys: g1_sk, g1_sign_sk.
+G1's role (receive a packet, post to board 1) is played by the attacker, so the honest gatekeeper_1 is omitted. G2, G3, F, I stay honest.
 
 What is swapped: the device identity. T1, T2, imgX, imgY are PUBLIC names.
 device(choice[T1,T2], imgX, claimX) | device(choice[T2,T1], imgY, claimY):
@@ -19,7 +19,8 @@ It says nothing about content, because the contents are the same in both worlds.
 
 The twin (twins/ folder) makes V fold the credential into the verdict. The
 credential then reaches the boards, F and the registry. The twin must come out
-NOT equivalent, or this model's "true" proves nothing. *)
+NOT equivalent, or this model's "true" proves nothing.
+THIS FILE IS THE TWIN. Fault: V folds the credential into the verdict, judge((claim, token)). Expected: NOT equivalent (or the query FAILS). *)
 
 type skey.
 type pkey.
@@ -41,9 +42,9 @@ fun judge(bitstring): bitstring.
 free pub: channel.
 free c_to_val: channel [private].
 free val_to_c: channel [private].
-free match_board_1: channel [private].
-free match_board_2: channel [private].
-free match_board_3: channel [private].
+free match_board_1: channel.
+free match_board_2: channel.
+free match_board_3: channel.
 free quorum_out: channel [private].
 free registry: channel.
 
@@ -117,26 +118,10 @@ let validator =
     let (token_in: bitstring, claim_in: bitstring) = adec(enc_token_in, v_token_sk) in
     if (token_in = T1) || (token_in = T2) then
     (
-        out(val_to_c, (v_ok, sign((judge(claim_in), wrapped_in), v_sign_sk)))
+        out(val_to_c, (v_ok, sign((judge((claim_in, token_in)), wrapped_in), v_sign_sk)))
     )
     else
         out(val_to_c, (v_no, no_sig)).
-
-let gatekeeper_1 =
-    !
-    in(pub, pkt_in: bitstring);
-    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g1_sk) in
-    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
-    if verdict_checked = verdict then
-    (
-        let p_confirmed = sdec(wrapped_checked, k) in
-        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
-        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
-        (
-            let g1_signed = sign(c_sig, g1_sign_sk) in
-            ( out(match_board_1, g1_signed) | out(match_board_1, g1_signed) )
-        )
-    ).
 
 let gatekeeper_2 =
     !
@@ -232,8 +217,8 @@ process
     out(pub, pk(c_sign_sk));
     out(pub, pk(f_device_sk));
     out(pub, pk(i_device_sk));
-    out(pub, pk(g1_sk));
-    out(pub, pk(g1_sign_sk));
+    out(pub, g1_sk);
+    out(pub, g1_sign_sk);
     out(pub, pk(g2_sk));
     out(pub, pk(g2_sign_sk));
     out(pub, pk(g3_sk));
@@ -243,7 +228,6 @@ process
         | device(choice[T2,T1], imgY, claimY)
         | credential_processor
         | validator
-        | gatekeeper_1
         | gatekeeper_2
         | gatekeeper_3
         | quorum_12

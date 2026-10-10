@@ -1,0 +1,100 @@
+(* BM_Verdict_Boundary_Control.pv   (v86, second version)
+   Control for BM_Verdict_Boundary_SameClass.pv. Not one of the ten
+   proved properties. It marks the boundary of the proof.
+
+   Same model as SameClass except that the two contents carry different
+   claims (claimX with imgX, claimY with imgY), so they receive different
+   verdicts. Each claim belongs to its content. The claim inside a
+   device's token is choice[claimX,claimY] for device 1 and
+   choice[claimY,claimX] for device 2, because the contents are swapped
+   between the worlds. The validator's keys are leaked, the device
+   identities are public, and the registry output is fixed outside the
+   device processes, as in SameClass.
+
+   Result (expected, not yet run): equivalence is NOT proved. The
+   compromised validator opens the token of device 1 and reads claimX
+   (left) or claimY (right). The public registry output pairs
+   hash(imgX) with judge(claimX), so the claim ties the device to the
+   record. This is the limit the paper states: the verdict is a public
+   attribute that partitions the population, and the proof holds within
+   one verdict class. *)
+
+
+
+type skey.
+type pkey.
+type key.
+
+fun pk(skey): pkey.
+fun aenc(bitstring, pkey, bitstring): bitstring.
+reduc forall m: bitstring, sk: skey, rnd: bitstring; adec(aenc(m, pk(sk), rnd), sk) = m.
+
+fun senc(bitstring, key): bitstring.
+reduc forall m: bitstring, k: key; sdec(senc(m, k), k) = m.
+
+fun sign(bitstring, skey): bitstring.
+reduc forall m: bitstring, sk: skey; checksign(sign(m, sk), pk(sk)) = m.
+
+fun hash(bitstring): bitstring.
+fun judge(bitstring): bitstring.
+
+free pub: channel.
+
+free v_token_sk: skey [private].
+free v_sign_sk: skey [private].
+free c_device_sk: skey [private].
+free f_device_sk: skey [private].
+
+(* Device identities are public here. A compromised validator reads the
+   device identity from every token it opens, so the attacker knows the
+   names T1 and T2. In BM_Validator_Compromise.pv they are private, which
+   leaves the attacker with no way to tell T1 from T2 and so no anchor to
+   attach a claim to. *)
+free T1: bitstring.
+free T2: bitstring.
+free imgX: bitstring.
+free imgY: bitstring.
+free claimX: bitstring.
+free claimY: bitstring.
+
+let device(token: bitstring, content: bitstring, claim: bitstring) =
+    let h = hash(content) in
+    new n: bitstring;
+    let packethash = hash((h, n)) in
+    new rnd_token: bitstring;
+    let enc_token = aenc((token, claim), pk(v_token_sk), rnd_token) in
+    new rnd_bundle: bitstring;
+    let enc_bundle = aenc((enc_token, packethash), pk(c_device_sk), rnd_bundle) in
+    new rnd_content: bitstring;
+    let enc_content = aenc((h, n), pk(f_device_sk), rnd_content) in
+    out(pub, enc_content);
+    out(pub, enc_bundle).
+
+let credential_processor =
+    !
+    in(pub, enc_bundle_in: bitstring);
+    let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
+    new blindshare_key: key;
+    let wrapped = senc(packethash_in, blindshare_key) in
+    out(pub, (enc_token_in, wrapped)).
+
+let validator =
+    !
+    in(pub, (enc_token_in: bitstring, wrapped_in: bitstring));
+    let (token_in: bitstring, claim_in: bitstring) = adec(enc_token_in, v_token_sk) in
+    if (token_in = T1) || (token_in = T2) then
+        out(pub, sign((judge(claim_in), wrapped_in), v_sign_sk)).
+
+process
+    out(pub, pk(c_device_sk));
+    out(pub, v_token_sk);
+    out(pub, v_sign_sk);
+    out(pub, pk(f_device_sk));
+    out(pub, (hash(imgX), judge(claimX)));
+    out(pub, (hash(imgY), judge(claimY)));
+    (
+        device(T1, choice[imgX,imgY], choice[claimX,claimY])
+        | device(T2, choice[imgY,imgX], choice[claimY,claimX])
+        | credential_processor
+        | validator
+    )

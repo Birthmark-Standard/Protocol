@@ -1,9 +1,9 @@
-(* BM_Baseline_Noncorrelation.pv   (v90 design, identity swap)
-Property B: with no party compromised, an observer of the network and the registry cannot tell which device submitted which content.
+(* BM_ContentServer_Compromise.pv   (v90 design, identity swap)
+Properties C and F: a fully compromised content server F learns nothing about which device a token belongs to.
 
-Vantage point: a passive observer of the public channel and the public registry.
-Leaked keys: none.
-The boards and the quorum output are private. The observer sees the encrypted packets and the registry records.
+Vantage point: the content server F, with its own keys, plus the public channel, all three match boards and the registry.
+Leaked keys: f_device_sk.
+F's role in the pipeline (decrypt content packets, read the boards, publish) is played by the attacker, so the honest F matcher is omitted. I stays honest.
 
 What is swapped: the device identity. T1, T2, imgX, imgY are PUBLIC names.
 device(choice[T1,T2], imgX, claimX) | device(choice[T2,T1], imgY, claimY):
@@ -19,7 +19,8 @@ It says nothing about content, because the contents are the same in both worlds.
 
 The twin (twins/ folder) makes V fold the credential into the verdict. The
 credential then reaches the boards, F and the registry. The twin must come out
-NOT equivalent, or this model's "true" proves nothing. *)
+NOT equivalent, or this model's "true" proves nothing.
+THIS FILE IS THE TWIN. Fault: V folds the credential into the verdict, judge((claim, token)). Expected: NOT equivalent (or the query FAILS). *)
 
 type skey.
 type pkey.
@@ -41,9 +42,9 @@ fun judge(bitstring): bitstring.
 free pub: channel.
 free c_to_val: channel [private].
 free val_to_c: channel [private].
-free match_board_1: channel [private].
-free match_board_2: channel [private].
-free match_board_3: channel [private].
+free match_board_1: channel.
+free match_board_2: channel.
+free match_board_3: channel.
 free quorum_out: channel [private].
 free registry: channel.
 
@@ -117,7 +118,7 @@ let validator =
     let (token_in: bitstring, claim_in: bitstring) = adec(enc_token_in, v_token_sk) in
     if (token_in = T1) || (token_in = T2) then
     (
-        out(val_to_c, (v_ok, sign((judge(claim_in), wrapped_in), v_sign_sk)))
+        out(val_to_c, (v_ok, sign((judge((claim_in, token_in)), wrapped_in), v_sign_sk)))
     )
     else
         out(val_to_c, (v_no, no_sig)).
@@ -203,17 +204,6 @@ let quorum_23 =
     if (p2 = p3) && (v2 = v3) then
     ( ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
 
-let content_matcher_f =
-    !
-    in(pub, enc_content_in: bitstring);
-    let (h: bitstring, n: bitstring) = adec(enc_content_in, f_device_sk) in
-    let candidate = hash((h, n)) in
-    in(quorum_out, (posted: bitstring, v_posted: bitstring));
-    if candidate = posted then
-    (
-        out(registry, (h, v_posted))
-    ).
-
 let content_matcher_i =
     !
     in(pub, enc_content_in: bitstring);
@@ -230,7 +220,7 @@ process
     out(pub, pk(v_sign_sk));
     out(pub, pk(c_device_sk));
     out(pub, pk(c_sign_sk));
-    out(pub, pk(f_device_sk));
+    out(pub, f_device_sk);
     out(pub, pk(i_device_sk));
     out(pub, pk(g1_sk));
     out(pub, pk(g1_sign_sk));
@@ -249,6 +239,5 @@ process
         | quorum_12
         | quorum_13
         | quorum_23
-        | content_matcher_f
         | content_matcher_i
     )

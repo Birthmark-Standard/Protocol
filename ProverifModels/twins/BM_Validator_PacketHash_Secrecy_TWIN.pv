@@ -1,0 +1,123 @@
+(* BM_Validator_PacketHash_Secrecy.pv   (v90 design)
+Properties A and E: a fully compromised validator V does not learn PacketHash.
+
+What is leaked: v_token_sk and v_sign_sk (all of V's keys). The attacker plays
+V: it reads every (token, wrapped) request C sends and may answer with any
+signature. C, the gatekeepers and F stay honest. PacketHash of one device is
+a private marker name ph_m; the query asks whether the attacker can ever
+learn it.
+
+Why it matters: PacketHash is the join key between the credential path and
+the content path. C hides it from V with a BlindShare wrap (senc under a key
+V never sees).
+
+What "true" means: query attacker(ph_m) is not derivable. The wrap and the
+secrecy of BlindShare_key (which only reaches the gatekeepers, encrypted) hold.
+The twin sends PacketHash to V in the clear; the query must then FAIL.
+THIS FILE IS THE TWIN. Fault: C sends PacketHash to V without the BlindShare wrap. Expected: NOT equivalent (or the query FAILS). *)
+
+type skey.
+type pkey.
+type key.
+
+fun pk(skey): pkey.
+fun aenc(bitstring, pkey, bitstring): bitstring.
+reduc forall m: bitstring, sk: skey, rnd: bitstring; adec(aenc(m, pk(sk), rnd), sk) = m.
+
+fun senc(bitstring, key): bitstring.
+reduc forall m: bitstring, k: key; sdec(senc(m, k), k) = m.
+
+fun sign(bitstring, skey): bitstring.
+reduc forall m: bitstring, sk: skey; checksign(sign(m, sk), pk(sk)) = m.
+
+fun hash(bitstring): bitstring.
+fun judge(bitstring): bitstring.
+
+free pub: channel.
+free c_to_val: channel.
+free val_to_c: channel.
+free match_board_1: channel.
+free match_board_2: channel.
+free match_board_3: channel.
+free quorum_out: channel [private].
+free registry: channel.
+
+free ph_m: bitstring [private].
+
+free v_token_sk: skey [private].
+free v_sign_sk: skey [private].
+free c_device_sk: skey [private].
+free c_sign_sk: skey [private].
+free f_device_sk: skey [private].
+free g1_sk: skey [private].
+free g1_sign_sk: skey [private].
+free g2_sk: skey [private].
+free g2_sign_sk: skey [private].
+free g3_sk: skey [private].
+free g3_sign_sk: skey [private].
+
+free T1: bitstring.
+free T2: bitstring.
+free imgX: bitstring.
+free imgY: bitstring.
+free claimX: bitstring.
+free claimY: bitstring.
+free v_ok: bitstring.
+free v_no: bitstring.
+free no_sig: bitstring.
+
+query attacker(ph_m).
+
+let device_m(token: bitstring, content: bitstring, claim: bitstring) =
+    let h = hash(content) in
+    new n: bitstring;
+    let packethash = ph_m in
+    new rnd_token: bitstring;
+    let enc_token = aenc((token, claim), pk(v_token_sk), rnd_token) in
+    new rnd_bundle: bitstring;
+    let enc_bundle = aenc((enc_token, packethash), pk(c_device_sk), rnd_bundle) in
+    new rnd_f: bitstring;
+    let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
+    out(pub, enc_content_f);
+    out(pub, enc_bundle).
+
+let credential_processor =
+    !
+    in(pub, enc_bundle_in: bitstring);
+    let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
+    new blindshare_key: key;
+    let wrapped = packethash_in in
+    out(c_to_val, (enc_token_in, wrapped));
+    in(val_to_c, (decision: bitstring, sig_in: bitstring));
+    if decision = v_ok then
+    (
+        let (verdict_in: bitstring, wrapped_checked: bitstring) = checksign(sig_in, pk(v_sign_sk)) in
+        if wrapped_checked = packethash_in then
+        (
+            let c_signed = sign((packethash_in, verdict_in), c_sign_sk) in
+            new rnd_g1: bitstring;
+            let pkt_g1 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+            new rnd_g2: bitstring;
+            let pkt_g2 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
+            new rnd_g3: bitstring;
+            let pkt_g3 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g3_sk), rnd_g3) in
+            ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
+        )
+    ).
+
+process
+    out(pub, v_token_sk);
+    out(pub, v_sign_sk);
+    out(pub, pk(c_device_sk));
+    out(pub, pk(c_sign_sk));
+    out(pub, pk(f_device_sk));
+    out(pub, pk(g1_sk));
+    out(pub, pk(g1_sign_sk));
+    out(pub, pk(g2_sk));
+    out(pub, pk(g2_sign_sk));
+    out(pub, pk(g3_sk));
+    out(pub, pk(g3_sign_sk));
+    (
+        device_m(T1, imgX, claimX)
+        | credential_processor
+    )
