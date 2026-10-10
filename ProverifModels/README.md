@@ -54,7 +54,7 @@ model cannot see the fault, and its "true" proves nothing.
 | `BM_ContentServer_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
 | `BM_Gatekeeper_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
 | `BM_Validator_PacketHash_Secrecy_TWIN.pv` | C sends the PacketHash to the validator without the BlindShare wrap | `not attacker(ph_m[])` is false |
-| `BM_Verdict_Boundary_Control.pv` | The two transactions carry different claims, so the verdicts differ | Observational equivalence cannot be proved |
+| `BM_Verdict_Boundary_SameClass_TWIN.pv` | The two transactions carry different claims, so the verdicts differ | Observational equivalence cannot be proved |
 | `BM_Quorum_Forgery_TWIN.pv` | Gatekeepers 2 and 3 and the quorum verify no signatures | Query 1 is false |
 | `BM_Quorum_Collusion_TWIN.pv` | The quorum of boards 1 and 2 does not verify C's signature | Query 1 is false |
 | `BM_Quorum_Forgery_RingExclusion_TWIN.pv` | The honest gatekeepers skip the validator-signature check | Query 1 is false |
