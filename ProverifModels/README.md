@@ -5,9 +5,9 @@ in "The Birthmark Protocol: Achieving Semantic Non-Assembly in Media Provenance.
 model is self-contained and independently runnable; none depends on any other file in
 this folder.
 
-For the architecture these models formalize — the capture device, the credential
+For the architecture these models formalize (the capture device, the credential
 processor (C), the credential validator, the three gatekeepers and their paired match
-boards, the two content-channel servers, and the registry — see the paper.
+boards, the two content-channel servers, and the registry) see the paper.
 
 ## Running a model
 
