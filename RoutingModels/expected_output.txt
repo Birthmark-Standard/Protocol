@@ -1,0 +1,48 @@
+== jurisdiction_inference.py ==
+k= 4 guess= 0.25
+  n=   10  P(argmin=J)=0.454
+  n=   30  P(argmin=J)=0.630
+  n=  100  P(argmin=J)=0.884
+  n=  300  P(argmin=J)=0.996
+  n= 1000  P(argmin=J)=1.000
+  n= 3000  P(argmin=J)=1.000
+k= 8 guess= 0.125
+  n=   10  P(argmin=J)=0.192
+  n=   30  P(argmin=J)=0.306
+  n=  100  P(argmin=J)=0.512
+  n=  300  P(argmin=J)=0.829
+  n= 1000  P(argmin=J)=0.997
+  n= 3000  P(argmin=J)=1.000
+k= 16 guess= 0.062
+  n=   10  P(argmin=J)=0.084
+  n=   30  P(argmin=J)=0.118
+  n=  100  P(argmin=J)=0.226
+  n=  300  P(argmin=J)=0.463
+  n= 1000  P(argmin=J)=0.876
+  n= 3000  P(argmin=J)=0.998
+
+== skew_gap.py ==
+skew False
+ share [0.176 0.118 0.118 0.118 0.118 0.118 0.118 0.118]
+ seen  [0.125 0.125 0.125 0.125 0.125 0.125 0.125 0.125]
+ max gap = 5.1 points   P(F in J) = 0.189
+skew True
+ share [0.176 0.118 0.118 0.118 0.118 0.118 0.118 0.118]
+ seen  [0.181 0.117 0.117 0.117 0.117 0.118 0.117 0.117]
+ max gap = 0.5 points   P(F in J) = 0.272
+
+== closed_form.py ==
+P(F in J | J is validator's code)  = 0.1875  (3/16)
+P(F in X | X is not the code)      = 0.1161  (13/112)
+likelihood ratio, F in X           = 1.615
+likelihood ratio, F and I in X     = 2.609
+prior (chance)                     = 12.5 %
+posterior                          = 27.2 %
+
+== coincidence_exact.py ==
+first-hop triples        = 6840
+destination triples      = 4080
+combinations             = 27907200
+valid (own-path rule)    = 23937360
+valid with a coincidence = 7290960
+coincidence rate         = 30.46 %
