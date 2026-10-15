@@ -1,7 +1,7 @@
-(* BM_ContentServer_Compromise.pv   (v90 design, identity swap)
-Properties C and F: a fully compromised content server F learns nothing about which device a token belongs to.
+(* BM_ContentChannelServer_Compromise.pv   (v90 design, identity swap)
+Properties C and F: a fully compromised content channel server F learns nothing about which device a token belongs to.
 
-Vantage point: the content server F, with its own keys, plus the public channel, all three match boards and the registry.
+Vantage point: the content channel server F, with its own keys, plus the public channel, all three match boards and the registry.
 Leaked keys: f_device_sk.
 F's role in the pipeline (decrypt content packets, read the boards, publish) is played by the attacker, so the honest F matcher is omitted. I stays honest.
 
@@ -86,7 +86,7 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
     out(pub, enc_content_f);
     out(pub, enc_bundle).
 
-let credential_processor =
+let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
     let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
@@ -230,7 +230,7 @@ process
     (
         device(choice[T1,T2], imgX, claimX)
         | device(choice[T2,T1], imgY, claimY)
-        | credential_processor
+        | credential_channel_server
         | validator
         | gatekeeper_1
         | gatekeeper_2

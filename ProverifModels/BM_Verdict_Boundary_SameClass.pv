@@ -69,7 +69,7 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
     out(pub, enc_content);
     out(pub, enc_bundle).
 
-let credential_processor =
+let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
     let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
@@ -94,6 +94,6 @@ process
     (
         device(T1, choice[imgX,imgY], claim_std)
         | device(T2, choice[imgY,imgX], claim_std)
-        | credential_processor
+        | credential_channel_server
         | validator
     )

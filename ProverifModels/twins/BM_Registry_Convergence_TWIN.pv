@@ -1,5 +1,5 @@
 (* BM_Registry_Convergence.pv   (v90 design)
-Property H: one compromised content server F cannot, on its own, make the registry finalise a record I did not sign; and what I signs is bound to what the device sent.
+Property H: one compromised content channel server F cannot, on its own, make the registry finalise a record I did not sign; and what I signs is bound to what the device sent.
 
 Leaked keys: f_device_sk, f_id_sk, c_sign_sk (F fully compromised; c_sign_sk stands for F's ring key). I is honest. The full honest pipeline runs behind them (device, C, V, three gatekeepers, quorum). The attacker plays F: it reads content packets, boards and quorum output, and may send I any packet.
 
@@ -107,7 +107,7 @@ let device_rc(token: bitstring, content: bitstring, claim: bitstring, meta: bits
     out(pub, enc_content_f);
     out(pub, enc_bundle).
 
-let credential_processor =
+let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
     let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
@@ -267,7 +267,7 @@ process
     out(pub, pk(i_id_sk));
     (
         !(in(pub, claim_a: bitstring); device_rc(T1, imgX, claim_a, meta_a))
-        | credential_processor
+        | credential_channel_server
         | validator
         | gatekeeper_1
         | gatekeeper_2

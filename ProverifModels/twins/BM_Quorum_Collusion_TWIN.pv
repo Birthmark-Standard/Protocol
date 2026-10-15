@@ -90,7 +90,7 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
     out(pub, enc_content_f);
     out(pub, enc_bundle).
 
-let credential_processor =
+let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
     let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
@@ -192,7 +192,7 @@ process
     out(pub, pk(g3_sign_sk));
     (
         !(in(pub, claim_a: bitstring); device(T1, imgX, claim_a))
-        | credential_processor
+        | credential_channel_server
         | validator
         | gatekeeper_3
         | quorum_12
