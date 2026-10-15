@@ -222,3 +222,13 @@ Fast tests: `python -m pytest tests -q`.
 | `paired_effects` | each vantage's accuracy under the build minus under InternalCompromiseRun, matched record by record |
 
 Intervals on accuracy resample whole runs (cluster bootstrap, 2,000 resamples). AUC intervals use the clustered-data variance of Obuchowski (1997).
+
+## What this experiment does not test
+
+The simulation uses the 20-node pool and the nine-node transaction described above. It does not model:
+
+- the jurisdiction filter or the skew in the device's choice of destinations;
+- the grouping of device-table lines by destination pseudonym;
+- a first-hop vantage that is told which destination a routing code leads to, or one that combines a first hop's knowledge with a destination's.
+
+`../RoutingModels/` contains toy models for the first-hop inferences that the device table allows. They are not a substitute for an experiment of this kind.

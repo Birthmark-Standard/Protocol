@@ -138,5 +138,6 @@ for one device's PacketHash.
 
 ## Files
 
-`generator/gen_models.py` builds every model except SameClass and its twin from shared
-blocks.
+- This folder holds the eleven models in the first table and `BM_Verdict_Boundary_Control.pv`.
+- `twins/` holds the ten twins in the second table.
+- `BM_Verdict_Boundary_Control.pv` is stored three times with identical content: in this folder, as `twins/BM_Verdict_Boundary_Control.pv`, and as `twins/BM_Verdict_Boundary_SameClass_TWIN.pv`. They are the same file under three names.
