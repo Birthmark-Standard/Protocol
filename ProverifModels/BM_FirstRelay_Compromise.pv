@@ -1,0 +1,109 @@
+(* BM_FirstRelay_Compromise.pv   (v102 design, secrecy at the first relay)
+Property K: a compromised first relay, which sees the device's network address, learns nothing about which content that device submitted.
+
+Vantage point: the first relay A, with its own Server Transit Key, plus a passive observer of every leg of the path.
+Leaked keys: a_sk.
+One content path is modeled: device -> A -> B -> F. A is the first relay, B the second relay, F the destination. The credential path has the same
+construction (the payload is encrypted under the destination's Channel Key), so it is not repeated.
+
+What the relay layer looks like here: the device encrypts the payload (ContentHash, n) under F's Channel Key, then wraps (routing code, payload)
+under A's Server Transit Key. A decrypts, reads the routing code, and re-wraps (routing code, payload) under B's Server Transit Key. B reads the routing code
+and re-wraps the payload alone under F's Server Transit Key. F decrypts both layers.
+The routing code is a public name: A learns it, and it is the same for both devices because both reach the same destination.
+pk(f_chan_sk) is public: it stands for the blinded Channel Key that the device routing table carries. The blinding itself is not modeled.
+
+What is tested: two devices at the public addresses ip1 and ip2 submit two contents. The contents are PRIVATE names (secret_img_1, secret_img_2), so the
+attacker cannot compute their hashes itself. The attacker sees every address together with the packet that address sent, and holds a_sk.
+The queries ask whether the attacker can obtain hash(secret_img_1) or hash(secret_img_2). If it cannot, nothing in this vantage point's view lets it
+match an address to a ContentHash, because it has no value to compare against the public registry record, and the encryption is randomized, so it cannot
+test a guess either. This is address-to-content unlinkability at the first relay.
+
+F's output is sent on a private channel here. The registry record itself is public by design, and a public ContentHash would make the query false for
+any protocol. The property tested is that A's own view does not contain the ContentHash, not that the record is hidden.
+
+The relay is passive. Every leg is copied to the public channel, which models a passive observer of the whole path, but the adversary cannot drop, delay or
+inject packets, so selective dropping is not tested. Timing and packet sizes are not modeled either; Appendix D of the paper evaluates them.
+
+The twin (twins/ folder) leaves the payload unwrapped under F's Channel Key. A then reads ContentHash and n. The twin's query must be VIOLATED, or this
+model's "true" proves nothing. *)
+
+type skey.
+type pkey.
+
+fun pk(skey): pkey.
+fun aenc(bitstring, pkey, bitstring): bitstring.
+reduc forall m: bitstring, sk: skey, rnd: bitstring; adec(aenc(m, pk(sk), rnd), sk) = m.
+
+fun hash(bitstring): bitstring.
+
+free pub: channel.
+free dev_to_a: channel [private].
+free a_to_b: channel [private].
+free b_to_f: channel [private].
+free registry_private: channel [private].
+
+free a_sk: skey [private].
+free b_sk: skey [private].
+free f_transit_sk: skey [private].
+free f_chan_sk: skey [private].
+
+free ip1: bitstring.
+free ip2: bitstring.
+free secret_img_1: bitstring [private].
+free secret_img_2: bitstring [private].
+free rc: bitstring.
+
+query attacker(hash(secret_img_1)).
+query attacker(hash(secret_img_2)).
+
+let device(ip: bitstring, content: bitstring) =
+    let h = hash(content) in
+    new n: bitstring;
+    new rnd_p: bitstring;
+    let payload = aenc((h, n), pk(f_chan_sk), rnd_p) in
+    new rnd_a: bitstring;
+    let leg1 = aenc((rc, payload), pk(a_sk), rnd_a) in
+    ( out(dev_to_a, leg1) | out(pub, (ip, leg1)) ).
+
+let first_relay =
+    !
+    in(dev_to_a, leg_in: bitstring);
+    let (code: bitstring, payload_in: bitstring) = adec(leg_in, a_sk) in
+    if code = rc then
+    (
+        new rnd_b: bitstring;
+        let leg2 = aenc((code, payload_in), pk(b_sk), rnd_b) in
+        ( out(a_to_b, leg2) | out(pub, leg2) )
+    ).
+
+let second_relay =
+    !
+    in(a_to_b, leg_in: bitstring);
+    let (code: bitstring, payload_in: bitstring) = adec(leg_in, b_sk) in
+    if code = rc then
+    (
+        new rnd_f: bitstring;
+        let leg3 = aenc(payload_in, pk(f_transit_sk), rnd_f) in
+        ( out(b_to_f, leg3) | out(pub, leg3) )
+    ).
+
+let destination_f =
+    !
+    in(b_to_f, leg_in: bitstring);
+    let payload_in = adec(leg_in, f_transit_sk) in
+    let (h: bitstring, n: bitstring) = adec(payload_in, f_chan_sk) in
+    out(registry_private, h).
+
+process
+    out(pub, a_sk);
+    out(pub, pk(a_sk));
+    out(pub, pk(b_sk));
+    out(pub, pk(f_transit_sk));
+    out(pub, pk(f_chan_sk));
+    (
+        device(ip1, secret_img_1)
+        | device(ip2, secret_img_2)
+        | first_relay
+        | second_relay
+        | destination_f
+    )
