@@ -15,7 +15,7 @@
    (hash(imgY), verdict), the same in both worlds. The token a device
    carries is the same in both worlds. What differs is which content the
    device authenticates, and that is hidden inside the wrapped
-   PacketHash and the encrypted content channel.
+   FullPacketHash and the encrypted content channel.
 
    Result (expected, not yet run): observational equivalence is true. *)
 
@@ -59,11 +59,11 @@ free claim_std: bitstring.
 let device(token: bitstring, content: bitstring, claim: bitstring) =
     let h = hash(content) in
     new n: bitstring;
-    let packethash = hash((h, n)) in
+    let fullpackethash = hash((h, n)) in
     new rnd_token: bitstring;
     let enc_token = aenc((token, claim), pk(v_token_sk), rnd_token) in
     new rnd_bundle: bitstring;
-    let enc_bundle = aenc((enc_token, packethash), pk(c_device_sk), rnd_bundle) in
+    let enc_bundle = aenc((enc_token, fullpackethash), pk(c_device_sk), rnd_bundle) in
     new rnd_content: bitstring;
     let enc_content = aenc((h, n), pk(f_device_sk), rnd_content) in
     out(pub, enc_content);
@@ -72,9 +72,9 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
 let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
-    let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
+    let (enc_token_in: bitstring, fullpackethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
     new blindshare_key: key;
-    let wrapped = senc(packethash_in, blindshare_key) in
+    let wrapped = senc(fullpackethash_in, blindshare_key) in
     out(pub, (enc_token_in, wrapped)).
 
 let validator =

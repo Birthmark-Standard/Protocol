@@ -1,5 +1,5 @@
 (* BM_Quorum_Collusion.pv   (v90 design)
-Property I (two gatekeepers): with G1 and G2 fully compromised, no quorum forms for a (PacketHash, verdict) pair that C did not check.
+Property I (two gatekeepers): with gatekeepers 1 and 2 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check.
 
 Leaked keys: g1_sk, g1_sign_sk, g2_sk, g2_sign_sk.
 Two of three boards are attacker-controlled, so a quorum of boards 1 and 2 is free. What the attacker cannot do is make that quorum carry a pair C never signed, because the quorum checks C's signature.
@@ -11,7 +11,7 @@ gatekeepers and the quorum are as in the pipeline of the other models.
 
 Queries and expected answers.
  1  quorum_reached(p,v) ==> c_checked(p,v)      expected: true
-    No quorum forms for a (PacketHash, verdict) pair C did not check.
+    No quorum forms for a (FullPacketHash, verdict) pair C did not check.
  2  c_checked_w(p,v,w) ==> v_issued(v,w) && c_asked(p,w)      expected: true
     C accepts only a verdict V issued for a wrapped value C itself sent.
  3  event(quorum_reached(p,v))      expected: "not event(quorum_reached(p,v)) is false"
@@ -80,11 +80,11 @@ query p: bitstring, v: bitstring; event(quorum_reached(p, v)).
 let device(token: bitstring, content: bitstring, claim: bitstring) =
     let h = hash(content) in
     new n: bitstring;
-    let packethash = hash((h, n)) in
+    let fullpackethash = hash((h, n)) in
     new rnd_token: bitstring;
     let enc_token = aenc((token, claim), pk(v_token_sk), rnd_token) in
     new rnd_bundle: bitstring;
-    let enc_bundle = aenc((enc_token, packethash), pk(c_device_sk), rnd_bundle) in
+    let enc_bundle = aenc((enc_token, fullpackethash), pk(c_device_sk), rnd_bundle) in
     new rnd_f: bitstring;
     let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
     out(pub, enc_content_f);
@@ -93,27 +93,27 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
 let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
-    let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
+    let (enc_token_in: bitstring, fullpackethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
     new blindshare_key: key;
-    let wrapped = senc(packethash_in, blindshare_key) in
-    event c_asked(packethash_in, wrapped);
+    let wrapped = senc(fullpackethash_in, blindshare_key) in
+    event c_asked(fullpackethash_in, wrapped);
     out(c_to_val, (enc_token_in, wrapped));
     in(val_to_c, (decision: bitstring, sig_in: bitstring));
     if decision = v_ok then
     (
         let (verdict_in: bitstring, wrapped_checked: bitstring) = checksign(sig_in, pk(v_sign_sk)) in
-        let packethash_confirmed = sdec(wrapped_checked, blindshare_key) in
-        if packethash_confirmed = packethash_in then
+        let fullpackethash_confirmed = sdec(wrapped_checked, blindshare_key) in
+        if fullpackethash_confirmed = fullpackethash_in then
         (
-            event c_checked(packethash_in, verdict_in);
-            event c_checked_w(packethash_in, verdict_in, wrapped_checked);
-            let c_signed = sign((packethash_in, verdict_in), c_sign_sk) in
+            event c_checked(fullpackethash_in, verdict_in);
+            event c_checked_w(fullpackethash_in, verdict_in, wrapped_checked);
+            let c_signed = sign((fullpackethash_in, verdict_in), c_sign_sk) in
             new rnd_g1: bitstring;
-            let pkt_g1 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+            let pkt_g1 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
             new rnd_g2: bitstring;
-            let pkt_g2 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
+            let pkt_g2 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
             new rnd_g3: bitstring;
-            let pkt_g3 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g3_sk), rnd_g3) in
+            let pkt_g3 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g3_sk), rnd_g3) in
             ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
         )
     ).

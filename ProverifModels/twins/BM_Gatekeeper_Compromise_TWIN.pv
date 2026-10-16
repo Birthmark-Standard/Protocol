@@ -1,9 +1,9 @@
 (* BM_Gatekeeper_Compromise.pv   (v90 design, identity swap)
-Property J: a fully compromised gatekeeper G1 learns nothing about which device a token belongs to.
+Property J: a fully compromised gatekeeper 1 learns nothing about which device a token belongs to.
 
-Vantage point: gatekeeper G1, with its own keys, plus the public channel, all three match boards and the registry.
+Vantage point: gatekeeper 1, with its own keys, plus the public channel, all three match boards and the registry.
 Leaked keys: g1_sk, g1_sign_sk.
-G1's role (receive a packet, post to board 1) is played by the attacker, so the honest gatekeeper_1 is omitted. G2, G3, F, I stay honest.
+Gatekeeper 1's role (receive a packet, post to board 1) is played by the attacker, so the honest gatekeeper_1 is omitted. Gatekeepers 2 and 3, F and I stay honest.
 
 What is swapped: the device identity. T1, T2, imgX, imgY are PUBLIC names.
 device(choice[T1,T2], imgX, claimX) | device(choice[T2,T1], imgY, claimY):
@@ -74,11 +74,11 @@ free no_sig: bitstring.
 let device(token: bitstring, content: bitstring, claim: bitstring) =
     let h = hash(content) in
     new n: bitstring;
-    let packethash = hash((h, n)) in
+    let fullpackethash = hash((h, n)) in
     new rnd_token: bitstring;
     let enc_token = aenc((token, claim), pk(v_token_sk), rnd_token) in
     new rnd_bundle: bitstring;
-    let enc_bundle = aenc((enc_token, packethash), pk(c_device_sk), rnd_bundle) in
+    let enc_bundle = aenc((enc_token, fullpackethash), pk(c_device_sk), rnd_bundle) in
     new rnd_f: bitstring;
     let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
     new rnd_i: bitstring;
@@ -90,24 +90,24 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
 let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
-    let (enc_token_in: bitstring, packethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
+    let (enc_token_in: bitstring, fullpackethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
     new blindshare_key: key;
-    let wrapped = senc(packethash_in, blindshare_key) in
+    let wrapped = senc(fullpackethash_in, blindshare_key) in
     out(c_to_val, (enc_token_in, wrapped));
     in(val_to_c, (decision: bitstring, sig_in: bitstring));
     if decision = v_ok then
     (
         let (verdict_in: bitstring, wrapped_checked: bitstring) = checksign(sig_in, pk(v_sign_sk)) in
-        let packethash_confirmed = sdec(wrapped_checked, blindshare_key) in
-        if packethash_confirmed = packethash_in then
+        let fullpackethash_confirmed = sdec(wrapped_checked, blindshare_key) in
+        if fullpackethash_confirmed = fullpackethash_in then
         (
-            let c_signed = sign((packethash_in, verdict_in), c_sign_sk) in
+            let c_signed = sign((fullpackethash_in, verdict_in), c_sign_sk) in
             new rnd_g1: bitstring;
-            let pkt_g1 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+            let pkt_g1 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
             new rnd_g2: bitstring;
-            let pkt_g2 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
+            let pkt_g2 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
             new rnd_g3: bitstring;
-            let pkt_g3 = aenc((packethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g3_sk), rnd_g3) in
+            let pkt_g3 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g3_sk), rnd_g3) in
             ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
         )
     ).
