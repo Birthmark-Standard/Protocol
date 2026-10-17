@@ -1,25 +1,26 @@
-(* BM_Verdict_Boundary_Control.pv   (v86, second version)
-   Control for BM_Verdict_Boundary_SameClass.pv. Not one of the ten
-   proved properties. It marks the boundary of the proof.
+(* BM_Verdict_Boundary_SameClass_TWIN.pv   (v105 design, full pipeline)
+Twin of BM_Verdict_Boundary_SameClass.pv. Not one of the proved properties. It marks the boundary of the proof. The two contents carry different
+claims (claimX with imgX, claimY with imgY), so they receive different verdicts. The claim inside the token of device 1 is choice[claimX,claimY] and in the token of device 2 it is
+choice[claimY,claimX], because the contents are swapped between the worlds. Everything else is as in SameClass. The validator's keys are leaked and the device identities T1 and T2 are public, so the attacker knows which device each token belongs to.
 
-   Same model as SameClass except that the two contents carry different
-   claims (claimX with imgX, claimY with imgY), so they receive different
-   verdicts. Each claim belongs to its content. The claim inside a
-   device's token is choice[claimX,claimY] for device 1 and
-   choice[claimY,claimX] for device 2, because the contents are swapped
-   between the worlds. The validator's keys are leaked, the device
-   identities are public, and the registry output is fixed outside the
-   device processes, as in SameClass.
+What runs: the device, the honest C, the three gatekeepers, the three quorums and content channel server F run behind the attacker, who plays V. The
+boards and the quorum output are private. The relay layer is not modeled, and the device writes to the public channel.
 
-   Result (expected, not yet run): equivalence is NOT proved. The
-   compromised validator opens the token of device 1 and reads claimX
-   (left) or claimY (right). The public registry output pairs
-   hash(imgX) with judge(claimX), so the claim ties the device to the
-   record. This is the limit the paper states: the verdict is a public
-   attribute that partitions the population, and the proof holds within
-   one verdict class. *)
+How the scenarios differ. The contents are swapped, not the tokens. With public tokens the token swap cannot work: ProVerif matches the two worlds step by
+step, so the attacker reads T1 or T2 off a bundle at a fixed position and the worlds differ. The token a device carries is the same in both worlds. What
+differs is which content the device authenticates, and that is hidden inside the wrapped FullPacketHash and the encrypted content channel.
 
+The registry is idealized, and this is the one abstraction in the model. F's record goes to a private sink. The public registry output is fixed outside the
+device processes: (hash(imgX), verdict) then (hash(imgY), verdict), the same in both worlds. This stands for a registry that publishes records in bundles, so
+that the order and the timing of publication carry nothing. Without it the model would be false for a reason the paper states and does not model: a validator
+that answers one request and watches the registry sees which record follows (Appendix A, selective denial). Because the sink is private and the
+pipeline's other outputs are ciphertexts to keys the attacker does not hold, the processes behind V add only ciphertexts under keys the attacker does not hold
+(C's gatekeeper packets). What the upgrade adds is that the whole pipeline runs under the attacker's control of V's answers: V may answer, delay or alter
+any reply.
 
+Result (expected, not yet run): equivalence is NOT proved. The compromised validator opens the token of device 1 and reads claimX (left) or claimY (right).
+The public registry output pairs hash(imgX) with judge(claimX), so the claim ties the device to the record. This is the limit the paper states: the
+verdict is a public attribute that partitions the population, and the proof holds within one verdict class. *)
 
 type skey.
 type pkey.
@@ -39,62 +40,194 @@ fun hash(bitstring): bitstring.
 fun judge(bitstring): bitstring.
 
 free pub: channel.
+free c_to_val: channel.
+free val_to_c: channel.
+free match_board_1: channel [private].
+free match_board_2: channel [private].
+free match_board_3: channel [private].
+free quorum_out: channel [private].
+free reg_sink: channel [private].
 
 free v_token_sk: skey [private].
 free v_sign_sk: skey [private].
 free c_device_sk: skey [private].
+free c_sign_sk: skey [private].
 free f_device_sk: skey [private].
+free i_device_sk: skey [private].
+free g1_sk: skey [private].
+free g1_sign_sk: skey [private].
+free g2_sk: skey [private].
+free g2_sign_sk: skey [private].
+free g3_sk: skey [private].
+free g3_sign_sk: skey [private].
 
-(* Device identities are public here. A compromised validator reads the
-   device identity from every token it opens, so the attacker knows the
-   names T1 and T2. In BM_Validator_Compromise.pv they are private, which
-   leaves the attacker with no way to tell T1 from T2 and so no anchor to
-   attach a claim to. *)
 free T1: bitstring.
 free T2: bitstring.
 free imgX: bitstring.
 free imgY: bitstring.
 free claimX: bitstring.
 free claimY: bitstring.
+free v_ok: bitstring.
+free v_no: bitstring.
+free no_sig: bitstring.
 
 let device(token: bitstring, content: bitstring, claim: bitstring) =
     let h = hash(content) in
     new n: bitstring;
     let fullpackethash = hash((h, n)) in
     new rnd_token: bitstring;
-    let enc_token = aenc((token, claim), pk(v_token_sk), rnd_token) in
+    new blindshare_key: key;
+    let wrapped_dev = senc(fullpackethash, blindshare_key) in
+    let binding = hash(wrapped_dev) in
+    let enc_token = aenc((token, claim, binding), pk(v_token_sk), rnd_token) in
     new rnd_bundle: bitstring;
-    let enc_bundle = aenc((enc_token, fullpackethash), pk(c_device_sk), rnd_bundle) in
-    new rnd_content: bitstring;
-    let enc_content = aenc((h, n), pk(f_device_sk), rnd_content) in
-    out(pub, enc_content);
+    let enc_bundle = aenc((enc_token, fullpackethash, blindshare_key), pk(c_device_sk), rnd_bundle) in
+    new rnd_f: bitstring;
+    let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
+    out(pub, enc_content_f);
     out(pub, enc_bundle).
 
 let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
-    let (enc_token_in: bitstring, fullpackethash_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
-    new blindshare_key: key;
+    let (enc_token_in: bitstring, fullpackethash_in: bitstring, blindshare_key: key) = adec(enc_bundle_in, c_device_sk) in
     let wrapped = senc(fullpackethash_in, blindshare_key) in
-    out(pub, (enc_token_in, wrapped)).
+    out(c_to_val, (enc_token_in, wrapped));
+    in(val_to_c, (decision: bitstring, sig_in: bitstring));
+    if decision = v_ok then
+    (
+        let (verdict_in: bitstring, wrapped_checked: bitstring) = checksign(sig_in, pk(v_sign_sk)) in
+        let fullpackethash_confirmed = sdec(wrapped_checked, blindshare_key) in
+        if fullpackethash_confirmed = fullpackethash_in then
+        (
+            let c_signed = sign((fullpackethash_in, verdict_in), c_sign_sk) in
+            new rnd_g1: bitstring;
+            let pkt_g1 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+            new rnd_g2: bitstring;
+            let pkt_g2 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
+            new rnd_g3: bitstring;
+            let pkt_g3 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g3_sk), rnd_g3) in
+            ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
+        )
+    ).
 
-let validator =
+let gatekeeper_1 =
     !
-    in(pub, (enc_token_in: bitstring, wrapped_in: bitstring));
-    let (token_in: bitstring, claim_in: bitstring) = adec(enc_token_in, v_token_sk) in
-    if (token_in = T1) || (token_in = T2) then
-        out(pub, sign((judge(claim_in), wrapped_in), v_sign_sk)).
+    in(pub, pkt_in: bitstring);
+    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g1_sk) in
+    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
+    if verdict_checked = verdict then
+    (
+        let p_confirmed = sdec(wrapped_checked, k) in
+        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
+        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
+        (
+            let g1_signed = sign(c_sig, g1_sign_sk) in
+            ( out(match_board_1, g1_signed) | out(match_board_1, g1_signed) )
+        )
+    ).
+
+let gatekeeper_2 =
+    !
+    in(pub, pkt_in: bitstring);
+    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g2_sk) in
+    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
+    if verdict_checked = verdict then
+    (
+        let p_confirmed = sdec(wrapped_checked, k) in
+        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
+        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
+        (
+            let g2_signed = sign(c_sig, g2_sign_sk) in
+            ( out(match_board_2, g2_signed) | out(match_board_2, g2_signed) )
+        )
+    ).
+
+let gatekeeper_3 =
+    !
+    in(pub, pkt_in: bitstring);
+    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g3_sk) in
+    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
+    if verdict_checked = verdict then
+    (
+        let p_confirmed = sdec(wrapped_checked, k) in
+        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
+        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
+        (
+            let g3_signed = sign(c_sig, g3_sign_sk) in
+            ( out(match_board_3, g3_signed) | out(match_board_3, g3_signed) )
+        )
+    ).
+
+let quorum_12 =
+    !
+    in(match_board_1, s1: bitstring);
+    in(match_board_2, s2: bitstring);
+    let c1 = checksign(s1, pk(g1_sign_sk)) in
+    let (p1: bitstring, v1: bitstring) = checksign(c1, pk(c_sign_sk)) in
+    let c2 = checksign(s2, pk(g2_sign_sk)) in
+    let (p2: bitstring, v2: bitstring) = checksign(c2, pk(c_sign_sk)) in
+    if (p1 = p2) && (v1 = v2) then
+    ( ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+
+let quorum_13 =
+    !
+    in(match_board_1, s1: bitstring);
+    in(match_board_3, s3: bitstring);
+    let c1 = checksign(s1, pk(g1_sign_sk)) in
+    let (p1: bitstring, v1: bitstring) = checksign(c1, pk(c_sign_sk)) in
+    let c3 = checksign(s3, pk(g3_sign_sk)) in
+    let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
+    if (p1 = p3) && (v1 = v3) then
+    ( ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+
+let quorum_23 =
+    !
+    in(match_board_2, s2: bitstring);
+    in(match_board_3, s3: bitstring);
+    let c2 = checksign(s2, pk(g2_sign_sk)) in
+    let (p2: bitstring, v2: bitstring) = checksign(c2, pk(c_sign_sk)) in
+    let c3 = checksign(s3, pk(g3_sign_sk)) in
+    let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
+    if (p2 = p3) && (v2 = v3) then
+    ( ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
+
+let content_matcher_f =
+    !
+    in(pub, enc_content_in: bitstring);
+    let (h: bitstring, n: bitstring) = adec(enc_content_in, f_device_sk) in
+    let candidate = hash((h, n)) in
+    in(quorum_out, (posted: bitstring, v_posted: bitstring));
+    if candidate = posted then
+    (
+        out(reg_sink, (h, v_posted))
+    ).
+
 
 process
-    out(pub, pk(c_device_sk));
     out(pub, v_token_sk);
     out(pub, v_sign_sk);
+    out(pub, pk(c_device_sk));
+    out(pub, pk(c_sign_sk));
     out(pub, pk(f_device_sk));
+    out(pub, pk(i_device_sk));
+    out(pub, pk(g1_sk));
+    out(pub, pk(g1_sign_sk));
+    out(pub, pk(g2_sk));
+    out(pub, pk(g2_sign_sk));
+    out(pub, pk(g3_sk));
+    out(pub, pk(g3_sign_sk));
     out(pub, (hash(imgX), judge(claimX)));
     out(pub, (hash(imgY), judge(claimY)));
     (
         device(T1, choice[imgX,imgY], choice[claimX,claimY])
         | device(T2, choice[imgY,imgX], choice[claimY,claimX])
         | credential_channel_server
-        | validator
+        | gatekeeper_1
+        | gatekeeper_2
+        | gatekeeper_3
+        | quorum_12
+        | quorum_13
+        | quorum_23
+        | content_matcher_f
     )
