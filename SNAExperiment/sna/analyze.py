@@ -152,11 +152,13 @@ def _level(t, lvl, T, rng, out):
     return num, den
 
 
-def metrics(records, v, spec, rng):
-    t = stack(records, v)
+def metrics(records, v, spec, rng, t=None, name=None):
+    """Every metric of one vantage in one cell. t: a pre-stacked (and possibly filtered) table of its
+    rows; name: the label written in the row (default: the vantage)."""
+    t = stack(records, v) if t is None else t
     R, T = spec["R"], spec["T"]
     n = int(t["sub"].size)
-    out = dict(cell=spec["key"], vantage=v, R=R, T=T, L=T, runs=len(records), n=n,
+    out = dict(cell=spec["key"], vantage=name or v, R=R, T=T, L=T, runs=len(records), n=n,
                inv_L=1.0 / T, inv_R=1.0 / R)
     if n == 0:
         return out
@@ -233,7 +235,7 @@ def _claims(t, rng, out):
     return out
 
 
-def paired_effect(with_recs, without_recs, v, rng):
+def paired_effect(with_recs, without_recs, v, rng, mask=None):
     """Paired effect on the same real records: accuracy under one build minus accuracy under
     another, matched row by row on (run, transaction, group), with an interval from resampling
     runs. Both builds carry identical traffic."""
@@ -249,6 +251,9 @@ def paired_effect(with_recs, without_recs, v, rng):
             x = base.get(r["run"])
             if x is None:
                 continue
+            if mask is not None:
+                keep = mask(y)
+                y = {k: (a[keep] if isinstance(a, np.ndarray) and a.shape[:1] == keep.shape else a) for k, a in y.items()}
             kx = {(int(a), int(b)): i for i, (a, b) in enumerate(zip(x["sub"], x["group"]))}
             idx = [kx.get((int(a), int(b)), -1) for a, b in zip(y["sub"], y["group"])]
             idx = np.array(idx, np.int64)
@@ -291,6 +296,37 @@ def analyze(cells, loader, seed=12345, references=None):
                 ch[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = paired_effect(w, pr, v, rng)
         changes[name] = ch
     return rows, changes
+
+
+def overlap_analysis(cells, loader, ref_loader, seed=12346):
+    """Under permitted overlap: the combined vantage of one node, overall and by the role pair it held
+    in the record's transaction, and each single-role vantage paired against the reference build on
+    the records whose transaction has no coincidence between roles on different paths."""
+    rng = np.random.default_rng(seed)
+    rows, regression = [], {}
+    for key, spec in cells.items():
+        recs = loader(key)
+        if not recs or "combined" not in recs[0]["vantages"]:
+            continue
+        recs = sorted(recs, key=lambda r: r["run"])
+        t = stack(recs, "combined")
+        r = metrics(recs, "combined", spec, rng, t=t, name="combined")
+        r["decoys"] = float(spec.get("decoys", 0.0))
+        rows.append(r)
+        for code, cls in enumerate(AT.PAIR_CLASSES):
+            sel = t["pair"] == code
+            if not sel.any():
+                continue
+            r = metrics(recs, "combined", spec, rng, t={k: x[sel] for k, x in t.items()}, name=f"combined: {cls}")
+            r["decoys"] = float(spec.get("decoys", 0.0))
+            r["pair_class"] = cls
+            rows.append(r)
+        ref = ref_loader(key)
+        if ref:
+            for v in AT.VANTAGES:
+                regression[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = paired_effect(
+                    recs, ref, v, rng, mask=lambda y: y["ov"] == 0)
+    return rows, regression
 
 
 def bundle_stats(records):

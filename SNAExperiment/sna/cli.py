@@ -9,6 +9,10 @@
   latency    capture-to-finalization time under every build (results/latency.json)
   pairs      how often a record's two registry submissions leave together (results/pair_gaps.json)
   timing     every stage's simulated hold, and departure bundle sizes (results/timing_check.json)
+  overlap-counts  how often the permitted-overlap role draw puts one node on two paths
+             (results/overlap_counts.json)
+  shuffle    negative control for the combined vantage: record times permuted within each run
+             (results/shuffle_control.json)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker
 count or the order runs finish in.
@@ -44,11 +48,12 @@ def cmd_reproduce(a):
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["reproduce", "run", "analyze", "tables", "latency", "pairs", "timing"])
+    ap.add_argument("command", choices=["reproduce", "run", "analyze", "tables", "latency", "pairs", "timing",
+                                        "overlap-counts", "shuffle"])
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=EX.RUNS, help="runs per cell (default: %(default)s)")
-    ap.add_argument("--build", default=EX.BASELINE, choices=list(EX.BUILDS), help="build (default: %(default)s)")
+    ap.add_argument("--build", default=EX.BASELINE, choices=list(EX.ALL_BUILDS), help="build (default: %(default)s)")
     a = ap.parse_args(argv)
     out = Path(a.out or EX.RESULTS)
     dict(reproduce=lambda: cmd_reproduce(a),
@@ -57,4 +62,6 @@ def main(argv=None):
          tables=lambda: report.tables_from_summaries(out),
          latency=lambda: EX.latency(out, runs=min(a.runs, 20)),
          pairs=lambda: EX.pair_gaps(out, runs=min(a.runs, 20), workers=a.workers),
-         timing=lambda: EX.timing_check(out, runs=min(a.runs, 10), workers=a.workers))[a.command]()
+         timing=lambda: EX.timing_check(out, runs=min(a.runs, 10), workers=a.workers),
+         shuffle=lambda: EX.shuffle_control(out, runs=min(a.runs, 20), workers=a.workers),
+         **{"overlap-counts": lambda: EX.overlap_counts(out)})[a.command]()

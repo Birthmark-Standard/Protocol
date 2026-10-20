@@ -81,10 +81,11 @@ class World:
     def __init__(self, cfg: P.Config, seed: int):
         self.cfg = cfg
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(13)
-        # streams 4, 5, 8 and 11 are reserved and unused here
+        streams = ss.spawn(14)
+        # streams 4, 5, 8 and 11 are reserved and unused here; stream 13 draws the relays when
+        # overlap is on, so every other draw is the same with overlap on or off
         (self.rng_world, self.rng_real, self.rng_decoy, _, _, rng_bundle, rng_push,
-         _, rng_reg, self.rng_post, _, self.rng_incl, rng_v) = (np.random.default_rng(s) for s in streams)
+         _, rng_reg, self.rng_post, _, self.rng_incl, rng_v, self.rng_relays) = (np.random.default_rng(s) for s in streams)
         # the validator's hold-clock phase
         self.v_phase = float(rng_v.uniform(0, P.TICK_S))
         # each gatekeeper's departure-bundle grid phase
@@ -122,11 +123,20 @@ def _mesh(rng):
 
 
 # --------------------------------------------------------------------------- transactions
-def _roles(r, S, gk_set):
-    """Nine distinct nodes per transaction. C, F and I never belong to the active gatekeeper set;
-    the first hops (A, D, G) and random hops (B, E, H) are drawn from the other 17 nodes, so the
-    three paths share no node, a first hop is never C, F or I, and a gatekeeper may relay."""
-    N = P.N_NODES
+def _roles(r, S, gk_set, n_nodes=P.N_NODES, rng_relays=None):
+    """The nodes of each transaction's three paths: credential A -> B -> C, content D -> E -> F and
+    G -> H -> I. C, F and I are three distinct nodes, never in the active gatekeeper set.
+
+    By default every role is a distinct node: the relays are six distinct nodes drawn from the
+    nodes other than C, F and I, so the three paths share no node, a first hop is never C, F or I,
+    and a gatekeeper may relay.
+
+    With rng_relays (permitted overlap) the relays are drawn under the routing design's guarantees
+    only, in order, each uniform over the nodes its constraints allow: A, D and G pairwise distinct
+    and each different from its own path's destination; then B, E and H, each different from its
+    own path's first relay and destination. Every other coincidence is allowed. C, F and I are the
+    same as by default, and the default draws are still taken, so every later draw is unchanged."""
+    N = n_nodes
     pool = np.setdiff1d(np.arange(N), gk_set)
     cfi = pool[np.argsort(r.random((S, pool.size)), axis=1)[:, :3]]
     x = r.random((S, N))
@@ -134,8 +144,35 @@ def _roles(r, S, gk_set):
     x[idx, cfi] = 2.0
     rest = np.argsort(x, axis=1)[:, :6]
     C, F, I = cfi.T
-    A, B, D, E, G, H = rest.T
+    if rng_relays is None:
+        A, B, D, E, G, H = rest.T
+        return C, F, I, A, B, D, E, G, H
+    rows = np.arange(S)
+
+    def pick(*excluded):
+        u = rng_relays.random((S, N))
+        for e in excluded:
+            u[rows, e] = 2.0
+        return np.argmin(u, axis=1)
+    A = pick(C)
+    D = pick(F, A)
+    G = pick(I, A, D)
+    B = pick(A, C)
+    E = pick(D, F)
+    H = pick(G, I)
     return C, F, I, A, B, D, E, G, H
+
+
+PATHS = (("A", "B", "C"), ("D", "E", "F"), ("G", "H", "I"))
+CROSS_PAIRS = tuple((a, b) for i, p in enumerate(PATHS) for q in PATHS[i + 1:] for a in p for b in q)
+
+
+def cross_path_overlap(roles):
+    """True where some node holds roles on two different paths of the same transaction."""
+    out = np.zeros(np.asarray(roles["A"]).shape, bool)
+    for a, b in CROSS_PAIRS:
+        out |= roles[a] == roles[b]
+    return out
 
 
 def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, device_mean):
@@ -190,7 +227,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     lat_src = r.uniform(*P.LAT_EXT_MS, size=(max(n_src, 1), P.N_NODES)) / 1000
     lat = lat_src[src - src0]
     sub = sub0 + np.arange(S)
-    C, F, I, A, B, D, E, G, Hh = _roles(r, S, w.gk_set)
+    C, F, I, A, B, D, E, G, Hh = _roles(r, S, w.gk_set, rng_relays=w.rng_relays if cfg.overlap else None)
 
     (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, cfg.dev_cred_mean)
     (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.dev_content_mean)
@@ -255,7 +292,10 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         post = dep + _proc(r, S)
         out[name] = (hold, det, post, ok, ready, known)
 
-    return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh,
+    extra = {}
+    if cfg.overlap:
+        extra["overlap"] = cross_path_overlap(dict(A=A, B=B, C=C, D=D, E=E, F=F, G=G, H=Hh, I=I))
+    return dict(t0=t0, src=src, decoy=np.full(S, decoy), C=C, F=F, I=I, A=A, B=B, D=D, E=E, G=G, H=Hh, **extra,
                 arr_c=arr_c, arr_f=arr_f, arr_i=arr_i, cv1_s=cv1_s, cv2_s=cv2_s, cv2_a=cv2_a,
                 gk_send=gk_send, gk_arr=gk_arr, posts=posts, gk_release=gk_rel, quorum=quorum,
                 hold_f=out["f"][0], det_f=out["f"][1], reg_f=out["f"][2], ok_f=out["f"][3],

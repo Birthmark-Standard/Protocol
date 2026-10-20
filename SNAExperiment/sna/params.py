@@ -74,6 +74,7 @@ class Config:
     post_match: bool = True            # F's and I's post-match lottery after quorum is confirmed
     pm_mean: float = 30.0              # post-match lottery mean
     reg_bundle_s: float = REG_BUNDLE_S # registry-level bundling period; 0 = off
+    overlap: bool = False              # relays drawn under the routing design's guarantees only (see sim._roles)
 
     @property
     def warmup_s(self) -> float:

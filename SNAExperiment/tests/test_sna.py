@@ -117,3 +117,25 @@ def test_holds_meet_their_means_and_caps():
     d = LT.inclusion_departure(rng, t, 7.0, 30.0, P.INCLUSION_P, P.INCLUSION_MAX)
     assert np.allclose((d - 7.0) / 30.0, np.round((d - 7.0) / 30.0))
     assert (d >= t).all() and (d - t <= 30.0 * P.INCLUSION_MAX + 1e-6).all()
+
+
+def test_permitted_overlap_role_constraints():
+    """Under permitted overlap: first relays pairwise distinct, destinations pairwise distinct and
+    never gatekeepers, the three nodes of each path distinct; destinations and every other draw are
+    the same as with overlap off; and some roles on different paths coincide."""
+    on = S.simulate(SMALL.with_(overlap=True), 24).subs
+    off = S.simulate(SMALL, 24).subs
+    gk = S.World(SMALL, 24).gk_set
+    for p in S.PATHS:
+        a, b, c = (on[k] for k in p)
+        assert ((a != b) & (b != c) & (a != c)).all(), p
+    assert ((on["A"] != on["D"]) & (on["A"] != on["G"]) & (on["D"] != on["G"])).all()
+    assert ((on["C"] != on["F"]) & (on["C"] != on["I"]) & (on["F"] != on["I"])).all()
+    assert not np.isin(np.r_[on["C"], on["F"], on["I"]], gk).any()
+    for k in ("t0", "src", "C", "F", "I", "decoy"):
+        assert np.array_equal(on[k], off[k]), k
+    assert on["overlap"].any() and "overlap" not in off
+    assert np.array_equal(on["overlap"], S.cross_path_overlap(on))
+    C, F, I, A, B, D, E, G, H = S._roles(np.random.default_rng(3), 50_000, np.array([17, 18, 19]),
+                                         rng_relays=np.random.default_rng(4))
+    assert (A == F).any() and (D == C).any() and (B == E).any() and (E == I).any() and np.isin(B, [17, 18, 19]).any()

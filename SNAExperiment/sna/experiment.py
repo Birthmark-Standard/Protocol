@@ -50,7 +50,16 @@ BUILDS = {
     "relay_180s": dict(relay_mean=180.0),
     "role_aware_360s": dict(dev_content_mean=360.0, cs_mean=360.0),
     "gatekeeper_120s": dict(gk_mean=120.0),
+    # the routing design's permitted coincidences between roles on different paths
+    "permitted_overlap": dict(overlap=True),
 }
+# controls, run on request and never part of reproduce: every hold and lottery off
+CONTROLS = {
+    "overlap_no_holds": dict(overlap=True, relay_mean=0.0, dev_cred_mean=0.0, dev_content_mean=0.0, c_hold_mean=0.0,
+                             v_hold_mean=0.0, fanout_mean=0.0, gk_mean=0.0, gk_inclusion=False, cs_mean=0.0,
+                             post_match=False, reg_bundle_s=0.0),
+}
+ALL_BUILDS = {**BUILDS, **CONTROLS}
 LABEL = {
     BASELINE: EXPERIMENT,
     "no_vc_holds": "without V's and C's holds",
@@ -62,6 +71,8 @@ LABEL = {
     "relay_180s": "relay hops at 180 s",
     "role_aware_360s": "device content and F/I at 360 s",
     "gatekeeper_120s": "gatekeeper hold at 120 s",
+    "permitted_overlap": "permitted overlap",
+    "overlap_no_holds": "permitted overlap, every hold off",
 }
 REMOVALS = ("no_vc_holds", "no_inclusion_lottery", "no_post_match_lottery", "no_registry_bundling",
             "no_role_aware_holds", "no_mechanisms")
@@ -88,7 +99,7 @@ def window_s(R, D):
 def config_of(spec, D):
     R = spec["R"]
     return P.Config(real_rate=R / D, decoy_rate=float(spec.get("decoys", DECOYS)) / D, measure_s=window_s(R, D),
-                    **BUILDS[spec.get("build", BASELINE)])
+                    **ALL_BUILDS[spec.get("build", BASELINE)])
 
 
 def traffic_seed(R, run_id):
@@ -135,7 +146,7 @@ def ensure_models(out, build):
         return
     p.parent.mkdir(parents=True, exist_ok=True)
     t = time.time()
-    m = AT.build_models(P.Config(**BUILDS[build]), seed0=MODEL_SEED0)
+    m = AT.build_models(P.Config(**ALL_BUILDS[build]), seed0=MODEL_SEED0)
     tmp = p.with_suffix(".tmp")
     with open(tmp, "wb") as f:
         pickle.dump(m, f)
@@ -162,7 +173,8 @@ def worker(out, spec, run_id, D):
     t = time.time()
     run = S.simulate(cfg, traffic_seed(spec["R"], run_id))
     t_sim = time.time() - t
-    recs = AT.compute(run, _W["models"], AT.VANTAGES, run_id)
+    vantages = AT.VANTAGES + (("combined",) if cfg.overlap else ())
+    recs = AT.compute(run, _W["models"], vantages, run_id)
     rec = dict(run=run_id, seconds=time.time() - t, sim_seconds=t_sim, vantages=recs,
                n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum()),
                bundles=bundle_sizes(run))
@@ -304,7 +316,7 @@ def pair_gaps(out, builds=None, runs=20, workers="auto"):
             x = [r for r in res if r[0] == b and r[1] == R]
             sg, rg, wt, sm, ei, ps = (np.concatenate([r[i] for r in x]) for i in (3, 4, 5, 6, 7, 8))
             sep = rg > 5.0
-            reg = P.Config(**BUILDS[b]).reg_bundle_s > 0
+            reg = P.Config(**ALL_BUILDS[b]).reg_bundle_s > 0
             row = dict(build=b, R=R, decoys=DECOYS, records=int(sg.size), runs=runs,
                        within5_at_departure=float((sg <= 5.0).mean()),
                        within5_at_submission=float((rg <= 5.0).mean()),
@@ -387,4 +399,113 @@ def timing_check(out, builds=(BASELINE, "no_inclusion_lottery"), R=20, runs=10, 
         print(f"   postings per departure bundle: mean {c.mean():.2f}, fewer than 2 {100 * (c < 2).mean():.1f}%, "
               f"empty {100 * (c == 0).mean():.1f}%", flush=True)
     (out / "timing_check.json").write_text(json.dumps(dict(R=R, decoys=DECOYS, runs=runs, builds=rows), indent=1))
+    return rows
+
+
+# --------------------------------------------------------------------------- permitted overlap: how often roles coincide
+OVERLAP_SEED = 13_000_000
+
+
+def overlap_counts(out, n_transactions=100_000, pools=(20, 50, 100)):
+    """How often the permitted-overlap role draw puts one node in roles on two different paths of a
+    transaction (count only, no attack). Three active gatekeepers in every pool. Written to
+    <out>/overlap_counts.json."""
+    rows = {}
+    for N in pools:
+        rng = np.random.default_rng([OVERLAP_SEED, N])
+        gk = np.sort(rng.permutation(N)[:P.N_GATEKEEPERS])
+        C, F, I, A, B, D, E, G, H = S._roles(rng, n_transactions, gk, n_nodes=N, rng_relays=rng)
+        r = dict(A=A, B=B, C=C, D=D, E=E, F=F, G=G, H=H, I=I)
+        assert all(((r[p[0]] != r[p[1]]) & (r[p[1]] != r[p[2]]) & (r[p[0]] != r[p[2]])).all() for p in S.PATHS)
+        assert ((A != D) & (A != G) & (D != G) & (C != F) & (C != I) & (F != I)).all()
+        assert not np.isin(np.r_[C, F, I], gk).any()
+        fd = {f"{a}={b}": float((r[a] == r[b]).mean()) for a, b in
+              (("A", "F"), ("A", "I"), ("D", "C"), ("D", "I"), ("G", "C"), ("G", "F"))}
+        fd_any = np.zeros(n_transactions, bool)
+        for k in fd:
+            a, b = k.split("=")
+            fd_any |= r[a] == r[b]
+        sr = np.zeros(n_transactions, bool)
+        for a, b in S.CROSS_PAIRS:
+            if a in "BEH" or b in "BEH":
+                sr |= r[a] == r[b]
+        gk_relay = np.zeros(n_transactions, bool)
+        for a in "ABDEGH":
+            gk_relay |= np.isin(r[a], gk)
+        node = int(np.setdiff1d(np.arange(N), gk)[0])           # one fixed node outside the gatekeeper set
+        paths_held = sum(((r[p[0]] == node) | (r[p[1]] == node) | (r[p[2]] == node)).astype(int) for p in S.PATHS)
+        fd_node = np.zeros(n_transactions, bool)
+        for k in fd:
+            a, b = k.split("=")
+            fd_node |= (r[a] == node) & (r[b] == node)
+        rows[str(N)] = dict(nodes=N, transactions=n_transactions, gatekeepers=gk.tolist(),
+                            any_cross_path=float(S.cross_path_overlap(r).mean()),
+                            first_relay_is_other_destination=float(fd_any.mean()), first_relay_by_pair=fd,
+                            second_relay_with_other_path_role=float(sr.mean()),
+                            gatekeeper_relays=float(gk_relay.mean()),
+                            fixed_node=node, fixed_node_two_paths=float((paths_held >= 2).mean()),
+                            fixed_node_first_relay_and_destination=float(fd_node.mean()))
+        x = rows[str(N)]
+        print(f"{N:3d} nodes: any cross-path coincidence {100 * x['any_cross_path']:.2f}%, first relay = other path's "
+              f"destination {100 * x['first_relay_is_other_destination']:.2f}%, second relay with another path's role "
+              f"{100 * x['second_relay_with_other_path_role']:.2f}%, gatekeeper relays {100 * x['gatekeeper_relays']:.2f}%; "
+              f"node {node}: two paths {100 * x['fixed_node_two_paths']:.2f}%, first relay and destination "
+              f"{100 * x['fixed_node_first_relay_and_destination']:.2f}%", flush=True)
+    Path(out).mkdir(parents=True, exist_ok=True)
+    (Path(out) / "overlap_counts.json").write_text(json.dumps(dict(transactions=n_transactions, cells=rows), indent=1))
+    return rows
+
+
+# --------------------------------------------------------------------------- permitted overlap: shuffled-label control
+SHUFFLE_SEED = 14_000_000
+
+
+def _shuffle_one(args):
+    out, build, R, run_id, D = args
+    import pickle as _p
+    with open(model_path(out, build), "rb") as f:
+        m = _p.load(f)
+    cfg = config_of(dict(R=float(R), decoys=float(DECOYS), build=build), D)
+    run = S.simulate(cfg, traffic_seed(R, run_id))
+    rec = AT.records(run)
+    keep = AT.scored_mask(run, rec["sub"])
+    rec = {k: x[keep] for k, x in rec.items()}
+    rng = np.random.default_rng([SHUFFLE_SEED, int(R), run_id])
+    rec["u"] = rec["u"][rng.permutation(rec["u"].size)]          # each record gets another record's time
+    cand = AT.candidates(run)
+    ri, grp, res, info = AT._score_combined(run, rec, cand, m, run_id)
+    g = m.pdf["g"]
+    lo, hi = AT._band(rec["u"], g)
+    base = AT.score_blocks(lo, hi, cand, lambda r, k0, k1: g(rec["u"][r][:, None] - cand["t"][None, k0:k1]),
+                           dict(sub=rec["sub"], dev=rec["dev"]))
+    o = res["dev"]
+    return (R, int(o["correct"].sum()), int(o["correct"].size), float(AT._random_rate(o, "dev").sum()),
+            int(base["dev"]["correct"].sum()), int(base["dev"]["correct"].size),
+            float(AT._random_rate(base["dev"], "dev").sum()))
+
+
+def shuffle_control(out, build="permitted_overlap", runs=20, workers="auto"):
+    """Negative control: each record is given another record's time (permuted within the run), so no
+    record carries its own timing; the combined vantage and the observer are then scored as usual.
+    Their accuracy should fall to chance. Scored run ids 0..runs-1. Written to <out>/shuffle_control.json."""
+    import multiprocessing as mp
+    out = Path(out)
+    D = calibrate(out)["D"]
+    ensure_models(out, build)
+    with mp.Pool(RN.resolve_workers(workers)) as pool:
+        res = pool.map(_shuffle_one, [(str(out), build, R, k, D) for R in REAL_R for k in range(runs)], chunksize=1)
+    rows = {}
+    for R in REAL_R:
+        x = np.array([r[1:] for r in res if r[0] == R], float).sum(0)
+        cfg = config_of(dict(R=float(R), decoys=float(DECOYS), build=build), D)
+        rows[cell_key(R)] = dict(R=R, runs=runs, combined_decisions=int(x[1]), combined_accuracy=x[0] / x[1],
+                                 combined_feasible_chance=x[2] / x[1], observer_decisions=int(x[4]),
+                                 observer_accuracy=x[3] / x[4], observer_feasible_chance=x[5] / x[4],
+                                 one_in_n=1.0 / (cfg.real_devices + cfg.decoy_sources))
+        r = rows[cell_key(R)]
+        print(f"R={R:3d} shuffled: combined {100 * r['combined_accuracy']:.2f}% (feasible chance "
+              f"{100 * r['combined_feasible_chance']:.2f}%, n = {r['combined_decisions']}), observer "
+              f"{100 * r['observer_accuracy']:.2f}% (feasible chance {100 * r['observer_feasible_chance']:.2f}%), "
+              f"one in N {100 * r['one_in_n']:.2f}%", flush=True)
+    (out / "shuffle_control.json").write_text(json.dumps(dict(build=build, runs=runs, cells=rows), indent=1))
     return rows

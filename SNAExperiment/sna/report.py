@@ -37,13 +37,19 @@ def summarize(out: Path, build=EX.BASELINE):
     """Analyse one build's records and write its summary and tables."""
     out = Path(out)
     cells = {k: dict(v, build=build) for k, v in json.loads((out / "cells.json").read_text()).items()}
-    refs = {} if build == EX.BASELINE else {EX.BASELINE: lambda k: RN.load(out, f"{k}__{EX.BASELINE}")}
-    rows, changes = AN.analyze(cells, lambda k: RN.load(out, f"{k}__{build}"), references=refs)
-    clean = [{k: v for k, v in r.items() if not k.startswith("_")} for r in rows]
-    (out / f"summary_{build}.json").write_text(json.dumps(dict(build=build, rows=clean, paired_effects=changes),
-                                                          indent=1, default=float))
+    refs = {} if build == EX.BASELINE or build not in EX.BUILDS else {EX.BASELINE: lambda k: RN.load(out, f"{k}__{EX.BASELINE}")}
+    loader = lambda k: RN.load(out, f"{k}__{build}")  # noqa: E731
+    rows, changes = AN.analyze(cells, loader, references=refs)
+    summary = dict(build=build, rows=rows, paired_effects=changes)
+    if EX.ALL_BUILDS[build].get("overlap"):
+        combined, regression = AN.overlap_analysis(cells, loader, refs.get(EX.BASELINE, lambda k: []))
+        summary["rows"] = rows + combined
+        summary["paired_effects_no_overlap"] = {EX.BASELINE: regression} if regression else {}
+    clean = [{k: v for k, v in r.items() if not k.startswith("_")} for r in summary["rows"]]
+    summary["rows"] = clean
+    (out / f"summary_{build}.json").write_text(json.dumps(summary, indent=1, default=float))
     write_csv(out, build, clean)
-    write_build_tables(out, build, clean, changes)
+    write_build_tables(out, build, clean, changes, summary.get("paired_effects_no_overlap"))
     print(f"wrote {out / f'summary_{build}.json'}, summary_{build}.csv and tables_{build}.md", flush=True)
 
 
@@ -63,7 +69,7 @@ def _acc(r, lvl):
     return s
 
 
-def write_build_tables(out, build, rows, changes):
+def write_build_tables(out, build, rows, changes, no_overlap=None):
     D = EX.calibrate(out)["D"]
     md = [f"# {EX.LABEL[build]}", "",
           f"Build `{build}`. Record-to-device linking with {EX.DECOYS} decoy transactions in flight; end-to-end delay "
@@ -103,6 +109,40 @@ def write_build_tables(out, build, rows, changes):
                       f"{r['auc']:.3f} [{r['auc_lo']:.3f}, {r['auc_hi']:.3f}] | {_pct(r['p_at_1'], 1)} | "
                       f"{_pct(r['p_at_5'], 1)} | {_pct(r['coverage_p50'], 3)} | {r['runs']} | {r['n']} |")
         md.append("")
+    comb = [r for r in rows if r["vantage"].startswith("combined")]
+    if comb:
+        md += ["## Combined view of one node", "",
+               "One compromised node scores every record with all the evidence its roles give it, combined as "
+               "likelihood ratios against the passive observer. Rows split its decisions by the roles it held in the "
+               "record's own transaction. The observer column is the passive observer on the same records. Numbers "
+               "are reported only for stable rows (at least 50 right and 50 wrong device-level decisions).", "",
+               "| R | Roles held | Decisions | Device named | Observer | Lead over observer [95% CI] | "
+               "Top 1% right, upper bound | Coverage above 50% | Stable |", "|---|---|---|---|---|---|---|---|---|"]
+        for R in EX.REAL_R:
+            for r in (x for x in comb if x["R"] == R):
+                cls = r.get("pair_class", "all records")
+                if "dev_accuracy" not in r:
+                    continue
+                if r["stable"]:
+                    md.append(f"| {R} | {cls} | {r['n']:,} | {_pct(r['dev_accuracy'])} | {_pct(r['dev_baseline'])} | "
+                              f"{_ci(r, 'dev_contribution', 'dev_contribution_lo', 'dev_contribution_hi')} | "
+                              f"{_pct(r['p_at_1_hi'], 1)} | {_pct(r['coverage_p50'], 4)} | yes |")
+                else:
+                    md.append(f"| {R} | {cls} | {r['n']:,} | | | | | | no: {r['runs_needed']} runs needed |")
+        md.append("")
+    if no_overlap:
+        for name, ch in no_overlap.items():
+            md += [f"## Paired against {EX.EXPERIMENT}, records with no coincidence", "",
+                   "Accuracy under this build minus accuracy under InternalCompromiseRun, matched record by record, on "
+                   "the records whose transaction has no node in roles on two different paths (percentage points).", "",
+                   "| Vantage | R | Device effect [95% CI] | Matched rows |", "|---|---|---|---|"]
+            for v in ORDER:
+                for R in EX.REAL_R:
+                    e = ch.get(f"{v}.R{R:g}.D{EX.DECOYS:g}")
+                    if e:
+                        md.append(f"| {NAME[v]} | {R} | {100 * e['dev']['effect']:+.2f} [{100 * e['dev']['lo']:+.2f}, "
+                                  f"{100 * e['dev']['hi']:+.2f}] | {e['dev']['n']} |")
+            md.append("")
     st = [r for r in rows if r.get("stable")]
     bad = [r for r in st if not (r["shuffle_auc_lo"] <= 0.5 <= r["shuffle_auc_hi"])]
     md += ["## Outcome-shuffle control", "",
@@ -115,12 +155,12 @@ def write_build_tables(out, build, rows, changes):
 def tables_from_summaries(out):
     """Rewrite every build's CSV and tables from its summary JSON, then TABLES.md and the figures."""
     out = Path(out)
-    for b in EX.BUILDS:
+    for b in EX.ALL_BUILDS:
         p = out / f"summary_{b}.json"
         if p.exists():
             d = json.loads(p.read_text())
             write_csv(out, b, d["rows"])
-            write_build_tables(out, b, d["rows"], d.get("paired_effects", {}))
+            write_build_tables(out, b, d["rows"], d.get("paired_effects", {}), d.get("paired_effects_no_overlap"))
     write_tables(out)
 
 
