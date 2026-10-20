@@ -131,6 +131,11 @@ Each build changes one thing from InternalCompromiseRun and is paired against it
 | `relay_180s` | relay hops at a 180 s mean |
 | `role_aware_360s` | device content channels and F/I pre-match hold at a 360 s mean |
 | `gatekeeper_120s` | gatekeeper hold at a 120 s mean |
+| `permitted_overlap` | relays drawn under the routing design's guarantees only, so one node can hold roles on two paths; every node compromised in every run |
+
+**Permitted overlap.** Every other build draws the nine nodes of a transaction distinct. `permitted_overlap` keeps the destinations C, F and I of the baseline draw (distinct, never an active gatekeeper) and draws the relays in order, each uniform over the nodes its constraints allow: A, D and G pairwise distinct and each different from its own path's destination, then B, E and H, each different from its own path's first relay and destination. Every other coincidence is allowed. The relays come from a separate random stream, so every other draw, and the pairing with InternalCompromiseRun, is unchanged.
+
+**Combined view.** Under `permitted_overlap` one compromised node scores every record with all the evidence its roles give it: its own hold on the candidates it relayed as a first hop, its content arrival on the records that name it as F or I, its credential-processor mixture, and its postings if it is a gatekeeper. The pieces combine as likelihood ratios against the passive observer: log g(y) plus, for each role, log L(role) minus log g(y). A second relay holds no evidence in this framework. Every node is compromised in every run. Decisions are classed by the roles the node held in the record's own transaction. A class is **identifiable** when that includes a destination role (C, F or I), because the node reads the plaintext hash there and can select those records. Every other class is **oracle-conditioned**: it is a single-role lead on a subset the node cannot select, and it is not an attack.
 
 **Cells**
 - Real volume is R = 1, 20 and 100 transactions in flight, each with 60 decoy transactions in flight.
@@ -155,7 +160,7 @@ python -m sna reproduce
 
 On Windows, use `py -m pip install -r requirements.txt` and `py -m sna reproduce`.
 
-`reproduce` runs calibration, the hold-timing measurement, every build's 200 runs per cell, analysis, latency, F/I pair timing, and finally generates `results/TABLES.md` and the figures. It took 116 minutes on 16 worker processes. An interrupted run loses at most the runs in flight; rerunning the same command continues from there. Results depend only on the cell and run id, not on the worker count or completion order.
+`reproduce` runs calibration, the hold-timing measurement, every build's 200 runs per cell, analysis, latency, F/I pair timing, and finally generates `results/TABLES.md` and the figures. The ten builds other than `permitted_overlap` took 116 minutes on 16 worker processes. `permitted_overlap` took 62 minutes on 4. An interrupted run loses at most the runs in flight; rerunning the same command continues from there. Results depend only on the cell and run id, not on the worker count or completion order.
 
 **Reproduction across platforms**
 - The committed results were produced on Windows.
@@ -173,6 +178,9 @@ On Windows, use `py -m pip install -r requirements.txt` and `py -m sna reproduce
 | `latency` | capture-to-finalization time under every build (`results/latency.json`) |
 | `pairs` | how often a record's two registry submissions leave together (`results/pair_gaps.json`) |
 | `timing` | every stage's simulated hold and the departure bundle sizes (`results/timing_check.json`) |
+| `overlap-counts` | how often the permitted-overlap role draw puts one node on two paths (`results/overlap_counts.json`) |
+| `shuffle` | negative control: candidates' device labels permuted within each run (`results/shuffle_control.json`) |
+| `run --build <control>` | the controls `overlap_no_holds`, `first_relay_signal_cred` and `first_relay_signal_content` (`results/controls/`) |
 
 Fast tests: `python -m pytest tests -q`.
 
@@ -185,6 +193,9 @@ Fast tests: `python -m pytest tests -q`.
 | `results/TABLES.md` | full generated tables |
 | `results/summary_<build>.json`, `.csv` | every metric for every vantage and cell under one build |
 | `results/tables_<build>.md` | one build's tables, with its paired effects against InternalCompromiseRun |
+| `results/overlap_counts.json` | how often roles coincide under the permitted-overlap draw, at 20, 50 and 100 nodes |
+| `results/shuffle_control.json` | the label-shuffle negative control under `permitted_overlap` |
+| `results/controls/` | the positive controls for the combined view |
 | `results/calibration.json` | the end-to-end delay D |
 | `results/cells.json` | the cells and their scored windows |
 | `results/timing_check.json` | every stage's simulated hold and the departure bundle sizes |
@@ -229,6 +240,7 @@ The simulation uses the 20-node pool and the nine-node transaction described abo
 
 - the jurisdiction filter or the skew in the device's choice of destinations;
 - the grouping of device-table lines by destination pseudonym;
-- a first-hop vantage that is told which destination a routing code leads to, or one that combines a first hop's knowledge with a destination's.
+- a first-hop vantage that is told which destination a routing code leads to;
+- any evidence a second relay holds.
 
 `../RoutingModels/` contains toy models for the first-hop inferences that the device table allows. They are not a substitute for an experiment of this kind.
