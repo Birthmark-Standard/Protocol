@@ -65,6 +65,7 @@ class Config:
     relay_mean: float = 120.0          # every relay hop (A, B, D, E, G, H), every path
     dev_cred_mean: float = 120.0       # the device's credential-channel hold
     dev_content_mean: float = 240.0    # the device's two content-channel holds
+    dev_content_i_mean: float = -1.0   # the device's I-channel hold when set (>= 0); default: the same as dev_content_mean
     c_hold_mean: float = 30.0          # C's hold before sending CV-1 (0 = none)
     v_hold_mean: float = 30.0          # V's hold before sending CV-2 (0 = none)
     fanout_mean: float = 60.0          # C's fan-out, each gatekeeper leg independently
@@ -74,6 +75,7 @@ class Config:
     post_match: bool = True            # F's and I's post-match lottery after quorum is confirmed
     pm_mean: float = 30.0              # post-match lottery mean
     reg_bundle_s: float = REG_BUNDLE_S # registry-level bundling period; 0 = off
+    overlap: bool = False              # relays drawn under the routing design's guarantees only (see sim._roles)
 
     @property
     def warmup_s(self) -> float:

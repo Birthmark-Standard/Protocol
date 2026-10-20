@@ -1,0 +1,77 @@
+{
+ "transactions": 100000,
+ "cells": {
+  "20": {
+   "nodes": 20,
+   "transactions": 100000,
+   "gatekeepers": [
+    1,
+    2,
+    6
+   ],
+   "any_cross_path": 0.73913,
+   "first_relay_is_other_destination": 0.29976,
+   "first_relay_by_pair": {
+    "A=F": 0.05378,
+    "A=I": 0.05228,
+    "D=C": 0.05543,
+    "D=I": 0.05342,
+    "G=C": 0.0556,
+    "G=F": 0.05452
+   },
+   "second_relay_with_other_path_role": 0.59725,
+   "gatekeeper_relays": 0.66401,
+   "fixed_node": 0,
+   "fixed_node_two_paths": 0.05585,
+   "fixed_node_first_relay_and_destination": 0.0188
+  },
+  "50": {
+   "nodes": 50,
+   "transactions": 100000,
+   "gatekeepers": [
+    6,
+    31,
+    39
+   ],
+   "any_cross_path": 0.36897,
+   "first_relay_is_other_destination": 0.12094,
+   "first_relay_by_pair": {
+    "A=F": 0.02099,
+    "A=I": 0.02058,
+    "D=C": 0.02101,
+    "D=I": 0.02052,
+    "G=C": 0.02079,
+    "G=F": 0.02077
+   },
+   "second_relay_with_other_path_role": 0.27546,
+   "gatekeeper_relays": 0.32255,
+   "fixed_node": 0,
+   "fixed_node_two_paths": 0.00843,
+   "fixed_node_first_relay_and_destination": 0.00268
+  },
+  "100": {
+   "nodes": 100,
+   "transactions": 100000,
+   "gatekeepers": [
+    44,
+    45,
+    73
+   ],
+   "any_cross_path": 0.19633,
+   "first_relay_is_other_destination": 0.0587,
+   "first_relay_by_pair": {
+    "A=F": 0.0101,
+    "A=I": 0.00979,
+    "D=C": 0.01011,
+    "D=I": 0.00963,
+    "G=C": 0.01012,
+    "G=F": 0.00981
+   },
+   "second_relay_with_other_path_role": 0.14427,
+   "gatekeeper_relays": 0.16985,
+   "fixed_node": 0,
+   "fixed_node_two_paths": 0.00204,
+   "fixed_node_first_relay_and_destination": 0.00059
+  }
+ }
+}
