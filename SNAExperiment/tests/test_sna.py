@@ -139,3 +139,24 @@ def test_permitted_overlap_role_constraints():
     C, F, I, A, B, D, E, G, H = S._roles(np.random.default_rng(3), 50_000, np.array([17, 18, 19]),
                                          rng_relays=np.random.default_rng(4))
     assert (A == F).any() and (D == C).any() and (B == E).any() and (E == I).any() and np.isin(B, [17, 18, 19]).any()
+
+
+def test_loader_reads_resumed_file(tmp_path):
+    """A member cut off mid-write (no trailer), then a resumed session's member, then another: every
+    complete record in all three is read, and the cut member reads the same before and after the
+    later members are appended."""
+    import os
+    p = RN.raw_path(tmp_path, "y")
+    p.parent.mkdir(parents=True)
+    blob = gzip.compress(b"".join(pickle.dumps(dict(run=k, pad=os.urandom(3000))) for k in range(5)))
+    with open(p, "wb") as f:
+        f.write(blob[: len(blob) * 2 // 3])                                   # interrupted session
+    before = sorted(r["run"] for r in RN.load(tmp_path, "y"))
+    with gzip.open(p, "ab") as f:
+        for k in range(5, 8):
+            pickle.dump(dict(run=k), f)
+    with gzip.open(p, "ab") as f:
+        pickle.dump(dict(run=8), f)
+    after = sorted(r["run"] for r in RN.load(tmp_path, "y"))
+    assert before and set(before) <= set(after)
+    assert after == before + [5, 6, 7, 8]

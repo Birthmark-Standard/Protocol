@@ -41,11 +41,13 @@ def read_records(p: Path) -> list[dict]:
         # decompress in chunks and keep everything before a break, so a member cut off by an
         # interruption yields the same records whether or not another member follows it
         d = zlib.decompressobj(wbits=31)
-        parts = []
+        parts, end = [], len(data)
         try:
             for i in range(pos, len(data), 1 << 20):
-                parts.append(d.decompress(data[i:i + (1 << 20)]))
+                chunk = data[i:i + (1 << 20)]
+                parts.append(d.decompress(chunk))
                 if d.eof:
+                    end = i + len(chunk) - len(d.unused_data)      # where the next member starts
                     break
         except zlib.error:
             pass
@@ -57,7 +59,7 @@ def read_records(p: Path) -> list[dict]:
             except (EOFError, pickle.UnpicklingError, ValueError, TypeError, AttributeError, IndexError):
                 break
         if complete:
-            pos = len(data) - len(d.unused_data)
+            pos = end
         else:                                  # damaged member: resume at the next member header
             nxt = data.find(magic, pos + 1)
             if nxt < 0:

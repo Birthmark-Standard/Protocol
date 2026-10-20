@@ -69,35 +69,35 @@ One compromised node scores every record with all the evidence its roles give it
 | R | Decisions | Top 1% group | Device named | Observer | Lead [95% CI] | Top 1% upper bound | Coverage above 50% | Claim |
 |---|---|---|---|---|---|---|---|---|
 | 1 | 199,260 | 1993 | 61.26% | 58.99% | +2.27 [+2.02, +2.48] | 100.0% | 100.0000% | fail |
-| 20 | 206,760 | 2068 | 53.43% | 50.71% | +2.72 [+2.42, +3.01] | 100.0% | 100.0000% | fail |
-| 100 | 1,038,600 | 10386 | 34.80% | 31.45% | +3.35 [+3.09, +3.62] | 100.0% | 42.1249% | fail |
+| 20 | 206,760 | 2068 | 53.43% | 50.71% | +2.72 [+2.42, +3.02] | 100.0% | 100.0000% | fail |
+| 100 | 1,038,600 | 10386 | 34.80% | 31.45% | +3.35 [+3.08, +3.62] | 100.0% | 42.1249% | fail |
 
 A top group of fewer than 50 decisions cannot resolve the criterion. A failure there reflects the size of the group.
 
 ### Identifiable classes
 
-A class is identifiable when the node held a destination role (C, F or I) in the record's transaction, so it can select those records by the plaintext hash it reads there.
+A class is identifiable when the node held a destination role (C, F or I) in the record's transaction, so it can select those records by the plaintext hash it reads there. Prevalence is the class's share of the node's decisions. Combined minus the sum is the combined lead minus the two single-role leads, paired on the same rows.
 
-| R | Roles held | Decisions | Top 1% group | Device named | Observer | Combined lead [95% CI] | First relay alone [95% CI] | Destination alone [95% CI] | Combined above the sum | Top 1% upper bound | Coverage above 50% | Claim |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | destination only | 23,894 | 239 | 74.37% | 58.65% | +15.72 [+14.14, +17.18] | -0.02 [-0.04, -0.00] | +15.73 [+14.16, +17.24] | yes | 100.0% | 100.0000% | fail |
-| 1 | credential first relay + content destination | 952 | 10 | 84.14% | 61.87% | +22.27 [+18.92, +25.86] | +0.00 [+0.00, +0.00] | +22.27 [+18.71, +25.62] | no | 100.0% | 100.0000% | fail |
-| 1 | content first relay + content destination | 987 | 10 | 82.98% | 58.46% | +24.52 [+21.08, +28.13] | +0.00 [+0.00, +0.00] | +24.52 [+20.90, +27.99] | no | 100.0% | 100.0000% | fail |
-| 1 | content first relay + credential destination | 1,028 | 10 | 60.70% | 60.70% | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no | 100.0% | 100.0000% | fail |
-| 1 | second relay + destination | 2,762 | 28 | 74.44% | 60.07% | +14.37 [+12.76, +16.05] | +0.00 [+0.00, +0.00] | +14.37 [+12.66, +16.06] | no | 100.0% | 100.0000% | fail |
-| 1 | three or more roles, with a destination | 266 | 3 | 77.44% | 63.16% | +14.29 [+10.00, +19.20] | +0.00 [+0.00, +0.00] | +14.29 [+10.00, +19.20] | no | 100.0% | 100.0000% | fail |
-| 20 | destination only | 24,689 | 247 | 68.69% | 50.78% | +17.91 [+16.40, +19.42] | -0.02 [-0.05, -0.00] | +17.93 [+16.40, +19.44] | yes | 100.0% | 100.0000% | fail |
-| 20 | credential first relay + content destination | 1,009 | 10 | 80.08% | 54.51% | +25.57 [+22.45, +28.90] | +0.10 [+0.00, +0.30] | +25.57 [+22.35, +28.90] | no | 100.0% | 100.0000% | fail |
-| 20 | content first relay + content destination | 1,030 | 10 | 76.60% | 49.51% | +27.09 [+23.06, +31.15] | +0.00 [+0.00, +0.00] | +27.09 [+22.88, +30.98] | no | 100.0% | 100.0000% | fail |
-| 20 | content first relay + credential destination | 1,045 | 10 | 49.47% | 49.47% | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no | 100.0% | 98.4689% | fail |
-| 20 | second relay + destination | 2,955 | 30 | 69.37% | 50.08% | +19.29 [+17.07, +21.50] | +0.00 [+0.00, +0.00] | +19.29 [+17.20, +21.32] | no | 100.0% | 100.0000% | fail |
-| 20 | three or more roles, with a destination | 286 | 3 | 66.08% | 46.50% | +19.58 [+14.38, +24.92] | +0.00 [+0.00, +0.00] | +19.58 [+14.34, +24.74] | no | 100.0% | 100.0000% | fail |
-| 100 | destination only | 123,705 | 1237 | 53.14% | 31.44% | +21.70 [+20.06, +23.30] | -0.01 [-0.02, -0.00] | +21.71 [+20.08, +23.26] | yes | 100.0% | 100.0000% | fail |
-| 100 | credential first relay + content destination | 5,103 | 51 | 62.79% | 30.59% | +32.20 [+29.65, +34.84] | +0.00 [+0.00, +0.00] | +32.18 [+29.52, +34.83] | yes | 100.0% | 100.0000% | fail |
-| 100 | content first relay + content destination | 5,351 | 54 | 63.69% | 31.47% | +32.22 [+29.63, +34.75] | +0.06 [+0.00, +0.13] | +32.14 [+29.46, +34.63] | yes | 100.0% | 100.0000% | fail |
-| 100 | content first relay + credential destination | 5,643 | 56 | 31.60% | 31.56% | +0.04 [+0.00, +0.09] | +0.04 [+0.00, +0.09] | +0.00 [+0.00, +0.00] | no | 98.2% | 24.8627% | fail |
-| 100 | second relay + destination | 14,605 | 146 | 53.31% | 31.76% | +21.55 [+19.69, +23.33] | -0.01 [-0.02, +0.00] | +21.55 [+19.82, +23.34] | no | 100.0% | 100.0000% | fail |
-| 100 | three or more roles, with a destination | 1,383 | 14 | 53.51% | 31.02% | +22.49 [+19.69, +25.55] | +0.00 [+0.00, +0.00] | +22.49 [+19.60, +25.57] | no | 100.0% | 100.0000% | fail |
+| R | Roles held | Prevalence | Decisions | Top 1% group | Device named | Observer | Combined lead [95% CI] | First relay alone [95% CI] | Destination alone [95% CI] | Combined minus the sum [95% CI] | Top 1% upper bound | Coverage above 50% | Claim |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | destination only | 11.99% | 23,894 | 239 | 74.37% | 58.65% | +15.72 [+14.14, +17.18] | -0.02 [-0.04, -0.00] | +15.73 [+14.16, +17.24] | +0.01 [+0.00, +0.03] | 100.0% | 100.0000% | fail |
+| 1 | credential first relay + content destination | 0.48% | 952 | 10 | 84.14% | 61.87% | +22.27 [+18.82, +25.86] | +0.00 [+0.00, +0.00] | +22.27 [+18.78, +25.78] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 1 | content first relay + content destination | 0.50% | 987 | 10 | 82.98% | 58.46% | +24.52 [+21.00, +28.31] | +0.00 [+0.00, +0.00] | +24.52 [+20.83, +28.25] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 1 | content first relay + credential destination | 0.52% | 1,028 | 10 | 60.70% | 60.70% | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 1 | second relay + destination | 1.39% | 2,762 | 28 | 74.44% | 60.07% | +14.37 [+12.67, +16.07] | +0.00 [+0.00, +0.00] | +14.37 [+12.81, +16.07] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 1 | three or more roles, with a destination | 0.13% | 266 | 3 | 77.44% | 63.16% | +14.29 [+10.08, +18.82] | +0.00 [+0.00, +0.00] | +14.29 [+10.07, +18.85] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 20 | destination only | 11.94% | 24,689 | 247 | 68.69% | 50.78% | +17.91 [+16.33, +19.41] | -0.02 [-0.05, -0.00] | +17.93 [+16.40, +19.40] | +0.01 [+0.00, +0.02] | 100.0% | 100.0000% | fail |
+| 20 | credential first relay + content destination | 0.49% | 1,009 | 10 | 80.08% | 54.51% | +25.57 [+22.21, +28.73] | +0.10 [+0.00, +0.31] | +25.57 [+22.45, +28.77] | -0.10 [-0.31, +0.00] | 100.0% | 100.0000% | fail |
+| 20 | content first relay + content destination | 0.50% | 1,030 | 10 | 76.60% | 49.51% | +27.09 [+23.03, +31.22] | +0.00 [+0.00, +0.00] | +27.09 [+22.92, +31.22] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 20 | content first relay + credential destination | 0.51% | 1,045 | 10 | 49.47% | 49.47% | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | 100.0% | 98.4689% | fail |
+| 20 | second relay + destination | 1.43% | 2,955 | 30 | 69.37% | 50.08% | +19.29 [+17.16, +21.53] | +0.00 [+0.00, +0.00] | +19.29 [+17.15, +21.47] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 20 | three or more roles, with a destination | 0.14% | 286 | 3 | 66.08% | 46.50% | +19.58 [+14.50, +24.91] | +0.00 [+0.00, +0.00] | +19.58 [+14.46, +24.57] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 100 | destination only | 11.91% | 123,705 | 1237 | 53.14% | 31.44% | +21.70 [+19.96, +23.42] | -0.01 [-0.02, -0.00] | +21.71 [+20.10, +23.29] | +0.00 [-0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 100 | credential first relay + content destination | 0.49% | 5,103 | 51 | 62.79% | 30.59% | +32.20 [+29.54, +34.81] | +0.00 [+0.00, +0.00] | +32.18 [+29.59, +34.93] | +0.02 [+0.00, +0.06] | 100.0% | 100.0000% | fail |
+| 100 | content first relay + content destination | 0.52% | 5,351 | 54 | 63.69% | 31.47% | +32.22 [+29.60, +34.75] | +0.06 [+0.00, +0.12] | +32.14 [+29.52, +34.67] | +0.02 [+0.00, +0.06] | 100.0% | 100.0000% | fail |
+| 100 | content first relay + credential destination | 0.54% | 5,643 | 56 | 31.60% | 31.56% | +0.04 [+0.00, +0.09] | +0.04 [+0.00, +0.09] | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | 98.2% | 24.8627% | fail |
+| 100 | second relay + destination | 1.41% | 14,605 | 146 | 53.31% | 31.76% | +21.55 [+19.78, +23.25] | -0.01 [-0.02, +0.00] | +21.55 [+19.82, +23.34] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
+| 100 | three or more roles, with a destination | 0.13% | 1,383 | 14 | 53.51% | 31.02% | +22.49 [+19.70, +25.39] | +0.00 [+0.00, +0.00] | +22.49 [+19.68, +25.32] | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
 
 A top group of fewer than 50 decisions cannot resolve the criterion. A failure there reflects the size of the group.
 
@@ -111,23 +111,23 @@ A class is oracle-conditioned when the node held only relay or gatekeeper roles,
 | 1 | one relay or gatekeeper role | 58,329 | 583 | 58.77% | 58.82% | -0.05 [-0.28, +0.17] | 100.0% | 100.0000% | fail |
 | 1 | second relay + first relay | 2,302 | 23 | 58.64% | 58.64% | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
 | 1 | second relay + second relay | 999 | 10 | 57.86% | 57.86% | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
-| 1 | gatekeeper + first relay | 4,172 | 42 | 57.91% | 58.60% | -0.70 [-1.87, +0.61] | 100.0% | 100.0000% | fail |
-| 1 | gatekeeper + second relay | 3,850 | 38 | 57.77% | 58.96% | -1.19 [-2.56, +0.24] | 100.0% | 100.0000% | fail |
-| 1 | three or more roles, no destination | 804 | 8 | 62.94% | 62.31% | +0.62 [-1.52, +2.49] | 100.0% | 100.0000% | fail |
-| 20 | no role | 102,583 | 1026 | 50.67% | 50.69% | -0.02 [-0.03, -0.00] | 100.0% | 100.0000% | fail |
+| 1 | gatekeeper + first relay | 4,172 | 42 | 57.91% | 58.60% | -0.70 [-1.93, +0.58] | 100.0% | 100.0000% | fail |
+| 1 | gatekeeper + second relay | 3,850 | 38 | 57.77% | 58.96% | -1.19 [-2.51, +0.21] | 100.0% | 100.0000% | fail |
+| 1 | three or more roles, no destination | 804 | 8 | 62.94% | 62.31% | +0.62 [-1.41, +2.59] | 100.0% | 100.0000% | fail |
+| 20 | no role | 102,583 | 1026 | 50.67% | 50.69% | -0.02 [-0.03, -0.01] | 100.0% | 100.0000% | fail |
 | 20 | one relay or gatekeeper role | 60,727 | 607 | 50.74% | 50.76% | -0.02 [-0.36, +0.32] | 100.0% | 100.0000% | fail |
 | 20 | second relay + first relay | 2,365 | 24 | 51.67% | 51.67% | +0.00 [+0.00, +0.00] | 100.0% | 100.0000% | fail |
 | 20 | second relay + second relay | 1,000 | 10 | 49.70% | 49.70% | +0.00 [+0.00, +0.00] | 100.0% | 99.1000% | fail |
-| 20 | gatekeeper + first relay | 4,341 | 43 | 50.93% | 49.46% | +1.47 [+0.24, +2.80] | 100.0% | 100.0000% | fail |
-| 20 | gatekeeper + second relay | 3,917 | 39 | 50.83% | 50.70% | +0.13 [-1.16, +1.37] | 100.0% | 100.0000% | fail |
-| 20 | three or more roles, no destination | 813 | 8 | 54.86% | 53.87% | +0.98 [-1.72, +3.89] | 100.0% | 100.0000% | fail |
+| 20 | gatekeeper + first relay | 4,341 | 43 | 50.93% | 49.46% | +1.47 [+0.14, +2.75] | 100.0% | 100.0000% | fail |
+| 20 | gatekeeper + second relay | 3,917 | 39 | 50.83% | 50.70% | +0.13 [-1.12, +1.43] | 100.0% | 100.0000% | fail |
+| 20 | three or more roles, no destination | 813 | 8 | 54.86% | 53.87% | +0.98 [-1.68, +3.64] | 100.0% | 100.0000% | fail |
 | 100 | no role | 516,193 | 5162 | 31.43% | 31.44% | -0.01 [-0.02, -0.01] | 93.4% | 24.9258% | fail |
-| 100 | one relay or gatekeeper role | 303,738 | 3037 | 31.71% | 31.44% | +0.27 [+0.13, +0.41] | 95.3% | 26.2512% | fail |
-| 100 | second relay + first relay | 11,932 | 119 | 31.85% | 31.82% | +0.03 [+0.00, +0.06] | 94.1% | 25.0670% | fail |
+| 100 | one relay or gatekeeper role | 303,738 | 3037 | 31.71% | 31.44% | +0.27 [+0.13, +0.40] | 95.3% | 26.2512% | fail |
+| 100 | second relay + first relay | 11,932 | 119 | 31.85% | 31.82% | +0.03 [+0.00, +0.05] | 94.1% | 25.0670% | fail |
 | 100 | second relay + second relay | 5,288 | 53 | 31.24% | 31.26% | -0.02 [-0.06, +0.00] | 99.7% | 23.4304% | fail |
-| 100 | gatekeeper + first relay | 21,690 | 217 | 32.14% | 31.43% | +0.71 [+0.11, +1.35] | 96.8% | 26.3762% | fail |
-| 100 | gatekeeper + second relay | 19,670 | 197 | 32.57% | 31.50% | +1.07 [+0.27, +1.85] | 95.7% | 29.8475% | fail |
-| 100 | three or more roles, no destination | 4,299 | 43 | 31.87% | 30.82% | +1.05 [-0.28, +2.35] | 96.3% | 25.9363% | fail |
+| 100 | gatekeeper + first relay | 21,690 | 217 | 32.14% | 31.43% | +0.71 [+0.11, +1.34] | 96.8% | 26.3762% | fail |
+| 100 | gatekeeper + second relay | 19,670 | 197 | 32.57% | 31.50% | +1.07 [+0.31, +1.83] | 95.7% | 29.8475% | fail |
+| 100 | three or more roles, no destination | 4,299 | 43 | 31.87% | 30.82% | +1.05 [-0.30, +2.34] | 96.3% | 25.9363% | fail |
 
 A top group of fewer than 50 decisions cannot resolve the criterion. A failure there reflects the size of the group.
 
@@ -149,4 +149,4 @@ The first hops and the credential processor are scored with every eligible node 
 
 ## Outcome-shuffle control
 
-72 stable rows; 6 with a shuffled-outcome AUC interval excluding 0.5: R = 100 Validator (0.490), R = 1 combined: credential first relay + content destination (0.545), R = 1 combined: three or more roles, with a destination (0.598), R = 20 combined: no role (0.494), R = 20 cred_processor (four nodes per run) (0.491), R = 100 first_hop_cred (four nodes per run) (0.493).
+72 stable rows; 9 with a shuffled-outcome AUC interval excluding 0.5: R = 100 Validator (0.490), R = 1 combined: content first relay + content destination (0.549), R = 1 combined: three or more roles, with a destination (0.588), R = 1 combined: gatekeeper + first relay (0.517), R = 1 combined: gatekeeper + second relay (0.523), R = 1 cred_processor (four nodes per run) (0.492), R = 20 combined: three or more roles, with a destination (0.590), R = 20 combined: second relay + second relay (0.545), R = 100 cred_processor (four nodes per run) (0.494).
