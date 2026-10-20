@@ -171,11 +171,13 @@ def _combined_tables(comb):
           "A row that misses the stability rule (at least 50 right and 50 wrong device-level decisions) shows only the "
           "runs it needs.", "",
           "### Every record", "",
-          "| R | Decisions | Top 1% group | Device named | Observer | Lead [95% CI] | Top 1% upper bound | Coverage above 50% | Claim |",
-          "|---|---|---|---|---|---|---|---|---|"]
+          "The rows cover every record; every record the node can select because it held a destination role; and the "
+          "split by whether it held a first relay, which it cannot tell.", "",
+          "| R | Records | Decisions | Top 1% group | Device named | Observer | Lead [95% CI] | Top 1% upper bound | Coverage above 50% | Claim |",
+          "|---|---|---|---|---|---|---|---|---|---|"]
     for r in comb:
-        if r.get("pair_class") == "all records" and "dev_accuracy" in r:
-            md.append(f"| {r['R']:g} | {r['n']:,} | {r['top1_group']} | {_pct(r['dev_accuracy'])} | {_pct(r['dev_baseline'])} | "
+        if r.get("identifiable") is None and "dev_accuracy" in r:
+            md.append(f"| {r['R']:g} | {r['pair_class']} | {r['n']:,} | {r['top1_group']} | {_pct(r['dev_accuracy'])} | {_pct(r['dev_baseline'])} | "
                       f"{100 * r['dev_contribution']:+.2f} [{100 * r['dev_contribution_lo']:+.2f}, {100 * r['dev_contribution_hi']:+.2f}] | "
                       f"{_claim_cells(r)} |")
     md += ["", SMALL_GROUP, "",

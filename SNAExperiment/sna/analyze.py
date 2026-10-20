@@ -397,6 +397,23 @@ def overlap_analysis(cells, loader, ref_loader, seed=12346):
             for v in AT.VANTAGES:
                 regression[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = paired_effect(
                     recs, ref, v, rng, mask=lambda y: y["ov"] == 0)
+    # the records a node can select (it held a destination role), and the split by whether it held a first
+    # relay; on their own random stream so every row above is unchanged
+    rng2 = np.random.default_rng(seed + 1)
+    ident = [AT.PAIR_CODE[c] for c in AT.IDENTIFIABLE]
+    first = [AT.PAIR_CODE[c] for c in AT.PAIR_CLASSES if "first relay" in c]
+    for key, spec in cells.items():
+        recs = loader(key)
+        if not recs or "combined" not in recs[0]["vantages"]:
+            continue
+        recs = sorted(recs, key=lambda r: r["run"])
+        t = stack(recs, "combined")
+        for cls, sel in (("every record the node can select", np.isin(t["pair"], ident)),
+                         ("first relay held", np.isin(t["pair"], first)),
+                         ("no first relay held", ~np.isin(t["pair"], first))):
+            r = metrics(recs, "combined", spec, rng2, t={k: x[sel] for k, x in t.items()}, name=f"combined: {cls}")
+            r["decoys"], r["pair_class"], r["identifiable"], r["prevalence"] = float(spec.get("decoys", 0.0)), cls, None, float(sel.mean())
+            rows.append(r)
     return rows, regression
 
 

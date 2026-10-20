@@ -94,11 +94,22 @@ One compromised node scores every record with all the evidence its roles give it
 
 ### Every record
 
-| R | Decisions | Top 1% group | Device named | Observer | Lead [95% CI] | Top 1% upper bound | Coverage above 50% | Claim |
-|---|---|---|---|---|---|---|---|---|
-| 1 | 797,140 | 7971 | 9.89% | 9.95% | -0.06 [-0.15, +0.03] | 21.4% | 0.0000% | pass |
-| 20 | 834,560 | 8346 | 6.46% | 6.47% | -0.01 [-0.09, +0.06] | 12.5% | 0.0000% | pass |
-| 100 | 4,151,400 | 41514 | 3.50% | 3.49% | +0.01 [-0.01, +0.04] | 5.4% | 0.0000% | pass |
+The rows cover every record; every record the node can select because it held a destination role; and the split by whether it held a first relay, which it cannot tell.
+
+| R | Records | Decisions | Top 1% group | Device named | Observer | Lead [95% CI] | Top 1% upper bound | Coverage above 50% | Claim |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | all records | 797,140 | 7971 | 9.89% | 9.95% | -0.06 [-0.15, +0.03] | 21.4% | 0.0000% | pass |
+| 20 | all records | 834,560 | 8346 | 6.46% | 6.47% | -0.01 [-0.09, +0.06] | 12.5% | 0.0000% | pass |
+| 100 | all records | 4,151,400 | 41514 | 3.50% | 3.49% | +0.01 [-0.01, +0.04] | 5.4% | 0.0000% | pass |
+| 1 | every record the node can select | 119,571 | 1196 | 9.70% | 9.95% | -0.25 [-0.42, -0.06] | 12.1% | 0.0000% | pass |
+| 1 | first relay held | 38,327 | 383 | 10.66% | 10.08% | +0.58 [+0.33, +0.82] | 25.0% | 0.0000% | pass |
+| 1 | no first relay held | 758,813 | 7588 | 9.85% | 9.94% | -0.09 [-0.18, -0.00] | 21.4% | 0.0000% | pass |
+| 20 | every record the node can select | 125,184 | 1252 | 6.56% | 6.47% | +0.09 [-0.07, +0.25] | 6.9% | 0.0000% | pass |
+| 20 | first relay held | 39,970 | 400 | 7.03% | 6.35% | +0.68 [+0.46, +0.89] | 15.6% | 0.0000% | pass |
+| 20 | no first relay held | 794,590 | 7946 | 6.43% | 6.48% | -0.05 [-0.12, +0.03] | 12.5% | 0.0000% | pass |
+| 100 | every record the node can select | 622,710 | 6227 | 3.58% | 3.49% | +0.09 [+0.04, +0.14] | 3.0% | 0.0000% | pass |
+| 100 | first relay held | 199,460 | 1995 | 3.90% | 3.47% | +0.44 [+0.37, +0.51] | 8.8% | 0.0000% | pass |
+| 100 | no first relay held | 3,951,940 | 39519 | 3.48% | 3.49% | -0.01 [-0.03, +0.01] | 5.3% | 0.0000% | pass |
 
 A top group of fewer than 50 decisions cannot resolve the criterion. A failure there reflects the size of the group.
 
@@ -205,4 +216,4 @@ Accuracy under this build minus accuracy under InternalCompromiseRun, matched re
 
 ## Outcome-shuffle control
 
-72 stable rows; 11 with a shuffled-outcome AUC interval excluding 0.5: R = 100 First hop, content (0.503), R = 100 Credential processor (0.502), R = 100 Validator (0.511), R = 100 Gatekeeper (0.504), R = 1 combined: destination only (0.493), R = 1 combined: content first relay + credential destination (0.531), R = 1 combined: three or more roles, with a destination (0.566), R = 20 combined: gatekeeper + second relay (0.520), R = 100 combined: no role (0.503), R = 100 first_hop_content (four nodes per run) (0.504), R = 100 cred_processor (four nodes per run) (0.507).
+81 stable rows; 13 with a shuffled-outcome AUC interval excluding 0.5: R = 100 First hop, content (0.503), R = 100 Credential processor (0.502), R = 100 Validator (0.511), R = 100 Gatekeeper (0.504), R = 1 combined: destination only (0.493), R = 1 combined: content first relay + credential destination (0.531), R = 1 combined: three or more roles, with a destination (0.566), R = 20 combined: gatekeeper + second relay (0.520), R = 100 combined: no role (0.503), R = 100 first_hop_content (four nodes per run) (0.504), R = 100 cred_processor (four nodes per run) (0.507), R = 1 combined: no first relay held (0.503), R = 100 combined: no first relay held (0.502).

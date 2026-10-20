@@ -231,7 +231,8 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
 
     (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, cfg.dev_cred_mean)
     (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.dev_content_mean)
-    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, cfg.dev_content_mean)
+    dev_i = cfg.dev_content_mean if cfg.dev_content_i_mean < 0 else cfg.dev_content_i_mean
+    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, dev_i)
 
     # C -> V -> C: C holds on its node clock, then sends CV-1; V processes, holds on its own clock,
     # and replies (APPROVED with sigma_V; the reply is padded in the relay class either way)

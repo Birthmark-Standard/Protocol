@@ -12,6 +12,8 @@
   overlap-counts  how often the permitted-overlap role draw puts one node on two paths
              (results/overlap_counts.json)
   shuffle    negative control: candidates' device labels permuted within each run
+  first-relay-paths  each first relay's lead by path under three timing-signal controls, R = 1
+             (results/first_relay_paths.json)
              (results/shuffle_control.json)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker
@@ -49,7 +51,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["reproduce", "run", "analyze", "tables", "latency", "pairs", "timing",
-                                        "overlap-counts", "shuffle"])
+                                        "overlap-counts", "shuffle", "first-relay-paths"])
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
     ap.add_argument("--runs", type=int, default=EX.RUNS, help="runs per cell (default: %(default)s)")
@@ -64,4 +66,5 @@ def main(argv=None):
          pairs=lambda: EX.pair_gaps(out, runs=min(a.runs, 20), workers=a.workers),
          timing=lambda: EX.timing_check(out, runs=min(a.runs, 10), workers=a.workers),
          shuffle=lambda: EX.shuffle_control(out, runs=min(a.runs, 20), workers=a.workers),
-         **{"overlap-counts": lambda: EX.overlap_counts(out)})[a.command]()
+         **{"overlap-counts": lambda: EX.overlap_counts(out),
+            "first-relay-paths": lambda: EX.first_relay_paths(out, workers=a.workers)})[a.command]()

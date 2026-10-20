@@ -66,6 +66,10 @@ CONTROLS = {
     "first_relay_signal_content": dict(overlap=True, relay_mean=120.0, dev_cred_mean=0.0, dev_content_mean=240.0,
                                        c_hold_mean=0.0, v_hold_mean=0.0, fanout_mean=0.0, gk_mean=0.0, gk_inclusion=False,
                                        cs_mean=0.0, post_match=False, reg_bundle_s=0.0),
+    # one content path carries the signal: the device holds only its F channel (240 s)
+    "first_relay_signal_one_content": dict(overlap=True, relay_mean=120.0, dev_cred_mean=0.0, dev_content_mean=240.0,
+                                           dev_content_i_mean=0.0, c_hold_mean=0.0, v_hold_mean=0.0, fanout_mean=0.0,
+                                           gk_mean=0.0, gk_inclusion=False, cs_mean=0.0, post_match=False, reg_bundle_s=0.0),
 }
 ALL_BUILDS = {**BUILDS, **CONTROLS}
 LABEL = {
@@ -83,6 +87,7 @@ LABEL = {
     "overlap_no_holds": "permitted overlap, every hold off",
     "first_relay_signal_cred": "permitted overlap, credential path dominates the record time",
     "first_relay_signal_content": "permitted overlap, content paths dominate the record time",
+    "first_relay_signal_one_content": "permitted overlap, the F content path dominates the record time",
 }
 REMOVALS = ("no_vc_holds", "no_inclusion_lottery", "no_post_match_lottery", "no_registry_bundling",
             "no_role_aware_holds", "no_mechanisms")
@@ -511,4 +516,54 @@ def shuffle_control(out, build="permitted_overlap", runs=20, workers="auto"):
                   f"(chance {100 * row['observer_feasible_chance']:5.2f}%), n = {row['decisions']}: "
                   f"{'pass' if row['passes'] else 'FAIL'}", flush=True)
     (out / "shuffle_control.json").write_text(json.dumps(dict(build=build, runs=runs, cells=rows), indent=1))
+    return rows
+
+
+# --------------------------------------------------------------------------- first relays by path
+PATH_VARIANTS = {"credential path only": "first_relay_signal_cred", "both content paths": "first_relay_signal_content",
+                 "F content path only": "first_relay_signal_one_content"}
+
+
+def _paths_one(args):
+    out, b, run_id, D = args
+    with open(model_path(out, b), "rb") as f:
+        m = pickle.load(f)
+    run = S.simulate(config_of(dict(R=1.0, decoys=float(DECOYS), build=b), D), traffic_seed(1.0, run_id))
+    s = run.subs
+    rec = AT.records(run)
+    keep = AT.scored_mask(run, rec["sub"])
+    rec = {k: x[keep] for k, x in rec.items()}
+    cand = AT.candidates(run)
+    g = m.pdf["g"]
+    lo, hi = AT._band(rec["u"], g)
+    base = AT.score_blocks(lo, hi, cand, lambda r, k0, k1: g(rec["u"][r][:, None] - cand["t"][None, k0:k1]),
+                           dict(sub=rec["sub"], dev=rec["dev"]))
+    ri, grp, res, _ = AT.score_vantage("first_hop_cred", run, rec, cand, m, base, run_id)
+    v, bb, sub = res["dev"]["correct"].astype(float), base["dev"]["correct"][ri].astype(float), rec["sub"][ri]
+    return b, {p: (v[grp == s[p][sub]].sum(), bb[grp == s[p][sub]].sum(), int((grp == s[p][sub]).sum())) for p in "ADG"}
+
+
+def first_relay_paths(out, runs=300, run0=2000, workers="auto"):
+    """Each first relay's lead over the observer on the records whose transaction it relayed as A, D or G, at
+    R = 1, under three controls that put the timing signal on the credential path, on both content paths, or
+    on the F content path only. Run ids from run0 up. Written to <out>/first_relay_paths.json."""
+    import multiprocessing as mp
+    from . import analyze as AN
+    out = Path(out)
+    D = calibrate(out)["D"]
+    for b in PATH_VARIANTS.values():
+        ensure_models(out, b)
+    with mp.Pool(RN.resolve_workers(workers)) as pool:
+        res = pool.map(_paths_one, [(str(out), b, k, D) for b in PATH_VARIANTS.values() for k in range(run0, run0 + runs)],
+                       chunksize=2)
+    rng = np.random.default_rng(99)
+    rows = {}
+    for label, b in PATH_VARIANTS.items():
+        for p in "ADG":
+            a = np.array([r[1][p] for r in res if r[0] == b], float)
+            lead, lo, hi = AN.cluster_boot(a[:, 0] - a[:, 1], a[:, 2], rng)
+            rows[f"{label}.{p}"] = dict(lead=lead, lo=lo, hi=hi, accuracy=a[:, 0].sum() / a[:, 2].sum(),
+                                        observer=a[:, 1].sum() / a[:, 2].sum(), n=int(a[:, 2].sum()), runs=len(a))
+            print(f"{label:22s} {p}: lead {100 * lead:+.2f} [{100 * lo:+.2f}, {100 * hi:+.2f}], n {int(a[:, 2].sum())}", flush=True)
+    (out / "first_relay_paths.json").write_text(json.dumps(dict(runs=runs, run0=run0, cells=rows), indent=1))
     return rows
