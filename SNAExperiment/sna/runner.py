@@ -38,12 +38,18 @@ def read_records(p: Path) -> list[dict]:
     data = Path(p).read_bytes()
     res, pos, magic = [], 0, b"\x1f\x8b\x08"
     while pos < len(data):
+        # decompress in chunks and keep everything before a break, so a member cut off by an
+        # interruption yields the same records whether or not another member follows it
         d = zlib.decompressobj(wbits=31)
+        parts = []
         try:
-            raw = d.decompress(data[pos:])
-            complete = d.eof
+            for i in range(pos, len(data), 1 << 20):
+                parts.append(d.decompress(data[i:i + (1 << 20)]))
+                if d.eof:
+                    break
         except zlib.error:
-            raw, complete = b"", False
+            pass
+        raw, complete = b"".join(parts), d.eof
         buf = io.BytesIO(raw)
         while True:
             try:

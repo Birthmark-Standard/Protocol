@@ -371,6 +371,16 @@ def overlap_analysis(cells, loader, ref_loader, seed=12346):
                     r[f"{name}_n"] = int(ok.sum())
                     if ok.any():
                         r[f"{name}_lead"], r[f"{name}_lead_lo"], r[f"{name}_lead_hi"] = _lead(vc[ok], b[ok], t["run"][ok], rng)
+                cv = t["dev_v_correct"].astype(float)
+                ok = sel & np.isfinite(fr_c) & np.isfinite(dest_c)
+                if ok.any():
+                    # paired on the same rows: combined minus first relay alone, and combined minus the sum
+                    # of the two single-role leads (c - b) - (f - b) - (d - b) = c - f - d + b
+                    r["minus_first_relay"], r["minus_first_relay_lo"], r["minus_first_relay_hi"] = _lead(
+                        cv[ok], fr_c[ok], t["run"][ok], rng)
+                    r["minus_sum"], r["minus_sum_lo"], r["minus_sum_hi"] = _lead(
+                        cv[ok] + b[ok], fr_c[ok] + dest_c[ok], t["run"][ok], rng)
+            r["prevalence"] = float(sel.mean())
             rows.append(r)
         for v in FOUR_NODE:
             tv = stack(recs, v)

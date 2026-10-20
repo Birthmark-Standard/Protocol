@@ -152,9 +152,10 @@ SMALL_GROUP = ("A top group of fewer than 50 decisions cannot resolve the criter
 
 
 def _lead_ci(r, k):
-    if f"{k}_lead" not in r:
+    k = k if k in r else f"{k}_lead"
+    if k not in r:
         return "n/a"
-    return f"{100 * r[f'{k}_lead']:+.2f} [{100 * r[f'{k}_lead_lo']:+.2f}, {100 * r[f'{k}_lead_hi']:+.2f}]"
+    return f"{100 * r[k]:+.2f} [{100 * r[f'{k}_lo']:+.2f}, {100 * r[f'{k}_hi']:+.2f}]"
 
 
 def _claim_cells(r):
@@ -180,22 +181,23 @@ def _combined_tables(comb):
     md += ["", SMALL_GROUP, "",
            "### Identifiable classes", "",
            "A class is identifiable when the node held a destination role (C, F or I) in the record's transaction, so it "
-           "can select those records by the plaintext hash it reads there.", "",
-           "| R | Roles held | Decisions | Top 1% group | Device named | Observer | Combined lead [95% CI] | "
-           "First relay alone [95% CI] | Destination alone [95% CI] | Combined above the sum | "
-           "Top 1% upper bound | Coverage above 50% | Claim |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+           "can select those records by the plaintext hash it reads there. Prevalence is the class's share of the node's "
+           "decisions. Combined minus the sum is the combined lead minus the two single-role leads, paired on the same "
+           "rows.", "",
+           "| R | Roles held | Prevalence | Decisions | Top 1% group | Device named | Observer | Combined lead [95% CI] | "
+           "First relay alone [95% CI] | Destination alone [95% CI] | Combined minus the sum [95% CI] | "
+           "Top 1% upper bound | Coverage above 50% | Claim |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in comb:
         if not r.get("identifiable") or "dev_accuracy" not in r:
             continue
         if not r["stable"]:
-            md.append(f"| {r['R']:g} | {r['pair_class']} | {r['n']:,} | {r['top1_group']} | unstable: {r['runs_needed']} runs needed "
-                      "| | | | | | | | |")
+            md.append(f"| {r['R']:g} | {r['pair_class']} | {_pct(r.get('prevalence'), 2)} | {r['n']:,} | {r['top1_group']} | "
+                      f"unstable: {r['runs_needed']} runs needed | | | | | | | | |")
             continue
-        s_ = r.get("first_relay_alone_lead", 0.0) + r.get("destination_alone_lead", 0.0)
-        md.append(f"| {r['R']:g} | {r['pair_class']} | {r['n']:,} | {r['top1_group']} | {_pct(r['dev_accuracy'])} | "
+        md.append(f"| {r['R']:g} | {r['pair_class']} | {_pct(r.get('prevalence'), 2)} | {r['n']:,} | {r['top1_group']} | {_pct(r['dev_accuracy'])} | "
                   f"{_pct(r['dev_baseline'])} | {100 * r['dev_contribution']:+.2f} [{100 * r['dev_contribution_lo']:+.2f}, "
                   f"{100 * r['dev_contribution_hi']:+.2f}] | {_lead_ci(r, 'first_relay_alone')} | {_lead_ci(r, 'destination_alone')} | "
-                  f"{'yes' if r['dev_contribution'] > s_ else 'no'} | {_claim_cells(r)} |")
+                  f"{_lead_ci(r, 'minus_sum') if 'minus_sum' in r else 'n/a'} | {_claim_cells(r)} |")
     md += ["", SMALL_GROUP, "",
            "### Oracle-conditioned classes", "",
            "A class is oracle-conditioned when the node held only relay or gatekeeper roles, or none, in the record's "
