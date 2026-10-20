@@ -11,6 +11,7 @@ import numpy as np
 from scipy.stats import norm
 
 from . import attacks as AT
+from . import params as _P
 from .attacks import T_GRID
 
 Z95 = 1.959963984540054
@@ -184,6 +185,8 @@ def metrics(records, v, spec, rng, t=None, name=None):
     for q, name in ((0.01, "p_at_1"), (0.05, "p_at_5"), (0.10, "p_at_10"), (0.25, "p_at_25")):
         p, lo, hi = precision_at(conf, c, q)
         out[name], out[name + "_lo"], out[name + "_hi"] = p, lo, hi
+    out["top1_group"] = max(1, int(round(0.01 * conf.size)))
+    out["claim"] = bool(out["p_at_1_hi"] < 0.5 and max_coverage_p50(conf, c) < 0.001)
     out["coverage_p50"] = max_coverage_p50(conf, c)
     out["count_p50"] = int(round(out["coverage_p50"] * conf.size))
     out["decisions"] = int(conf.size)
@@ -298,10 +301,47 @@ def analyze(cells, loader, seed=12345, references=None):
     return rows, changes
 
 
+def _lead(v_correct, b_correct, run, rng):
+    """Paired lead of a vantage over the observer on the same rows, with a run-resampled interval."""
+    num, den = per_run(v_correct.astype(float) - b_correct, run)
+    return cluster_boot(num, den, rng)
+
+
+def _row_lookup(records, v):
+    """(run, sub, group) -> device-level correctness of vantage v, as sorted keys and values."""
+    keys, vals = [], []
+    for r in records:
+        x = r["vantages"][v]
+        keys.append((np.int64(r["run"]) << 40) | (x["sub"].astype(np.int64) << 8) | x["group"].astype(np.int64))
+        vals.append(x["dev_v_correct"].astype(float))
+    keys, vals = np.concatenate(keys), np.concatenate(vals)
+    o = np.argsort(keys, kind="stable")
+    return keys[o], vals[o]
+
+
+def _find(lookup, run, sub, group):
+    keys, vals = lookup
+    k = (run.astype(np.int64) << 40) | (sub.astype(np.int64) << 8) | group.astype(np.int64)
+    i = np.minimum(np.searchsorted(keys, k), keys.size - 1)
+    hit = keys[i] == k
+    return np.where(hit, vals[i], np.nan)
+
+
+P_CONFIG = _P.Config()
+FOUR_NODE = ("first_hop_cred", "first_hop_content", "cred_processor")
+
+
 def overlap_analysis(cells, loader, ref_loader, seed=12346):
-    """Under permitted overlap: the combined vantage of one node, overall and by the role pair it held
-    in the record's transaction, and each single-role vantage paired against the reference build on
-    the records whose transaction has no coincidence between roles on different paths."""
+    """Under permitted overlap:
+      - the combined vantage of one node, on every record and by the roles it held in the record's
+        transaction, each class labelled identifiable or oracle-conditioned;
+      - for each identifiable class, the first-relay vantage alone and the destination vantage alone on
+        the same records (same record, same node);
+      - the vantages scored on every record, restricted to the four nodes per run of the baseline
+        rotation, so they compare with the baseline as scored;
+      - each single-role vantage paired against the reference build on the records whose transaction
+        has no coincidence between roles on different paths."""
+    from . import experiment as EX, sim as S
     rng = np.random.default_rng(seed)
     rows, regression = [], {}
     for key, spec in cells.items():
@@ -309,17 +349,38 @@ def overlap_analysis(cells, loader, ref_loader, seed=12346):
         if not recs or "combined" not in recs[0]["vantages"]:
             continue
         recs = sorted(recs, key=lambda r: r["run"])
+        dec = float(spec.get("decoys", 0.0))
         t = stack(recs, "combined")
-        r = metrics(recs, "combined", spec, rng, t=t, name="combined")
-        r["decoys"] = float(spec.get("decoys", 0.0))
+        r = metrics(recs, "combined", spec, rng, t=t, name="combined: all records")
+        r["decoys"], r["pair_class"], r["identifiable"] = dec, "all records", None
         rows.append(r)
+        fh, cs, cp = (_row_lookup(recs, v) for v in ("first_hop_cred", "content_server", "cred_processor"))
+        fr_c = _find(fh, t["run"], t["sub"], t["group"])
+        cs_c, cp_c = _find(cs, t["run"], t["sub"], t["group"]), _find(cp, t["run"], t["sub"], t["group"])
+        dest_c = np.where(np.isfinite(cs_c), cs_c, cp_c)        # X names the record as F or I, else X was its C
+        b = t["dev_b_correct"].astype(float)
         for code, cls in enumerate(AT.PAIR_CLASSES):
             sel = t["pair"] == code
             if not sel.any():
                 continue
             r = metrics(recs, "combined", spec, rng, t={k: x[sel] for k, x in t.items()}, name=f"combined: {cls}")
-            r["decoys"] = float(spec.get("decoys", 0.0))
-            r["pair_class"] = cls
+            r["decoys"], r["pair_class"], r["identifiable"] = dec, cls, cls in AT.IDENTIFIABLE
+            if cls in AT.IDENTIFIABLE:
+                for name, vc in (("first_relay_alone", fr_c), ("destination_alone", dest_c)):
+                    ok = sel & np.isfinite(vc)
+                    r[f"{name}_n"] = int(ok.sum())
+                    if ok.any():
+                        r[f"{name}_lead"], r[f"{name}_lead_lo"], r[f"{name}_lead_hi"] = _lead(vc[ok], b[ok], t["run"][ok], rng)
+            rows.append(r)
+        for v in FOUR_NODE:
+            tv = stack(recs, v)
+            keep = np.zeros(tv["sub"].size, bool)
+            for rid in np.unique(tv["run"]):
+                gk = S.World(P_CONFIG, EX.traffic_seed(spec["R"], int(rid))).gk_set
+                m = tv["run"] == rid
+                keep[m] = np.isin(tv["group"][m], AT.servers_for(v, int(rid), gk))
+            r = metrics(recs, v, spec, rng, t={k: x[keep] for k, x in tv.items()}, name=f"{v} (four nodes per run)")
+            r["decoys"] = dec
             rows.append(r)
         ref = ref_loader(key)
         if ref:

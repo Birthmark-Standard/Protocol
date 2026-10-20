@@ -11,7 +11,7 @@
   timing     every stage's simulated hold, and departure bundle sizes (results/timing_check.json)
   overlap-counts  how often the permitted-overlap role draw puts one node on two paths
              (results/overlap_counts.json)
-  shuffle    negative control for the combined vantage: record times permuted within each run
+  shuffle    negative control: candidates' device labels permuted within each run
              (results/shuffle_control.json)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker

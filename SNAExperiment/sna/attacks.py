@@ -511,10 +511,14 @@ class _MixtureV:
 SERVERS_PER_RUN = 4       # first hops and credential processors compromised in turn, per run
 
 
-def servers_for(v, run_id, gk_set):
+def servers_for(v, run_id, gk_set, all_nodes=False):
     """The servers compromised in one run for a vantage scored on every record: SERVERS_PER_RUN of
-    them, rotating with the run id so every eligible server is covered across runs."""
+    them, rotating with the run id so every eligible server is covered across runs; with all_nodes,
+    every eligible server in every run. The first hops and the combined view are eligible on every
+    node; the credential processor on every node outside the active gatekeeper set."""
     pool = np.arange(P.N_NODES) if v.startswith("first_hop") else np.setdiff1d(np.arange(P.N_NODES), gk_set)
+    if all_nodes:
+        return pool
     return pool[(run_id * SERVERS_PER_RUN + np.arange(SERVERS_PER_RUN)) % pool.size]
 
 
@@ -530,7 +534,7 @@ def _vantage_rows(v, run, rec, run_id=0):
     if v in ("baseline", "validator"):
         return idx, np.zeros(n, int), {}
     if v in ("first_hop_cred", "first_hop_content", "cred_processor"):
-        servers = servers_for(v, run_id, run.gk_set)
+        servers = servers_for(v, run_id, run.gk_set, all_nodes=run.cfg.overlap)
         ri, grp = np.tile(idx, servers.size), np.repeat(servers, n)
         if v == "first_hop_cred":
             part = s["A"][sub[ri]] == grp
@@ -588,7 +592,7 @@ def score_vantage(v, run, rec, cand, m: Models, base, run_id=0):
         t = ev["t_send"][s["ev_cv2"]][real]
         o = np.argsort(t, kind="stable")
         vsub = np.nonzero(real)[0][o].astype(np.int64)
-        vc = dict(t=t[o], sub=vsub, msub=vsub, dev=s["src"][real][o].astype(np.int64))
+        vc = dict(t=t[o], sub=vsub, msub=vsub, dev=cand.get("relabel", _same)(s["src"][real][o].astype(np.int64)))
         gV = pdf["gV"]
 
         def fn(rows, k0, k1):
@@ -628,10 +632,16 @@ def score_vantage(v, run, rec, cand, m: Models, base, run_id=0):
 # --------------------------------------------------------------------------- combined view of one node
 # The role pair a compromised node held in the record's own transaction (truth; used only to
 # classify its decisions, never to score them).
-PAIR_CLASSES = ("no role", "one role", "credential first relay + content destination",
-                "content first relay + content destination", "content first relay + credential destination",
-                "second relay + first relay", "second relay + second relay", "second relay + destination",
-                "gatekeeper + first relay", "gatekeeper + second relay", "three or more roles")
+PAIR_CLASSES = ("no role", "one relay or gatekeeper role", "destination only",
+                "credential first relay + content destination", "content first relay + content destination",
+                "content first relay + credential destination", "second relay + destination",
+                "three or more roles, with a destination",
+                "second relay + first relay", "second relay + second relay", "gatekeeper + first relay",
+                "gatekeeper + second relay", "three or more roles, no destination")
+# A class is identifiable when the node held a destination role (C, F or I) in the record's transaction:
+# it reads the plaintext hash there, so it can select those records. Every other class is defined by
+# information the node does not have (oracle-conditioned).
+IDENTIFIABLE = tuple(c for c in PAIR_CLASSES if "destination" in c and "no destination" not in c)
 PAIR_CODE = {c: i for i, c in enumerate(PAIR_CLASSES)}
 
 
@@ -640,23 +650,27 @@ def role_pair_class(s, sub, X, gk_set):
     held = {k: s[k][sub] == X for k in "ABCDEFGHI"}
     gk = np.isin(X, gk_set)
     first, second = held["A"] | held["D"] | held["G"], held["B"] | held["E"] | held["H"]
+    dest = held["C"] | held["F"] | held["I"]
     n_roles = sum(h.astype(int) for h in held.values()) + gk.astype(int)
-    code = np.full(sub.shape, PAIR_CODE["one role"], np.int8)
-    code[n_roles == 0] = PAIR_CODE["no role"]
+    code = np.full(sub.shape, PAIR_CODE["no role"], np.int8)
+    one = n_roles == 1
+    code[one & dest] = PAIR_CODE["destination only"]
+    code[one & ~dest] = PAIR_CODE["one relay or gatekeeper role"]
     two = n_roles == 2
     rules = (
         ("credential first relay + content destination", held["A"] & (held["F"] | held["I"])),
         ("content first relay + content destination", (held["D"] & held["I"]) | (held["G"] & held["F"])),
         ("content first relay + credential destination", (held["D"] | held["G"]) & held["C"]),
+        ("second relay + destination", second & dest),
         ("second relay + first relay", second & first),
-        ("second relay + destination", second & (held["C"] | held["F"] | held["I"])),
         ("second relay + second relay", (held["B"].astype(int) + held["E"] + held["H"]) == 2),
         ("gatekeeper + first relay", gk & first),
         ("gatekeeper + second relay", gk & second),
     )
     for name, m in rules:
         code[two & m] = PAIR_CODE[name]
-    code[n_roles >= 3] = PAIR_CODE["three or more roles"]
+    code[(n_roles >= 3) & dest] = PAIR_CODE["three or more roles, with a destination"]
+    code[(n_roles >= 3) & ~dest] = PAIR_CODE["three or more roles, no destination"]
     return code
 
 
@@ -677,7 +691,7 @@ def _score_combined(run, rec, cand, m: Models, run_id):
     g, fh, cs, csq = pdf["g"], pdf["fh"], pdf["cs"], pdf["cs_q"]
     sub = rec["sub"]
     n = sub.size
-    servers = servers_for("first_hop_cred", run_id, run.gk_set)
+    servers = servers_for("first_hop_cred", run_id, run.gk_set, all_nodes=True)
     ri, grp = np.tile(np.arange(n), servers.size), np.repeat(servers, n)
     u = rec["u"][ri]
     truth = dict(sub=sub[ri], dev=rec["dev"][ri])
@@ -743,7 +757,22 @@ def scored_mask(run, sub):
     return (t0 >= run.cfg.warmup_s) & (t0 < run.cfg.warmup_s + run.cfg.measure_s) & ~run.subs["decoy"][sub]
 
 
-def compute(run, m: Models, vantages=VANTAGES, run_id=0):
+def _same(x):
+    return x
+
+
+def relabel_devices(run, cand, rng):
+    """Negative control: a random permutation of the device labels of every candidate and every
+    validator reply in the run, so no candidate carries its own device's label. Truth is unchanged."""
+    devs = np.unique(np.r_[cand["dev"], run.subs["src"]])
+    perm = devs[rng.permutation(devs.size)]
+
+    def f(x):
+        return perm[np.searchsorted(devs, x)]
+    return dict(cand, dev=f(cand["dev"]), relabel=f)
+
+
+def compute(run, m: Models, vantages=VANTAGES, run_id=0, label_rng=None):
     """Score every vantage and the baseline on one run. Each vantage's record carries its rows with
     the vantage's and the paired baseline's decisions; the vantages scored on every record also
     carry took_part (the server took part in that record's transaction) and claim (the server
@@ -754,6 +783,8 @@ def compute(run, m: Models, vantages=VANTAGES, run_id=0):
     keep = scored_mask(run, rec["sub"])
     rec = {k: x[keep] for k, x in rec.items()}
     cand = candidates(run)
+    if label_rng is not None:
+        cand = relabel_devices(run, cand, label_rng)
     g = m.pdf["g"]
     lo, hi = _band(rec["u"], g)
     truth = dict(sub=rec["sub"], dev=rec["dev"])

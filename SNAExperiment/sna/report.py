@@ -111,25 +111,8 @@ def write_build_tables(out, build, rows, changes, no_overlap=None):
         md.append("")
     comb = [r for r in rows if r["vantage"].startswith("combined")]
     if comb:
-        md += ["## Combined view of one node", "",
-               "One compromised node scores every record with all the evidence its roles give it, combined as "
-               "likelihood ratios against the passive observer. Rows split its decisions by the roles it held in the "
-               "record's own transaction. The observer column is the passive observer on the same records. Numbers "
-               "are reported only for stable rows (at least 50 right and 50 wrong device-level decisions).", "",
-               "| R | Roles held | Decisions | Device named | Observer | Lead over observer [95% CI] | "
-               "Top 1% right, upper bound | Coverage above 50% | Stable |", "|---|---|---|---|---|---|---|---|---|"]
-        for R in EX.REAL_R:
-            for r in (x for x in comb if x["R"] == R):
-                cls = r.get("pair_class", "all records")
-                if "dev_accuracy" not in r:
-                    continue
-                if r["stable"]:
-                    md.append(f"| {R} | {cls} | {r['n']:,} | {_pct(r['dev_accuracy'])} | {_pct(r['dev_baseline'])} | "
-                              f"{_ci(r, 'dev_contribution', 'dev_contribution_lo', 'dev_contribution_hi')} | "
-                              f"{_pct(r['p_at_1_hi'], 1)} | {_pct(r['coverage_p50'], 4)} | yes |")
-                else:
-                    md.append(f"| {R} | {cls} | {r['n']:,} | | | | | | no: {r['runs_needed']} runs needed |")
-        md.append("")
+        md += _combined_tables(comb)
+        md += _rotation_table(out, rows)
     if no_overlap:
         for name, ch in no_overlap.items():
             md += [f"## Paired against {EX.EXPERIMENT}, records with no coincidence", "",
@@ -162,6 +145,97 @@ def tables_from_summaries(out):
             write_csv(out, b, d["rows"])
             write_build_tables(out, b, d["rows"], d.get("paired_effects", {}), d.get("paired_effects_no_overlap"))
     write_tables(out)
+
+
+SMALL_GROUP = ("A top group of fewer than 50 decisions cannot resolve the criterion. A failure there reflects "
+               "the size of the group.")
+
+
+def _lead_ci(r, k):
+    if f"{k}_lead" not in r:
+        return "n/a"
+    return f"{100 * r[f'{k}_lead']:+.2f} [{100 * r[f'{k}_lead_lo']:+.2f}, {100 * r[f'{k}_lead_hi']:+.2f}]"
+
+
+def _claim_cells(r):
+    return (f"{_pct(r['p_at_1_hi'], 1)} | {_pct(r['coverage_p50'], 4)} | {'pass' if r['claim'] else 'fail'}")
+
+
+def _combined_tables(comb):
+    md = ["## Combined view of one node", "",
+          "One compromised node scores every record with all the evidence its roles give it, combined as likelihood "
+          "ratios against the passive observer. Leads are over the passive observer on the same records, in points. "
+          "The claim columns are the upper bound of the 95% interval on the precision of the most confident 1% of "
+          "matches, the share of matches in a most-confident group right more than half the time, and the verdict. "
+          "A row that misses the stability rule (at least 50 right and 50 wrong device-level decisions) shows only the "
+          "runs it needs.", "",
+          "### Every record", "",
+          "| R | Decisions | Top 1% group | Device named | Observer | Lead [95% CI] | Top 1% upper bound | Coverage above 50% | Claim |",
+          "|---|---|---|---|---|---|---|---|---|"]
+    for r in comb:
+        if r.get("pair_class") == "all records" and "dev_accuracy" in r:
+            md.append(f"| {r['R']:g} | {r['n']:,} | {r['top1_group']} | {_pct(r['dev_accuracy'])} | {_pct(r['dev_baseline'])} | "
+                      f"{100 * r['dev_contribution']:+.2f} [{100 * r['dev_contribution_lo']:+.2f}, {100 * r['dev_contribution_hi']:+.2f}] | "
+                      f"{_claim_cells(r)} |")
+    md += ["", SMALL_GROUP, "",
+           "### Identifiable classes", "",
+           "A class is identifiable when the node held a destination role (C, F or I) in the record's transaction, so it "
+           "can select those records by the plaintext hash it reads there.", "",
+           "| R | Roles held | Decisions | Top 1% group | Device named | Observer | Combined lead [95% CI] | "
+           "First relay alone [95% CI] | Destination alone [95% CI] | Combined above the sum | "
+           "Top 1% upper bound | Coverage above 50% | Claim |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for r in comb:
+        if not r.get("identifiable") or "dev_accuracy" not in r:
+            continue
+        if not r["stable"]:
+            md.append(f"| {r['R']:g} | {r['pair_class']} | {r['n']:,} | {r['top1_group']} | unstable: {r['runs_needed']} runs needed "
+                      "| | | | | | | | |")
+            continue
+        s_ = r.get("first_relay_alone_lead", 0.0) + r.get("destination_alone_lead", 0.0)
+        md.append(f"| {r['R']:g} | {r['pair_class']} | {r['n']:,} | {r['top1_group']} | {_pct(r['dev_accuracy'])} | "
+                  f"{_pct(r['dev_baseline'])} | {100 * r['dev_contribution']:+.2f} [{100 * r['dev_contribution_lo']:+.2f}, "
+                  f"{100 * r['dev_contribution_hi']:+.2f}] | {_lead_ci(r, 'first_relay_alone')} | {_lead_ci(r, 'destination_alone')} | "
+                  f"{'yes' if r['dev_contribution'] > s_ else 'no'} | {_claim_cells(r)} |")
+    md += ["", SMALL_GROUP, "",
+           "### Oracle-conditioned classes", "",
+           "A class is oracle-conditioned when the node held only relay or gatekeeper roles, or none, in the record's "
+           "transaction: it cannot select those records, so the row is a single-role lead on a subset the node cannot "
+           "pick, not an attack.", "",
+           "| R | Roles held | Decisions | Top 1% group | Device named | Observer | Lead [95% CI] | "
+           "Top 1% upper bound | Coverage above 50% | Claim |", "|---|---|---|---|---|---|---|---|---|---|"]
+    for r in comb:
+        if r.get("identifiable") is not False or "dev_accuracy" not in r:
+            continue
+        if not r["stable"]:
+            md.append(f"| {r['R']:g} | {r['pair_class']} | {r['n']:,} | {r['top1_group']} | unstable: {r['runs_needed']} runs needed "
+                      "| | | | | |")
+            continue
+        md.append(f"| {r['R']:g} | {r['pair_class']} | {r['n']:,} | {r['top1_group']} | {_pct(r['dev_accuracy'])} | "
+                  f"{_pct(r['dev_baseline'])} | {100 * r['dev_contribution']:+.2f} [{100 * r['dev_contribution_lo']:+.2f}, "
+                  f"{100 * r['dev_contribution_hi']:+.2f}] | {_claim_cells(r)} |")
+    md += ["", SMALL_GROUP, ""]
+    return md
+
+
+def _rotation_table(out, rows):
+    """The vantages scored on every record: every node compromised in every run, against the baseline's
+    four nodes per run, and against InternalCompromiseRun as committed."""
+    p = Path(out) / f"summary_{EX.BASELINE}.json"
+    base = {(r["cell"], r["vantage"]): r for r in json.loads(p.read_text())["rows"]} if p.exists() else {}
+    by = {(r["cell"], r["vantage"]): r for r in rows}
+    md = ["## Rotation of the compromised node", "",
+          "The first hops and the credential processor are scored with every eligible node compromised in every run. "
+          "The four-node column restricts the same decisions to the four nodes per run that InternalCompromiseRun "
+          "compromises. Leads over the passive observer, in points [95% CI].", "",
+          "| Vantage | R | Every node | Four nodes per run | InternalCompromiseRun |", "|---|---|---|---|---|"]
+    f = lambda r: "n/a" if r is None or "dev_contribution" not in r else (  # noqa: E731
+        f"{100 * r['dev_contribution']:+.2f} [{100 * r['dev_contribution_lo']:+.2f}, {100 * r['dev_contribution_hi']:+.2f}]")
+    for v in ("first_hop_cred", "first_hop_content", "cred_processor"):
+        for R in EX.REAL_R:
+            c = EX.cell_key(R)
+            md.append(f"| {NAME[v]} | {R} | {f(by.get((c, v)))} | {f(by.get((c, f'{v} (four nodes per run)')))} | "
+                      f"{f(base.get((c, v)))} |")
+    return md + [""]
 
 
 # --------------------------------------------------------------------------- the whole experiment

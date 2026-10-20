@@ -58,6 +58,14 @@ CONTROLS = {
     "overlap_no_holds": dict(overlap=True, relay_mean=0.0, dev_cred_mean=0.0, dev_content_mean=0.0, c_hold_mean=0.0,
                              v_hold_mean=0.0, fanout_mean=0.0, gk_mean=0.0, gk_inclusion=False, cs_mean=0.0,
                              post_match=False, reg_bundle_s=0.0),
+    # first-relay signal: only the relay holds (120 s) and one device channel's hold (240 s) are on, so the
+    # record time follows one path's relay holds and a first relay on that path knows its own share of them
+    "first_relay_signal_cred": dict(overlap=True, relay_mean=120.0, dev_cred_mean=240.0, dev_content_mean=0.0,
+                                    c_hold_mean=0.0, v_hold_mean=0.0, fanout_mean=0.0, gk_mean=0.0, gk_inclusion=False,
+                                    cs_mean=0.0, post_match=False, reg_bundle_s=0.0),
+    "first_relay_signal_content": dict(overlap=True, relay_mean=120.0, dev_cred_mean=0.0, dev_content_mean=240.0,
+                                       c_hold_mean=0.0, v_hold_mean=0.0, fanout_mean=0.0, gk_mean=0.0, gk_inclusion=False,
+                                       cs_mean=0.0, post_match=False, reg_bundle_s=0.0),
 }
 ALL_BUILDS = {**BUILDS, **CONTROLS}
 LABEL = {
@@ -73,6 +81,8 @@ LABEL = {
     "gatekeeper_120s": "gatekeeper hold at 120 s",
     "permitted_overlap": "permitted overlap",
     "overlap_no_holds": "permitted overlap, every hold off",
+    "first_relay_signal_cred": "permitted overlap, credential path dominates the record time",
+    "first_relay_signal_content": "permitted overlap, content paths dominate the record time",
 }
 REMOVALS = ("no_vc_holds", "no_inclusion_lottery", "no_post_match_lottery", "no_registry_bundling",
             "no_role_aware_holds", "no_mechanisms")
@@ -462,50 +472,43 @@ SHUFFLE_SEED = 14_000_000
 
 def _shuffle_one(args):
     out, build, R, run_id, D = args
-    import pickle as _p
     with open(model_path(out, build), "rb") as f:
-        m = _p.load(f)
+        m = pickle.load(f)
     cfg = config_of(dict(R=float(R), decoys=float(DECOYS), build=build), D)
     run = S.simulate(cfg, traffic_seed(R, run_id))
-    rec = AT.records(run)
-    keep = AT.scored_mask(run, rec["sub"])
-    rec = {k: x[keep] for k, x in rec.items()}
-    rng = np.random.default_rng([SHUFFLE_SEED, int(R), run_id])
-    rec["u"] = rec["u"][rng.permutation(rec["u"].size)]          # each record gets another record's time
-    cand = AT.candidates(run)
-    ri, grp, res, info = AT._score_combined(run, rec, cand, m, run_id)
-    g = m.pdf["g"]
-    lo, hi = AT._band(rec["u"], g)
-    base = AT.score_blocks(lo, hi, cand, lambda r, k0, k1: g(rec["u"][r][:, None] - cand["t"][None, k0:k1]),
-                           dict(sub=rec["sub"], dev=rec["dev"]))
-    o = res["dev"]
-    return (R, int(o["correct"].sum()), int(o["correct"].size), float(AT._random_rate(o, "dev").sum()),
-            int(base["dev"]["correct"].sum()), int(base["dev"]["correct"].size),
-            float(AT._random_rate(base["dev"], "dev").sum()))
+    vantages = AT.VANTAGES + (("combined",) if cfg.overlap else ())
+    recs = AT.compute(run, m, vantages, run_id, label_rng=np.random.default_rng([SHUFFLE_SEED, int(R), run_id]))
+    return R, run_id, {v: (int(x["dev_v_correct"].sum()), int(x["dev_v_correct"].size), float(x["dev_v_rand"].sum()),
+                           int(x["dev_b_correct"].sum()), float(x["dev_b_rand"].sum())) for v, x in recs.items()}
 
 
 def shuffle_control(out, build="permitted_overlap", runs=20, workers="auto"):
-    """Negative control: each record is given another record's time (permuted within the run), so no
-    record carries its own timing; the combined vantage and the observer are then scored as usual.
-    Their accuracy should fall to chance. Scored run ids 0..runs-1. Written to <out>/shuffle_control.json."""
+    """Negative control: within each run the device labels of every candidate (and of every validator
+    reply) are permuted at random, so no candidate carries its own device's label; every vantage is then
+    scored as usual. Accuracy should fall to the feasible chance rate. Scored run ids 0..runs-1. Written to
+    <out>/shuffle_control.json."""
     import multiprocessing as mp
+    from . import analyze as AN
     out = Path(out)
     D = calibrate(out)["D"]
     ensure_models(out, build)
     with mp.Pool(RN.resolve_workers(workers)) as pool:
         res = pool.map(_shuffle_one, [(str(out), build, R, k, D) for R in REAL_R for k in range(runs)], chunksize=1)
+    rng = np.random.default_rng(SHUFFLE_SEED)
     rows = {}
     for R in REAL_R:
-        x = np.array([r[1:] for r in res if r[0] == R], float).sum(0)
-        cfg = config_of(dict(R=float(R), decoys=float(DECOYS), build=build), D)
-        rows[cell_key(R)] = dict(R=R, runs=runs, combined_decisions=int(x[1]), combined_accuracy=x[0] / x[1],
-                                 combined_feasible_chance=x[2] / x[1], observer_decisions=int(x[4]),
-                                 observer_accuracy=x[3] / x[4], observer_feasible_chance=x[5] / x[4],
-                                 one_in_n=1.0 / (cfg.real_devices + cfg.decoy_sources))
-        r = rows[cell_key(R)]
-        print(f"R={R:3d} shuffled: combined {100 * r['combined_accuracy']:.2f}% (feasible chance "
-              f"{100 * r['combined_feasible_chance']:.2f}%, n = {r['combined_decisions']}), observer "
-              f"{100 * r['observer_accuracy']:.2f}% (feasible chance {100 * r['observer_feasible_chance']:.2f}%), "
-              f"one in N {100 * r['one_in_n']:.2f}%", flush=True)
+        x = [r[2] for r in res if r[0] == R]
+        for v in x[0]:
+            a = np.array([y[v] for y in x], float)              # per run: correct, n, chance sum, observer correct, observer chance
+            acc, lo, hi = AN.cluster_boot(a[:, 0], a[:, 1], rng)
+            row = dict(R=R, vantage=v, runs=runs, decisions=int(a[:, 1].sum()), accuracy=acc, accuracy_lo=lo,
+                       accuracy_hi=hi, feasible_chance=a[:, 2].sum() / a[:, 1].sum(),
+                       observer_accuracy=a[:, 3].sum() / a[:, 1].sum(), observer_feasible_chance=a[:, 4].sum() / a[:, 1].sum())
+            row["passes"] = bool(lo <= row["feasible_chance"] <= hi)
+            rows[f"{v}.R{R}"] = row
+            print(f"R={R:3d} {v:18s} shuffled: {100 * acc:5.2f}% [{100 * lo:5.2f}, {100 * hi:5.2f}], feasible chance "
+                  f"{100 * row['feasible_chance']:5.2f}%, observer {100 * row['observer_accuracy']:5.2f}% "
+                  f"(chance {100 * row['observer_feasible_chance']:5.2f}%), n = {row['decisions']}: "
+                  f"{'pass' if row['passes'] else 'FAIL'}", flush=True)
     (out / "shuffle_control.json").write_text(json.dumps(dict(build=build, runs=runs, cells=rows), indent=1))
     return rows
