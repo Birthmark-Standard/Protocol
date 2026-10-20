@@ -147,7 +147,7 @@ def write_build_tables(out, build, rows, changes, no_overlap=None):
     bad = [r for r in st if not (r["shuffle_auc_lo"] <= 0.5 <= r["shuffle_auc_hi"])]
     md += ["## Outcome-shuffle control", "",
            f"{len(st)} stable rows; {len(bad)} with a shuffled-outcome AUC interval excluding 0.5"
-           + ("" if not bad else ": " + ", ".join(f"R = {r['R']:g} {NAME[r['vantage']]} ({r['shuffle_auc']:.3f})" for r in bad))
+           + ("" if not bad else ": " + ", ".join(f"R = {r['R']:g} {NAME.get(r['vantage'], r['vantage'])} ({r['shuffle_auc']:.3f})" for r in bad))
            + ".", ""]
     (Path(out) / f"tables_{build}.md").write_text("\n".join(md), encoding="utf-8")
 
