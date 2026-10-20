@@ -186,15 +186,17 @@ R = 1, 20 and 100 real transactions in flight with 60 decoys; 200 runs per cell.
 
 ## Summary
 
-1. **Two identifiable classes lead the observer by more than a quarter of a point.**
+1. **Over every record a node can select, the combined view does not lead the observer by more than a tenth of a point.** A node can select the records for which it held a destination role, 15.00% of its decisions. Its lead there is -0.25 [-0.42, -0.06] at R = 1, +0.09 [-0.07, +0.25] at R = 20 and +0.09 [+0.04, +0.14] at R = 100.
+2. **Inside those records, the classes in which the node also held a first relay lead by more than a quarter of a point.** The node cannot select them: it cannot tell which records it relayed.
    - Credential first relay with a content destination leads by +1.46 [+0.50, +2.44] at R = 1, +1.16 [+0.35, +1.98] at R = 20 and +1.06 [+0.75, +1.36] at R = 100.
    - Content first relay with a content destination leads by +0.74 [+0.47, +1.01] at R = 100 and +0.90 [-0.05, +1.82] at R = 20.
    - Each class covers about 0.5% of a node's decisions. The node names the device 4.47% of the time against the observer's 3.41% at R = 100.
-2. **With a content destination, the combined lead exceeds the sum of the two single-role leads.** For the credential first relay with a content destination, combined minus the sum is +1.74 [+1.01, +2.49] at R = 1 and +0.45 [+0.21, +0.70] at R = 100. A content destination knows the content arrival of the record that names it, and that evidence combines with the first relay's on the same candidates.
-3. **With the credential destination, the combined lead equals the first relay's alone.** C cannot select the record, because the record does not name it. Its mixture over all its transactions adds nothing on any candidate: combined minus the sum is +0.00 [-0.22, +0.22], +0.02 [-0.16, +0.20] and -0.05 [-0.10, +0.00].
-4. **Across every record a node scores, the combined view equals the observer:** -0.06 [-0.15, +0.03], -0.01 [-0.09, +0.06] and +0.01 [-0.01, +0.04] points.
-5. **No single-role vantage changes.** Every single-role paired effect against InternalCompromiseRun lies within ±0.10 points. The largest single-role lead is the content server at R = 100, +0.22 [+0.15, +0.28].
-6. **Every single-role vantage and every identifiable class passes the claim criterion in every cell.** One oracle-conditioned class fails: gatekeeper with a second relay at R = 1, with coverage 0.139% on a top group of 151 decisions.
+   - A first relay's evidence favours the candidates it forwarded. That raises accuracy on the records it took part in and lowers it on the others: on every record where the node held a first relay the lead is +0.58, +0.68 and +0.44, and on every other record -0.09, -0.05 and -0.01.
+3. **With a content destination, the combined lead exceeds the sum of the two single-role leads.** For the credential first relay with a content destination, combined minus the sum is +1.74 [+1.01, +2.49] at R = 1 and +0.45 [+0.21, +0.70] at R = 100. A content destination knows the content arrival of the record that names it, and that evidence combines with the first relay's on the same candidates.
+4. **With the credential destination, the combined lead equals the first relay's alone.** C cannot select the record, because the record does not name it. Its mixture over all its transactions adds nothing on any candidate: combined minus the sum is +0.00 [-0.22, +0.22], +0.02 [-0.16, +0.20] and -0.05 [-0.10, +0.00].
+5. **Across every record a node scores, the combined view equals the observer:** -0.06 [-0.15, +0.03], -0.01 [-0.09, +0.06] and +0.01 [-0.01, +0.04] points.
+6. **No single-role vantage changes.** Every single-role paired effect against InternalCompromiseRun lies within ±0.10 points. The largest single-role lead is the content server at R = 100, +0.22 [+0.15, +0.28].
+7. **Every single-role vantage and every identifiable class passes the claim criterion in every cell.** One oracle-conditioned class fails: gatekeeper with a second relay at R = 1, with coverage 0.139% on a top group of 151 decisions.
 
 ## How often roles coincide
 
@@ -213,9 +215,25 @@ At 20 nodes, a first relay is another path's destination in:
 
 The sequential draw fixes the destinations first and then gives each first relay an equal chance among the nodes left to it, which weights the valid combinations unequally.
 
+## Records a node can select
+
+The node held a destination role (C, F or I) in the record's transaction. The split below is by whether it also held a first relay, which it cannot tell.
+
+| R | Records | Prevalence | Device named | Observer | Lead | Decisions | Top 1% group | Claim |
+|---|---|---|---|---|---|---|---|---|
+| 1 | every record the node can select | 15.00% | 9.70% | 9.95% | -0.25 [-0.42, -0.06] | 119,571 | 1,196 | pass |
+| 1 | every record, first relay held | 4.81% | 10.66% | 10.08% | +0.58 [+0.33, +0.82] | 38,327 | 383 | pass |
+| 1 | every record, no first relay held | 95.19% | 9.85% | 9.94% | -0.09 [-0.18, -0.00] | 758,813 | 7,588 | pass |
+| 20 | every record the node can select | 15.00% | 6.56% | 6.47% | +0.09 [-0.07, +0.25] | 125,184 | 1,252 | pass |
+| 20 | every record, first relay held | 4.79% | 7.03% | 6.35% | +0.68 [+0.46, +0.89] | 39,970 | 400 | pass |
+| 20 | every record, no first relay held | 95.21% | 6.43% | 6.48% | -0.05 [-0.12, +0.03] | 794,590 | 7,946 | pass |
+| 100 | every record the node can select | 15.00% | 3.58% | 3.49% | +0.09 [+0.04, +0.14] | 622,710 | 6,227 | pass |
+| 100 | every record, first relay held | 4.80% | 3.90% | 3.47% | +0.44 [+0.37, +0.51] | 199,460 | 1,995 | pass |
+| 100 | every record, no first relay held | 95.20% | 3.48% | 3.49% | -0.01 [-0.03, +0.01] | 3,951,940 | 39,519 | pass |
+
 ## Identifiable classes
 
-The node held a destination role in the record's transaction and can select those records.
+The node held a destination role in the record's transaction and can select those records. A pair class is also defined by the node's other role, which it cannot tell. The lead the node can realise is the lead over every record it can select, in the table above.
 
 - Leads are in points [95% CI], over the passive observer on the same records.
 - Prevalence is the class's share of a node's decisions.
@@ -298,4 +316,12 @@ The first hop for content gives the same values as the first hop for credentials
 - **Positive control, first-relay half, credential path.** Only the relay holds (120 s) and the device's credential hold (240 s) are on (`first_relay_signal_cred`, 100 runs per cell). The record time then follows the credential path. On the credential first relay with a content destination, the combined lead is +4.78 [+3.08, +6.41] (1,945 decisions), +2.55 [+1.09, +4.01] (2,039) and +2.17 [+1.67, +2.65] (10,252), against a destination-alone lead of +0.46, +0.64 and +0.34. Combined minus the sum is +3.08 [+1.76, +4.39], +0.05 [-1.03, +1.18] and +1.21 [+0.85, +1.58].
 - **Positive control, first-relay half, content path.** Only the relay holds (120 s) and the device's content holds (240 s) are on (`first_relay_signal_content`, 300 runs at R = 1 and 100 runs at R = 20 and 100). The record time then follows the content paths. On the content first relay with the credential destination, the combined lead is +2.07 [+1.49, +2.67] (6,333 decisions), +2.08 [+1.31, +2.84] (2,117) and +0.75 [+0.46, +1.03] (11,064), against a destination-alone lead of -0.03, +0.09 and +0.05. Combined minus the first relay alone is -0.17 [-0.39, +0.05], -0.14 [-0.38, +0.09] and -0.04 [-0.11, +0.03].
 - **The two first-relay controls differ in the destination half.** The content destination's evidence adds to the first relay's on the same candidate. The credential destination's adds nothing.
-- **The first relays are scored by the same code.** The first-relay likelihood is one model pooled over all three paths. In the content-path control two of the three pooled holds carry the signal, against one in the credential-path control. The content first relay alone therefore leads by +2.24, +2.22 and +0.79, against +1.23, +1.86 and +0.61 for the credential first relay in its control.
+- **First relays by path.** Each first relay's lead on the records it took part in, at R = 1, 300 runs per control on run ids 2,000 to 2,299 (`results/controls/first_relay_paths.json`, 60,345 decisions per path):
+
+  | Timing signal on | A | D | G |
+  |---|---|---|---|
+  | credential path | +1.42 [+1.25, +1.58] | +0.55 [+0.41, +0.70] | +0.56 [+0.42, +0.70] |
+  | both content paths | +2.01 [+1.82, +2.20] | +2.41 [+2.21, +2.61] | +2.41 [+2.19, +2.60] |
+  | F content path only | +2.43 [+2.24, +2.62] | +1.92 [+1.73, +2.11] | +1.95 [+1.76, +2.14] |
+
+  A first relay's lead does not follow whether its own path carries the timing signal. With the signal on the F path only, D (on that path) and G (on the other) lead by the same amount, and A leads by more. The lead is set by the control as a whole. With the signal on both content paths, D and G lead by +2.41 on held-out runs, which reproduces the content-path control's +2.24 for the first relay alone at R = 1.

@@ -135,7 +135,7 @@ Each build changes one thing from InternalCompromiseRun and is paired against it
 
 **Permitted overlap.** Every other build draws the nine nodes of a transaction distinct. `permitted_overlap` keeps the destinations C, F and I of the baseline draw (distinct, never an active gatekeeper) and draws the relays in order, each uniform over the nodes its constraints allow: A, D and G pairwise distinct and each different from its own path's destination, then B, E and H, each different from its own path's first relay and destination. Every other coincidence is allowed. The relays come from a separate random stream, so every other draw, and the pairing with InternalCompromiseRun, is unchanged.
 
-**Combined view.** Under `permitted_overlap` one compromised node scores every record with all the evidence its roles give it: its own hold on the candidates it relayed as a first hop, its content arrival on the records that name it as F or I, its credential-processor mixture, and its postings if it is a gatekeeper. The pieces combine as likelihood ratios against the passive observer: log g(y) plus, for each role, log L(role) minus log g(y). A second relay holds no evidence in this framework. Every node is compromised in every run. Decisions are classed by the roles the node held in the record's own transaction. A class is **identifiable** when that includes a destination role (C, F or I), because the node reads the plaintext hash there and can select those records. Every other class is **oracle-conditioned**: it is a single-role lead on a subset the node cannot select, and it is not an attack.
+**Combined view.** Under `permitted_overlap` one compromised node scores every record with all the evidence its roles give it: its own hold on the candidates it relayed as a first hop, its content arrival on the records that name it as F or I, its credential-processor mixture, and its postings if it is a gatekeeper. The pieces combine as likelihood ratios against the passive observer: log g(y) plus, for each role, log L(role) minus log g(y). A second relay holds no evidence in this framework. Every node is compromised in every run. Decisions are classed by the roles the node held in the record's own transaction. A class is **identifiable** when that includes a destination role (C, F or I), because the node reads the plaintext hash there and can select those records. Every other class is **oracle-conditioned**: it is a single-role lead on a subset the node cannot select, and it is not an attack. A pair class that includes a destination is also defined by the node's other role, which the node cannot tell, so the lead a node can realise is its lead over every record it can select.
 
 **Cells**
 - Real volume is R = 1, 20 and 100 transactions in flight, each with 60 decoy transactions in flight.
@@ -180,7 +180,8 @@ On Windows, use `py -m pip install -r requirements.txt` and `py -m sna reproduce
 | `timing` | every stage's simulated hold and the departure bundle sizes (`results/timing_check.json`) |
 | `overlap-counts` | how often the permitted-overlap role draw puts one node on two paths (`results/overlap_counts.json`) |
 | `shuffle` | negative control: candidates' device labels permuted within each run (`results/shuffle_control.json`) |
-| `run --build <control>` | the controls `overlap_no_holds`, `first_relay_signal_cred` and `first_relay_signal_content` (`results/controls/`) |
+| `run --build <control>` | the controls `overlap_no_holds`, `first_relay_signal_cred`, `first_relay_signal_content` and `first_relay_signal_one_content` (`results/controls/`) |
+| `first-relay-paths` | each first relay's lead by path, at R = 1, under the three first-relay controls (`results/first_relay_paths.json`) |
 
 Fast tests: `python -m pytest tests -q`.
 

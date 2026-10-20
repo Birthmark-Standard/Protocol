@@ -54,7 +54,9 @@ The role draw allows every coincidence the routing design permits: a first relay
 
 ### One node in two roles: identifiable classes
 
-The node held a destination role in the record's transaction and can select those records. Each cell gives the combined lead [95% CI], the share of decisions right against the observer's, and the class's share of the node's decisions. The two rows under each class give the first relay alone and the destination alone on the same records.
+Every record a node can select, because it held a destination role (15.00% of its decisions): -0.25 [-0.42, -0.06]; 9.70% vs 9.95% at R = 1, +0.09 [-0.07, +0.25]; 6.56% vs 6.47% at R = 20, and +0.09 [+0.04, +0.14]; 3.58% vs 3.49% at R = 100.
+
+The classes below split those records by the node's other role, which the node cannot tell. The node held a destination role in the record's transaction and can select those records. Each cell gives the combined lead [95% CI], the share of decisions right against the observer's, and the class's share of the node's decisions. The two rows under each class give the first relay alone and the destination alone on the same records.
 
 | Roles held | R = 1 | R = 20 | R = 100 |
 |---|---|---|---|
@@ -87,4 +89,4 @@ The node held only relay or gatekeeper roles in the record's transaction and can
 
 Gatekeeper with a second relay fails the claim criterion at R = 1, with coverage 0.139% on a top group of 151 decisions.
 
-A node in two roles on different paths leads the observer by more than a quarter of a point, with an interval above 0, only when it holds a first relay and a content destination together: by +0.74 to +1.46 points. Each such pair covers about 0.5% of a node's decisions in a 20-node pool.
+Over every record it can select, a node in two roles leads the observer by at most +0.09 points. Within those records, the subsets in which it also held a first relay lead by +0.74 to +1.46 points, but the node cannot tell which records those are. Each such pair covers about 0.5% of a node's decisions in a 20-node pool.
