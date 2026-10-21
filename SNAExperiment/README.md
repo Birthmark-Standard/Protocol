@@ -89,7 +89,7 @@ Every hold is a geometric lottery on a 10-second tick, released unconditionally 
 
 **Registry bundling.** Confirmed submissions from every content server leave together on one shared 120-second schedule.
 
-**Registry posting.** The registry posts each merged record at the next boundary of its own 120-second schedule.
+**Registry posting.** The registry posts each merged record at the next boundary of its own 120-second schedule. Both submissions reach the registry just after a boundary of the shared registry bundle schedule, which has the same period. Within a run, the posting wait is therefore one fixed offset between the two schedules' phases, the same for every record. Across runs it is uniform over 0 to 120 seconds.
 
 Measured values come from 10 runs at R = 20 (`results/timing_check.json`), under simulator version 1. The fan-out and registry posting rows are new in version 2 and have no measured values yet.
 
@@ -106,7 +106,7 @@ Measured values come from 10 runs at R = 20 (`results/timing_check.json`), under
 | F/I's pre-match hold | 240 s | 10 s | 3.84% | 720 s | 240.8 s | 206.9 s |
 | Post-match lottery | 30 s | 10 s | 26.86% | 90 s | 30.1 s | 25.3 s |
 | Registry bundle wait | 60 s | shared 120 s schedule | not applicable | 120 s | 60.1 s | 34.7 s |
-| Registry posting wait | 60 s | registry's 120 s schedule | not applicable | 120 s | not yet measured | not yet measured |
+| Registry posting wait | 60 s across runs; one fixed offset within a run | registry's 120 s schedule | not applicable | 120 s | not yet measured | not yet measured |
 
 Under version 1, mean capture to finalization was 1,033.8 seconds, with a standard deviation of 270.6 seconds. A version 2 calibration on the same seeds gives D = 1,108.8 seconds.
 

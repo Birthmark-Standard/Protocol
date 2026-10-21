@@ -179,9 +179,9 @@ Every hold in this spec draws from the same lottery shape — a 10-second tick, 
 | F/I's pre-match hold | 240 s | 206.9 s | 0.86 |
 | Post-match lottery | 30 s | 25.3 s | 0.84 |
 | Registry bundle wait (shared 120 s schedule) | 60 s | 34.6 s | 0.58 |
-| Registry posting wait (registry's own 120 s schedule) | 60 s | 34.6 s | 0.58 |
+| Registry posting wait (registry's own 120 s schedule) | 60 s across runs | 34.6 s across runs | 0.58 |
 
-The standard deviations are those of the lottery as simulated: a uniform wait to the first tick, then geometric release on 10-second ticks, capped at three times the mean. The two registry waits are uniform over their 120-second schedules.
+The standard deviations are those of the lottery as simulated: a uniform wait to the first tick, then geometric release on 10-second ticks, capped at three times the mean. The registry bundle wait is uniform over its 120-second schedule. The registry posting wait is not: confirmed submissions arrive just after a boundary of the registry bundle schedule, which has the same period, so every record waits the same fixed offset between the two schedules' phases. That offset is uniform over 0 to 120 seconds across deployments, and constant within one.
 
 **Serialized fan-out.** C's three gatekeeper legs share one draw per tick of C's node clock, from C's receipt of CV-2. Each successful draw sends the next leg, in a random order, and the next draw starts at the following tick, so no two legs leave on the same tick. With 20 s per draw, the legs leave 20, 45 and 70 s after CV-2 on average.
 
