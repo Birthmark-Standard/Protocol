@@ -126,12 +126,18 @@ def traffic_seed(R, run_id):
 
 # --------------------------------------------------------------------------- calibration
 def calibrate(out=RESULTS, runs=10, force=False):
-    """Mean end-to-end delay D (capture to registry finalization, the later of the two
-    submissions) over real transactions in the scored window, from seeded runs of the baseline
-    build, so rates R / D and decoys / D give R and decoys transactions in flight under it."""
+    """Mean end-to-end delay D (capture to the registry posting the merged record) over real
+    transactions in the scored window, from seeded runs of the baseline build, so rates R / D and
+    decoys / D give R and decoys transactions in flight under it. Every result directory is stamped
+    with the simulator version; a directory written by another version is refused, so its runs are
+    never resumed under this one."""
     p = Path(out) / "calibration.json"
     if p.exists() and not force:
-        return json.loads(p.read_text())
+        cal = json.loads(p.read_text())
+        if cal.get("sim_version", 1) != P.SIM_VERSION:
+            raise SystemExit(f"{out} holds results of simulator version {cal.get('sim_version', 1)}; this code is "
+                             f"version {P.SIM_VERSION}. Use a new --out directory, or remove that one's results.")
+        return cal
     cfg = P.Config(real_rate=0.2)
     d = []
     for k in range(runs):
@@ -142,7 +148,8 @@ def calibrate(out=RESULTS, runs=10, force=False):
     d = np.concatenate(d)
     fin = d[np.isfinite(d)]
     cal = dict(D=float(fin.mean()), D_median=float(np.median(fin)), D_p95=float(np.percentile(fin, 95)),
-               n=int(fin.size), dropped=int((~np.isfinite(d)).sum()), runs=runs, build=BASELINE)
+               n=int(fin.size), dropped=int((~np.isfinite(d)).sum()), runs=runs, build=BASELINE,
+               sim_version=P.SIM_VERSION)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(cal, indent=1))
     return cal
@@ -256,7 +263,8 @@ def latency(out, runs=20, builds=None):
             spec = dict(R=float(R), decoys=float(DECOYS), build=build)
             cfg = config_of(spec, D)
             acc = {k: [] for k in ("total", "to_gatekeeper", "gk_hold", "gk_bundle_wait", "quorum",
-                                  "quorum_to_confirmed", "registry_bundle_wait", "confirmed_to_final")}
+                                  "quorum_to_confirmed", "registry_bundle_wait", "registry_posting_wait",
+                                  "confirmed_to_final")}
             for k in range(runs):
                 s = S.simulate(cfg, traffic_seed(R, LATENCY_SEED0 + k)).subs
                 m = _scored(s, cfg) & ~s["decoy"] & s["ok_f"] & s["ok_i"]
@@ -271,6 +279,7 @@ def latency(out, runs=20, builds=None):
                 reg = np.where(last == 0, s["reg_f"][m], s["reg_i"][m])
                 acc["quorum_to_confirmed"].append(det - s["quorum"][m])
                 acc["registry_bundle_wait"].append(reg - det)
+                acc["registry_posting_wait"].append(s["posted"][m] - s["intake"][m])
                 acc["confirmed_to_final"].append(s["final"][m] - det)
             row = {}
             for k, v in acc.items():
@@ -374,6 +383,7 @@ def _timing_one(args):
         "F/I pre-match hold": np.r_[s["hold_f"][m] - s["arr_f"][m], s["hold_i"][m] - s["arr_i"][m]],
         "post-match lottery": np.r_[s["ready_f"][m] - s["det_f"][m], s["ready_i"][m] - s["det_i"][m]],
         "registry bundle wait": np.r_[s["reg_f"][m] - s["ready_f"][m], s["reg_i"][m] - s["ready_i"][m]],
+        "registry posting wait": s["posted"][m] - s["intake"][m],
         "capture to finalization": s["final"][m] - s["t0"][m],
     }
     # postings per departure bundle at each gatekeeper (every transaction, real and decoy)

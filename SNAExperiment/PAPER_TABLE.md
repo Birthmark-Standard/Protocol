@@ -2,6 +2,8 @@
 
 InternalCompromiseRun: how often a single compromised component, starting from a public registry record, names the device that produced it. Every hold follows the timing in `README.md`. 60 decoy transactions are in flight; decoys are genuine transactions from registered identities, indistinguishable to every party. 200 runs per cell.
 
+**Simulator version 1.** Every number below was produced by simulator version 1. In version 1, the three fan-out legs drew independent holds, the record time was the midpoint of F's and I's submissions, and candidates were device packets grouped greedily into captures. The code in this folder is version 2 (`README.md`). These numbers stand for version 1 until a version 2 run replaces them.
+
 The bracket gives each component's lead over a passive observer on the same records, in percentage points. The first hops and the credential processor are scored on every record, because they cannot identify the records they took part in.
 
 | Component | Holds | R = 1 | R = 20 | R = 100 | Its average confidence in a match (R = 1 / 20 / 100) |

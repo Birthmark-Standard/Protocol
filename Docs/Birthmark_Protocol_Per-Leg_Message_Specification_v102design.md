@@ -156,7 +156,7 @@ The system injects decoy transactions to enlarge the candidate pool available to
 
 A decoy transaction is a genuine transaction from a genuinely registered device credential, not a distinguishable, invalid, or specially marked one. The credentials belong to a pool of identities operated by the same infrastructure that generates decoy traffic and distributes the device routing table, registered with a validator the same way any other device is. Nothing about a decoy transaction differs structurally from a real one at any stage: V approves it normally, C fans it out normally, every signature is genuinely valid, gatekeeper verification and match board quorum proceed normally, and F and I finalize a registry record for it exactly as they would for real content. No party, including V, C, and the gatekeepers, has any way to distinguish a decoy transaction from a real one, because there is nothing structurally different to distinguish. A decoy is an ordinary submission with arbitrary content. Its claim, and therefore its verdict, follows the mix of claims in real traffic, so a decoy record carries a verdict as a real one does and no verdict marks a record as real. The decoy-identity pool must be large enough that no single identity's submission rate looks statistically different from a plausible device's. The pool size is expected to vary with the deployment's own phase and scale, and is not meant to be fixed to a single documented number; it is an operating parameter the deploying infrastructure adjusts as needed, using as many rotating identities as the deployment's own scale calls for.
 
-Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: 60 ± 10 transactions in flight at any given time, regardless of how much real traffic exists. Decoy volume tops up whatever real traffic falls short of this target. The randomized range, rather than a single exact constant, keeps the target from being a precisely known value an observer could characterize and subtract out exactly; it does not eliminate the risk that enough observed windows could statistically narrow the underlying distribution.
+Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: 60 decoy transactions in flight on average, in addition to whatever real traffic exists, at every level of real traffic. Decoy captures arrive at random times, so the number in flight at any moment varies around that mean.
 
 Every decoy-produced registry record is permanent, exactly like a real one; none are ever removed. Whether and how to prune decoy records to manage hot-storage growth is an open implementation question, deferred rather than specified here.
 
@@ -168,17 +168,22 @@ Every hold in this spec draws from the same lottery shape — a 10-second tick, 
 
 | Stage | Mean | Std dev | CoV |
 | --- | --- | --- | --- |
-| Relays (A, B, D, E, G, H), every path | 120 s | 100.7 s | 0.84 |
-| Device's credential-channel hold | 120 s | 100.7 s | 0.84 |
-| Device's content-channel holds (both) | 240 s | 201.4 s | 0.84 |
-| C's hold before sending CV-1 | 30 s | 25.2 s | 0.84 |
-| V's hold before sending CV-2 | 30 s | 25.2 s | 0.84 |
-| C's fan-out to each gatekeeper (independent per leg) | 60 s | 50.3 s | 0.84 |
-| Gatekeeper's own hold | 30 s | 25.2 s | 0.84 |
+| Relays (A, B, D, E, G, H), every path | 120 s | 103.1 s | 0.86 |
+| Device's credential-channel hold | 120 s | 103.1 s | 0.86 |
+| Device's content-channel holds (both) | 240 s | 206.9 s | 0.86 |
+| C's hold before sending CV-1 | 30 s | 25.3 s | 0.84 |
+| V's hold before sending CV-2 | 30 s | 25.3 s | 0.84 |
+| C's serialized fan-out, per draw (one leg leaves per success) | 20 s | 16.6 s | 0.83 |
+| Gatekeeper's own hold | 30 s | 25.3 s | 0.84 |
 | Departure bundle inclusion lottery | 101 s | 90.9 s | 0.90 |
-| F/I's pre-match hold | 240 s | 201.4 s | 0.84 |
-| Post-match lottery | 30 s | 25.2 s | 0.84 |
-| Registry bundle wait | 60 s | 50.3 s | 0.84 |
+| F/I's pre-match hold | 240 s | 206.9 s | 0.86 |
+| Post-match lottery | 30 s | 25.3 s | 0.84 |
+| Registry bundle wait (shared 120 s schedule) | 60 s | 34.6 s | 0.58 |
+| Registry posting wait (registry's own 120 s schedule) | 60 s | 34.6 s | 0.58 |
+
+The standard deviations are those of the lottery as simulated: a uniform wait to the first tick, then geometric release on 10-second ticks, capped at three times the mean. The two registry waits are uniform over their 120-second schedules.
+
+**Serialized fan-out.** C's three gatekeeper legs share one draw per tick of C's node clock, from C's receipt of CV-2. Each successful draw sends the next leg, in a random order, and the next draw starts at the following tick, so no two legs leave on the same tick. With 20 s per draw, the legs leave 20, 45 and 70 s after CV-2 on average.
 
 Only stages with a legitimate basis for knowing their own role carry a value different from the shared 120 s figure: the device knows which channel it is constructing a packet for, and F/I know they are F or I. Relays cannot carry a role-specific parameter at all, per the First relay's path-blindness constraint below, so every relay and the device's own credential channel share the same, unelevated 120 s mean. The device's content channels and F/I's pre-match hold share the elevated 240 s mean — exactly double the shared baseline, settling the earlier open choice between that figure and a higher one.
 
@@ -235,7 +240,7 @@ Any failed check drops the transaction and triggers that party's discard obligat
 3. Generates tx\_id. Holds (see Hold timing), then sends CV-1 (tx\_id, T, key\_ref, Enc\_FullPacketHash) to the validator that key\_ref designates.
 4. On **REJECTED**: drops the transaction.
 5. On a **verdict**: verifies σ\_V over `verdict || Enc_FullPacketHash` with the Enc\_FullPacketHash it holds; a failed verification drops the transaction. Computes `σ_C = RSign(C-Ring; FullPacketHash || verdict)`. C signs only a verdict that V issued for this transaction.
-6. Sends the three GK legs, each carrying FullPacketHash, verdict, σ\_V, BlindShare\_key and σ\_C, encrypted separately. Each of the three legs draws its own, independent delay (see Hold timing) starting from when C received CV-2 in step 5; this is what "staggered" means here, not spacing the three legs relative to each other after an unheld first send.
+6. Sends the three GK legs, each carrying FullPacketHash, verdict, σ\_V, BlindShare\_key and σ\_C, encrypted separately. The legs are serialized (see Hold timing): from when C received CV-2 in step 5, C draws once per tick of its node clock, and each successful draw sends the next leg in a random order, so no two legs leave on the same tick.
 
 ### Validator V
 
@@ -268,7 +273,7 @@ Any failed check drops the transaction and triggers that party's discard obligat
 1. Verifies each submission's signature against the known server identity keys.
 2. Finalizes a record once two submissions from two **distinct** identities agree on every field: ContentHash, verdict, flags, and any optional fields.
 3. Duplicate collapse: a ContentHash already on the registry is matched to the existing record, not re-posted.
-4. Stamps the record with a coarsened timestamp.
+4. Merges the two submissions into one record at intake and posts it at the next boundary of its own 120-second posting schedule. The posting time is the record's coarsened timestamp. The registry's gossip frames are of one constant size, so an observer of them cannot tell which record a frame belongs to.
 
 ## Discard and retention obligations
 

@@ -7,7 +7,11 @@ The experiment simulates the protocol's full message flow, with real and decoy t
 - its component's exact event timing;
 - a passive view of the sizes and timing of all traffic on every link.
 
+From that view, the likelihoods use two observables: the devices' first-hop packets and the posted record time. Every other leg is padded to its class or carries a constant-size gossip frame, and enters no score.
+
 Each attacker is compared with chance and with a passive observer on the same records.
+
+**Simulator version 2.** The code here is simulator version 2: serialized fan-out, a registry that merges F's and I's submissions and posts one record on its own schedule, and one candidate per device packet. The committed results in `results/`, `RESULTS.md` and `PAPER_TABLE.md` were produced by version 1. Version 2 refuses to resume a result directory written by version 1; run it into a new directory.
 
 - `RESULTS.md` has every finding.
 - `PAPER_TABLE.md` has the headline tables.
@@ -29,18 +33,20 @@ Accuracy is read against three references:
 
 ## Vantages
 
-| Vantage | Holds | Knows exactly |
-|---|---|---|
-| Passive observer | nothing | sizes and timing on every link |
-| First hop, credential (A) | relay transit key | the device's network address and packet arrival; its own hold and forward times |
-| First hop, content (D or G) | relay transit key | the same, for one content copy |
-| Credential processor (C) | transit and ring-signing keys | packet hash, key reference, its own fan-out sends, the validator's reply |
-| Validator (V) | token-decryption and signing keys | device identity, request arrival, reply moment |
-| Gatekeeper | transit and countersignature keys | packet hash, sender's address, its own arrival, hold release and posting |
-| Content server (F or I) | transit and registry-signing keys | content hash, content arrival, when the board pushes showed quorum, its own submission |
+There are six component vantages and the observer.
+
+| Vantage | Holds | Knows exactly | Uses in its likelihood |
+|---|---|---|---|
+| Passive observer | nothing | sizes and timing on every link | the posted record time against each device packet's departure |
+| First hop, credential (A) | relay transit key | the device's network address and packet arrival; its own hold and forward times | its own hold, on the packets it relayed |
+| First hop, content (D or G) | relay transit key | the same, for one content copy | the same |
+| Credential processor (C) | transit and ring-signing keys | packet hash, key reference, its own fan-out sends, the validator's reply | the median of its own three fan-out sends, over its own transactions, with a prior of 1/17 that it was C |
+| Validator (V) | token-decryption and signing keys | device identity, request arrival, reply moment | its own reply times, which name the device |
+| Gatekeeper | transit and countersignature keys | packet hash, sender's address, its own arrival, hold release and posting | its own postings |
+| Content server (F or I) | transit and registry-signing keys | content hash, content arrival, when the board pushes showed quorum, its own submission | its content arrival, on the records it submitted |
 
 - **First hops and the credential processor** cannot tell which records they took part in. They are scored on every record. Four servers per run are compromised in turn, rotating with the run id.
-- **The content server** is scored on the records it submitted, which it can identify because the record names it.
+- **The content server** is scored on the records it submitted, which it identifies by the content hash it submitted.
 - **The gatekeeper** is scored once for each of the three active gatekeepers.
 
 ## The protocol as simulated
@@ -54,7 +60,7 @@ Accuracy is read against three references:
 - Every transit leg is padded to a size drawn uniformly from 420 to 460 bytes.
 - The gatekeeper fan-out uses 820 to 860 bytes.
 - A 22-byte TLS 1.3 record overhead, measured on real sessions, is added on the wire.
-- Registry submissions travel as gossipsub frames.
+- Registry submissions travel as gossipsub frames of a constant 284 bytes on the wire, unpadded.
 
 **Decoys**
 - A decoy is a genuine transaction from a registered identity held by the decoy infrastructure. It is approved, fanned out, posted and finalized exactly as a real transaction, and it produces a permanent registry record.
@@ -64,21 +70,28 @@ Accuracy is read against three references:
 **Board and registry**
 - Each match board pushes its new matches to every content server every 10 seconds, on its own schedule.
 - A content server confirms a transaction once its own pre-match hold has released and two boards' pushes carry the match. It drops the transaction after 30 minutes without quorum.
-- The registry finalizes a record when both content servers' submissions have arrived.
+- The registry merges F's and I's submissions into one record at intake, once both have reached every Registry Node.
+- The registry posts merged records on its own 120-second schedule, on a phase independent of every other schedule. The posted time is the record time. The record names neither F nor I.
+- A passive observer sees the submissions' gossip frames but cannot tell which record they belong to.
 
 **Simulation scope**
 - The simulation contains protocol traffic only.
 - Network latency is fixed per pair of hosts within a run, with per-packet jitter. There is no queueing.
+- Processing before each send: 0.5 to 3 ms per node, 5 to 50 ms at the validator, 1 to 10 ms at a gatekeeper, and 5 to 50 ms for each gossip validation, each uniform.
 
 ## Hold timing
 
-Every hold is a geometric lottery on a 10-second tick, released unconditionally at three times its own mean. Each stage's release probability is set to hit its target mean.
+Every hold is a geometric lottery on a 10-second tick, released unconditionally at three times its own mean. Each stage's release probability is set to hit its target mean. Relays, C, and F's and I's pre-match holds use the node's own clock. The validator uses its own clock. A gatekeeper's own hold uses a gatekeeper hold clock, separate from its node clock. The device's channels and the post-match lottery use a fresh random phase per packet.
+
+**Serialized fan-out.** From C's receipt of CV-2, the transaction's three gatekeeper legs share one draw per tick of C's node clock. Each successful draw sends the next leg, in a random order, and the next draw starts at the following tick, so no two legs leave on the same tick. With 20 s per draw, the legs leave 20, 45 and 70 s after CV-2 on average.
 
 **Departure bundling.** After the gatekeeper's own hold, a posting draws for a place in each 30-second bundle of that gatekeeper's grid: 25% chance at each boundary, unconditional at the 12th.
 
 **Registry bundling.** Confirmed submissions from every content server leave together on one shared 120-second schedule.
 
-Measured values come from 10 runs at R = 20 (`results/timing_check.json`).
+**Registry posting.** The registry posts each merged record at the next boundary of its own 120-second schedule.
+
+Measured values come from 10 runs at R = 20 (`results/timing_check.json`), under simulator version 1. The fan-out and registry posting rows are new in version 2 and have no measured values yet.
 
 | Stage | Target mean | Tick | Release probability per tick | Cap | Measured mean | Measured std dev |
 |---|---|---|---|---|---|---|
@@ -87,23 +100,24 @@ Measured values come from 10 runs at R = 20 (`results/timing_check.json`).
 | Device's content-channel holds (both) | 240 s | 10 s | 3.84% | 720 s | 237.8 s | 205.4 s |
 | C's hold before sending CV-1 | 30 s | 10 s | 26.86% | 90 s | 30.3 s | 25.3 s |
 | V's hold before sending CV-2 | 30 s | 10 s | 26.86% | 90 s | 30.2 s | 25.3 s |
-| C's fan-out to each gatekeeper (independent per leg) | 60 s | 10 s | 14.46% | 180 s | 59.6 s | 51.2 s |
+| C's serialized fan-out, per draw (one leg per success) | 20 s | 10 s | 37.65% | 60 s per draw | not yet measured | not yet measured |
 | Gatekeeper's own hold | 30 s | 10 s | 26.86% | 90 s | 30.4 s | 25.3 s |
 | Departure bundle inclusion lottery | 120 s (measured 101 s) | 30 s | 25% | 12 boundaries | 101.0 s | 90.9 s |
 | F/I's pre-match hold | 240 s | 10 s | 3.84% | 720 s | 240.8 s | 206.9 s |
 | Post-match lottery | 30 s | 10 s | 26.86% | 90 s | 30.1 s | 25.3 s |
 | Registry bundle wait | 60 s | shared 120 s schedule | not applicable | 120 s | 60.1 s | 34.7 s |
+| Registry posting wait | 60 s | registry's 120 s schedule | not applicable | 120 s | not yet measured | not yet measured |
 
-Mean capture to finalization is 1,033.8 seconds, with a standard deviation of 270.6 seconds.
+Under version 1, mean capture to finalization was 1,033.8 seconds, with a standard deviation of 270.6 seconds. A version 2 calibration on the same seeds gives D = 1,108.8 seconds.
 
 Departure bundles at one gatekeeper hold 2.33 postings on average. 32.4% of them hold fewer than two, and 10.0% are empty.
 
 ## The attack
 
-- **Records.** Each record is a registry entry whose two submissions (F's and I's) a passive observer finds in the gossip traffic. The record names both servers, so its two submissions are paired and timed at their midpoint.
-- **Candidates.** The candidates are device submissions on the wire: each source's first-hop packets, grouped into captures. Decoy identities' packets are included for every vantage, because no vantage can tell them apart.
-- **Scoring.** Each vantage scores every candidate by the likelihood of the record time given that candidate. The likelihoods are built by Monte Carlo simulation of the protocol on seeds separate from every scored run.
-- **Decision.** For each record, a vantage names the device with the highest summed posterior.
+- **Records.** Each record is a posted registry entry. Its record time is the posted time.
+- **Candidates.** The candidates are device submissions on the wire: every first-hop packet from a device, each on its own. No grouping into captures is assumed. Decoy identities' packets are included for every vantage, because no vantage can tell them apart.
+- **Scoring.** Each vantage scores every candidate by the likelihood of the record time given that candidate. The likelihoods are built by Monte Carlo simulation of the protocol on seeds separate from every scored run. A capture's three packets cannot be told apart on the wire, so each likelihood is pooled over the three. One first-relay model serves A, D and G, because a first relay cannot tell which of the three it is.
+- **Decision.** For each record, a vantage names the device with the highest summed posterior over that device's packets. A tie goes to the lowest device id.
 - **Pairing.** Every vantage is paired with the passive observer on the same records.
 
 ## The claim criterion
@@ -180,8 +194,8 @@ On Windows, use `py -m pip install -r requirements.txt` and `py -m sna reproduce
 | `timing` | every stage's simulated hold and the departure bundle sizes (`results/timing_check.json`) |
 | `overlap-counts` | how often the permitted-overlap role draw puts one node on two paths (`results/overlap_counts.json`) |
 | `shuffle` | negative control: candidates' device labels permuted within each run (`results/shuffle_control.json`) |
-| `run --build <control>` | the controls `overlap_no_holds`, `first_relay_signal_cred`, `first_relay_signal_content` and `first_relay_signal_one_content` (`results/controls/`) |
-| `first-relay-paths` | each first relay's lead by path, at R = 1, under the three first-relay controls (`results/first_relay_paths.json`) |
+| `run --build <control>` | one control's runs: `overlap_no_holds`, `first_relay_signal_cred`, `first_relay_signal_content` or `first_relay_signal_one_content` (the committed control results were run with `--out results/controls`; `first_relay_signal_one_content` is used only by `first-relay-paths`) |
+| `first-relay-paths` | each first relay's lead by path, at R = 1, under the three first-relay controls, 300 runs per control unless `--runs` is given (`<out>/first_relay_paths.json`; the committed file is `results/controls/first_relay_paths.json`) |
 
 Fast tests: `python -m pytest tests -q`.
 

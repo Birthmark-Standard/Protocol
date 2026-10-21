@@ -7,7 +7,8 @@ transaction) and a per-transaction truth table used only for scoring.
 Random streams. One run seed is split into independent streams: the world (latencies, clock phases,
 gatekeeper set, gossip mesh), the real transactions, the decoy transactions, and one stream for
 each mechanism that can be removed (departure-bundle grids, board pushes, the registry schedule,
-the post-match lottery, the inclusion lottery, the validator's clock). Real traffic is therefore
+the post-match lottery, the inclusion lottery, the validator's clock, the registry's posting
+schedule). Real traffic is therefore
 identical, event for event, whatever the decoy volume, and removing a mechanism changes only what
 that mechanism does.
 """
@@ -75,17 +76,20 @@ class Run:
     bundle_phase: np.ndarray = None
     push_phase: np.ndarray = None
     reg_phase: float = 0.0
+    post_phase: float = 0.0
 
 
 class World:
     def __init__(self, cfg: P.Config, seed: int):
         self.cfg = cfg
         ss = np.random.SeedSequence(seed)
-        streams = ss.spawn(14)
+        streams = ss.spawn(15)
         # streams 4, 5, 8 and 11 are reserved and unused here; stream 13 draws the relays when
-        # overlap is on, so every other draw is the same with overlap on or off
+        # overlap is on, so every other draw is the same with overlap on or off; stream 14 draws the
+        # registry's posting-schedule phase
         (self.rng_world, self.rng_real, self.rng_decoy, _, _, rng_bundle, rng_push,
-         _, rng_reg, self.rng_post, _, self.rng_incl, rng_v, self.rng_relays) = (np.random.default_rng(s) for s in streams)
+         _, rng_reg, self.rng_post, _, self.rng_incl, rng_v, self.rng_relays,
+         rng_regpost) = (np.random.default_rng(s) for s in streams)
         # the validator's hold-clock phase
         self.v_phase = float(rng_v.uniform(0, P.TICK_S))
         # each gatekeeper's departure-bundle grid phase
@@ -94,6 +98,8 @@ class World:
         self.push_phase = rng_push.uniform(0, P.BOARD_PUSH_S, P.N_NODES)
         # the registry-level bundle schedule: one phase shared by every content server
         self.reg_phase = float(rng_reg.uniform(0, max(cfg.reg_bundle_s, 1.0)))
+        # the registry's own posting schedule, on an independent phase
+        self.post_phase = float(rng_regpost.uniform(0, P.REG_POST_S))
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -244,12 +250,21 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     cv2_a = cv2_s + w.lat_int[VAL, C] + _jit(r, S)
     ev_cv2 = w.ev.add(cv2_s, cv2_a, VAL, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
 
-    # fan-out: each leg its own hold on C's node clock, timed from C's receipt of CV-2
+    # fan-out, serialized: from C's receipt of CV-2, the transaction's three legs share one draw per
+    # tick of C's node clock; each successful draw sends the next leg in a random order, and the
+    # next draw starts at the following tick, so no two legs leave on the same tick
     gk_send, gk_arr, posts, gk_rel = np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3)), np.empty((S, 3))
     ev_gk = np.empty((S, 3), np.int64)
+    order = r.permuted(np.tile(np.arange(3), (S, 1)), axis=1)      # order[:, i]: the i-th leg to leave
+    tick = np.empty((S, 3))
+    t_draw = cv2_a
+    for i in range(3):
+        # a draw that succeeded sits exactly on a tick; the offset keeps the next draw off that tick
+        t_draw = LT.hold(r, t_draw + (1e-6 if i else 0.0), w.phase[C], cfg.fanout_mean)
+        tick[np.arange(S), order[:, i]] = t_draw
     for j in range(3):
         g = int(w.gk_set[j])
-        rel = LT.hold(r, cv2_a, w.phase[C], cfg.fanout_mean) + _proc(r, S)
+        rel = tick[:, j] + _proc(r, S)
         arr = rel + w.lat_int[C, g] + _jit(r, S)
         ev_gk[:, j] = w.ev.add(rel, arr, C, g, w.size(r, "GK", S), P.RT_APPDATA, K_BIRTHMARK, GK1 + j, sub)
         gk_send[:, j], gk_arr[:, j] = rel, arr
@@ -312,6 +327,7 @@ def _gossip(w: World, origin, t_origin, sub, origin_leg, stream=0):
     r, N = np.random.default_rng([w.gossip_seed, stream]), P.N_NODES
     size = P.GOSSIP_WIRE
     origin_ids = np.full(origin.shape[0], -1, dtype=np.int64)
+    reach = np.full(origin.shape[0], np.nan)
     for o in range(N):
         sel = np.nonzero(origin == o)[0]
         if sel.size == 0:
@@ -322,6 +338,7 @@ def _gossip(w: World, origin, t_origin, sub, origin_leg, stream=0):
         ids = w.ev.add(ts.ravel(), ta.ravel(), o, np.tile(others, sel.size), size, P.RT_NOISE, K_BIRTHMARK,
                        np.repeat(origin_leg[sel], others.size), np.repeat(sub[sel], others.size))
         origin_ids[sel] = ids.reshape(sel.size, others.size)[:, 0]
+        reach[sel] = ta.max(1)                       # the flood-publish has reached every peer
         for j, v in enumerate(others):
             fwd = np.array([u for u in w.mesh[v] if u != o])
             if fwd.size == 0:
@@ -331,7 +348,7 @@ def _gossip(w: World, origin, t_origin, sub, origin_leg, stream=0):
             tfa = tf + w.lat_int[v, fwd][None, :] + _jit(r, tf.size).reshape(tf.shape)
             w.ev.add(tf.ravel(), tfa.ravel(), v, np.tile(fwd, sel.size), size, P.RT_NOISE, K_BIRTHMARK,
                      REG_RELAY, np.repeat(sub[sel], fwd.size))
-    return origin_ids
+    return origin_ids, reach
 
 
 def gen_birthmark(w: World):
@@ -347,17 +364,27 @@ def gen_birthmark(w: World):
     # finalized exactly as a real one. The decoy flag is truth only, for scoring real records.
     okf, oki = subs["ok_f"], subs["ok_i"]
     ev_rf, ev_ri = np.full(S, -1, np.int64), np.full(S, -1, np.int64)
+    reach = np.full((2, S), np.nan)
     for stream, part in enumerate((sub < S_r, sub >= S_r)):
         f_, i_ = okf & part, oki & part
         origin = np.concatenate([subs["F"][f_], subs["I"][i_]])
         t_org = np.concatenate([subs["reg_f"][f_], subs["reg_i"][i_]])
         osub = np.concatenate([sub[f_], sub[i_]])
         legs = np.concatenate([np.full(f_.sum(), REG_F), np.full(i_.sum(), REG_I)])
-        oids = _gossip(w, origin, t_org, osub, legs, stream)
+        oids, rch = _gossip(w, origin, t_org, osub, legs, stream)
         ev_rf[f_] = oids[:f_.sum()]
         ev_ri[i_] = oids[f_.sum():]
+        reach[0, f_] = rch[:f_.sum()]
+        reach[1, i_] = rch[f_.sum():]
     subs["ev_reg_f"], subs["ev_reg_i"] = ev_rf, ev_ri
-    subs["final"] = np.where(okf & oki, np.fmax(subs["reg_f"], subs["reg_i"]), np.nan)
+    # the registry merges F's and I's submissions into one record at intake, once both have
+    # reached every node, and posts it at the next boundary of its own posting schedule; the
+    # posted time is the public record time
+    intake = np.where(okf & oki, np.fmax(reach[0], reach[1]), np.nan)
+    subs["intake"] = intake
+    ph = w.post_phase
+    subs["posted"] = ph + P.REG_POST_S * np.ceil((intake - ph) / P.REG_POST_S)
+    subs["final"] = subs["posted"]
     return subs
 
 
@@ -371,4 +398,4 @@ def simulate(cfg: P.Config, seed: int) -> Run:
             subs[k] = np.where(v >= 0, rank[np.maximum(v, 0)], -1)
     return Run(cfg=cfg, events=events, subs=subs, phase=w.phase, gk_phase=w.gk_phase, gk_set=w.gk_set,
                bundle_phase=w.bundle_phase, push_phase=w.push_phase, reg_phase=w.reg_phase,
-               horizon=cfg.horizon_s)
+               post_phase=w.post_phase, horizon=cfg.horizon_s)

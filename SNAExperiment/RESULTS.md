@@ -2,6 +2,8 @@
 
 InternalCompromiseRun: can a single compromised component of the Birthmark Protocol take a public registry record and name the device that produced it?
 
+**Simulator version 1.** Every number below was produced by simulator version 1. In version 1, the three fan-out legs drew independent holds, the record time was the midpoint of F's and I's submissions, and candidates were device packets grouped greedily into captures. The code in this folder is version 2 (`README.md`). These numbers stand for version 1 until a version 2 run replaces them.
+
 - Every hold follows the timing in `README.md`: 10-second ticks, geometric release, each capped at three times its own mean.
 - Departure bundling is by inclusion lottery. Registry bundling uses one shared 120-second schedule. The post-match lottery is on.
 - R = 1, 20 and 100 real transactions in flight, with 60 decoys in flight; 200 runs per cell.

@@ -33,8 +33,42 @@ def test_decoys_reach_the_registry():
     run = S.simulate(SMALL, 13)
     s = run.subs
     assert s["ok_f"][s["decoy"]].all() and s["ok_i"][s["decoy"]].all()
-    col_t, col_sub, tc = AT.registry_answers(run)
-    assert ((tc >= 0).sum(1) == 2).all()
+    assert np.isfinite(s["posted"][s["decoy"]]).all()
+
+
+def test_fanout_is_serialized():
+    """The three fan-out legs leave on distinct ticks of C's node clock, at least one tick apart."""
+    run = S.simulate(SMALL, 19)
+    s = run.subs
+    send = np.sort(s["gk_send"], 1)
+    assert (np.diff(send, axis=1) >= P.TICK_S - 0.01).all()
+    off = np.mod(send - run.phase[s["C"]][:, None], P.TICK_S)
+    assert ((off < 0.01) | (off > P.TICK_S - 0.01)).all()
+
+
+def test_registry_posts_merged_record_on_its_schedule():
+    """One record per transaction, posted at the first boundary of the registry's schedule after both
+    submissions have reached every node; the record time is the posted time."""
+    run = S.simulate(SMALL, 20)
+    s = run.subs
+    ok = np.isfinite(s["posted"])
+    assert (ok == (s["ok_f"] & s["ok_i"])).all()
+    assert (s["intake"][ok] >= np.fmax(s["reg_f"], s["reg_i"])[ok]).all()
+    w = s["posted"][ok] - s["intake"][ok]
+    assert (w >= 0).all() and (w < P.REG_POST_S).all()
+    k = (s["posted"][ok] - run.post_phase) / P.REG_POST_S
+    assert np.allclose(k, np.round(k))
+    rec = AT.records(run)
+    assert np.array_equal(rec["u"], s["posted"][rec["sub"]])
+
+
+def test_every_device_packet_is_a_candidate():
+    """No grouping: each of a capture's three first-hop packets is its own candidate."""
+    run = S.simulate(SMALL, 21)
+    cand = AT.candidates(run)
+    cnt = np.bincount(cand["sub"][cand["sub"] >= 0])
+    assert set(np.unique(cnt[cnt > 0])) == {3}
+    assert (np.diff(cand["t"]) >= 0).all()
 
 
 def test_role_rules():

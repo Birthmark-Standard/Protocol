@@ -2,6 +2,10 @@
 Protocol per-leg message specification; hold timing follows its Hold timing table."""
 from dataclasses import dataclass, replace
 
+# version of the simulated protocol and attack; results written by another version are not resumed
+# 2: serialized fan-out, registry merge and posting schedule, per-packet candidates
+SIM_VERSION = 2
+
 # --------------------------------------------------------------------------- hold timing
 TICK_S = 10.0              # every hold releases on a node clock of 10-second ticks
 CAP_FACTOR = 3.0           # every hold is capped at three times its own mean
@@ -9,6 +13,7 @@ BUNDLE_S = 30.0            # gatekeeper departure bundling: one boundary every 3
 INCLUSION_P = 0.25         # chance a ready posting boards at each boundary
 INCLUSION_MAX = 12         # it boards unconditionally at the 12th boundary
 REG_BUNDLE_S = 120.0       # registry-level bundling: one schedule shared by every content server
+REG_POST_S = 120.0         # the registry posts merged records on its own schedule with this period
 BOARD_PUSH_S = 10.0        # each match board pushes new matches to every content server on this period
 QUORUM_TIMEOUT_S = 30 * 60 # a content server drops a packet whose quorum has not formed in 30 minutes
 
@@ -39,7 +44,7 @@ INTERVAL_MIN = 20.0        # mean interval between one device's captures (minute
 LAT_EXT_MS = (10.0, 120.0)   # one-way latency external host <-> node, fixed per pair per run
 LAT_INT_MS = (5.0, 80.0)     # node <-> node and node <-> validator
 JITTER_MS = 2.0              # per-packet exponential jitter, mean
-PROC_MS = (0.5, 3.0)         # per-packet processing before a send
+PROC_MS = (0.5, 3.0)         # per-packet processing before a send (uniform, every node)
 VALIDATOR_PROC_MS = (5.0, 50.0)
 GATEKEEPER_PROC_MS = (1.0, 10.0)
 GOSSIP_VALIDATE_MS = (5.0, 50.0)
@@ -68,7 +73,7 @@ class Config:
     dev_content_i_mean: float = -1.0   # the device's I-channel hold when set (>= 0); default: the same as dev_content_mean
     c_hold_mean: float = 30.0          # C's hold before sending CV-1 (0 = none)
     v_hold_mean: float = 30.0          # V's hold before sending CV-2 (0 = none)
-    fanout_mean: float = 60.0          # C's fan-out, each gatekeeper leg independently
+    fanout_mean: float = 20.0          # C's serialized fan-out: mean of each draw; one leg leaves per success
     gk_mean: float = 30.0              # the gatekeeper's own hold
     gk_inclusion: bool = True          # departure bundling by inclusion lottery (False: next boundary)
     cs_mean: float = 240.0             # F's and I's pre-match hold

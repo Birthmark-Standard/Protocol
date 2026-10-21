@@ -12,9 +12,9 @@
   overlap-counts  how often the permitted-overlap role draw puts one node on two paths
              (results/overlap_counts.json)
   shuffle    negative control: candidates' device labels permuted within each run
-  first-relay-paths  each first relay's lead by path under three timing-signal controls, R = 1
-             (results/first_relay_paths.json)
              (results/shuffle_control.json)
+  first-relay-paths  each first relay's lead by path under three timing-signal controls, R = 1,
+             300 runs per control unless --runs is given (<out>/first_relay_paths.json)
 
 Every command is deterministic: results depend on the cell and run id only, never on the worker
 count or the order runs finish in.
@@ -54,9 +54,11 @@ def main(argv=None):
                                         "overlap-counts", "shuffle", "first-relay-paths"])
     ap.add_argument("--out", help="results directory (default: results/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
-    ap.add_argument("--runs", type=int, default=EX.RUNS, help="runs per cell (default: %(default)s)")
+    ap.add_argument("--runs", type=int, default=None, help=f"runs per cell (default: {EX.RUNS})")
     ap.add_argument("--build", default=EX.BASELINE, choices=list(EX.ALL_BUILDS), help="build (default: %(default)s)")
     a = ap.parse_args(argv)
+    paths_runs = a.runs or 300
+    a.runs = a.runs or EX.RUNS
     out = Path(a.out or EX.RESULTS)
     dict(reproduce=lambda: cmd_reproduce(a),
          run=lambda: EX.run_cells(out, EX.grid(a.build), a.runs, a.workers),
@@ -67,4 +69,4 @@ def main(argv=None):
          timing=lambda: EX.timing_check(out, runs=min(a.runs, 10), workers=a.workers),
          shuffle=lambda: EX.shuffle_control(out, runs=min(a.runs, 20), workers=a.workers),
          **{"overlap-counts": lambda: EX.overlap_counts(out),
-            "first-relay-paths": lambda: EX.first_relay_paths(out, workers=a.workers)})[a.command]()
+            "first-relay-paths": lambda: EX.first_relay_paths(out, runs=paths_runs, workers=a.workers)})[a.command]()

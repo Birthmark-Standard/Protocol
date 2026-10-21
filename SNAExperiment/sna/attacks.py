@@ -1,10 +1,13 @@
 """Record-to-device linking: vantages, wire extraction, likelihood models, and the scoring of one run.
 
 The harm Semantic Non-Assembly guards against is naming the device behind a public registry record.
-Every vantage therefore starts from a registry record and names a device submission. A record's
-two submissions (F's and I's) are paired, because the public record names both servers. The
-record is timed at their midpoint. Candidates are the device-originated first-hop packets on the
-wire, three per capture, decoy sources' packets included.
+Every vantage therefore starts from a registry record and names a device submission. The registry
+merges F's and I's submissions into one record at intake and posts it on its own schedule; the
+posted time is the record time. A passive observer sees the submissions' gossip frames but cannot
+tell which record they belong to, so the frames carry no evidence here. Candidates are the
+device-originated first-hop packets on the wire, three per capture, decoy sources' packets
+included. Each packet is a candidate on its own: no grouping into captures is assumed, and every
+likelihood is learned per packet from the Monte Carlo, pooled over the capture's three packets.
 
 Each vantage's own exact knowledge enters the likelihood of "record r came from candidate k":
 
@@ -18,8 +21,8 @@ Each vantage's own exact knowledge enters the likelihood of "record r came from 
                         that did not pass through it
 
 Success is scored at two levels: the device (primary; the posterior summed over each source's
-packets, since a source address is visible on the wire) and the submission (the chosen packet
-belongs to the record's own capture). Each vantage is paired with the baseline on the same
+packets, since a source address is visible on the wire; ties go to the lowest device id) and the
+submission (the chosen packet belongs to the record's own capture). Each vantage is paired with the baseline on the same
 records.
 """
 from __future__ import annotations
@@ -45,120 +48,37 @@ _INT_MAX = np.iinfo(np.int32).max
 
 
 # =========================================================================== wire extraction
-def registry_answers(run):
-    """Registry submissions as a passive observer finds them: gossip frames (Noise record type,
-    the gossip frame size) that one node sends to nearly every other node within 2 ms are a
-    flood-publish burst. Submissions leaving one node on the same clock tick share a burst; the
-    burst then carries one frame per submission to every peer, so the number of submissions is
-    the smallest per-peer frame count. Returns answer times (sorted), the transaction each belongs
-    to (truth, -1 if none) and each transaction's answers."""
-    ev, N = run.events, P.N_NODES
-    idx = np.nonzero((ev["rtype"] == P.RT_NOISE) & (ev["size"] == P.GOSSIP_WIRE))[0]
-    t, src = ev["t_send"][idx], ev["src"][idx]
-    o = np.lexsort((t, src))
-    idx, t, src = idx[o], t[o], src[o]
-    new = np.ones(idx.size, bool)
-    new[1:] = (src[1:] != src[:-1]) | (np.diff(t) > 2e-3)
-    cid = np.cumsum(new) - 1
-    starts = np.nonzero(new)[0]
-    nc = starts.size
-    per_dst = np.bincount(cid * N + ev["dst"][idx].astype(np.int64), minlength=nc * N).reshape(nc, N)
-    per_dst[np.arange(nc), src[starts]] = np.iinfo(per_dst.dtype).max
-    k = per_dst.min(1)
-    k = np.where(np.bincount(cid, minlength=nc) >= N - 4, k, 0)
-    leg = ev["leg"][idx]
-    is_org = (leg == S.REG_F) | (leg == S.REG_I)
-    pairs = np.unique(np.c_[cid[is_org], ev["sub"][idx][is_org]], axis=0)
-    t_c = t[starts]
-    col_t, col_sub = [], []
-    rank = np.zeros(nc, np.int64)
-    for c_, sb in pairs:
-        if rank[c_] < k[c_]:
-            col_t.append(t_c[c_])
-            col_sub.append(sb)
-        rank[c_] += 1
-    extra = np.maximum(k - rank, 0)
-    col_t = np.r_[np.array(col_t, float), np.repeat(t_c, extra)]
-    col_sub = np.r_[np.array(col_sub, np.int64), np.full(int(extra.sum()), -1, np.int64)]
-    o = np.argsort(col_t, kind="stable")
-    col_t, col_sub = col_t[o], col_sub[o]
-    return col_t, col_sub, answers_of(col_sub, run.subs["t0"].shape[0])
-
-
-def answers_of(col_sub, n_sub):
-    """(n_sub, k) answer indices belonging to each transaction, -1 padded."""
-    idx = np.nonzero(col_sub >= 0)[0]
-    idx = idx[np.argsort(col_sub[idx], kind="stable")]
-    subs = col_sub[idx]
-    cnt = np.bincount(subs, minlength=n_sub)
-    k = max(int(cnt.max()) if cnt.size else 1, 1)
-    out = np.full((n_sub, k), -1, np.int64)
-    first = np.concatenate([[0], np.cumsum(cnt)[:-1]])
-    out[subs, np.arange(idx.size) - first[subs]] = idx
-    return out
-
-
 def records(run):
-    """Registry records: a transaction whose two submissions were both found. The public record
-    names both submitting servers, so the observer pairs them; u is their midpoint."""
-    col_t, _, tc = registry_answers(run)
-    ok = (tc >= 0).sum(1) >= 2
-    sub = np.nonzero(ok)[0]
-    u = 0.5 * (col_t[tc[sub, 0]] + col_t[tc[sub, 1]])
-    return dict(sub=sub, u=u, dev=run.subs["src"][sub])
+    """Registry records: every transaction the registry posted. u is the posted time, the boundary
+    of the registry's posting schedule at which the merged record appeared."""
+    posted = run.subs["posted"]
+    sub = np.nonzero(np.isfinite(posted))[0]
+    return dict(sub=sub, u=posted[sub], dev=run.subs["src"][sub])
 
 
 def candidates(run):
-    """Device submissions on the wire, grouped by source. Packets are relay-class application
+    """Device submissions on the wire, one candidate per packet. Packets are relay-class application
     records from an external host to a pool node; an external source that ever sends anything else
-    (a handshake, a DNS lookup, a record outside the class) is not a device and is dropped. Each
-    source's packets are grouped greedily in time order: a group holds up to three packets within
-    one device hold (the cap of the longer device hold, plus one tick) of its first. A group is timed at its members' mean send time.
-    Returns groups sorted by that time, with truth labels (sub = -1 for a mixed group) and, per
-    member, the first hop, the arrival and the first hop's forward time."""
+    (a handshake, a DNS lookup, a record outside the class) is not a device and is dropped. Returns
+    packets sorted by send time, with truth labels (sub: the packet's capture) and, per packet, its
+    first hop and that hop's hold (node and hold have one column, the packet itself)."""
     ev, s = run.events, run.subs
     lo, hi = P.PAD_MIN + P.TLS13_OVERHEAD, P.PAD_MAX + P.TLS13_OVERHEAD
     ext = ev["src"] == S.EXT
     relay = ext & (ev["dst"] < P.N_NODES) & (ev["rtype"] == P.RT_APPDATA) & (ev["size"] >= lo) & (ev["size"] <= hi)
     bad_src = np.unique(ev["ext_src"][ext & ~relay])
     pk = np.nonzero(relay & ~np.isin(ev["ext_src"], bad_src))[0]
-    src = ev["ext_src"][pk].astype(np.int64)
-    t = ev["t_send"][pk]
-    o = np.lexsort((t, src))
-    pk, src, t = pk[o], src[o], t[o]
-    gid = np.empty(pk.size, np.int64)
-    g, first, size = -1, 0.0, 3
-    span = P.CAP_FACTOR * max(run.cfg.dev_cred_mean, run.cfg.dev_content_mean) + P.TICK_S
-    for i in range(pk.size):                         # greedy grouping per source
-        if i == 0 or src[i] != src[i - 1] or size >= 3 or t[i] - first > span:
-            g += 1
-            first, size = t[i], 0
-        gid[i] = g
-        size += 1
-    n_g = g + 1
+    pk = pk[np.argsort(ev["t_send"][pk], kind="stable")]
     fwd_of = np.full(ev["t_send"].shape[0], -1, np.int64)
     for key in ("ev_cred", "ev_ca", "ev_cb"):
         fwd_of[s[key][:, 0]] = s[key][:, 1]
-    cnt = np.bincount(gid, minlength=n_g)
-    slot = np.arange(pk.size) - np.r_[0, np.cumsum(cnt)[:-1]][gid]
-    mem = np.full((n_g, 3), -1, np.int64)
-    mem[gid, slot] = pk
-    ok = mem >= 0
-    m0 = np.maximum(mem, 0)
-    tm = np.where(ok, ev["t_send"][m0], np.nan)
-    gt = np.nanmean(tm, 1)
-    psub = np.where(ok & (ev["kind"][m0] == S.K_BIRTHMARK), ev["sub"][m0], -1)
-    pure = (psub[:, 0] >= 0) & np.all((psub == psub[:, :1]) | ~ok, 1)
-    f = fwd_of[m0]
-    out = dict(t=gt, sub=np.where(pure, psub[:, 0], -1).astype(np.int64), msub=psub.astype(np.int64),
-               dev=src[np.r_[0, np.cumsum(cnt)[:-1]]],
-               n=cnt, node=np.where(ok, ev["dst"][m0], -1).astype(np.int64),
-               hold=np.where(ok & (f >= 0), ev["t_send"][np.maximum(f, 0)] - ev["t_arr"][m0], np.nan))
-    o = np.argsort(out["t"], kind="stable")
-    return {k: x[o] for k, x in out.items()}
+    f = fwd_of[pk]
+    sub = np.where(ev["kind"][pk] == S.K_BIRTHMARK, ev["sub"][pk], -1).astype(np.int64)
+    return dict(t=ev["t_send"][pk], sub=sub, msub=sub, dev=ev["ext_src"][pk].astype(np.int64),
+                node=ev["dst"][pk].astype(np.int64)[:, None],
+                hold=np.where(f >= 0, ev["t_send"][np.maximum(f, 0)] - ev["t_arr"][pk], np.nan)[:, None])
 
 
-# =========================================================================== models
 class CondPDF:
     """log p(y | x) from a 2D histogram of true pairs, shrunk towards the marginal density of y
     (K_SHRINK pseudo-samples per x bin), so a sparse or unseen x bin falls back to the marginal.
@@ -210,35 +130,34 @@ BW_X = 10.0               # bin width (s) of a vantage's extra observation x
 
 
 def _true_samples(run, acc):
-    """Every true (record, own submission group) pair: y = u - s (s: the group's mean departure)
-    and each vantage's extra observation x. Groups come from the same extraction as scoring."""
+    """Every true (record, own packet) pair: y = u - s (s: the packet's departure) and each
+    vantage's extra observation x. A record has three true packets (credential, F content, I
+    content), which no vantage can tell apart on the wire, so every density is pooled over the three."""
     s = run.subs
     rec = records(run)
     cand = candidates(run)
-    pure = cand["sub"] >= 0
-    gi = np.full(s["t0"].shape[0], -1, np.int64)
-    gi[cand["sub"][pure]] = np.nonzero(pure)[0]
-    k = gi[rec["sub"]]
-    ok = k >= 0
-    sub, u, k = rec["sub"][ok], rec["u"][ok], k[ok]
-    sg = cand["t"][k]
-    y = u - sg
+    u_of = np.full(s["t0"].shape[0], np.nan)
+    u_of[rec["sub"]] = rec["u"]
+    k = np.nonzero((cand["sub"] >= 0) & np.isfinite(u_of[np.maximum(cand["sub"], 0)]))[0]
+    sub = cand["sub"][k]
+    sk = cand["t"][k]
+    y = u_of[sub] - sk
     add = lambda name, x: acc.setdefault(name, []).append(np.asarray(x, float).ravel())  # noqa: E731
     add("y", y)
-    # first hop: own hold of each member (a first hop holds exactly one of the three)
-    add("fh_x", cand["hold"][k].ravel())
-    add("fh_y", np.repeat(y, 3))
-    # content server: content arrival at F and at I, relative to the group time
-    add("cs_x", np.r_[s["arr_f"][sub] - sg, s["arr_i"][sub] - sg])
+    # first hop: the own hold of the packet it relayed
+    add("fh_x", cand["hold"][k, 0])
+    add("fh_y", y)
+    # content server: content arrival at F and at I, relative to the packet's departure
+    add("cs_x", np.r_[s["arr_f"][sub] - sk, s["arr_i"][sub] - sk])
     add("cs_y", np.r_[y, y])
-    # gatekeeper: each of the three postings relative to the group time
-    add("gk_x", (s["posts"][sub] - sg[:, None]).ravel())
+    # gatekeeper: each of the three postings relative to the packet's departure
+    add("gk_x", (s["posts"][sub] - sk[:, None]).ravel())
     add("gk_y", np.repeat(y, 3))
-    # credential processor: its fan-out median relative to the group time
-    add("c_x", np.sort(s["gk_send"][sub], 1)[:, 1] - sg)
+    # credential processor: its fan-out median relative to the packet's departure
+    add("c_x", np.sort(s["gk_send"][sub], 1)[:, 1] - sk)
     add("c_y", y)
-    # validator: record time against its own reply send
-    add("gV", u - run.events["t_send"][s["ev_cv2"][sub]])
+    # validator: record time against its own reply send, once per record
+    add("gV", rec["u"] - run.events["t_send"][s["ev_cv2"][rec["sub"]]])
 
 
 def build_models(cfg: P.Config, seed0=1_000_000_000, min_samples=300_000, max_runs=200) -> Models:
@@ -252,7 +171,7 @@ def build_models(cfg: P.Config, seed0=1_000_000_000, min_samples=300_000, max_ru
     while True:
         _true_samples(S.simulate(mc, seed0 + k), acc)
         k += 1
-        if (sum(x.size for x in acc["y"]) >= min_samples and k >= 3) or k >= max_runs:
+        if (sum(x.size for x in acc["gV"]) >= min_samples and k >= 3) or k >= max_runs:   # records
             break
     cat = {n: np.concatenate(v) for n, v in acc.items()}
     m = Models(mc_runs=k, samples={n: int(np.isfinite(v).sum()) for n, v in cat.items()})
@@ -317,9 +236,8 @@ def _aggregate(W, lab):
 def score_blocks(t_lo, t_hi, cand, block_fn, truth, max_cells=MAX_CELLS):
     """Score every row against the candidates whose time lies in [t_lo, t_hi) of that row.
 
-    cand: dict with sorted "t", "sub" (the group's capture, -1 if mixed), "msub" (each member's
-    capture: a pick is right at the submission level if any member belongs to the record's
-    capture) and "dev" labels. block_fn(rows, k0, k1) returns the
+    cand: dict with sorted "t", "sub" and "msub" (the packet's capture: a pick is right at the
+    submission level if it belongs to the record's capture) and "dev" labels. block_fn(rows, k0, k1) returns the
     dense log-likelihood block (len(rows), k1 - k0). truth: dict level -> (n,) true label.
     Returns per-level arrays: pick, top1, top2, s_true, rank, n_feas, n_true, lse."""
     n = t_lo.shape[0]
