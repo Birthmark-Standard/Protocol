@@ -1,0 +1,48 @@
+{
+ "R1": {
+  "baseline": {
+   "decisions": 642,
+   "ties": 2,
+   "tie_pick_real_device": 1,
+   "tie_correct": 1,
+   "correct": 87
+  },
+  "first_hop_cred": {
+   "decisions": 2568,
+   "ties": 0,
+   "tie_pick_real_device": 0,
+   "tie_correct": 0,
+   "correct": 345
+  },
+  "content_server": {
+   "decisions": 1284,
+   "ties": 1,
+   "tie_pick_real_device": 0,
+   "tie_correct": 0,
+   "correct": 156
+  }
+ },
+ "R20": {
+  "baseline": {
+   "decisions": 612,
+   "ties": 1,
+   "tie_pick_real_device": 0,
+   "tie_correct": 0,
+   "correct": 31
+  },
+  "first_hop_cred": {
+   "decisions": 2448,
+   "ties": 3,
+   "tie_pick_real_device": 0,
+   "tie_correct": 0,
+   "correct": 118
+  },
+  "content_server": {
+   "decisions": 1224,
+   "ties": 3,
+   "tie_pick_real_device": 2,
+   "tie_correct": 1,
+   "correct": 62
+  }
+ }
+}

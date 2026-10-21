@@ -1,0 +1,215 @@
+{
+ "G3_models": {
+  "pdf_keys": [
+   "c",
+   "c_q",
+   "cs",
+   "cs_q",
+   "fh",
+   "fh_q",
+   "g",
+   "gV",
+   "gk",
+   "gk_q"
+  ],
+  "mc_runs": 113,
+  "samples": {
+   "y": 300308,
+   "fh_x": 900924,
+   "fh_y": 900924,
+   "cs_x": 600616,
+   "cs_y": 600616,
+   "gk_x": 900924,
+   "gk_y": 900924,
+   "c_x": 300308,
+   "c_y": 300308,
+   "gV": 300308
+  },
+  "one_first_hop_model_for_all_paths": true
+ },
+ "F4_rows_per_run": {
+  "baseline": [
+   193,
+   206,
+   213
+  ],
+  "first_hop_cred": [
+   772,
+   824,
+   852
+  ],
+  "first_hop_content": [
+   772,
+   824,
+   852
+  ],
+  "cred_processor": [
+   772,
+   824,
+   852
+  ],
+  "content_server": [
+   386,
+   412,
+   426
+  ],
+  "validator": [
+   193,
+   206,
+   213
+  ],
+  "gatekeeper": [
+   579,
+   618,
+   639
+  ]
+ },
+ "G4_share_device_decisions_with_tied_top_score": {
+  "baseline": 0.0017271157167530226,
+  "first_hop_cred": 0.0012953367875647669,
+  "first_hop_content": 0.0012953367875647669,
+  "cred_processor": 0.0,
+  "content_server": 0.0025361772054261615,
+  "validator": 0.0,
+  "gatekeeper": 0.0
+ },
+ "G6_median_feasible_devices": {
+  "baseline": 65.33333333333333,
+  "first_hop_cred": 65.33333333333333,
+  "first_hop_content": 65.33333333333333,
+  "cred_processor": 65.33333333333333,
+  "content_server": 62.0,
+  "validator": 71.66666666666667,
+  "gatekeeper": 65.33333333333333
+ },
+ "H3_pairing_across_builds": {
+  "same_t0_src_no_mechanisms": true,
+  "same_t0_src_CFI_permitted_overlap": true,
+  "same_relays_permitted_overlap": false
+ },
+ "I4_loader": {
+  "runs_read_while_cut_member_is_last": [
+   0
+  ],
+  "runs_read_after_two_resumed_members": [
+   0,
+   5,
+   6,
+   7,
+   8
+  ]
+ },
+ "I2_configurations": {
+  "internal_compromise": {},
+  "no_vc_holds": {
+   "c_hold_mean": 0.0,
+   "v_hold_mean": 0.0
+  },
+  "no_inclusion_lottery": {
+   "gk_inclusion": false
+  },
+  "no_post_match_lottery": {
+   "post_match": false
+  },
+  "no_registry_bundling": {
+   "reg_bundle_s": 0.0
+  },
+  "no_role_aware_holds": {
+   "dev_content_mean": 120.0,
+   "cs_mean": 120.0
+  },
+  "no_mechanisms": {
+   "dev_content_mean": 120.0,
+   "c_hold_mean": 0.0,
+   "v_hold_mean": 0.0,
+   "gk_inclusion": false,
+   "cs_mean": 120.0,
+   "post_match": false,
+   "reg_bundle_s": 0.0
+  },
+  "relay_180s": {
+   "relay_mean": 180.0
+  },
+  "role_aware_360s": {
+   "dev_content_mean": 360.0,
+   "cs_mean": 360.0
+  },
+  "gatekeeper_120s": {
+   "gk_mean": 120.0
+  },
+  "permitted_overlap": {
+   "overlap": true
+  },
+  "overlap_no_holds": {
+   "relay_mean": 0.0,
+   "dev_cred_mean": 0.0,
+   "dev_content_mean": 0.0,
+   "c_hold_mean": 0.0,
+   "v_hold_mean": 0.0,
+   "fanout_mean": 0.0,
+   "gk_mean": 0.0,
+   "gk_inclusion": false,
+   "cs_mean": 0.0,
+   "post_match": false,
+   "reg_bundle_s": 0.0,
+   "overlap": true
+  },
+  "first_relay_signal_cred": {
+   "dev_cred_mean": 240.0,
+   "dev_content_mean": 0.0,
+   "c_hold_mean": 0.0,
+   "v_hold_mean": 0.0,
+   "fanout_mean": 0.0,
+   "gk_mean": 0.0,
+   "gk_inclusion": false,
+   "cs_mean": 0.0,
+   "post_match": false,
+   "reg_bundle_s": 0.0,
+   "overlap": true
+  },
+  "first_relay_signal_content": {
+   "dev_cred_mean": 0.0,
+   "c_hold_mean": 0.0,
+   "v_hold_mean": 0.0,
+   "fanout_mean": 0.0,
+   "gk_mean": 0.0,
+   "gk_inclusion": false,
+   "cs_mean": 0.0,
+   "post_match": false,
+   "reg_bundle_s": 0.0,
+   "overlap": true
+  },
+  "first_relay_signal_one_content": {
+   "dev_cred_mean": 0.0,
+   "dev_content_i_mean": 0.0,
+   "c_hold_mean": 0.0,
+   "v_hold_mean": 0.0,
+   "fanout_mean": 0.0,
+   "gk_mean": 0.0,
+   "gk_inclusion": false,
+   "cs_mean": 0.0,
+   "post_match": false,
+   "reg_bundle_s": 0.0,
+   "overlap": true
+  }
+ },
+ "defaults": {
+  "real_rate": 0.05,
+  "decoy_rate": 0.0,
+  "measure_s": 10800,
+  "relay_mean": 120.0,
+  "dev_cred_mean": 120.0,
+  "dev_content_mean": 240.0,
+  "dev_content_i_mean": -1.0,
+  "c_hold_mean": 30.0,
+  "v_hold_mean": 30.0,
+  "fanout_mean": 60.0,
+  "gk_mean": 30.0,
+  "gk_inclusion": true,
+  "cs_mean": 240.0,
+  "post_match": true,
+  "pm_mean": 30.0,
+  "reg_bundle_s": 120.0,
+  "overlap": false
+ }
+}
