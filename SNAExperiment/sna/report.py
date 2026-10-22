@@ -112,7 +112,6 @@ def write_build_tables(out, build, rows, changes, no_overlap=None):
     comb = [r for r in rows if r["vantage"].startswith("combined")]
     if comb:
         md += _combined_tables(comb)
-        md += _rotation_table(out, rows)
     if no_overlap:
         for name, ch in no_overlap.items():
             md += [f"## Paired against {EX.EXPERIMENT}, records with no coincidence", "",
@@ -133,18 +132,6 @@ def write_build_tables(out, build, rows, changes, no_overlap=None):
            + ("" if not bad else ": " + ", ".join(f"R = {r['R']:g} {NAME.get(r['vantage'], r['vantage'])} ({r['shuffle_auc']:.3f})" for r in bad))
            + ".", ""]
     (Path(out) / f"tables_{build}.md").write_text("\n".join(md), encoding="utf-8")
-
-
-def tables_from_summaries(out):
-    """Rewrite every build's CSV and tables from its summary JSON, then TABLES.md and the figures."""
-    out = Path(out)
-    for b in EX.ALL_BUILDS:
-        p = out / f"summary_{b}.json"
-        if p.exists():
-            d = json.loads(p.read_text())
-            write_csv(out, b, d["rows"])
-            write_build_tables(out, b, d["rows"], d.get("paired_effects", {}), d.get("paired_effects_no_overlap"))
-    write_tables(out)
 
 
 SMALL_GROUP = ("A top group of fewer than 50 decisions cannot resolve the criterion. A failure there reflects "
@@ -221,38 +208,12 @@ def _combined_tables(comb):
     return md
 
 
-def _rotation_table(out, rows):
-    """The vantages scored on every record: every node compromised in every run, against the baseline's
-    four nodes per run, and against InternalCompromiseRun as committed."""
-    p = Path(out) / f"summary_{EX.BASELINE}.json"
-    base = {(r["cell"], r["vantage"]): r for r in json.loads(p.read_text())["rows"]} if p.exists() else {}
-    by = {(r["cell"], r["vantage"]): r for r in rows}
-    md = ["## Rotation of the compromised node", "",
-          "The first hops and the credential processor are scored with every eligible node compromised in every run. "
-          "The four-node column restricts the same decisions to the four nodes per run that InternalCompromiseRun "
-          "compromises. Leads over the passive observer, in points [95% CI].", "",
-          "| Vantage | R | Every node | Four nodes per run | InternalCompromiseRun |", "|---|---|---|---|---|"]
-    f = lambda r: "n/a" if r is None or "dev_contribution" not in r else (  # noqa: E731
-        f"{100 * r['dev_contribution']:+.2f} [{100 * r['dev_contribution_lo']:+.2f}, {100 * r['dev_contribution_hi']:+.2f}]")
-    for v in ("first_hop_cred", "first_hop_content", "cred_processor"):
-        for R in EX.REAL_R:
-            c = EX.cell_key(R)
-            md.append(f"| {NAME[v]} | {R} | {f(by.get((c, v)))} | {f(by.get((c, f'{v} (four nodes per run)')))} | "
-                      f"{f(base.get((c, v)))} |")
-    return md + [""]
-
-
-# --------------------------------------------------------------------------- the whole experiment
 def _rows(out, build):
     p = Path(out) / f"summary_{build}.json"
     if not p.exists():
         return None, None
     d = json.loads(p.read_text())
     return {(r["cell"], r["vantage"]): r for r in d["rows"]}, d.get("paired_effects", {})
-
-
-def _strongest(rows, c):
-    return max(ORDER, key=lambda v: rows[(c, v)]["dev_accuracy"])
 
 
 def claim_holds(rows, c):
@@ -324,49 +285,6 @@ def write_tables(out):
                       f"{base[(c, v)]['calibration_error'] * 100:.2f} points |")
         md.append("")
 
-        for title, group in ((f"What each mechanism contributes: {EX.EXPERIMENT} with one mechanism removed", EX.REMOVALS),
-                             (f"Alternative settings", EX.ALTERNATIVES)):
-            md += [f"## {title}", "",
-                   f"Paired against {EX.EXPERIMENT} on the same records (the effect is the build minus {EX.EXPERIMENT}, "
-                   "in points).", "",
-                   "| Build | R | Strongest component | Device named | Multiple of chance [95% CI] | Largest lead over observer "
-                   f"| Observer: effect [95% CI] | Strongest {EX.EXPERIMENT} component: effect [95% CI] | Top 1% right, best component "
-                   "| Mean latency |", "|---|---|---|---|---|---|---|---|---|---|"]
-            for R in EX.REAL_R:
-                c = EX.cell_key(R)
-                sb = _strongest(base, c)
-                r0 = base[(c, sb)]
-                L0 = lat.get(f"{B}.R{R}.D{EX.DECOYS}", {}).get("total", {}).get("mean", float("nan"))
-                lead0 = max(base[(c, v)]["dev_contribution"] for v in ORDER if v != "baseline")
-                bp0 = max(ORDER, key=lambda v: base[(c, v)]["p_at_1"])
-                md.append(f"| {EX.EXPERIMENT} | {R} | {NAME[sb]} | {_pct(r0['dev_accuracy'])} | ×{r0['dev_lift_random']:.2f} "
-                          f"[{r0['dev_lift_random_lo']:.2f}, {r0['dev_lift_random_hi']:.2f}] | {100 * lead0:+.2f} | reference | reference | "
-                          f"{_pct(base[(c, bp0)]['p_at_1'], 1)} | {L0:.0f} s |")
-                for b in group:
-                    rows, eff = _rows(out, b)
-                    if rows is None:
-                        continue
-                    s = _strongest(rows, c)
-                    r = rows[(c, s)]
-                    lead = max(rows[(c, v)]["dev_contribution"] for v in ORDER if v != "baseline")
-                    e = eff.get(B, {})
-                    eo = e.get(f"baseline.R{R:g}.D{EX.DECOYS}", {}).get("dev")
-                    es = e.get(f"{sb}.R{R:g}.D{EX.DECOYS}", {}).get("dev")
-                    fe = lambda x: "" if x is None else f"{100 * x['effect']:+.2f} [{100 * x['lo']:+.2f}, {100 * x['hi']:+.2f}]"  # noqa: E731
-                    bp = max(ORDER, key=lambda v: rows[(c, v)]["p_at_1"])
-                    L = lat.get(f"{b}.R{R}.D{EX.DECOYS}", {}).get("total", {}).get("mean", float("nan"))
-                    md.append(f"| {EX.LABEL[b]} | {R} | {NAME[s]} | {_pct(r['dev_accuracy'])} | ×{r['dev_lift_random']:.2f} "
-                              f"[{r['dev_lift_random_lo']:.2f}, {r['dev_lift_random_hi']:.2f}] | {100 * lead:+.2f} | {fe(eo)} | {fe(es)} | "
-                              f"{_pct(rows[(c, bp)]['p_at_1'], 1)} | {L:.0f} s |")
-            md.append("")
-
-    if pairs:
-        md += ["## F and I submitting together", "", "| Build | R | Within 5 s at submission | Within 5 s as they leave |",
-               "|---|---|---|---|"]
-        for v in pairs.values():
-            md.append(f"| {EX.LABEL[v['build']]} | {v['R']} | {_pct(v['within5_at_submission'], 1)} | "
-                      f"{_pct(v['within5_at_departure'], 1)} |")
-        md.append("")
     (out / "TABLES.md").write_text("\n".join(md), encoding="utf-8")
     if base:
         figures(out, base, lat)
