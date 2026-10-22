@@ -1,261 +1,229 @@
-# SNA Experiment: InternalCompromiseRun
+# SNA Experiment
 
-InternalCompromiseRun tests the Semantic Non-Assembly property of the Birthmark Protocol: whether any single compromised component can take a public registry record and name the device that produced it more often than a passive network observer can.
+This experiment tests the Semantic Non-Assembly property of the Birthmark Protocol. The question is whether one compromised component can take a public registry record and name the device that produced it more often than a passive network observer can.
 
-The experiment simulates the protocol's full message flow, with real and decoy traffic, and attacks it from each internal vantage point. Each attacker has:
-- every key its component holds;
-- its component's exact event timing;
-- a passive view of the sizes and timing of all traffic on every link.
-
-From that view, the likelihoods use two observables: the devices' first-hop packets and the posted record time. Every other leg is padded to its class or carries a constant-size gossip frame, and enters no score.
-
-Each attacker is compared with chance and with a passive observer on the same records.
-
-**Simulator version 2.** The code here is simulator version 2: serialized fan-out, a registry that merges F's and I's submissions and posts one record on its own schedule, and one candidate per device packet. The committed results in `results/`, `RESULTS.md` and `PAPER_TABLE.md` were produced by version 1. Version 2 refuses to resume a result directory written by version 1; run it into a new directory.
+The experiment simulates the protocol's full message flow, with real and decoy traffic. It attacks every record from each internal vantage, with every node of the pool compromised in turn.
 
 - `RESULTS.md` has every finding.
-- `PAPER_TABLE.md` has the headline tables.
+- `results/PAPER_TABLE.md` has the headline tables.
 - `results/TABLES.md` has the full generated tables.
+- `PREDICTIONS.md` has the predictions written before the run.
 
 ## What is measured
 
-**Primary measure: how often the attacker names the right device.** Every vantage starts from a registry record and names one device. A decision is right when the named device produced the record.
+**Device named.** Every vantage starts from a registry record and names one device. A decision is right when the named device produced the record. This is the primary measure.
 
-**Second measure: whether the attacker can identify its correct guesses.** Each vantage's match score is converted to a calibrated probability that the match is right, fitted on half the runs and applied to the other half (cross-fitted by run parity).
+**Calibrated confidence.** Each vantage's match score is turned into a probability that the match is right. The fit uses half the runs and is applied to the other half, split by run parity.
 
-Accuracy is read against three references:
+Accuracy is read against two references:
 
 | Reference | Meaning |
 |---|---|
-| Chance, feasible set | A uniform guess among the devices whose submissions could have produced the record, given the protocol's timing. |
-| One in N | A uniform guess among every registered device: real devices and decoy identities. |
-| Passive observer | An attacker with no keys and no internal timing, who sees only sizes and timing on every link. A component's **lead** is its accuracy minus the observer's on the same records. |
+| Chance, feasible set | A uniform guess among the devices whose packets could have produced the record, given the protocol's timing. Multiple of chance is accuracy divided by this rate. |
+| Passive observer | An attacker with no keys and no internal timing. A vantage's **lead** is its accuracy minus the observer's on the same records. |
 
 ## Vantages
 
-There are six component vantages and the observer.
+There are six component vantages, the passive observer, and the combined view of one node.
 
-| Vantage | Holds | Knows exactly | Uses in its likelihood |
-|---|---|---|---|
-| Passive observer | nothing | sizes and timing on every link | the posted record time against each device packet's departure |
-| First hop, credential (A) | relay transit key | the device's network address and packet arrival; its own hold and forward times | its own hold, on the packets it relayed |
-| First hop, content (D or G) | relay transit key | the same, for one content copy | the same |
-| Credential processor (C) | transit and ring-signing keys | packet hash, key reference, its own fan-out sends, the validator's reply | the median of its own three fan-out sends, over its own transactions, with a prior of 1/17 that it was C |
-| Validator (V) | token-decryption and signing keys | device identity, request arrival, reply moment | its own reply times, which name the device |
-| Gatekeeper | transit and countersignature keys | packet hash, sender's address, its own arrival, hold release and posting | its own postings |
-| Content server (F or I) | transit and registry-signing keys | content hash, content arrival, when the board pushes showed quorum, its own submission | its content arrival, on the records it submitted |
+| Vantage | Holds | Knows exactly |
+|---|---|---|
+| Passive observer | nothing | the posted record time and each device packet's departure |
+| First hop, credential (A) | relay transit key | its own hold, on the device packets it relayed |
+| First hop, content (D or G) | relay transit key | its own hold, on the device packets it relayed |
+| Credential processor (C) | transit and ring-signing keys | the median of its own three fan-out sends, over its own transactions, with a prior of 1/17 that it was the record's C |
+| Validator (V) | token-decryption and signing keys | its own reply times, which name the device |
+| Gatekeeper | transit and countersignature keys | its own postings |
+| Content server (F or I) | transit and registry-signing keys | its content arrival, on the records it submitted |
+| Combined view of one node | every key of every role the node held | every entry above for each role the node held |
 
-- **First hops and the credential processor** cannot tell which records they took part in. They are scored on every record. Four servers per run are compromised in turn, rotating with the run id.
+"Knows exactly" lists what each likelihood uses. Every vantage also sees the posted record time and the device packets on the wire. Other links carry legs padded to one size class or gossip frames of one constant size. No likelihood uses them.
+
+- **Every node is compromised in turn.** One run scores every node as the compromised one, on every record.
+- **First hops** cannot tell which records they took part in, so they are scored on every record. A first relay cannot tell whether it relays a credential or a content packet, so one first-relay model serves A, D and G. The two first-hop rows differ only in which records count as ones the node took part in.
+- **The credential processor** is scored on every record, as every node outside the active gatekeeper set.
 - **The content server** is scored on the records it submitted, which it identifies by the content hash it submitted.
-- **The gatekeeper** is scored once for each of the three active gatekeepers.
+- **The gatekeeper** is scored as each of the three active gatekeepers.
+- **The combined view** combines a node's roles as likelihood ratios against the passive observer. A second relay holds no evidence in this framework. Its decisions are classed by the roles the node held in the record's own transaction. A class is **identifiable** when it includes a destination role (C, F or I), because the node reads the plaintext hash there and can select those records. Every other class is **oracle-conditioned**: the node cannot select those records, so the row is not an attack.
+- **No coincident role.** For each node vantage, the rows on the records in which the node held at most one role are reported on their own. They are the comparison for the single-role vantages.
 
 ## The protocol as simulated
 
 **Pool and roles**
-- 20 submission servers, one validator, and three active gatekeepers per run.
-- Each transaction uses nine distinct nodes: a credential path (A → B → C) and two content paths (D → E → F, G → H → I) that share no node.
-- C, F and I are never active gatekeepers.
+- 20 Registry Nodes serve as submission servers. There is one validator, and three nodes are active gatekeepers in each run.
+- A transaction has a credential path (A → B → C) and two content paths (D → E → F and G → H → I).
+- C, F and I are distinct and never active gatekeepers.
+- The relays are drawn under the routing design's guarantees only. A, D and G are pairwise distinct, and each differs from its own path's destination. B, E and H each differ from their own path's first relay and destination. Every other coincidence is allowed, so one node can hold roles on two paths.
 
 **Padding**
 - Every transit leg is padded to a size drawn uniformly from 420 to 460 bytes.
 - The gatekeeper fan-out uses 820 to 860 bytes.
 - A 22-byte TLS 1.3 record overhead, measured on real sessions, is added on the wire.
-- Registry submissions travel as gossipsub frames of a constant 284 bytes on the wire, unpadded.
+- Registry submissions are not transit legs. They travel as gossipsub frames of a constant 284 bytes on the wire.
 
 **Decoys**
 - A decoy is a genuine transaction from a registered identity held by the decoy infrastructure. It is approved, fanned out, posted and finalized exactly as a real transaction, and it produces a permanent registry record.
 - 60 decoy transactions are in flight at every level of real traffic.
-- Each decoy identity captures at a device's rate (every 20 minutes on average), so 69 decoy identities share the stream.
+- Each decoy identity captures at a device's rate, every 20 minutes on average.
 
 **Board and registry**
 - Each match board pushes its new matches to every content server every 10 seconds, on its own schedule.
 - A content server confirms a transaction once its own pre-match hold has released and two boards' pushes carry the match. It drops the transaction after 30 minutes without quorum.
 - The registry merges F's and I's submissions into one record at intake, once both have reached every Registry Node.
-- The registry posts merged records on its own 120-second schedule, on a phase independent of every other schedule. The posted time is the record time. The record names neither F nor I.
+- The registry posts merged records on its own 120-second schedule. The posted time is the record time. The record names neither F nor I.
 - A passive observer sees the submissions' gossip frames but cannot tell which record they belong to.
 
 **Simulation scope**
 - The simulation contains protocol traffic only.
 - Network latency is fixed per pair of hosts within a run, with per-packet jitter. There is no queueing.
-- Processing before each send: 0.5 to 3 ms per node, 5 to 50 ms at the validator, 1 to 10 ms at a gatekeeper, and 5 to 50 ms for each gossip validation, each uniform.
+- Processing before each send is uniform: 0.5 to 3 ms per node, 5 to 50 ms at the validator, 1 to 10 ms at a gatekeeper, and 5 to 50 ms for each gossip validation.
 
 ## Hold timing
 
-Every hold is a geometric lottery on a 10-second tick, released unconditionally at three times its own mean. Each stage's release probability is set to hit its target mean. Relays, C, and F's and I's pre-match holds use the node's own clock. The validator uses its own clock. A gatekeeper's own hold uses a gatekeeper hold clock, separate from its node clock. The device's channels and the post-match lottery use a fresh random phase per packet.
+Every hold is a geometric lottery on a 10-second tick, released unconditionally at three times its own mean. Each stage's release probability is set so the stage hits its target mean.
 
-**Serialized fan-out.** From C's receipt of CV-2, the transaction's three gatekeeper legs share one draw per tick of C's node clock. Each successful draw sends the next leg, in a random order, and the next draw starts at the following tick, so no two legs leave on the same tick. With 20 s per draw, the legs leave 20, 45 and 70 s after CV-2 on average.
+Each hold releases on one of three kinds of clock:
+- **The node's own clock:** relays, C, and F's and I's pre-match holds.
+- **The validator's own clock.**
+- **A separate gatekeeper hold clock:** a gatekeeper's own hold.
 
-**Departure bundling.** After the gatekeeper's own hold, a posting draws for a place in each 30-second bundle of that gatekeeper's grid: 25% chance at each boundary, unconditional at the 12th.
+The device's channels and the post-match lottery use a fresh random phase for each packet.
+
+**Serialized fan-out.** From C's receipt of CV-2, the transaction's three gatekeeper legs share one draw per tick of C's node clock. Each successful draw sends the next leg, in a random order. The next draw starts at the following tick, so no two legs leave on the same tick.
+
+**Departure bundling.** After the gatekeeper's own hold, a posting draws for a place in each 30-second bundle of that gatekeeper's grid. It has a 25% chance at each boundary and boards unconditionally at the 12th.
 
 **Registry bundling.** Confirmed submissions from every content server leave together on one shared 120-second schedule.
 
-**Registry posting.** The registry posts each merged record at the next boundary of its own 120-second schedule. Both submissions reach the registry just after a boundary of the shared registry bundle schedule, which has the same period. Within a run, the posting wait is therefore one fixed offset between the two schedules' phases, the same for every record. Across runs it is uniform over 0 to 120 seconds.
+**Registry posting.** The registry posts each merged record at the next boundary of its own 120-second schedule. Both submissions reach the registry just after a boundary of the registry bundle schedule, which has the same period. Within a run, the posting wait is one fixed offset between the two schedules' phases.
 
-Measured values come from 10 runs at R = 20 (`results/timing_check.json`), under simulator version 1. The fan-out and registry posting rows are new in version 2 and have no measured values yet.
+| Stage | Target mean | Tick | Release probability per tick | Cap |
+|---|---|---|---|---|
+| Relay hops (A, B, D, E, G, H), every path | 180 s | 10 s | 5.08% | 540 s |
+| Device's credential-channel hold | 120 s | 10 s | 7.52% | 360 s |
+| Device's content-channel holds, each drawn separately | 240 s | 10 s | 3.84% | 720 s |
+| C's hold before sending CV-1 | 30 s | 10 s | 26.86% | 90 s |
+| V's hold before sending CV-2 | 30 s | 10 s | 26.86% | 90 s |
+| C's serialized fan-out, per draw | 20 s | 10 s | 37.65% | 60 s per draw |
+| Gatekeeper's own hold | 30 s | 10 s | 26.86% | 90 s |
+| Departure bundle inclusion lottery | 25% per boundary | 30 s | 25% | 12 boundaries |
+| F's and I's pre-match hold | 120 s | 10 s | 7.52% | 360 s |
+| Post-match lottery | 30 s | 10 s | 26.86% | 90 s |
+| Registry bundle wait | uniform | shared 120 s schedule | not applicable | 120 s |
+| Registry posting wait | one offset per run | registry's 120 s schedule | not applicable | 120 s |
 
-| Stage | Target mean | Tick | Release probability per tick | Cap | Measured mean | Measured std dev |
-|---|---|---|---|---|---|---|
-| Relay hops (A, B, D, E, G, H), every path | 120 s | 10 s | 7.52% | 360 s | 119.7 s | 103.0 s |
-| Device's credential-channel hold | 120 s | 10 s | 7.52% | 360 s | 118.8 s | 103.1 s |
-| Device's content-channel holds (both) | 240 s | 10 s | 3.84% | 720 s | 237.8 s | 205.4 s |
-| C's hold before sending CV-1 | 30 s | 10 s | 26.86% | 90 s | 30.3 s | 25.3 s |
-| V's hold before sending CV-2 | 30 s | 10 s | 26.86% | 90 s | 30.2 s | 25.3 s |
-| C's serialized fan-out, per draw (one leg per success) | 20 s | 10 s | 37.65% | 60 s per draw | not yet measured | not yet measured |
-| Gatekeeper's own hold | 30 s | 10 s | 26.86% | 90 s | 30.4 s | 25.3 s |
-| Departure bundle inclusion lottery | 120 s (measured 101 s) | 30 s | 25% | 12 boundaries | 101.0 s | 90.9 s |
-| F/I's pre-match hold | 240 s | 10 s | 3.84% | 720 s | 240.8 s | 206.9 s |
-| Post-match lottery | 30 s | 10 s | 26.86% | 90 s | 30.1 s | 25.3 s |
-| Registry bundle wait | 60 s | shared 120 s schedule | not applicable | 120 s | 60.1 s | 34.7 s |
-| Registry posting wait | 60 s across runs; one fixed offset within a run | registry's 120 s schedule | not applicable | 120 s | not yet measured | not yet measured |
-
-Under version 1, mean capture to finalization was 1,033.8 seconds, with a standard deviation of 270.6 seconds. A version 2 calibration on the same seeds gives D = 1,108.8 seconds.
-
-Departure bundles at one gatekeeper hold 2.33 postings on average. 32.4% of them hold fewer than two, and 10.0% are empty.
+The measured mean, standard deviation and maximum of every stage are in `results/timing.json` and `results/TABLES.md`.
 
 ## The attack
 
 - **Records.** Each record is a posted registry entry. Its record time is the posted time.
-- **Candidates.** The candidates are device submissions on the wire: every first-hop packet from a device, each on its own. No grouping into captures is assumed. Decoy identities' packets are included for every vantage, because no vantage can tell them apart.
-- **Scoring.** Each vantage scores every candidate by the likelihood of the record time given that candidate. The likelihoods are built by Monte Carlo simulation of the protocol on seeds separate from every scored run. A capture's three packets cannot be told apart on the wire, so each likelihood is pooled over the three. One first-relay model serves A, D and G, because a first relay cannot tell which of the three it is.
-- **Decision.** For each record, a vantage names the device with the highest summed posterior over that device's packets. A tie goes to the lowest device id.
+- **Candidates.** Every first-hop packet from a device is a candidate on its own. Decoy identities' packets are included for every vantage, because no vantage can tell them apart.
+- **Scoring.** Each vantage scores every candidate by the likelihood of the record time given that candidate. The likelihoods are built by Monte Carlo simulation of the protocol, on seeds separate from every scored run. A capture's three packets cannot be told apart on the wire, so each likelihood is pooled over the three.
+- **Decision.** For each record, a vantage names the device with the highest posterior summed over that device's packets. Ties break in a random order of the devices.
 - **Pairing.** Every vantage is paired with the passive observer on the same records.
 
 ## The claim criterion
 
-In a cell, the claim holds when both conditions are met for every vantage:
+For one vantage or class in one cell, the claim criterion passes when both conditions hold:
 
 1. **Top 1% precision.** Take the 1% of the vantage's matches that it is most confident in. The upper bound of the 95% interval on the share of them that are right must be below 50%.
 2. **Coverage.** Fewer than 0.1% of the vantage's matches may belong to any most-confident group in which the matches are right more than half the time.
 
-A vantage that passes cannot identify any meaningful subset of its own guesses and be right about most of them.
+A vantage that passes cannot identify a meaningful subset of its own guesses and be right about most of them.
 
-## Builds and cells
+**Stability rule.** A row needs at least 50 right and 50 wrong decisions at the device level. A row that misses it is unstable. It is reported as unstable and is not read as a finding.
 
-Each build changes one thing from InternalCompromiseRun and is paired against it record by record, on identical traffic.
+## Diagnostics
 
-| Build | Change |
+Each diagnostic is a scoring variant on the same simulated traffic.
+
+| Diagnostic | What it does |
 |---|---|
-| `internal_compromise` | none |
-| `no_vc_holds` | C's and V's holds removed |
-| `no_inclusion_lottery` | every ready posting departs at the next 30-second boundary |
-| `no_post_match_lottery` | post-match lottery removed |
-| `no_registry_bundling` | each confirmed submission leaves at once |
-| `no_role_aware_holds` | device content channels and F/I pre-match hold at 120 s, like every other stage |
-| `no_mechanisms` | all five of the above removed together |
-| `relay_180s` | relay hops at a 180 s mean |
-| `role_aware_360s` | device content channels and F/I pre-match hold at a 360 s mean |
-| `gatekeeper_120s` | gatekeeper hold at a 120 s mean |
-| `permitted_overlap` | relays drawn under the routing design's guarantees only, so one node can hold roles on two paths; every node compromised in every run |
+| Timing evidence off | The observer with a flat timing likelihood. The candidate set, source addresses and priors are unchanged. |
+| Record time at the midpoint | The observer and the content server score with the record time at the midpoint of F's and I's registry submissions. |
+| Hits by packet type | The observer's submission-level hits split by the type of the packet it named (credential, F content or I content), each against its random rate, with the delay from each packet type's departure to the record time. |
+| Match board share | The share of F's and I's confirmations set by the match board rather than by their own hold release. |
 
-**Permitted overlap.** Every other build draws the nine nodes of a transaction distinct. `permitted_overlap` keeps the destinations C, F and I of the baseline draw (distinct, never an active gatekeeper) and draws the relays in order, each uniform over the nodes its constraints allow: A, D and G pairwise distinct and each different from its own path's destination, then B, E and H, each different from its own path's first relay and destination. Every other coincidence is allowed. The relays come from a separate random stream, so every other draw, and the pairing with InternalCompromiseRun, is unchanged.
+## Controls
 
-**Combined view.** Under `permitted_overlap` one compromised node scores every record with all the evidence its roles give it: its own hold on the candidates it relayed as a first hop, its content arrival on the records that name it as F or I, its credential-processor mixture, and its postings if it is a gatekeeper. The pieces combine as likelihood ratios against the passive observer: log g(y) plus, for each role, log L(role) minus log g(y). A second relay holds no evidence in this framework. Every node is compromised in every run. Decisions are classed by the roles the node held in the record's own transaction. A class is **identifiable** when that includes a destination role (C, F or I), because the node reads the plaintext hash there and can select those records. Every other class is **oracle-conditioned**: it is a single-role lead on a subset the node cannot select, and it is not an attack. A pair class that includes a destination is also defined by the node's other role, which the node cannot tell, so the lead a node can realise is its lead over every record it can select.
+| Control | What changes | What it shows |
+|---|---|---|
+| Label shuffle | Within each run, every candidate's device label is permuted at random on the same scores. | Accuracy falls to the feasible chance rate for every vantage. |
+| Shuffle test | For the observer, the shuffled picks are compared with the permuted unshuffled picks, the feasible counts with the unshuffled ones, and the estimator with 200 further permutations per run. | Whether any shortfall below chance comes from the shuffle, the feasible-set calculation or the estimator. |
+| Every hold off | Every hold, lottery and schedule is set to zero. The 30-second departure grid and the 10-second board push remain. | The combined view's detection passes through when no hold hides it. |
+| Credential path sets the record time | Relays at 180 s, and every credential-side stage at a 120 s mean: the device's credential channel, C, V, the fan-out at 40 s per draw, the gatekeeper and the inclusion lottery. Everything else is off. | The match board sets at least 95% of the confirmations, so the record time follows the credential path. |
+| Content paths set the record time | Relays at 180 s, and the device holds both content channels at a 7,200 s mean. Everything else is off. | Content arrival sets at least 95% of the confirmations. |
+| F content path sets the record time | Relays at 180 s, and the device holds its F channel at a 7,200 s mean. Everything else is off. | F's own content arrival sets F's confirmation, and F's submission is the later one, on at least 95% of the records. |
 
-**Cells**
+A device hold delays the packet before it leaves the device, so it adds no noise to a candidate's timing. Each control's measured share is reported with it.
+
+## Cells and runs
+
 - Real volume is R = 1, 20 and 100 transactions in flight, each with 60 decoy transactions in flight.
-- Rates are R / D and 60 / D. D = 1,036.6 seconds is the mean capture-to-finalization time measured under InternalCompromiseRun (`results/calibration.json`).
-- R = 1, 20 and 100 correspond to 1, 23 and 116 real devices; with the decoy identities, 70, 92 and 185 registered devices.
-
-**Runs**
-- 200 runs per cell, run ids 0 to 199, for every build.
+- Rates are R / D and 60 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 20. The calibration repeats until both counts in flight are within 3% of their targets.
+- The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
+- The scored window lasts 10 D. At R = 1 it is extended to hold 200 real transactions per run on average. Scoring starts after the configuration's longest possible delay, once traffic in flight is steady.
+- The main configuration runs 200 runs per cell. The controls run 50 (every hold off) or 100 runs per cell.
 - A run's traffic depends only on its real volume and run id.
-- The scored window is 3 hours. At R = 1 it is extended to hold 200 real transactions per run on average.
-- Every cell of every build had at least 50 right and 50 wrong decisions at the device level for every vantage.
-- Latency and F/I pair timing use 20 further runs per cell, on run ids no scored run uses.
 
-## Reproducing the run
+Intervals on accuracy resample whole runs, with a cluster bootstrap of 2,000 resamples. AUC intervals use the clustered-data variance of Obuchowski (1997).
+
+## Running it
 
 Requires Python 3.10 or later. Run from this directory.
 
 ```
 pip install -r requirements.txt
-python -m sna reproduce
+python -m sna run
 ```
 
-On Windows, use `py -m pip install -r requirements.txt` and `py -m sna reproduce`.
+On Windows, use `py -m pip install -r requirements.txt` and `py -m sna run`.
 
-`reproduce` runs calibration, the hold-timing measurement, every build's 200 runs per cell, analysis, latency, F/I pair timing, and finally generates `results/TABLES.md` and the figures. The ten builds other than `permitted_overlap` took 116 minutes on 16 worker processes. `permitted_overlap` took 62 minutes on 4. An interrupted run loses at most the runs in flight; rerunning the same command continues from there. Results depend only on the cell and run id, not on the worker count or completion order.
+`run` does every step:
+1. calibrates D;
+2. builds the attacker's models;
+3. simulates and scores every run of the main configuration and the controls;
+4. writes every file in `results/`.
 
-**Reproduction across platforms**
-- The committed results were produced on Windows.
-- A rerun of the `internal_compromise` build on Linux matched them in all but 3 of 5,493,945 decisions, each differing by one correct decision at R = 100.
-- The difference comes from floating-point ties breaking differently between platforms. No reported figure changes at the precision shown.
+It is resumable: rerunning the same command skips the runs already on disk. Results depend only on the cell and run id, not on the worker count or completion order. A results directory written under other settings is refused.
 
-**Smoke test.** `python -m sna reproduce --runs 2 --out results/quick` runs every step on two runs per cell.
-
-| Command | What it does |
-|---|---|
-| `reproduce` | the whole experiment, as above |
-| `run --build <name>` | one build's runs |
-| `analyze --build <name>` | one build's summary and tables from its records |
-| `tables` | every build's CSV and tables, `TABLES.md` and the figures, from the summaries |
-| `latency` | capture-to-finalization time under every build (`results/latency.json`) |
-| `pairs` | how often a record's two registry submissions leave together (`results/pair_gaps.json`) |
-| `timing` | every stage's simulated hold and the departure bundle sizes (`results/timing_check.json`) |
-| `overlap-counts` | how often the permitted-overlap role draw puts one node on two paths (`results/overlap_counts.json`) |
-| `shuffle` | negative control: candidates' device labels permuted within each run (`results/shuffle_control.json`) |
-| `run --build <control>` | one control's runs: `overlap_no_holds`, `first_relay_signal_cred`, `first_relay_signal_content` or `first_relay_signal_one_content` (the committed control results were run with `--out results/controls`; `first_relay_signal_one_content` is used only by `first-relay-paths`) |
-| `first-relay-paths` | each first relay's lead by path, at R = 1, under the three first-relay controls, 300 runs per control unless `--runs` is given (`<out>/first_relay_paths.json`; the committed file is `results/controls/first_relay_paths.json`) |
-
-Fast tests: `python -m pytest tests -q`.
+- `--runs N` sets the main configuration's runs per cell. Each control runs its own count or N, whichever is smaller.
+- `--workers N` sets the worker processes.
+- `--out DIR` sets the results directory.
+- `python -m sna run --runs 2 --out results/quick` runs every step on two runs per cell.
+- Fast tests: `python -m pytest tests -q`.
 
 ## Contents
 
 | Path | Contents |
 |---|---|
 | `RESULTS.md` | every finding |
-| `PAPER_TABLE.md` | headline tables |
-| `results/TABLES.md` | full generated tables |
-| `results/summary_<build>.json`, `.csv` | every metric for every vantage and cell under one build |
-| `results/tables_<build>.md` | one build's tables, with its paired effects against InternalCompromiseRun |
-| `results/overlap_counts.json` | how often roles coincide under the permitted-overlap draw, at 20, 50 and 100 nodes |
-| `results/shuffle_control.json` | the label-shuffle negative control under `permitted_overlap` |
-| `results/controls/` | the positive controls for the combined view |
-| `results/calibration.json` | the end-to-end delay D |
-| `results/cells.json` | the cells and their scored windows |
-| `results/timing_check.json` | every stage's simulated hold and the departure bundle sizes |
-| `results/latency.json` | capture-to-finalization time by build and stage |
-| `results/pair_gaps.json` | F and I submission timing |
+| `PREDICTIONS.md` | the predictions, written and committed before the run |
+| `results/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
+| `results/TABLES.md` | the full tables |
+| `results/PAPER_TABLE.md` | the headline tables |
+| `results/controls/` | each control's rows, and the shuffle test |
+| `results/timing.json` | every stage's delay, capture to finalization, packet-type delays and the match board share, per configuration and cell |
+| `results/run_info.json` | seeds, runs per cell, D and its calibration, the counts in flight, the cost per run |
 | `results/figures/device_named.png` | how often each vantage names the device, against chance |
 | `results/figures/confidence_reliability.png` | each vantage's confidence against how often it is right |
-| `results/figures/latency_by_build.png` | capture-to-finalization time under each build |
+| `results/figures/latency.png` | capture to registry posting |
 | `sna/params.py` | every numeric input |
 | `sna/lottery.py` | the hold lottery and the likelihood densities |
 | `sna/sim.py` | the simulator |
-| `sna/attacks.py` | record and candidate extraction, likelihood models, scoring of every vantage |
+| `sna/attacks.py` | record and candidate extraction, likelihood models, scoring of every vantage, the shuffle test |
 | `sna/analyze.py` | metrics and intervals |
-| `sna/experiment.py` | builds, cells, seeds, calibration, the run worker, latency, pair timing and hold timing |
-| `sna/report.py` | summaries, tables and figures |
+| `sna/experiment.py` | configurations, cells, seeds, calibration, the run worker |
+| `sna/report.py` | every file in `results/` |
 | `sna/runner.py` | resumable parallel execution |
+| `audit/` | the audit of the code against its documentation |
 | `tests/` | fast tests |
-
-### Fields in the summaries
-
-| Field | Meaning |
-|---|---|
-| `dev_accuracy`, `dev_ci_lo`, `dev_ci_hi` | share of records whose device the vantage names, with its 95% interval |
-| `dev_random` | chance of a uniform guess among the feasible devices |
-| `dev_lift_random` | `dev_accuracy` over `dev_random` |
-| `dev_contribution` | lead over the passive observer on the same records, with `_lo` and `_hi` |
-| `sub_*` | the same at the submission level: the named capture is the record's own |
-| `conf_mean`, `conf_p50`, `conf_p90`, `conf_p99`, `conf_max` | the vantage's calibrated confidence in its matches |
-| `reliability`, `calibration_error` | confidence against outcome in ten equal groups, and the mean absolute gap |
-| `p_at_1`, `p_at_5`, `p_at_10`, `p_at_25` | share right among the most confident 1%, 5%, 10% and 25% of matches, with Wilson intervals |
-| `coverage_p50`, `count_p50` | the largest most-confident set whose matches are right more than half the time, as a share and a count of decisions |
-| `auc`, `shuffle_auc` | how well confidence separates right from wrong matches, and the same with outcomes permuted within each run |
-| `stable` | at least 50 right and 50 wrong decisions at the device level |
-| `bundle_*` | hold releases per 30-second window at one gatekeeper (the departure bundle sizes are in `timing_check.json`) |
-| `paired_effects` | each vantage's accuracy under the build minus under InternalCompromiseRun, matched record by record |
-
-Intervals on accuracy resample whole runs (cluster bootstrap, 2,000 resamples). AUC intervals use the clustered-data variance of Obuchowski (1997).
 
 ## What this experiment does not test
 
-The simulation uses the 20-node pool and the nine-node transaction described above. It does not model:
+The simulation uses the 20-node pool and the transaction described above. It does not model:
 
 - the jurisdiction filter or the skew in the device's choice of destinations;
 - the grouping of device-table lines by destination pseudonym;
 - a first-hop vantage that is told which destination a routing code leads to;
 - any evidence a second relay holds.
-
-`../RoutingModels/` contains toy models for the first-hop inferences that the device table allows. They are not a substitute for an experiment of this kind.
