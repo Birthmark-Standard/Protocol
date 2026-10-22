@@ -1,29 +1,33 @@
 """Record-to-device linking: vantages, wire extraction, likelihood models, and the scoring of one run.
 
 The harm Semantic Non-Assembly guards against is naming the device behind a public registry record.
-Every vantage therefore starts from a registry record and names a device submission. The registry
-merges F's and I's submissions into one record at intake and posts it on its own schedule; the
-posted time is the record time. A passive observer sees the submissions' gossip frames but cannot
-tell which record they belong to, so the frames carry no evidence here. Candidates are the
-device-originated first-hop packets on the wire, three per capture, decoy sources' packets
-included. Each packet is a candidate on its own: no grouping into captures is assumed, and every
-likelihood is learned per packet from the Monte Carlo, pooled over the capture's three packets.
+Every vantage therefore starts from a registry record and names a device. The registry merges F's
+and I's submissions into one record at intake and posts it on its own schedule; the posted time is
+the record time. A passive observer sees the submissions' gossip frames but cannot tell which
+record they belong to, so the frames carry no evidence. The candidates are the device-originated
+first-hop packets on the wire, three per capture, decoy sources' packets included. Each packet is a
+candidate on its own, and every likelihood is learned per packet from the Monte Carlo, pooled over
+a capture's three packets.
 
 Each vantage's own exact knowledge enters the likelihood of "record r came from candidate k":
 
-  baseline              g(u_r - s_k): record time against the packet's departure s_k
-  first hop (A or D/G)  its own forward time replaces the departure for packets it relayed
-  content server        adds its exact content arrival a_r for records it submitted: the joint
-                        density of the record time and a_r - s_k
-  validator             names device identities directly: its candidates are its own replies
-  gatekeeper            sums over its own postings j: sum_j P(k -> j) p(r | j)
-  credential processor  sums over its own transactions, mixed with the baseline for traffic
-                        that did not pass through it
+  observer              g(u_r - s_k): record time against the packet's departure s_k
+  first hop             its own hold, on the packets it relayed
+  content server        its content arrival a_r, on the records that name it: the joint density
+                        of the record time and a_r - s_k
+  validator             its own reply times, which name the device; its candidates are its replies
+  gatekeeper            the mixture over its own postings j: sum_j P(k -> j) p(r | j)
+  credential processor  the mixture over its own transactions' fan-out sends, with a prior of 1/17
+                        that it was the record's C
+  combined              one node's every role, as likelihood ratios against the observer
 
 Success is scored at two levels: the device (primary; the posterior summed over each source's
-packets, since a source address is visible on the wire; ties go to the lowest device id) and the
-submission (the chosen packet belongs to the record's own capture). Each vantage is paired with the baseline on the same
-records.
+packets, since a source address is visible on the wire; ties go to a random device) and the
+submission (the chosen packet belongs to the record's own capture). Every node is compromised in
+turn: one pass over the records per node yields each vantage that node holds.
+
+Every pass also scores two variants on the same likelihoods: the label shuffle (every candidate's
+device label permuted within the run) and, for the observer, a flat timing likelihood.
 """
 from __future__ import annotations
 
@@ -35,33 +39,31 @@ from . import lottery as LT
 from . import params as P
 from . import sim as S
 
-VANTAGES = ("baseline", "first_hop_cred", "first_hop_content", "cred_processor", "content_server",
-            "validator", "gatekeeper")
-LABEL = {"baseline": "Baseline", "first_hop_cred": "First hop, credential",
-         "first_hop_content": "First hop, content", "cred_processor": "Credential processor",
-         "content_server": "Content server", "validator": "Validator", "gatekeeper": "Gatekeeper"}
 LEVELS = ("dev", "sub")
-BW = 0.5                  # histogram bin width (s) of every delay model
 MAX_CELLS = 3_000_000     # rows x candidates per dense block
 T_GRID = np.exp(np.linspace(np.log(0.1), np.log(10.0), 11))   # temperatures for calibrated confidence
 _INT_MAX = np.iinfo(np.int32).max
+PTYPES = ("credential", "F content", "I content")
+_PTYPE = {S.CRED1: 0, S.CA1: 1, S.CB1: 2}
 
 
 # =========================================================================== wire extraction
-def records(run):
+def records(run, mid=False):
     """Registry records: every transaction the registry posted. u is the posted time, the boundary
-    of the registry's posting schedule at which the merged record appeared."""
-    posted = run.subs["posted"]
-    sub = np.nonzero(np.isfinite(posted))[0]
-    return dict(sub=sub, u=posted[sub], dev=run.subs["src"][sub])
+    of the registry's posting schedule at which the merged record appeared; with mid, the midpoint
+    of F's and I's registry submissions instead (a scoring diagnostic)."""
+    s = run.subs
+    sub = np.nonzero(np.isfinite(s["posted"]))[0]
+    return dict(sub=sub, u=(s["mid"] if mid else s["posted"])[sub], dev=s["src"][sub])
 
 
 def candidates(run):
     """Device submissions on the wire, one candidate per packet. Packets are relay-class application
     records from an external host to a pool node; an external source that ever sends anything else
     (a handshake, a DNS lookup, a record outside the class) is not a device and is dropped. Returns
-    packets sorted by send time, with truth labels (sub: the packet's capture) and, per packet, its
-    first hop and that hop's hold (node and hold have one column, the packet itself)."""
+    packets sorted by send time, with truth labels (sub: the packet's capture; ptype: credential, F
+    content or I content) and, per packet, its first hop and that hop's hold (node and hold have one
+    column, the packet itself)."""
     ev, s = run.events, run.subs
     lo, hi = P.PAD_MIN + P.TLS13_OVERHEAD, P.PAD_MAX + P.TLS13_OVERHEAD
     ext = ev["src"] == S.EXT
@@ -74,7 +76,11 @@ def candidates(run):
         fwd_of[s[key][:, 0]] = s[key][:, 1]
     f = fwd_of[pk]
     sub = np.where(ev["kind"][pk] == S.K_BIRTHMARK, ev["sub"][pk], -1).astype(np.int64)
-    return dict(t=ev["t_send"][pk], sub=sub, msub=sub, dev=ev["ext_src"][pk].astype(np.int64),
+    leg = ev["leg"][pk]
+    ptype = np.full(pk.size, -1, np.int8)
+    for lg, k in _PTYPE.items():
+        ptype[leg == lg] = k
+    return dict(t=ev["t_send"][pk], sub=sub, msub=sub, dev=ev["ext_src"][pk].astype(np.int64), ptype=ptype,
                 node=ev["dst"][pk].astype(np.int64)[:, None],
                 hold=np.where(f >= 0, ev["t_send"][np.maximum(f, 0)] - ev["t_arr"][pk], np.nan)[:, None])
 
@@ -127,29 +133,33 @@ class Models:
 
 BW_Y = 1.0                # bin width (s) of the record-time density y = u - s
 BW_X = 10.0               # bin width (s) of a vantage's extra observation x
+REF_DELAY_S = P.Config().max_delay_s   # bins widen with a configuration's delay bound beyond the main one's
 
 
 def _true_samples(run, acc):
     """Every true (record, own packet) pair: y = u - s (s: the packet's departure) and each
     vantage's extra observation x. A record has three true packets (credential, F content, I
-    content), which no vantage can tell apart on the wire, so every density is pooled over the three."""
+    content), which no vantage can tell apart on the wire, so every density is pooled over the three.
+    y_mid is the same with the record time at the midpoint of F's and I's submissions."""
     s = run.subs
-    rec = records(run)
+    rec, mid = records(run), records(run, mid=True)
     cand = candidates(run)
-    u_of = np.full(s["t0"].shape[0], np.nan)
-    u_of[rec["sub"]] = rec["u"]
+    u_of, m_of = np.full(s["t0"].shape[0], np.nan), np.full(s["t0"].shape[0], np.nan)
+    u_of[rec["sub"]], m_of[mid["sub"]] = rec["u"], mid["u"]
     k = np.nonzero((cand["sub"] >= 0) & np.isfinite(u_of[np.maximum(cand["sub"], 0)]))[0]
     sub = cand["sub"][k]
     sk = cand["t"][k]
-    y = u_of[sub] - sk
+    y, ym = u_of[sub] - sk, m_of[sub] - sk
     add = lambda name, x: acc.setdefault(name, []).append(np.asarray(x, float).ravel())  # noqa: E731
     add("y", y)
+    add("y_mid", ym)
     # first hop: the own hold of the packet it relayed
     add("fh_x", cand["hold"][k, 0])
     add("fh_y", y)
     # content server: content arrival at F and at I, relative to the packet's departure
     add("cs_x", np.r_[s["arr_f"][sub] - sk, s["arr_i"][sub] - sk])
     add("cs_y", np.r_[y, y])
+    add("cs_y_mid", np.r_[ym, ym])
     # gatekeeper: each of the three postings relative to the packet's departure
     add("gk_x", (s["posts"][sub] - sk[:, None]).ravel())
     add("gk_y", np.repeat(y, 3))
@@ -163,15 +173,16 @@ def _true_samples(run, acc):
 def build_models(cfg: P.Config, seed0=1_000_000_000, min_samples=300_000, max_runs=200) -> Models:
     """Monte Carlo of the protocol under the configuration attacked, on seeds disjoint from every
     evaluation seed. Delays do not depend on volume (no queueing), so one set of models serves
-    every volume."""
+    every volume. min_samples counts records."""
     mc = cfg.with_(decoy_rate=0.0, real_rate=max(cfg.real_rate, 0.2))
-    bw_y, bw_x = BW_Y, BW_X
+    scale = max(1.0, cfg.max_delay_s / REF_DELAY_S)
+    bw_y, bw_x = BW_Y * scale, BW_X * scale
     acc = {}
     k = 0
     while True:
         _true_samples(S.simulate(mc, seed0 + k), acc)
         k += 1
-        if (sum(x.size for x in acc["gV"]) >= min_samples and k >= 3) or k >= max_runs:   # records
+        if (sum(x.size for x in acc["gV"]) >= min_samples and k >= 3) or k >= max_runs:
             break
     cat = {n: np.concatenate(v) for n, v in acc.items()}
     m = Models(mc_runs=k, samples={n: int(np.isfinite(v).sum()) for n, v in cat.items()})
@@ -182,6 +193,9 @@ def build_models(cfg: P.Config, seed0=1_000_000_000, min_samples=300_000, max_ru
         xs = cat[f"{name}_x"]
         m.pdf[name + "_q"] = LT.EmpiricalLogPDF(xs[np.isfinite(xs)], bw_x)     # marginal of x
     m.pdf["gV"] = LT.EmpiricalLogPDF(cat["gV"], bw_y)
+    g_mid = LT.EmpiricalLogPDF(cat["y_mid"][np.isfinite(cat["y_mid"])], bw_y)
+    m.pdf["g_mid"] = g_mid
+    m.pdf["cs_mid"] = CondPDF(cat["cs_x"], cat["cs_y_mid"], g_mid, bw_x)
     return m
 
 
@@ -193,10 +207,18 @@ def _lse(x, axis=1):
         return (np.log(np.sum(np.exp(x - m), axis=axis, keepdims=True)) + m).squeeze(axis)
 
 
-def _stats(W, lab, is_t, out, rows, lvl, want_lse):
+def _empty(n, want_lse):
+    o = dict(pick=np.full(n, -1, np.int64), pidx=np.full(n, -1, np.int64), correct=np.zeros(n, bool),
+             top1=np.full(n, -np.inf), top2=np.full(n, -np.inf), s_true=np.full(n, -np.inf),
+             n_feas=np.zeros(n, np.int32), n_true=np.zeros(n, np.int32))
+    if want_lse:
+        o["lse"] = np.full((n, T_GRID.size), np.nan)
+    return o
+
+
+def _stats(W, lab, is_t, o, rows, want_lse):
     """Per-row decision statistics of a dense score block W (rows x m): column labels lab, and
-    is_t (rows x m) marking the columns that are right for each row."""
-    o = out[lvl]
+    is_t (rows x m) marking the columns that are right for each row. The pick is the first maximum."""
     fin = np.isfinite(W)
     o["n_feas"][rows] = fin.sum(1)
     if W.shape[1] == 0:
@@ -212,18 +234,22 @@ def _stats(W, lab, is_t, out, rows, lvl, want_lse):
     st = np.max(np.where(is_t, W, -np.inf), 1)
     o["s_true"][rows] = st
     o["n_true"][rows] = (is_t & fin).sum(1)
-    o["rank"][rows] = np.where(np.isfinite(st), 1 + (W > st[:, None]).sum(1), _INT_MAX)
     if want_lse:
         top = np.where(np.isfinite(top1), top1, 0.0)
         for i, T in enumerate(T_GRID):
             o["lse"][rows, i] = _lse(W / T) - top / T
 
 
-def _aggregate(W, lab):
-    """Log of the summed posterior per label (columns grouped by label)."""
+def _groups(lab):
+    """Column grouping by label: (labels, column order, group starts)."""
     u, inv = np.unique(lab, return_inverse=True)
     order = np.argsort(inv, kind="stable")
-    starts = np.r_[0, np.nonzero(np.diff(inv[order]))[0] + 1]
+    return u, order, np.r_[0, np.nonzero(np.diff(inv[order]))[0] + 1]
+
+
+def _aggregate(W, grp):
+    """Log of the summed posterior per label (columns grouped by label)."""
+    u, order, starts = grp
     M = np.max(W, 1)
     Mf = np.where(np.isfinite(M), M, 0.0)
     E = np.exp(W - Mf[:, None])
@@ -233,20 +259,20 @@ def _aggregate(W, lab):
     return agg, u
 
 
-def score_blocks(t_lo, t_hi, cand, block_fn, truth, max_cells=MAX_CELLS):
+def score_blocks(t_lo, t_hi, cand, block_fn, truth, names, lse=(), max_cells=MAX_CELLS, extra=None):
     """Score every row against the candidates whose time lies in [t_lo, t_hi) of that row.
 
-    cand: dict with sorted "t", "sub" and "msub" (the packet's capture: a pick is right at the
-    submission level if it belongs to the record's capture) and "dev" labels. block_fn(rows, k0, k1) returns the
-    dense log-likelihood block (len(rows), k1 - k0). truth: dict level -> (n,) true label.
-    Returns per-level arrays: pick, top1, top2, s_true, rank, n_feas, n_true, lse."""
+    cand: dict with sorted "t", "sub" and "msub" (the candidate's capture: a pick is right at the
+    submission level if it belongs to the record's capture), "dev" labels and "dev_shuf" (the same
+    labels permuted within the run). block_fn(rows, k0, k1) returns {name: dense log-likelihood
+    block (len(rows), k1 - k0)}; every name is scored on the same rows. truth: dict level -> (n,)
+    true label. extra(name, rows, lo, hi, W, is_t), if given, sees every scored block.
+    Returns {name: {"dev", "sub", "shuf": per-row arrays}}, "shuf" being the device level under the
+    permuted labels."""
     n = t_lo.shape[0]
-    out = {lvl: dict(pick=np.full(n, -1, np.int64), pidx=np.full(n, -1, np.int64), correct=np.zeros(n, bool), top1=np.full(n, -np.inf), top2=np.full(n, -np.inf),
-                     s_true=np.full(n, -np.inf), rank=np.full(n, _INT_MAX, np.int32),
-                     n_feas=np.zeros(n, np.int32), n_true=np.zeros(n, np.int32),
-                     lse=np.full((n, T_GRID.size), np.nan)) for lvl in LEVELS}
+    out = {nm: dict(dev=_empty(n, nm in lse), sub=_empty(n, False), shuf=_empty(n, False)) for nm in names}
     if n == 0:
-        return _finish(out)
+        return out
     ct = cand["t"]
     k0s = np.searchsorted(ct, t_lo, "left")
     k1s = np.maximum(np.searchsorted(ct, t_hi, "left"), k0s)
@@ -268,24 +294,24 @@ def score_blocks(t_lo, t_hi, cand, block_fn, truth, max_cells=MAX_CELLS):
         if hi <= lo:
             continue
         with np.errstate(divide="ignore", invalid="ignore"):
-            W = block_fn(rows, lo, hi)
+            Ws = block_fn(rows, lo, hi)
         cols = np.arange(lo, hi)
         inb = (cols[None, :] >= k0s[rows][:, None]) & (cols[None, :] < k1s[rows][:, None])
-        W = np.where(inb & np.isfinite(W), W, -np.inf)
-        ms = cand["msub"][lo:hi]
-        is_t = (ms[None, :, :] == truth["sub"][rows][:, None, None]).any(2) if ms.ndim == 2 else \
-            ms[None, :] == truth["sub"][rows][:, None]
-        _stats(W, cand["sub"][lo:hi], is_t, out, rows, "sub", False)
-        am = np.argmax(W, 1)
-        out["sub"]["pidx"][rows] = np.where(np.isfinite(W[np.arange(W.shape[0]), am]), lo + am, -1)
-        Wd, labd = _aggregate(W, cand["dev"][lo:hi])
-        _stats(Wd, labd, labd[None, :] == truth["dev"][rows][:, None], out, rows, "dev", True)
-    return _finish(out)
-
-
-def _finish(out):
-    for o in out.values():
-        o["lse"] = np.where(np.isfinite(o["lse"]), o["lse"], np.nan).astype(np.float16)
+        is_t = cand["msub"][lo:hi][None, :] == truth["sub"][rows][:, None]
+        gd, gs = _groups(cand["dev"][lo:hi]), _groups(cand["dev_shuf"][lo:hi])
+        ar = np.arange(rows.size)
+        for nm, W in Ws.items():
+            W = np.where(inb & np.isfinite(W), W, -np.inf)
+            o = out[nm]
+            _stats(W, cand["sub"][lo:hi], is_t, o["sub"], rows, False)
+            am = np.argmax(W, 1)
+            o["sub"]["pidx"][rows] = np.where(np.isfinite(W[ar, am]), lo + am, -1)
+            Wd, labd = _aggregate(W, gd)
+            _stats(Wd, labd, labd[None, :] == truth["dev"][rows][:, None], o["dev"], rows, nm in lse)
+            Ws_, labs = _aggregate(W, gs)
+            _stats(Ws_, labs, labs[None, :] == truth["dev"][rows][:, None], o["shuf"], rows, False)
+            if extra is not None:
+                extra(nm, rows, lo, hi, W, is_t)
     return out
 
 
@@ -299,7 +325,6 @@ def _random_rate(o, lvl):
     return np.where((o["n_feas"] > 0) & (o["n_true"] > 0), 1.0 / nf, 0.0)
 
 
-# =========================================================================== vantage block functions
 def _band(u, pdf):
     return u - pdf.support[1], u - pdf.support[0] + 1e-9
 
@@ -426,126 +451,6 @@ class _MixtureV:
             return np.where(ok, np.log(vals), -np.inf)
 
 
-SERVERS_PER_RUN = 4       # first hops and credential processors compromised in turn, per run
-
-
-def servers_for(v, run_id, gk_set, all_nodes=False):
-    """The servers compromised in one run for a vantage scored on every record: SERVERS_PER_RUN of
-    them, rotating with the run id so every eligible server is covered across runs; with all_nodes,
-    every eligible server in every run. The first hops and the combined view are eligible on every
-    node; the credential processor on every node outside the active gatekeeper set."""
-    pool = np.arange(P.N_NODES) if v.startswith("first_hop") else np.setdiff1d(np.arange(P.N_NODES), gk_set)
-    if all_nodes:
-        return pool
-    return pool[(run_id * SERVERS_PER_RUN + np.arange(SERVERS_PER_RUN)) % pool.size]
-
-
-def _vantage_rows(v, run, rec, run_id=0):
-    """(record index, group, extra) for every scored record the vantage scores. The content
-    server's rows are the records it submitted, which it can identify (the record names F and I).
-    The first hops and the credential processor cannot identify the records they took part in, so
-    each compromised server scores every record; took_part marks the rows it actually took part in."""
-    s = run.subs
-    sub = rec["sub"]
-    n = sub.size
-    idx = np.arange(n)
-    if v in ("baseline", "validator"):
-        return idx, np.zeros(n, int), {}
-    if v in ("first_hop_cred", "first_hop_content", "cred_processor"):
-        servers = servers_for(v, run_id, run.gk_set, all_nodes=run.cfg.overlap)
-        ri, grp = np.tile(idx, servers.size), np.repeat(servers, n)
-        if v == "first_hop_cred":
-            part = s["A"][sub[ri]] == grp
-        elif v == "first_hop_content":
-            part = (s["D"][sub[ri]] == grp) | (s["G"][sub[ri]] == grp)
-        else:
-            part = s["C"][sub[ri]] == grp
-        return ri, grp, dict(took_part=part)
-    if v == "content_server":
-        return np.r_[idx, idx], np.r_[s["F"][sub], s["I"][sub]], dict(a=np.r_[s["arr_f"][sub], s["arr_i"][sub]])
-    if v == "gatekeeper":
-        return np.tile(idx, 3), np.repeat(run.gk_set, n), dict(j=np.repeat(np.arange(3), n))
-    raise KeyError(v)
-
-
-def score_vantage(v, run, rec, cand, m: Models, base, run_id=0):
-    """Score one vantage on its rows. Returns (row record index, group, per-level output, extra).
-    extra carries took_part and claim for the vantages scored on every record."""
-    if v == "combined":
-        return _score_combined(run, rec, cand, m, run_id)
-    pdf, s, ev = m.pdf, run.subs, run.events
-    ri, grp, extra = _vantage_rows(v, run, rec, run_id)
-    u = rec["u"][ri]
-    truth = dict(sub=rec["sub"][ri], dev=rec["dev"][ri])
-    g = pdf["g"]
-    lo, hi = _band(u, g)
-    if v == "baseline":
-        return ri, grp, base, {}
-    if v in ("first_hop_cred", "first_hop_content"):
-        fh = pdf["fh"]
-
-        def fn(rows, k0, k1):
-            y = u[rows][:, None] - cand["t"][None, k0:k1]
-            match = cand["node"][None, k0:k1, :] == grp[rows][:, None, None]      # (r, k, member)
-            own = match.any(2)
-            hold = np.nansum(np.where(match, cand["hold"][None, k0:k1, :], 0.0), 2)
-            return np.where(own, fh(np.where(own, hold, np.nan), y), g(y))
-        res = score_blocks(lo, hi, cand, fn, truth, max_cells=MAX_CELLS // 3)
-        pidx = res["sub"]["pidx"]
-        claim = (pidx >= 0) & (cand["node"][np.maximum(pidx, 0)] == grp[:, None]).any(1)
-        return ri, grp, res, dict(took_part=extra["took_part"], claim=claim)
-    if v == "content_server":
-        cs, csq = pdf["cs"], pdf["cs_q"]
-        a = extra["a"]
-
-        def fn(rows, k0, k1):
-            # joint density p(y, x) = p(y | x) q(x): the content arrival's offset x depends on
-            # which candidate is the source, so it carries evidence of its own
-            sk = cand["t"][None, k0:k1]
-            x = a[rows][:, None] - sk
-            return cs(x, u[rows][:, None] - sk) + csq(x)
-        return ri, grp, score_blocks(lo, hi, cand, fn, truth), {}
-    if v == "validator":
-        real = np.ones(s["decoy"].shape, bool)          # every approval; decoys are indistinguishable
-        t = ev["t_send"][s["ev_cv2"]][real]
-        o = np.argsort(t, kind="stable")
-        vsub = np.nonzero(real)[0][o].astype(np.int64)
-        vc = dict(t=t[o], sub=vsub, msub=vsub, dev=cand.get("relabel", _same)(s["src"][real][o].astype(np.int64)))
-        gV = pdf["gV"]
-
-        def fn(rows, k0, k1):
-            return gV(u[rows][:, None] - vc["t"][None, k0:k1])
-        vlo, vhi = _band(u, gV)
-        return ri, grp, score_blocks(vlo, vhi, vc, fn, truth), {}
-    if v == "gatekeeper":
-        outs = []
-        for j in range(3):
-            sel = np.nonzero(extra["j"] == j)[0]
-            post = s["posts"][:, j]
-            o = np.argsort(post, kind="stable")
-            mix = _MixtureV(cand["t"], post[o], np.ones(o.size), pdf["gk"], pdf["gk_q"], g)
-            us = u[sel]
-            outs.append((sel, score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
-                                           dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))))
-        return ri, grp, _merge(outs, ri.size), {}
-    if v == "cred_processor":
-        pi = 1.0 / (P.N_NODES - P.N_GATEKEEPERS)
-        m_all = np.sort(s["gk_send"], 1)[:, 1]
-        outs = []
-        claim = np.zeros(ri.size, bool)
-        for X in np.unique(grp):
-            sel = np.nonzero(grp == X)[0]
-            mine = np.nonzero(s["C"] == X)[0]
-            mine = mine[np.argsort(m_all[mine], kind="stable")]
-            mix = _MixtureV(cand["t"], m_all[mine], np.ones(mine.size), pdf["c"], pdf["c_q"], g, pi=pi)
-            us = u[sel]
-            res = score_blocks(lo[sel], hi[sel], cand, lambda rows, k0, k1, us=us, mix=mix: mix.block(us[rows], k0, k1),
-                               dict(sub=truth["sub"][sel], dev=truth["dev"][sel]))
-            claim[sel] = mix.own_share(us, res["sub"]["pidx"]) > pi       # evidence favours its own transactions
-            outs.append((sel, res))
-        return ri, grp, _merge(outs, ri.size), dict(took_part=extra["took_part"], claim=claim)
-    raise KeyError(v)
-
 
 # --------------------------------------------------------------------------- combined view of one node
 # The role pair a compromised node held in the record's own transaction (truth; used only to
@@ -592,145 +497,239 @@ def role_pair_class(s, sub, X, gk_set):
     return code
 
 
-def _score_combined(run, rec, cand, m: Models, run_id):
-    """The combined view of one compromised node X. X applies every piece of evidence it holds, as
-    each single-role vantage does, and combines them as likelihood ratios against the passive
-    observer: log g(y) + sum over its roles of (log L_role - log g(y)). The roles' extra
-    observations are taken as independent given the candidate and the record time.
-
-      first relay       its own hold, on the candidates whose first-hop packet it relayed
-      content server    its content arrival, on the records that name it
-      credential proc.  the mixture over its own transactions' fan-out sends (prior 1/17)
-      gatekeeper        the mixture over its own postings, if X is an active gatekeeper
-
-    A second relay holds no evidence in this framework, so it adds nothing. X scores every record;
-    which roles X held in the record's transaction is truth, used only to classify the decision."""
-    pdf, s = m.pdf, run.subs
-    g, fh, cs, csq = pdf["g"], pdf["fh"], pdf["cs"], pdf["cs_q"]
-    sub = rec["sub"]
-    n = sub.size
-    servers = servers_for("first_hop_cred", run_id, run.gk_set, all_nodes=True)
-    ri, grp = np.tile(np.arange(n), servers.size), np.repeat(servers, n)
-    u = rec["u"][ri]
-    truth = dict(sub=sub[ri], dev=rec["dev"][ri])
-    lo, hi = _band(u, g)
-    pi = 1.0 / (P.N_NODES - P.N_GATEKEEPERS)
-    m_all = np.sort(s["gk_send"], 1)[:, 1]
-    outs = []
-    pair = np.empty(ri.size, np.int8)
-    for X in servers:
-        sel = np.nonzero(grp == X)[0]
-        us, srow = u[sel], sub[ri[sel]]
-        pair[sel] = role_pair_class(s, srow, int(X), run.gk_set)
-        a = np.where(s["F"][srow] == X, s["arr_f"][srow], np.where(s["I"][srow] == X, s["arr_i"][srow], np.nan))
-        mine = np.nonzero(s["C"] == X)[0]
-        mine = mine[np.argsort(m_all[mine], kind="stable")]
-        cmix = _MixtureV(cand["t"], m_all[mine], np.ones(mine.size), pdf["c"], pdf["c_q"], g, pi=pi) if mine.size else None
-        gmix = None
-        if X in run.gk_set:
-            post = s["posts"][:, int(np.nonzero(run.gk_set == X)[0][0])]
-            o = np.argsort(post, kind="stable")
-            gmix = _MixtureV(cand["t"], post[o], np.ones(o.size), pdf["gk"], pdf["gk_q"], g)
-
-        def fn(rows, k0, k1, us=us, a=a, cmix=cmix, gmix=gmix, X=X):
-            sk = cand["t"][None, k0:k1]
-            y = us[rows][:, None] - sk
-            lg = g(y)
-            ok = np.isfinite(lg)
-            W = lg.copy()
-            match = cand["node"][None, k0:k1, :] == X
-            own = match.any(2)
-            if own.any():
-                hold = np.nansum(np.where(match, cand["hold"][None, k0:k1, :], 0.0), 2)
-                W += np.where(own & ok, fh(np.where(own, hold, np.nan), y) - np.where(ok, lg, 0.0), 0.0)
-            ar = a[rows]
-            if np.isfinite(ar).any():
-                x = ar[:, None] - sk
-                named = np.isfinite(ar)[:, None] & ok
-                W += np.where(named, cs(x, y) + csq(x) - np.where(ok, lg, 0.0), 0.0)
-            for mix in (cmix, gmix):
-                if mix is not None:
-                    W += np.where(ok, mix.block(us[rows], k0, k1) - np.where(ok, lg, 0.0), 0.0)
-            return np.where(ok, W, -np.inf)
-        outs.append((sel, score_blocks(lo[sel], hi[sel], cand, fn, dict(sub=truth["sub"][sel], dev=truth["dev"][sel]),
-                                       max_cells=MAX_CELLS // 3)))
-    took = pair != PAIR_CODE["no role"]
-    return ri, grp, _merge(outs, ri.size), dict(took_part=took, pair=pair)
-
-
-def _merge(parts, n):
-    out = {}
-    for lvl in LEVELS:
-        tmpl = parts[0][1][lvl]
-        o = {k: np.empty((n,) + x.shape[1:], x.dtype) for k, x in tmpl.items()}
-        for sel, res in parts:
-            for k in o:
-                o[k][sel] = res[lvl][k]
-        out[lvl] = o
-    return out
-
 
 def scored_mask(run, sub):
     t0 = run.subs["t0"][sub]
     return (t0 >= run.cfg.warmup_s) & (t0 < run.cfg.warmup_s + run.cfg.measure_s) & ~run.subs["decoy"][sub]
 
 
-def _same(x):
-    return x
+def n_roles(s, sub, X, gk_set):
+    """How many roles node X held in each transaction sub, counting an active gatekeeper role."""
+    return sum((s[k][sub] == X).astype(np.int8) for k in "ABCDEFGHI") + np.int8(X in gk_set)
 
 
-def relabel_devices(run, cand, rng):
-    """Negative control: a random permutation of the device labels of every candidate and every
-    validator reply in the run, so no candidate carries its own device's label. Truth is unchanged."""
-    devs = np.unique(np.r_[cand["dev"], run.subs["src"]])
-    perm = devs[rng.permutation(devs.size)]
-
-    def f(x):
-        return perm[np.searchsorted(devs, x)]
-    return dict(cand, dev=f(cand["dev"]), relabel=f)
+def _relabel(labels, rng):
+    """A random bijection of the device labels: (labels, mapping function)."""
+    perm = labels[rng.permutation(labels.size)]
+    return lambda x: perm[np.searchsorted(labels, x)]
 
 
-def compute(run, m: Models, vantages=VANTAGES, run_id=0, label_rng=None):
-    """Score every vantage and the baseline on one run. Each vantage's record carries its rows with
-    the vantage's and the paired baseline's decisions; the vantages scored on every record also
-    carry took_part (the server took part in that record's transaction) and claim (the server
-    claims the link: its top capture holds a packet it relayed, or, for the credential processor,
-    the evidence at its pick favours its own transactions over the baseline, a likelihood ratio
-    above 1, which is an own-transaction share above its prior of 1/17)."""
+def _table(o, rec, ri, grp, base, **extra):
+    """Per-row record of one vantage: its device- and submission-level outcomes, its chance rates, its
+    shuffled-label outcome, and the observer's outcome on the same record."""
+    t = dict(sub=rec["sub"][ri].astype(np.int32), group=np.asarray(grp).astype(np.int16))
+    for lvl in LEVELS:
+        t[f"{lvl}_v_correct"] = o[lvl]["correct"].astype(np.int8)
+        t[f"{lvl}_v_rand"] = _random_rate(o[lvl], lvl).astype(np.float32)
+        t[f"{lvl}_n_feas"] = o[lvl]["n_feas"].astype(np.int32)
+        t[f"{lvl}_b_correct"] = base[lvl]["correct"][ri].astype(np.int8)
+        t[f"{lvl}_b_rand"] = _random_rate(base[lvl], lvl)[ri].astype(np.float32)
+    t["dev_top1"] = o["dev"]["top1"].astype(np.float32)
+    t["dev_s_true"] = o["dev"]["s_true"].astype(np.float32)
+    if "lse" in o["dev"]:
+        t["dev_lse"] = np.where(np.isfinite(o["dev"]["lse"]), o["dev"]["lse"], np.nan).astype(np.float16)
+    t["dev_s_correct"] = o["shuf"]["correct"].astype(np.int8)
+    t["dev_s_rand"] = _random_rate(o["shuf"], "dev").astype(np.float32)
+    for k, x in extra.items():
+        t[k] = np.asarray(x)
+    return t
+
+
+def _cat(parts):
+    return {k: np.concatenate([p[k] for p in parts]) for k in parts[0]}
+
+
+def compute(run, m: Models, rng):
+    """Score every vantage of one run, each node compromised in turn. rng draws the random order in
+    which ties break and the label permutation of the shuffle. Returns {vantage: per-row table}:
+
+      observer, observer_flat (flat timing likelihood), observer_mid (record time at the midpoint)
+      first_hop          every node, every record; took_part_A, took_part_DG, claim
+      cred_processor     every node outside the gatekeeper set, every record; took_part, claim
+      gatekeeper         each active gatekeeper, every record
+      combined           every node, every record; pair (the roles it held in the record's transaction)
+      content_server, content_server_mid   the records naming the node as F or I
+      validator          every record
+
+    Every node-scored table carries nroles, the roles the node held in the record's transaction."""
+    pdf, s = m.pdf, run.subs
+    rec = records(run)
+    keep = scored_mask(run, rec["sub"])
+    rec = {k: x[keep] for k, x in rec.items()}
+    mid = records(run, mid=True)
+    mid = {k: x[keep] for k, x in mid.items()}
+    cand = candidates(run)
+    labels = np.unique(np.r_[cand["dev"], s["src"]])
+    tie = _relabel(labels, rng)                   # ties break in a random order of the devices
+    cand["dev"], rec["dev"], mid["dev"] = tie(cand["dev"]), tie(rec["dev"]), tie(mid["dev"])
+    shuf = _relabel(np.unique(tie(labels)), rng)
+    cand["dev_shuf"] = shuf(cand["dev"])
+    srow, u, n = rec["sub"], rec["u"], rec["sub"].size
+    idx = np.arange(n)
+    truth = dict(sub=srow, dev=rec["dev"])
+    g, gm = pdf["g"], pdf["g_mid"]
+    out = {}
+
+    # the observer, its flat-timing variant, and its hits by packet type
+    tfeas = np.zeros((3, n), bool)
+
+    def obs_extra(nm, rows, lo, hi, W, is_t):
+        if nm == "observer":
+            ok = is_t & np.isfinite(W)
+            for k in range(3):
+                tfeas[k, rows] = (ok & (cand["ptype"][lo:hi] == k)[None, :]).any(1)
+
+    def obs(rows, k0, k1):
+        lg = g(u[rows][:, None] - cand["t"][None, k0:k1])
+        return dict(observer=lg, observer_flat=np.where(np.isfinite(lg), 0.0, -np.inf))
+    lo, hi = _band(u, g)
+    res = score_blocks(lo, hi, cand, obs, truth, ("observer", "observer_flat"), lse=("observer",), extra=obs_extra)
+    base = res["observer"]
+    pidx = base["sub"]["pidx"]
+    hit_type = np.where(base["sub"]["correct"], cand["ptype"][np.maximum(pidx, 0)], -1).astype(np.int8)
+    out["observer"] = _table(base, rec, idx, np.zeros(n), base, hit_type=hit_type,
+                             tfeas=tfeas.T.astype(np.int8))
+    out["observer_flat"] = _table(res["observer_flat"], rec, idx, np.zeros(n), base)
+    um = mid["u"]
+    mlo, mhi = _band(um, gm)
+    resm = score_blocks(mlo, mhi, cand, lambda rows, k0, k1: dict(observer_mid=gm(um[rows][:, None] - cand["t"][None, k0:k1])),
+                        truth, ("observer_mid",))
+    out["observer_mid"] = _table(resm["observer_mid"], rec, idx, np.zeros(n), base)
+
+    # one pass per compromised node: its first-hop evidence, its credential-processor or gatekeeper
+    # mixture, its content arrival on the records naming it, and their combination
+    fh, cs, csq = pdf["fh"], pdf["cs"], pdf["cs_q"]
+    pi = 1.0 / (P.N_NODES - P.N_GATEKEEPERS)
+    m_all = np.sort(s["gk_send"], 1)[:, 1]
+    parts = {k: [] for k in ("first_hop", "cred_processor", "gatekeeper", "combined")}
+    for X in range(P.N_NODES):
+        isgk = bool(np.isin(X, run.gk_set))
+        a = np.where(s["F"][srow] == X, s["arr_f"][srow], np.where(s["I"][srow] == X, s["arr_i"][srow], np.nan))
+        if isgk:
+            post = s["posts"][:, int(np.nonzero(run.gk_set == X)[0][0])]
+            o = np.argsort(post, kind="stable")
+            mix, role = _MixtureV(cand["t"], post[o], np.ones(o.size), pdf["gk"], pdf["gk_q"], g), "gatekeeper"
+        else:
+            mine = np.nonzero(s["C"] == X)[0]
+            mine = mine[np.argsort(m_all[mine], kind="stable")]
+            mix, role = _MixtureV(cand["t"], m_all[mine], np.ones(mine.size), pdf["c"], pdf["c_q"], g, pi=pi), "cred_processor"
+        mine_pk = cand["node"][:, 0] == X
+        hold = np.where(mine_pk, cand["hold"][:, 0], np.nan)
+
+        def fn(rows, k0, k1, a=a, mix=mix, role=role, mine_pk=mine_pk, hold=hold):
+            sk = cand["t"][None, k0:k1]
+            y = u[rows][:, None] - sk
+            lg = g(y)
+            ok = np.isfinite(lg)
+            lg0 = np.where(ok, lg, 0.0)
+            own = mine_pk[None, k0:k1] & ok
+            t_fh = np.where(own, fh(hold[None, k0:k1], y) - lg0, 0.0) if own.any() else 0.0
+            ar = a[rows]
+            t_cs = 0.0
+            if np.isfinite(ar).any():
+                x = ar[:, None] - sk
+                named = np.isfinite(ar)[:, None] & ok
+                t_cs = np.where(named, cs(x, y) + csq(x) - lg0, 0.0)
+            t_mix = np.where(ok, mix.block(u[rows], k0, k1) - lg0, 0.0)
+            neg = -np.inf
+            return {"first_hop": np.where(ok, lg + t_fh, neg), role: np.where(ok, lg + t_mix, neg),
+                    "combined": np.where(ok, lg + t_fh + t_cs + t_mix, neg)}
+        names = ("first_hop", role, "combined")
+        r = score_blocks(lo, hi, cand, fn, truth, names, lse=names, max_cells=MAX_CELLS // 3)
+        grp = np.full(n, X)
+        nr = n_roles(s, srow, X, run.gk_set)
+        pair = role_pair_class(s, srow, X, run.gk_set)
+        pk = r["first_hop"]["sub"]["pidx"]
+        claim = (pk >= 0) & (cand["node"][np.maximum(pk, 0), 0] == X)
+        parts["first_hop"].append(_table(r["first_hop"], rec, idx, grp, base, took_part_A=(s["A"][srow] == X).astype(np.int8),
+                                         took_part_DG=((s["D"][srow] == X) | (s["G"][srow] == X)).astype(np.int8),
+                                         claim=claim.astype(np.int8), nroles=nr, pair=pair))
+        if isgk:
+            parts["gatekeeper"].append(_table(r[role], rec, idx, grp, base, nroles=nr, pair=pair))
+        else:
+            claim = mix.own_share(u, r[role]["sub"]["pidx"]) > pi       # evidence favours its own transactions
+            parts["cred_processor"].append(_table(r[role], rec, idx, grp, base, took_part=(s["C"][srow] == X).astype(np.int8),
+                                                  claim=claim.astype(np.int8), nroles=nr, pair=pair))
+        parts["combined"].append(_table(r["combined"], rec, idx, grp, base, took_part=(pair != PAIR_CODE["no role"]).astype(np.int8),
+                                        nroles=nr, pair=pair))
+    for k, v in parts.items():
+        out[k] = _cat(v)
+
+    # content server: the records naming it as F or I, which it identifies by the content hash it submitted
+    ri = np.r_[idx, idx]
+    grp = np.r_[s["F"][srow], s["I"][srow]]
+    a = np.r_[s["arr_f"][srow], s["arr_i"][srow]]
+    tr = dict(sub=srow[ri], dev=rec["dev"][ri])
+    nr = (sum((s[k][srow[ri]] == grp).astype(np.int8) for k in "ABCDEFGHI") + np.isin(grp, run.gk_set)).astype(np.int8)
+    for name, uu, gg, cond in (("content_server", u, g, cs), ("content_server_mid", um, gm, pdf["cs_mid"])):
+        ur = uu[ri]
+
+        def fn(rows, k0, k1, ur=ur, cond=cond):
+            sk = cand["t"][None, k0:k1]
+            x = a[rows][:, None] - sk
+            return {name: cond(x, ur[rows][:, None] - sk) + csq(x)}
+        clo, chi = _band(ur, gg)
+        r = score_blocks(clo, chi, cand, fn, tr, (name,), lse=(name,) if name == "content_server" else ())
+        out[name] = _table(r[name], rec, ri, grp, base, nroles=nr)
+
+    # validator: names device identities directly; its candidates are its own replies, real and decoy
+    t = run.events["t_send"][s["ev_cv2"]]
+    o = np.argsort(t, kind="stable")
+    vdev = tie(s["src"][o].astype(np.int64))
+    vc = dict(t=t[o], sub=o.astype(np.int64), msub=o.astype(np.int64), dev=vdev, dev_shuf=shuf(vdev))
+    gV = pdf["gV"]
+    vlo, vhi = _band(u, gV)
+    r = score_blocks(vlo, vhi, vc, lambda rows, k0, k1: dict(validator=gV(u[rows][:, None] - vc["t"][None, k0:k1])),
+                     truth, ("validator",), lse=("validator",))
+    out["validator"] = _table(r["validator"], rec, idx, np.zeros(n), base)
+    return out
+
+
+def shuffle_test(run, m: Models, rng, K=200):
+    """The label-shuffle control, taken apart for the observer on one run. One permutation is scored
+    as in compute(); from the same scores, the outcome under K further permutations follows exactly,
+    because permuting labels only renames the groups the posterior is summed over.
+
+    Returns per-run totals: records n; labels L; for the scored permutation, records whose shuffled
+    pick is not the permuted unshuffled pick (the shuffle itself), records whose feasible-device count
+    changes (the feasible set), and its correct and chance sums; the exact expectation over every
+    permutation of the correct and chance sums; and the correct and chance sums under each of K
+    permutations (the estimator's spread)."""
+    s = run.subs
     rec = records(run)
     keep = scored_mask(run, rec["sub"])
     rec = {k: x[keep] for k, x in rec.items()}
     cand = candidates(run)
-    if label_rng is not None:
-        cand = relabel_devices(run, cand, label_rng)
-    g = m.pdf["g"]
-    lo, hi = _band(rec["u"], g)
-    truth = dict(sub=rec["sub"], dev=rec["dev"])
+    labels = np.unique(np.r_[cand["dev"], s["src"]])
+    L, n = labels.size, rec["sub"].size
+    li = np.searchsorted(labels, cand["dev"])
+    p0 = rng.permutation(L)                                   # label index i -> label index p0[i]
+    cand["dev_shuf"] = labels[p0[li]]
+    feas = np.zeros((n, L), bool)
 
-    def gfn(rows, k0, k1):
-        return g(rec["u"][rows][:, None] - cand["t"][None, k0:k1])
-    base = score_blocks(lo, hi, cand, gfn, truth)
-    out = {}
-    for v in vantages:
-        ri, grp, res, info = score_vantage(v, run, rec, cand, m, base, run_id)
-        r = dict(sub=rec["sub"][ri].astype(np.int32), group=np.asarray(grp).astype(np.int16))
-        if "overlap" in run.subs:
-            r["ov"] = run.subs["overlap"][rec["sub"][ri]].astype(np.int8)
-        for k, x in info.items():
-            r[k] = np.asarray(x).astype(np.int8)
-        for lvl in LEVELS:
-            o = res[lvl]
-            b = base[lvl]
-            r[f"{lvl}_v_correct"] = o["correct"].astype(np.int8)
-            r[f"{lvl}_b_correct"] = b["correct"][ri].astype(np.int8)
-            r[f"{lvl}_v_rand"] = _random_rate(o, lvl).astype(np.float32)
-            r[f"{lvl}_b_rand"] = _random_rate({k: x[ri] for k, x in b.items()}, lvl).astype(np.float32)
-            r[f"{lvl}_n_feas"] = o["n_feas"]
-            r[f"{lvl}_rank"] = o["rank"]
-            r[f"{lvl}_top1"] = o["top1"].astype(np.float32)
-            r[f"{lvl}_top2"] = o["top2"].astype(np.float32)
-            r[f"{lvl}_s_true"] = o["s_true"].astype(np.float32)
-            if lvl == "dev":
-                r["dev_lse"] = o["lse"]
-        out[v] = r
-    return out
+    def extra(nm, rows, lo, hi, W, is_t):
+        rr, cc = np.nonzero(np.isfinite(W))
+        feas[rows[rr], li[lo:hi][cc]] = True
+    g = m.pdf["g"]
+    u = rec["u"]
+    lo, hi = _band(u, g)
+    res = score_blocks(lo, hi, cand, lambda rows, k0, k1: dict(observer=g(u[rows][:, None] - cand["t"][None, k0:k1])),
+                       dict(sub=rec["sub"], dev=rec["dev"]), ("observer",), extra=extra)["observer"]
+    pick, spick = res["dev"]["pick"], res["shuf"]["pick"]
+    has = pick >= 0
+    pi_ = np.where(has, np.searchsorted(labels, np.where(has, pick, labels[0])), -1)
+    ti = np.searchsorted(labels, rec["dev"])
+    nf = feas.sum(1)
+    mismatch = int((has & (spick != labels[p0[np.maximum(pi_, 0)]])).sum())
+    nfeas_mismatch = int((nf != res["dev"]["n_feas"]).sum())
+    inv0 = np.argsort(p0)
+    real_correct = int((has & (p0[np.maximum(pi_, 0)] == ti)).sum())
+    real_chance = float(np.where(nf > 0, feas[np.arange(n), inv0[ti]] / np.maximum(nf, 1), 0.0).sum())
+    perms = np.argsort(rng.random((K, L)), 1)
+    inv = np.argsort(perms, 1)
+    ck = (has[None, :] & (perms[:, np.maximum(pi_, 0)] == ti[None, :])).sum(1)
+    chk = np.where(nf[None, :] > 0, feas[np.arange(n)[None, :], inv[:, ti]] / np.maximum(nf, 1)[None, :], 0.0).sum(1)
+    return dict(n=n, L=L, shuffle_mismatch=mismatch, nfeas_mismatch=nfeas_mismatch, correct=real_correct, chance=real_chance,
+                scored_correct=int(res["shuf"]["correct"].sum()), scored_chance=float(_random_rate(res["shuf"], "dev").sum()),
+                exact_correct=float(has.sum() / L), exact_chance=float((nf > 0).sum() / L),
+                correct_k=ck.astype(np.int32), chance_k=chk.astype(np.float64))
