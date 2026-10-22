@@ -99,7 +99,7 @@ class World:
         # the registry-level bundle schedule: one phase shared by every content server
         self.reg_phase = float(rng_reg.uniform(0, max(cfg.reg_bundle_s, 1.0)))
         # the registry's own posting schedule, on an independent phase
-        self.post_phase = float(rng_regpost.uniform(0, P.REG_POST_S))
+        self.post_phase = float(rng_regpost.uniform(0, max(cfg.reg_post_s, 1.0)))
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -382,9 +382,14 @@ def gen_birthmark(w: World):
     # posted time is the public record time
     intake = np.where(okf & oki, np.fmax(reach[0], reach[1]), np.nan)
     subs["intake"] = intake
-    ph = w.post_phase
-    subs["posted"] = ph + P.REG_POST_S * np.ceil((intake - ph) / P.REG_POST_S)
+    if cfg.reg_post_s > 0:
+        ph = w.post_phase
+        subs["posted"] = ph + cfg.reg_post_s * np.ceil((intake - ph) / cfg.reg_post_s)
+    else:
+        subs["posted"] = intake
     subs["final"] = subs["posted"]
+    # the midpoint of F's and I's registry submissions (used only by a scoring diagnostic)
+    subs["mid"] = np.where(okf & oki, 0.5 * (subs["reg_f"] + subs["reg_i"]), np.nan)
     return subs
 
 
