@@ -1,0 +1,141 @@
+{
+ "calibration": {
+  "main": {
+   "D": 1170.425134868452,
+   "history": [
+    {
+     "D": 1000.0,
+     "real_in_flight": 23.291034731522295,
+     "decoys_in_flight": 116.59908106942518,
+     "mean_residence": 1170.425134868452,
+     "runs": 40,
+     "R": 20
+    },
+    {
+     "D": 1170.425134868452,
+     "real_in_flight": 20.010503789760048,
+     "decoys_in_flight": 99.6939981843266,
+     "mean_residence": 1170.2423690800892,
+     "runs": 40,
+     "R": 20
+    }
+   ],
+   "converged": true
+  },
+  "no_holds": {
+   "D": 20.462170806969553,
+   "history": [
+    {
+     "D": 1000.0,
+     "real_in_flight": 0.40809495373910903,
+     "decoys_in_flight": 2.0542770566499287,
+     "mean_residence": 20.462170806969553,
+     "runs": 40,
+     "R": 20
+    },
+    {
+     "D": 20.462170806969553,
+     "real_in_flight": 19.91345266746675,
+     "decoys_in_flight": 99.44692756790376,
+     "mean_residence": 20.392352298305703,
+     "runs": 40,
+     "R": 20
+    }
+   ],
+   "converged": true
+  },
+  "first_relay_cred": {
+   "D": 1175.6213567152079,
+   "history": [
+    {
+     "D": 1000.0,
+     "real_in_flight": 23.369434010634677,
+     "decoys_in_flight": 116.64186054095951,
+     "mean_residence": 1175.6213567152079,
+     "runs": 40,
+     "R": 20
+    },
+    {
+     "D": 1175.6213567152079,
+     "real_in_flight": 19.928985683113382,
+     "decoys_in_flight": 99.50675218561358,
+     "mean_residence": 1175.2571902099262,
+     "runs": 40,
+     "R": 20
+    }
+   ],
+   "converged": true
+  },
+  "first_relay_content": {
+   "D": 10907.19402676524,
+   "history": [
+    {
+     "D": 1000.0,
+     "real_in_flight": 215.32313978221123,
+     "decoys_in_flight": 1096.5704652754484,
+     "mean_residence": 10907.19402676524,
+     "runs": 40,
+     "R": 20
+    },
+    {
+     "D": 10907.19402676524,
+     "real_in_flight": 20.00389852251994,
+     "decoys_in_flight": 100.51198602597204,
+     "mean_residence": 10969.52907359881,
+     "runs": 40,
+     "R": 20
+    }
+   ],
+   "converged": true
+  },
+  "first_relay_f": {
+   "D": 7544.840546432402,
+   "history": [
+    {
+     "D": 1000.0,
+     "real_in_flight": 147.8610400688241,
+     "decoys_in_flight": 757.8895076523746,
+     "mean_residence": 7544.840546432402,
+     "runs": 40,
+     "R": 20
+    },
+    {
+     "D": 7544.840546432402,
+     "real_in_flight": 20.122771314265556,
+     "decoys_in_flight": 99.89685477881972,
+     "mean_residence": 7565.440788895631,
+     "runs": 40,
+     "R": 20
+    }
+   ],
+   "converged": true
+  }
+ },
+ "D": {
+  "main": 1170.425134868452,
+  "no_holds": 20.462170806969553,
+  "first_relay_cred": 1175.6213567152079,
+  "first_relay_content": 10907.19402676524,
+  "first_relay_f": 7544.840546432402
+ },
+ "config_hash": "75044949c8a7f95d",
+ "seeds": {
+  "calibration": 2000000000,
+  "models": 1000000000,
+  "shuffle": 14000000,
+  "traffic": "sha256 of the volume and run id"
+ },
+ "decoys": 100,
+ "R": [
+  1,
+  20,
+  100
+ ],
+ "runs_per_cell": {
+  "main": 200,
+  "no_holds": 50,
+  "first_relay_cred": 100,
+  "first_relay_content": 100,
+  "first_relay_f": 100
+ }
+}
