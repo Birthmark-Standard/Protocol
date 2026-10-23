@@ -64,7 +64,7 @@ There are six component vantages, the passive observer, and the combined view of
 **Decoys**
 - A decoy is a genuine transaction from a registered identity held by the decoy infrastructure. It is approved, fanned out, posted and finalized exactly as a real transaction, and it produces a permanent registry record.
 - 100 decoy transactions are in flight at every level of real traffic.
-- Each decoy identity captures at a device's rate, every 20 minutes on average.
+- Each decoy identity captures at the rate of one real device in the same cell, so no identity's rate stands out. In the main cells that is about once every 20 minutes.
 
 **Board and registry**
 - Each match board pushes its new matches to every content server every 10 seconds, on its own schedule.

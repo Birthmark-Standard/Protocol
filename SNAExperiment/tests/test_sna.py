@@ -177,6 +177,15 @@ def test_window_halves_and_candidates_outside_the_window():
     assert cand["t"].min() < cfg.warmup_s and cand["t"].max() > cfg.warmup_s + cfg.measure_s
 
 
+def test_decoy_identities_capture_at_the_real_device_rate():
+    """In every cell of every configuration, a decoy identity captures at the rate of a real device, within 5%."""
+    for name, D in (("main", 1170.0), ("no_holds", 20.5), ("first_relay_content", 10900.0), ("first_relay_f", 7550.0)):
+        for R in EX.REAL_R:
+            c = EX.config(name, R, D)
+            real, dec = c.real_rate / c.real_devices, c.decoy_rate / c.decoy_sources
+            assert abs(real / dec - 1) < 0.05, (name, R, real / dec)
+
+
 def test_shuffle_test_is_exact():
     """The shuffle test's derived outcome for the scored permutation equals the scored outcome, and the
     shuffle changes neither the picks (beyond renaming) nor the feasible counts."""

@@ -107,7 +107,11 @@ class Config:
 
     @property
     def decoy_sources(self) -> int:
-        return max(1, int(round(self.decoy_rate * INTERVAL_MIN * 60))) if self.decoy_rate > 0 else 0
+        """Decoy identities, each capturing at the real devices' rate per device, so no identity's rate stands out."""
+        if self.decoy_rate <= 0:
+            return 0
+        per_device = self.real_rate / self.real_devices if self.real_rate > 0 else 1.0 / (INTERVAL_MIN * 60)
+        return max(1, int(round(self.decoy_rate / per_device)))
 
     def with_(self, **kw) -> "Config":
         return replace(self, **kw)
