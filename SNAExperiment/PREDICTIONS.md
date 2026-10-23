@@ -119,7 +119,7 @@ The quantity that matters is the correlation rate: how often a vantage names the
 
 ## Predictions for the run with 100 decoys
 
-Written and committed before the run with 100 decoys in flight. The predictions above were made for 60 decoys.
+Written and committed before the run with 100 decoys in flight. The predictions above were made for 60 decoys. This section was revised before the run for the cells R = 1, 100 and 500, which replace R = 1, 20 and 100. No run took place with the earlier cells.
 
 ### 10. Correlation rate bounds at 100 decoys
 
@@ -135,8 +135,8 @@ At 100 decoys, each vantage's accuracy is at or below the top of its range divid
 | Cell | Passive observer, at most | Content server, at most |
 |---|---|---|
 | R = 1 | 4.80% | 5.68% |
-| R = 20 | 4.04% | 4.78% |
 | R = 100 | 2.43% | 2.87% |
+| R = 500 | 0.81% | 0.96% |
 
 **Basis.** The scaling holds because the number of feasible candidates grows with the transactions in flight, decoys and real together. The content server's product at R = 20 was 503, below the 511 that the instruction gives as the bottom of its range. The bound uses only the top.
 
@@ -148,7 +148,7 @@ These predictions hold for the run with 100 decoys with the same failure rules, 
 
 | Prediction | At 100 decoys |
 |---|---|
-| 1 | D is within 1% of 1,170.4 s, the calibration at 100 decoys. Capture to finalization lies between 1,140 s and 1,190 s in every main cell. |
+| 1 | D is within 1% of 1,170.4 s, the calibration at 100 decoys at R = 20; the run calibrates at R = 100. Capture to finalization lies between 1,140 s and 1,190 s in every main cell. |
 | 2 | Real in flight within 3% of R and decoys within 3% of 100, in every cell. |
 | 3 | The match board sets 47% to 53% of the main confirmations, and each control's intended path sets at least 95%. |
 | 8 | Departure to arrival at C, F or I: a mean of 355.6 s to 364.7 s and a standard deviation of 258 s to 270 s. |
