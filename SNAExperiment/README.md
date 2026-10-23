@@ -169,7 +169,7 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 - The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
 - Real and decoy transactions arrive at their normal rates from time zero to the end of the run.
 - The warm-up lasts the configuration's longest possible delay: the sum of the caps along the longest path, plus 60 seconds. For the main configuration that is 2,650 seconds. Scoring starts after it, once traffic in flight is steady.
-- The scored window lasts 10 D. At R = 1 it is extended to hold 200 real transactions per run on average. Only records introduced in the window are scored. The in-flight counts, the chance rates and every table use the window only.
+- The scored window holds about 200 real transactions per run on average: 200 D at R = 1, 2.2 D at R = 100 and 0.44 D at R = 500. The cap at 220 real transactions per run keeps the run within its cost. Only records introduced in the window are scored. The in-flight counts, the chance rates and every table use the window only.
 - The cool-down after the window also lasts the longest possible delay, so every record introduced in the window finalizes. A real transaction introduced in the window that never finalizes, which only a quorum timeout can cause, is counted and reported.
 - Packets from the warm-up and the cool-down stay in every vantage's candidate list.
 - The main configuration runs 200 runs per cell. The controls run 50 (every hold off) or 100 runs per cell.

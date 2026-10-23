@@ -66,7 +66,7 @@ def cell_key(R, decoys=DECOYS):
 
 
 WINDOW_D = 10.0                                  # the scored window lasts at most 10 D ...
-MAX_REAL_PER_RUN = 300                           # ... and holds at most 300 real transactions per run on average
+MAX_REAL_PER_RUN = 220                           # ... and holds at most 220 real transactions per run on average
 
 
 def window_s(R, D):
