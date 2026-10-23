@@ -406,12 +406,14 @@ class _MixtureV:
         for c in np.unique(kidx[ok] // self.CH):
             m = ok & (kidx // self.CH == c)
             loc = kidx[m] - c * self.CH
-            V = self._vtab(c)
-            Z = self._pair(c)[3]
+            xi, w, outx, Z = self._pair(c)
             y = u[m] - self.ct[kidx[m]]
             yi = np.clip(np.floor((y - g.lo) / g.bw).astype(np.int64), 0, ny - 1)
-            tot = V[loc, yi]
+            # V_k(y) at the one candidate per row, from the (candidate, event) pairs: the same sum the
+            # tabulated V_k holds, without tabulating it over every y bin of the chunk
+            mix = (w[loc] * self.Tp[xi[loc], yi[:, None]]).sum(1)
             rest = (1.0 - self.pi * (Z[loc] > 0)) * self.gp[yi]
+            tot = self.pi * (mix + outx[loc] * self.gp[yi]) + rest
             with np.errstate(invalid="ignore", divide="ignore"):
                 out[m] = np.where(tot > 0, 1.0 - rest / tot, 0.0)
         return out
