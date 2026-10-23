@@ -95,3 +95,24 @@ Together these add about 0.16 s to the mean. Their spread of tens of millisecond
 **Basis.** Permuting the labels renames the groups the posterior is summed over and changes no score. So the expected accuracy and the expected chance rate are both one over the number of devices. The pilot found 0, 3 and 9 mismatches in 6,139, 5,816 and 30,019 records, all ties, and no feasible-count change. The means over permutations were within 1.5% of exact, and coverage was 92% to 93% on 30 runs.
 
 **Fails if** mismatches reach 0.1% of records in a cell, any feasible count changes, a mean over permutations is more than 3% from exact, or coverage lies outside 90% to 97% in a cell.
+
+## Reading the predictions by correlation rate
+
+This section was added after the run, at Sam's direction. The predictions above are unchanged.
+
+The quantity that matters is the correlation rate: how often a vantage names the device behind a record. The lead over the observer and the multiple of chance frame that rate as an SNA effect. They are not the measure of it.
+
+- A prediction about a correlation rate fails only when the measured rate is above its predicted range. A lower rate is a better outcome for the protocol.
+- A change in a lead or a multiple, with no rate above its range, is a change in framing, not a failure.
+
+| Prediction | Measured | Reading by correlation rate |
+|---|---|---|
+| 1. D and capture to finalization | D = 1,170.1 s; 1,164.2 s, 1,164.1 s and 1,161.7 s | Holds. Not a rate. |
+| 2. Counts in flight | 14 of 15 cells within 1.4%. The every-hold-off control at R = 20 has 19.29 real in flight (-3.56%) and 58.54 decoys (-2.43%). | A traffic check, not a rate. It fails in that one control cell. |
+| 3. Match board share | 49.98%, 50.53% and 50.13%. The controls' intended paths: 95.8% to 98.1%. | Holds. Not a rate. |
+| 4. Observer and content server | Observer 7.28%, 5.31% and 3.03%. Content server 8.37%, 6.29% and 3.59%. | Holds. Every rate is inside its range except the observer at R = 1, which is below it: 7.28% against a range of 7.6% to 9.5%. |
+| 5. Credential processor, validator, gatekeeper | Credential processor 7.28%, 5.31% and 3.03%. Gatekeeper 7.33%, 5.32% and 3.02%. Validator 7.82%, 5.81% and 3.34%. | The prediction was stated as a margin. As a margin it fails for the validator, which leads the observer by +0.54, +0.50 and +0.31 points with intervals above zero. Its rates lie inside the pilot's intervals for the validator: 7.47% to 8.91%, 4.75% to 6.05% and 3.09% to 3.63%. The credential processor and the gatekeeper match the observer's rate. |
+| 6. Observer, timing evidence off | 5.42%, 3.69% and 2.11%; multiples of 3.01, 2.69 and 3.07 | Holds. |
+| 7. Record time at the midpoint | Observer +0.63, +0.50 and +0.24 points. Content server +0.65, +0.48 and +0.26 points. | Holds. Timing records at the midpoint, which the protocol does not publish, would raise the correlation rate by these amounts. |
+| 8. Departure to arrival | Means 358.4 s to 362.8 s; standard deviations 262.0 s to 265.0 s | Holds. Not a rate. |
+| 9. The shuffle test | Mismatches at most 0.03% of records, all ties; no feasible count changed; means within 0.4% of exact; coverage 91%, 94% and 96.5% | Holds. |
