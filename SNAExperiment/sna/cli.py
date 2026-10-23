@@ -57,7 +57,7 @@ def main(argv=None):
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run"])
     ap.add_argument("--out", help="results directory (default: results/)")
-    ap.add_argument("--workers", default="auto", help="worker processes (default: all cores)")
+    ap.add_argument("--workers", default="auto", help="worker processes (default: half the cores)")
     ap.add_argument("--runs", type=int, default=EX.RUNS, help="runs per cell of the main configuration (default: %(default)s); "
                     "each control runs its own count or this, whichever is smaller")
     a = ap.parse_args(argv)

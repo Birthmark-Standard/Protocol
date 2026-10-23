@@ -197,7 +197,7 @@ On Windows, use `py -m pip install -r requirements.txt` and `py -m sna run`.
 It is resumable: rerunning the same command skips the runs already on disk. Results depend only on the cell and run id, not on the worker count or completion order. A results directory written under other settings is refused.
 
 - `--runs N` sets the main configuration's runs per cell. Each control runs its own count or N, whichever is smaller.
-- `--workers N` sets the worker processes.
+- `--workers N` sets the worker processes. The default is half the cores. Workers run at below-normal priority, so the machine stays usable. The run prints the elapsed time and an estimate of the time remaining as it goes.
 - `--out DIR` sets the results directory.
 - `python -m sna run --runs 2 --out results/quick` runs every step on two runs per cell.
 - Fast tests: `python -m pytest tests -q`.

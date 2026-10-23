@@ -73,9 +73,23 @@ def done_runs(out: Path, name: str) -> set[int]:
 
 
 def resolve_workers(workers) -> int:
+    """Half the available cores by default, so the machine stays usable while the run goes."""
     if workers in (None, "auto"):
-        return max(1, os.cpu_count() or 1)
+        return max(1, (os.cpu_count() or 2) // 2)
     return max(1, int(workers))
+
+
+def lower_priority():
+    """Run this process at below-normal priority: BELOW_NORMAL_PRIORITY_CLASS on Windows, nice 10 elsewhere."""
+    try:
+        if os.name == "nt":
+            import ctypes
+            k = ctypes.windll.kernel32
+            k.SetPriorityClass(k.GetCurrentProcess(), 0x00004000)
+        else:
+            os.nice(10)
+    except Exception:                          # a priority the system refuses leaves the run as it is
+        pass
 
 
 def execute(tasks, worker, out: Path, workers="auto", label=""):
@@ -93,7 +107,7 @@ def execute(tasks, worker, out: Path, workers="auto", label=""):
     handles, t0, finished = {}, time.time(), 0
     pending, it = set(), iter(tasks)
     try:
-        with ProcessPoolExecutor(nw) as ex:
+        with ProcessPoolExecutor(nw, initializer=lower_priority) as ex:
             for _ in range(nw * 2):                   # bounded queue: at most 2 runs per worker in flight
                 t = next(it, None)
                 if t is None:
