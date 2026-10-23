@@ -156,7 +156,7 @@ The system injects decoy transactions to enlarge the candidate pool available to
 
 A decoy transaction is a genuine transaction from a genuinely registered device credential, not a distinguishable, invalid, or specially marked one. The credentials belong to a pool of identities operated by the same infrastructure that generates decoy traffic and distributes the device routing table, registered with a validator the same way any other device is. Nothing about a decoy transaction differs structurally from a real one at any stage: V approves it normally, C fans it out normally, every signature is genuinely valid, gatekeeper verification and match board quorum proceed normally, and F and I finalize a registry record for it exactly as they would for real content. No party, including V, C, and the gatekeepers, has any way to distinguish a decoy transaction from a real one, because there is nothing structurally different to distinguish. A decoy is an ordinary submission with arbitrary content. Its claim, and therefore its verdict, follows the mix of claims in real traffic, so a decoy record carries a verdict as a real one does and no verdict marks a record as real. The decoy-identity pool must be large enough that no single identity's submission rate looks statistically different from a plausible device's. The pool size is expected to vary with the deployment's own phase and scale, and is not meant to be fixed to a single documented number; it is an operating parameter the deploying infrastructure adjusts as needed, using as many rotating identities as the deployment's own scale calls for.
 
-Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: 60 decoy transactions in flight on average, in addition to whatever real traffic exists, at every level of real traffic. Decoy captures arrive at random times, so the number in flight at any moment varies around that mean.
+Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: 100 ± 10 transactions in flight at any given time, regardless of how much real traffic exists. Decoy volume tops up whatever real traffic falls short of this target. The randomized range, rather than a single exact constant, keeps the target from being a precisely known value an observer could characterize and subtract out exactly; it does not eliminate the risk that enough observed windows could statistically narrow the underlying distribution.
 
 Every decoy-produced registry record is permanent, exactly like a real one; none are ever removed. Whether and how to prune decoy records to manage hot-storage growth is an open implementation question, deferred rather than specified here.
 
@@ -164,28 +164,26 @@ The second relays (B, E, H) see no difference between decoy and real traffic at 
 
 ## Hold timing
 
-Every hold in this spec draws from the same lottery shape — a 10-second tick, geometric release, capped at 3× the hold's own mean — but no longer shares one baseline mean. Each stage's per-tick release probability and cap are set independently to hit that stage's own target mean. The departure bundle inclusion lottery uses a 30-second tick (one per bundle boundary) with a cap at 12 boundaries (3× its 120-second target mean). Settled means:
+Every hold in this spec draws from the same lottery shape — a 10-second tick, geometric release, capped at 3× the hold's own mean — but no longer shares one baseline mean. Each stage's per-tick release probability and cap are set independently to hit that stage's own target mean. The departure bundle inclusion lottery uses a 30-second tick (one per bundle boundary) with a cap at 12 boundaries (3× its 120-second target mean). Each hold starts at a uniformly random phase within its tick, and the standard deviations below follow from that. Settled means:
 
 | Stage | Mean | Std dev | CoV |
 | --- | --- | --- | --- |
-| Relays (A, B, D, E, G, H), every path | 120 s | 103.1 s | 0.86 |
+| First relays (A, D, G), every path | 60 s | 51.3 s | 0.85 |
+| Second relays (B, E, H), every path | 300 s | 258.7 s | 0.86 |
 | Device's credential-channel hold | 120 s | 103.1 s | 0.86 |
 | Device's content-channel holds (both) | 240 s | 206.9 s | 0.86 |
 | C's hold before sending CV-1 | 30 s | 25.3 s | 0.84 |
 | V's hold before sending CV-2 | 30 s | 25.3 s | 0.84 |
-| C's serialized fan-out, per draw (one leg leaves per success) | 20 s | 16.6 s | 0.83 |
+| C's fan-out to the gatekeepers, per draw (one leg per success) | 20 s | 16.6 s | 0.83 |
 | Gatekeeper's own hold | 30 s | 25.3 s | 0.84 |
 | Departure bundle inclusion lottery | 101 s | 90.9 s | 0.90 |
-| F/I's pre-match hold | 240 s | 206.9 s | 0.86 |
+| F/I's pre-match hold | 120 s | 103.1 s | 0.86 |
 | Post-match lottery | 30 s | 25.3 s | 0.84 |
-| Registry bundle wait (shared 120 s schedule) | 60 s | 34.6 s | 0.58 |
-| Registry posting wait (registry's own 120 s schedule) | 60 s across runs | 34.6 s across runs | 0.58 |
+| Registry bundle wait (next boundary of a shared 120 s schedule) | 60 s | 34.6 s | 0.58 |
 
-The standard deviations are those of the lottery as simulated: a uniform wait to the first tick, then geometric release on 10-second ticks, capped at three times the mean. The registry bundle wait is uniform over its 120-second schedule. The registry posting wait is not: confirmed submissions arrive just after a boundary of the registry bundle schedule, which has the same period, so every record waits the same fixed offset between the two schedules' phases. That offset is uniform over 0 to 120 seconds across deployments, and constant within one.
+**Fan-out.** C does not draw an independent hold for each gatekeeper leg. From the moment C receives CV-2, the three legs share one draw per tick of C's node clock. Each successful draw sends the next leg in line, and the next draw starts at the following tick, so no two legs leave on the same tick. With 20 s per draw, the legs leave about 20, 45 and 70 s after CV-2 on average. Each draw uses the lottery shape above, with a cap of 60 s.
 
-**Serialized fan-out.** C's three gatekeeper legs share one draw per tick of C's node clock, from C's receipt of CV-2. Each successful draw sends the next leg, in a random order, and the next draw starts at the following tick, so no two legs leave on the same tick. With 20 s per draw, the legs leave 20, 45 and 70 s after CV-2 on average.
-
-Only stages with a legitimate basis for knowing their own role carry a value different from the shared 120 s figure: the device knows which channel it is constructing a packet for, and F/I know they are F or I. Relays cannot carry a role-specific parameter at all, per the First relay's path-blindness constraint below, so every relay and the device's own credential channel share the same, unelevated 120 s mean. The device's content channels and F/I's pre-match hold share the elevated 240 s mean — exactly double the shared baseline, settling the earlier open choice between that figure and a higher one.
+**Which stages carry which mean.** A relay cannot tell which path it is on, per the First relay's path-blindness constraint below, so every first relay on every path shares one mean, 60 s, and every second relay on every path shares another, 300 s. A relay knows its position for a packet, because a first relay re-encrypts the routing code with the payload and a second relay forwards the payload alone. Position sets the mean and reveals nothing about the path. The two means add to 360 s along every path. The device knows which channel it is constructing a packet for, so its credential channel holds 120 s and its content channels 240 s. F and I know they are F or I, and their pre-match hold is 120 s. A content channel server knows its own pre-match hold, so that hold adds delay only for a party that does not see the server's own events. The relay holds sit between the device's departure and the packet's arrival at F or I, and no server can remove them. For the same 360 s total, the spread of that delay is larger when the second relay carries more of it: 263.7 s with 60 s and 300 s, against 219.2 s with 180 s and 180 s.
 
 ## Departure bundling
 
@@ -193,7 +191,7 @@ The gatekeeper's own hold (see Hold timing) already randomizes when a given pack
 
 Once a packet's own hold has expired, it does not depart in the next bundle automatically. Instead, at each successive 30-second boundary it draws independently for inclusion in that boundary's bundle: 25% chance of boarding, 75% chance of carrying over to the next boundary. The cap is 12 boundaries (360 seconds, exactly 3× the 120-second mean), after which the packet is included unconditionally. This gives a measured mean inclusion-lottery wait of 101 seconds (see Hold timing); the cap's truncation of the geometric tail brings the realized mean below the 120-second value the uncapped geometric would predict. Bundles therefore contain a mix of packets from a range of arrival times — packets that became ready moments apart can land in different bundles, and packets that became ready up to 360 seconds apart can land in the same one. The earlier, simpler version (every ready packet joined the very next boundary) narrowed this mixing window to near zero, handing a patient observer direct correspondence between "ready time" and "departure bundle."
 
-Packets within the same bundle have no observable order relative to each other, since they depart at the same moment. Measured at the settled operating point (60 decoys in flight): mean 2.33 postings per bundle at one gatekeeper, 32.4% of bundles hold fewer than two postings, and 10.0% are empty.
+Packets within the same bundle have no observable order relative to each other, since they depart at the same moment. Measured at an earlier operating point (60 decoys in flight, to be remeasured at 100): mean 2.33 postings per bundle at one gatekeeper, 32.4% of bundles hold fewer than two postings, and 10.0% are empty.
 
 Whether the first-relay lottery should receive the same bundling treatment is open.
 
@@ -230,8 +228,8 @@ Any failed check drops the transaction and triggers that party's discard obligat
 
 ### Relays
 
-- **First relay (A, D, G):** decrypts its transit layer and reads the routing code. Its relay routing table gives one next relay for that code, and no further. It re-encrypts `rc || payload` for that relay, holds per the relay timing lottery, then forwards. A first relay cannot tell which of A, D, or G it is playing for a given transaction: its payload is opaque ciphertext regardless of path, and its routing code carries no visible tag distinguishing credential-path from content-path codes, since such a tag would itself be observable. Path-specific timing therefore lives elsewhere — see Hold timing.
-- **Second relay (B, E, H):** decrypts, looks up the routing code in its relay routing table to find the destination, holds, then forwards the payload alone under the destination's Server Transit Key.
+- **First relay (A, D, G):** decrypts its transit layer and reads the routing code. Its relay routing table gives one next relay for that code, and no further. It re-encrypts `rc || payload` for that relay, holds per the first-relay timing lottery (60 s mean, see Hold timing), then forwards. A first relay cannot tell which of A, D, or G it is playing for a given transaction: its payload is opaque ciphertext regardless of path, and its routing code carries no visible tag distinguishing credential-path from content-path codes, since such a tag would itself be observable. Path-specific timing therefore lives elsewhere — see Hold timing.
+- **Second relay (B, E, H):** decrypts, looks up the routing code in its relay routing table to find the destination, holds (300 s mean, see Hold timing), then forwards the payload alone under the destination's Server Transit Key.
 
 ### Credential channel server C
 
@@ -240,7 +238,7 @@ Any failed check drops the transaction and triggers that party's discard obligat
 3. Generates tx\_id. Holds (see Hold timing), then sends CV-1 (tx\_id, T, key\_ref, Enc\_FullPacketHash) to the validator that key\_ref designates.
 4. On **REJECTED**: drops the transaction.
 5. On a **verdict**: verifies σ\_V over `verdict || Enc_FullPacketHash` with the Enc\_FullPacketHash it holds; a failed verification drops the transaction. Computes `σ_C = RSign(C-Ring; FullPacketHash || verdict)`. C signs only a verdict that V issued for this transaction.
-6. Sends the three GK legs, each carrying FullPacketHash, verdict, σ\_V, BlindShare\_key and σ\_C, encrypted separately. The legs are serialized (see Hold timing): from when C received CV-2 in step 5, C draws once per tick of its node clock, and each successful draw sends the next leg in a random order, so no two legs leave on the same tick.
+6. Sends the three GK legs, each carrying FullPacketHash, verdict, σ\_V, BlindShare\_key and σ\_C, encrypted separately. The legs leave one at a time: from C's receipt of CV-2 in step 5, the three legs share one draw per tick, and each successful draw sends the next leg in line (see Hold timing). No two legs leave on the same tick.
 
 ### Validator V
 
@@ -273,7 +271,7 @@ Any failed check drops the transaction and triggers that party's discard obligat
 1. Verifies each submission's signature against the known server identity keys.
 2. Finalizes a record once two submissions from two **distinct** identities agree on every field: ContentHash, verdict, flags, and any optional fields.
 3. Duplicate collapse: a ContentHash already on the registry is matched to the existing record, not re-posted.
-4. Merges the two submissions into one record at intake and posts it at the next boundary of its own 120-second posting schedule. The posting time is the record's coarsened timestamp. The registry's gossip frames are of one constant size, so an observer of them cannot tell which record a frame belongs to.
+4. Stamps the record with a coarsened timestamp.
 
 ## Discard and retention obligations
 
