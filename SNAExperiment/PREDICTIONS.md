@@ -154,3 +154,26 @@ These predictions hold for the run with 100 decoys with the same failure rules, 
 | 8 | Departure to arrival at C, F or I: a mean of 355.6 s to 364.7 s and a standard deviation of 258 s to 270 s. |
 | 9 | The shuffle test, as stated. |
 | 11 (new) | The observer's accuracy in the first and the second half of the window agrees in every cell: the 95% interval on the difference contains zero. It fails if any cell's interval excludes zero. |
+
+## Predictions for the run with cells R = 1 and 150
+
+Written and committed before the run with cells R = 1 and 150, 100 decoys, 100 runs per cell and the fixed windows. These bounds replace prediction 10.
+
+### 12. Correlation rate bounds
+
+**Prediction.** Each vantage's accuracy is at or below the top of its range from the 60-decoy run (485 for the observer and 574 for the content server) divided by (100 + R):
+
+| Cell | Passive observer, at most | Content server, at most |
+|---|---|---|
+| R = 1 | 4.8% | 5.7% |
+| R = 150 | 1.9% | 2.3% |
+
+R = 150 extrapolates 1.5 times past R = 100, the largest R in the data behind the fit.
+
+**Fails if** a vantage's point estimate is above its bound in either cell. A rate below its bound is not a failure.
+
+### 13. Cost
+
+**Prediction.** One run of every cell of every configuration costs 204 s of worker time on the machine that profiled it, 94% of it scoring. 100 runs cost 5.7 worker-hours there. Sam's previous run did a workload profiled at 23 worker-hours in 514 minutes on 16 workers. Scaled from that, the run phase takes 2.1 to 4.2 hours on the default 8 workers of Sam's machine. The low end assumes 8 workers deliver the throughput 16 did. The high end assumes each worker runs at the speed it ran at with 16.
+
+**Fails if** the run phase, from the first run to the last, takes more than 4.2 hours on the default workers.
