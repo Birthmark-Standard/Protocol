@@ -65,19 +65,32 @@ def cell_key(R, decoys=DECOYS):
     return f"R{R:g}_D{decoys:g}"
 
 
-WINDOW_D = 10.0                                  # the scored window lasts at most 10 D ...
-MAX_REAL_PER_RUN = 220                           # ... and holds at most 220 real transactions per run on average
+WINDOW_MAIN_S = 3600.0                           # the scored window in the main cells
+MARGIN_S = 300.0                                 # warm-up and cool-down: the longest time measured, plus 5 minutes
 
 
-def window_s(R, D):
-    """Scored window: WINDOW_D times D, shortened at large real volume to hold MAX_REAL_PER_RUN real
-    transactions on average and extended at small real volume to hold MIN_REAL_PER_RUN. Measured in units
-    of D, it holds the same number of records per run under every configuration."""
-    return D * max(P.MIN_REAL_PER_RUN / R, min(WINDOW_D, MAX_REAL_PER_RUN / R))
+def windows(longest, name):
+    """Warm-up, scored window and cool-down of one configuration, from the longest capture-to-finalization
+    times measured in the calibration. A control whose holds differ has all three scaled by the ratio of
+    its longest time to the main configuration's."""
+    ratio = longest[name] / longest[MAIN]
+    warm = (longest[MAIN] + MARGIN_S) * ratio
+    return dict(warmup=warm, window=WINDOW_MAIN_S * ratio, cooldown=warm, ratio=ratio, longest=longest[name])
 
 
-def config(name, R, D):
-    return P.Config(real_rate=R / D, decoy_rate=DECOYS / D, measure_s=window_s(R, D), **CONFIGS[name])
+def window_s(R, D, window):
+    """The scored window, extended at small real volume until it holds MIN_REAL_PER_RUN real transactions on
+    average. Only real records are scored, so a cell needs enough of them."""
+    return max(window, P.MIN_REAL_PER_RUN * D / R)
+
+
+def config(name, R, D, win=None):
+    """One cell of one configuration. win: its windows; without them, a 1-hour window between warm-up and
+    cool-down set by the longest possible delay (the provisional windows of the calibration's first step)."""
+    if win is None:
+        return P.Config(real_rate=R / D, decoy_rate=DECOYS / D, measure_s=WINDOW_MAIN_S, **CONFIGS[name])
+    return P.Config(real_rate=R / D, decoy_rate=DECOYS / D, measure_s=window_s(R, D, win["window"]),
+                    warmup_len=win["warmup"], cooldown_len=win["cooldown"], **CONFIGS[name])
 
 
 def traffic_seed(R, run_id):
@@ -89,7 +102,8 @@ def traffic_seed(R, run_id):
 def config_hash():
     """Fingerprint of every configuration and the cells, written to run_info.json; a results
     directory written under other settings is never resumed."""
-    blob = json.dumps(dict(configs={k: P.Config(**v).__dict__ for k, v in CONFIGS.items()}, R=REAL_R, decoys=DECOYS),
+    blob = json.dumps(dict(configs={k: P.Config(**v).__dict__ for k, v in CONFIGS.items()}, R=REAL_R, decoys=DECOYS,
+                           window=WINDOW_MAIN_S, margin=MARGIN_S, min_real=P.MIN_REAL_PER_RUN),
                       sort_keys=True, default=str)
     return hashlib.sha256(blob.encode()).hexdigest()[:16]
 
@@ -111,13 +125,26 @@ def in_flight(run):
     return float(overlap[~s["decoy"]].sum() / (b - a)), float(overlap[s["decoy"]].sum() / (b - a))
 
 
-def calibrate(name, D0=1000.0, runs=CAL_RUNS, R=CAL_R, max_iter=6):
-    """D under one configuration's own holds. Each iteration runs the cell at rates from the current D,
-    measures the counts in flight and the mean time a transaction stays in the system, and sets D to
-    that time (Little's law); it stops once both counts are within TOLERANCE of their targets."""
+def finalize_times(s, cfg):
+    """Capture to finalization of every transaction introduced in the scored window that finalized."""
+    m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s) & np.isfinite(s["final"])
+    return s["final"][m] - s["t0"][m]
+
+
+def calibrate_longest(name, D0=1000.0, runs=CAL_RUNS, R=CAL_R):
+    """The longest capture-to-finalization time under one configuration's holds, measured on the calibration
+    seeds with provisional windows. Delays do not depend on volume, so D0 need not be the calibrated D."""
+    cfg = config(name, R, D0)
+    return float(max(finalize_times(S.simulate(cfg, CAL_SEED0 + k).subs, cfg).max() for k in range(runs)))
+
+
+def calibrate(name, win, D0=1000.0, runs=CAL_RUNS, R=CAL_R, max_iter=6):
+    """D under one configuration's own holds and its own windows. Each iteration runs the cell at rates from
+    the current D, measures the counts in flight and the mean time a transaction stays in the system, and
+    sets D to that time (Little's law); it stops once both counts are within TOLERANCE of their targets."""
     D, history, ok = D0, [], False
     for it in range(max_iter):
-        cfg = config(name, R, D)
+        cfg = config(name, R, D, win)
         real, dec, dur = [], [], []
         for k in range(runs):
             run = S.simulate(cfg, CAL_SEED0 + k)
@@ -221,22 +248,28 @@ def run_stats(run):
 _W = {}
 
 
-def worker(out, name, R, run_id, D):
+def worker(out, name, R, run_id, D, win):
     """One run of one cell: simulate once, score every vantage, the shuffle and the diagnostics."""
     mp = model_path(out, name)
     if _W.get("model_key") != str(mp):
         with open(mp, "rb") as f:
             _W["models"] = pickle.load(f)
         _W["model_key"] = str(mp)
-    cfg = config(name, R, D)
+    cfg = config(name, R, D, win)
     t = time.time()
     run = S.simulate(cfg, traffic_seed(R, run_id))
     t_sim = time.time() - t
+    fin = run.subs["final"] - run.subs["t0"]
+    longest = float(np.nanmax(fin))
+    if longest > cfg.warmup_s:
+        raise RuntimeError(f"{name} R={R} run {run_id}: a transaction took {longest:.1f} s from capture to finalization, "
+                           f"longer than the {cfg.warmup_s:.1f} s warm-up. Stopping, as the run requires.")
     rng = np.random.default_rng([SHUFFLE_SEED, list(CONFIGS).index(name), int(R), run_id])
     t = time.time()
     tables = AT.compute(run, _W["models"], rng)
     t_score = time.time() - t
-    rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=t_score, vantages=tables, stats=run_stats(run))
+    rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=t_score, vantages=tables, stats=run_stats(run),
+               longest=longest, transactions=int(run.subs["t0"].size))
     if name == MAIN:
         t = time.time()
         rec["shuffle_test"] = AT.shuffle_test(run, _W["models"], rng, SHUFFLE_K)
@@ -244,6 +277,6 @@ def worker(out, name, R, run_id, D):
     return [(rec_name(name, R), rec)]
 
 
-def tasks(out, name, runs, D, done=lambda name, R: set()):
+def tasks(out, name, runs, D, win, done=lambda name, R: set()):
     """Every run of one configuration not yet on disk, cells advancing together."""
-    return [(str(out), name, R, k, D) for k in range(runs) for R in REAL_R if k not in done(name, R)]
+    return [(str(out), name, R, k, D, win) for k in range(runs) for R in REAL_R if k not in done(name, R)]

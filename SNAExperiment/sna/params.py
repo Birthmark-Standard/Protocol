@@ -77,6 +77,8 @@ class Config:
     reg_bundle_s: float = REG_BUNDLE_S # registry-level bundling period; 0 = off
     reg_post_s: float = REG_POST_S     # the registry's posting schedule period; 0 = posted at intake
     overlap: bool = True               # relays drawn under the routing design's guarantees only (see sim._roles)
+    warmup_len: float = -1.0           # warm-up before the scored window (s); below 0: the longest possible delay
+    cooldown_len: float = -1.0         # cool-down after the window (s), with arrivals going on; below 0: as above
 
     @property
     def max_delay_s(self) -> float:
@@ -91,13 +93,13 @@ class Config:
 
     @property
     def warmup_s(self) -> float:
-        """Scoring starts once traffic in flight is steady: after the longest possible delay."""
-        return self.max_delay_s
+        """Scoring starts once traffic in flight is steady."""
+        return self.warmup_len if self.warmup_len >= 0 else self.max_delay_s
 
     @property
     def horizon_s(self) -> float:
-        """The run continues past the window by the longest possible delay, so every scored transaction completes."""
-        return self.warmup_s + self.measure_s + self.max_delay_s
+        """Transactions keep arriving through the cool-down: their packets are candidates for the window's late records."""
+        return self.warmup_s + self.measure_s + (self.cooldown_len if self.cooldown_len >= 0 else self.max_delay_s)
 
     @property
     def real_devices(self) -> int:

@@ -168,9 +168,10 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 - Rates are R / D and 100 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 150. The calibration repeats until both counts in flight are within 3% of their targets.
 - The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
 - Real and decoy transactions arrive at their normal rates from time zero to the end of the run.
-- The warm-up lasts the configuration's longest possible delay: the sum of the caps along the longest path, plus 60 seconds. For the main configuration that is 2,650 seconds. Scoring starts after it, once traffic in flight is steady.
-- The scored window holds about 200 real transactions per run on average: 200 D at R = 1, 2.2 D at R = 100 and 0.44 D at R = 500. The cap at 220 real transactions per run keeps the run within its cost. Only records introduced in the window are scored. The in-flight counts, the chance rates and every table use the window only.
-- The cool-down after the window also lasts the longest possible delay, so every record introduced in the window finalizes. A real transaction introduced in the window that never finalizes, which only a quorum timeout can cause, is counted and reported.
+- The warm-up lasts the longest capture-to-finalization time measured in the calibration, plus 5 minutes. Scoring starts after it, once traffic in flight is steady. Every run checks that no transaction takes longer than the warm-up, and stops if one does.
+- The scored window lasts 1 hour in the main cells. At R = 1 it is extended until it holds 200 real transactions per run on average, because only real records are scored. Only records introduced in the window are scored. The in-flight counts, the chance rates and every table use the window only.
+- The cool-down after the window lasts as long as the warm-up, so every record introduced in the window finalizes. Transactions keep arriving through it, because their packets are candidates for the window's late records. A real transaction introduced in the window that never finalizes, which only a quorum timeout can cause, is counted and reported.
+- A control whose holds differ from the main configuration's has its warm-up, window and cool-down scaled by the ratio of its longest capture-to-finalization time to the main configuration's.
 - Packets from the warm-up and the cool-down stay in every vantage's candidate list.
 - Every configuration runs 100 runs per cell.
 - A run's traffic depends only on its real volume and run id.

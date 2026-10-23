@@ -189,7 +189,10 @@ def test_shuffle_test_is_exact():
 
 def test_in_flight_calibration():
     """Calibrated D gives R real and 100 decoy transactions in flight, each within 3%."""
-    cal = EX.calibrate(EX.MAIN, runs=10)
+    lg = EX.calibrate_longest(EX.MAIN, runs=10)
+    win = EX.windows({EX.MAIN: lg}, EX.MAIN)
+    assert win["warmup"] == lg + EX.MARGIN_S and win["window"] == EX.WINDOW_MAIN_S
+    cal = EX.calibrate(EX.MAIN, win, runs=10)
     h = cal["history"][-1]
     assert cal["converged"]
     assert abs(h["real_in_flight"] / EX.CAL_R - 1) <= EX.TOLERANCE

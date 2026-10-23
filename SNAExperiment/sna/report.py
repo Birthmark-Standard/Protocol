@@ -313,6 +313,17 @@ def write_tables(out, res, info):
     for name, x in info["in_flight"].items():
         for cell, v in x.items():
             md.append(f"| {EX.LABEL[name]} | {cell} | {v['real']:.2f} ({v['target_real']:g}) | {v['decoys']:.2f} ({v['target_decoys']}) | {v['runs']} |")
+    md += ["", "## Windows", "", "| Configuration | Longest capture to finalization in the calibration | Warm-up | Scored window | Cool-down |",
+           "|---|---|---|---|---|"]
+    for name, w in info.get("windows", {}).items():
+        md.append(f"| {EX.LABEL[name]} | {w['longest']:.1f} s | {w['warmup']:.1f} s | {w['window']:.1f} s | {w['cooldown']:.1f} s |")
+    md += ["", "The scored window at R = 1 is extended until it holds 200 real transactions per run on average.", "",
+           "| Cell | Records scored | Passive observer, device named [95% CI] | Half-width of the interval |", "|---|---|---|---|"]
+    for c in cells:
+        r = next((x for x in rows if x["cell"] == c and x["vantage"] == "Passive observer" and x["subset"] == "all records"), None)
+        if r:
+            md.append(f"| {c} | {r['n']:,} | {_pct(r['dev_accuracy'])} [{_pct(r['dev_ci_lo'])}, {_pct(r['dev_ci_hi'])}] | "
+                      f"{100 * (r['dev_ci_hi'] - r['dev_ci_lo']) / 2:.2f} points |")
     md += ["", "## Timing (main run, R = 150)", "", "| Stage | Mean | Std dev | Maximum |", "|---|---|---|---|"]
     st = stats.get(EX.cell_key(150), {})
     for k, v in st.get("stages", {}).items():

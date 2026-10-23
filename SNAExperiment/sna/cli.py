@@ -28,8 +28,13 @@ def run(out, runs, workers):
     t0 = time.time()
     if "D" not in info:
         info["calibration"] = {}
+        longest = {name: EX.calibrate_longest(name) for name in EX.CONFIGS}
+        info["windows"] = {name: EX.windows(longest, name) for name in EX.CONFIGS}
+        for name, w in info["windows"].items():
+            print(f"windows ({name}): longest capture to finalization {w['longest']:.1f} s; warm-up {w['warmup']:.1f} s, "
+                  f"window {w['window']:.1f} s, cool-down {w['cooldown']:.1f} s", flush=True)
         for name in EX.CONFIGS:
-            cal = EX.calibrate(name)
+            cal = EX.calibrate(name, info["windows"][name])
             info["calibration"][name] = cal
             last = cal["history"][-1]
             print(f"calibration ({name}): D = {cal['D']:.1f} s; in flight at R = {EX.CAL_R}: real {last['real_in_flight']:.2f}, "
@@ -46,7 +51,7 @@ def run(out, runs, workers):
     done = lambda name, R: RN.done_runs(out, EX.rec_name(name, R))  # noqa: E731
     todo = []
     for name, n in info["runs_per_cell"].items():
-        todo += EX.tasks(out, name, n, info["D"][name], done)
+        todo += EX.tasks(out, name, n, info["D"][name], info["windows"][name], done)
     RN.execute(todo, EX.worker, out, workers, label="run")
     report.write_all(out, info)
     print(f"done in {(time.time() - t0) / 60:.1f} min; results in {out}", flush=True)
