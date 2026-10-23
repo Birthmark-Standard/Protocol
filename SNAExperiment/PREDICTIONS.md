@@ -116,3 +116,41 @@ The quantity that matters is the correlation rate: how often a vantage names the
 | 7. Record time at the midpoint | Observer +0.63, +0.50 and +0.24 points. Content server +0.65, +0.48 and +0.26 points. | Holds. Timing records at the midpoint, which the protocol does not publish, would raise the correlation rate by these amounts. |
 | 8. Departure to arrival | Means 358.4 s to 362.8 s; standard deviations 262.0 s to 265.0 s | Holds. Not a rate. |
 | 9. The shuffle test | Mismatches at most 0.03% of records, all ties; no feasible count changed; means within 0.4% of exact; coverage 91%, 94% and 96.5% | Holds. |
+
+## Predictions for the run with 100 decoys
+
+Written and committed before the run with 100 decoys in flight. The predictions above were made for 60 decoys.
+
+### 10. Correlation rate bounds at 100 decoys
+
+**Prediction.** In the run with 60 decoys, the product of a vantage's device-named accuracy (in percent) and (60 + R) was nearly constant across R:
+
+| Vantage | Product at R = 1, 20 and 100 | Top of the range |
+|---|---|---|
+| Passive observer | 444, 425 and 485 | 485 |
+| Content server | 511, 503 and 574 | 574 |
+
+At 100 decoys, each vantage's accuracy is at or below the top of its range divided by (100 + R):
+
+| Cell | Passive observer, at most | Content server, at most |
+|---|---|---|
+| R = 1 | 4.80% | 5.68% |
+| R = 20 | 4.04% | 4.78% |
+| R = 100 | 2.43% | 2.87% |
+
+**Basis.** The scaling holds because the number of feasible candidates grows with the transactions in flight, decoys and real together. The content server's product at R = 20 was 503, below the 511 that the instruction gives as the bottom of its range. The bound uses only the top.
+
+**Fails if** a vantage's point estimate is above its bound in any cell. A rate below its bound is not a failure.
+
+### Carried over
+
+These predictions hold for the run with 100 decoys with the same failure rules, with the decoy target now 100:
+
+| Prediction | At 100 decoys |
+|---|---|
+| 1 | D is within 1% of 1,170.4 s, the calibration at 100 decoys. Capture to finalization lies between 1,140 s and 1,190 s in every main cell. |
+| 2 | Real in flight within 3% of R and decoys within 3% of 100, in every cell. |
+| 3 | The match board sets 47% to 53% of the main confirmations, and each control's intended path sets at least 95%. |
+| 8 | Departure to arrival at C, F or I: a mean of 355.6 s to 364.7 s and a standard deviation of 258 s to 270 s. |
+| 9 | The shuffle test, as stated. |
+| 11 (new) | The observer's accuracy in the first and the second half of the window agrees in every cell: the 95% interval on the difference contains zero. It fails if any cell's interval excludes zero. |
