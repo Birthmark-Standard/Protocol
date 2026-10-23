@@ -164,8 +164,8 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 
 ## Cells and runs
 
-- Real volume is R = 1, 20 and 100 transactions in flight, each with 100 decoy transactions in flight.
-- Rates are R / D and 100 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 20. The calibration repeats until both counts in flight are within 3% of their targets.
+- Real volume is R = 1, 100 and 500 transactions in flight, each with 100 decoy transactions in flight.
+- Rates are R / D and 100 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 100. The calibration repeats until both counts in flight are within 3% of their targets.
 - The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
 - Real and decoy transactions arrive at their normal rates from time zero to the end of the run.
 - The warm-up lasts the configuration's longest possible delay: the sum of the caps along the longest path, plus 60 seconds. For the main configuration that is 2,650 seconds. Scoring starts after it, once traffic in flight is steady.

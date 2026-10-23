@@ -27,7 +27,7 @@ from . import sim as S
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
-REAL_R = (1, 20, 100)                            # real transactions in flight
+REAL_R = (1, 100, 500)                           # real transactions in flight
 DECOYS = 100                                     # decoy transactions in flight
 RUNS = 200                                       # runs per cell, main configuration
 TOLERANCE = 0.03                                 # measured in-flight counts within 3% of their targets
@@ -57,7 +57,7 @@ LABEL = {MAIN: "Main run", "no_holds": "Every hold off", "first_relay_cred": "Cr
 INTENDED = {"first_relay_cred": "board", "first_relay_content": "content", "first_relay_f": "f_path"}
 
 CAL_SEED0, MODEL_SEED0, SHUFFLE_SEED = 2_000_000_000, 1_000_000_000, 14_000_000
-CAL_RUNS, CAL_R = 40, 20
+CAL_RUNS, CAL_R = 40, 100
 SHUFFLE_K = 200
 
 
