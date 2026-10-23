@@ -63,7 +63,7 @@ There are six component vantages, the passive observer, and the combined view of
 
 **Decoys**
 - A decoy is a genuine transaction from a registered identity held by the decoy infrastructure. It is approved, fanned out, posted and finalized exactly as a real transaction, and it produces a permanent registry record.
-- 60 decoy transactions are in flight at every level of real traffic.
+- 100 decoy transactions are in flight at every level of real traffic.
 - Each decoy identity captures at a device's rate, every 20 minutes on average.
 
 **Board and registry**
@@ -163,8 +163,8 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 
 ## Cells and runs
 
-- Real volume is R = 1, 20 and 100 transactions in flight, each with 60 decoy transactions in flight.
-- Rates are R / D and 60 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 20. The calibration repeats until both counts in flight are within 3% of their targets.
+- Real volume is R = 1, 20 and 100 transactions in flight, each with 100 decoy transactions in flight.
+- Rates are R / D and 100 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 20. The calibration repeats until both counts in flight are within 3% of their targets.
 - The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
 - The scored window lasts 10 D. At R = 1 it is extended to hold 200 real transactions per run on average. Scoring starts after the configuration's longest possible delay, once traffic in flight is steady.
 - The main configuration runs 200 runs per cell. The controls run 50 (every hold off) or 100 runs per cell.

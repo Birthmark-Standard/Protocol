@@ -1,9 +1,9 @@
 """The run: its configurations, cells, seeds, the in-flight calibration, the attacker's models, the
 per-run worker and the run-level measurements.
 
-A cell is a real volume R (real transactions in flight) with 60 decoy transactions in flight. Rates
+A cell is a real volume R (real transactions in flight) with 100 decoy transactions in flight. Rates
 follow from the mean end-to-end delay D (capture to the registry posting the record): real rate
-R / D, decoy rate 60 / D. D is calibrated under each configuration's own holds, and the counts in
+R / D, decoy rate 100 / D. D is calibrated under each configuration's own holds, and the counts in
 flight are measured in every run. A decoy is a genuine transaction from one of the decoy
 infrastructure's registered identities, each capturing at a device's rate.
 
@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
 REAL_R = (1, 20, 100)                            # real transactions in flight
-DECOYS = 60                                      # decoy transactions in flight
+DECOYS = 100                                     # decoy transactions in flight
 RUNS = 200                                       # runs per cell, main configuration
 TOLERANCE = 0.03                                 # measured in-flight counts within 3% of their targets
 

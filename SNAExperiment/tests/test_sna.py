@@ -174,7 +174,7 @@ def test_shuffle_test_is_exact():
 
 
 def test_in_flight_calibration():
-    """Calibrated D gives R real and 60 decoy transactions in flight, each within 3%."""
+    """Calibrated D gives R real and 100 decoy transactions in flight, each within 3%."""
     cal = EX.calibrate(EX.MAIN, runs=10)
     h = cal["history"][-1]
     assert cal["converged"]
