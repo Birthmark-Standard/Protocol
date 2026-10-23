@@ -118,6 +118,20 @@ def analyze_config(out, name, seed=12345):
             d, dlo, dhi = _acc(t["dev_v_correct"].astype(float) - tr["dev_v_correct"], t["run"], rng) if v != "observer_flat" else (math.nan,) * 3
             diag.append(dict(base, kind=label, accuracy=a, lo=lo, hi=hi, chance=ch, multiple=a / ch if ch else math.nan,
                              posted=ar, posted_lo=rlo, posted_hi=rhi, change=d, change_lo=dlo, change_hi=dhi, n=int(t["sub"].size)))
+        # the observer in the first and the second half of the window
+        h = to["half"].astype(bool)
+        parts = {}
+        for name, sel in (("first half", ~h), ("second half", h)):
+            parts[name] = _acc(to["dev_v_correct"][sel], to["run"][sel], rng)
+        num1, den1 = AN.per_run(to["dev_v_correct"][~h].astype(float), to["run"][~h])
+        num2, den2 = AN.per_run(to["dev_v_correct"][h].astype(float), to["run"][h])
+        idx = rng.integers(0, num1.size, (AN.BOOT, num1.size))
+        dif = num2[idx].sum(1) / den2[idx].sum(1) - num1[idx].sum(1) / den1[idx].sum(1)
+        d0 = num2.sum() / den2.sum() - num1.sum() / den1.sum()
+        dlo, dhi = np.percentile(dif, (2.5, 97.5))
+        diag.append(dict(base, kind="observer by half of the window", first=parts["first half"], second=parts["second half"],
+                         change=float(d0), change_lo=float(dlo), change_hi=float(dhi), agree=bool(dlo <= 0 <= dhi),
+                         n_first=int((~h).sum()), n_second=int(h.sum())))
         for k, pt in enumerate(AT.PTYPES):
             a, lo, hi = _acc(to["hit_type"] == k, to["run"], rng)
             rnd = float(np.where(to["sub_n_feas"] > 0, to["tfeas"][:, k] / np.maximum(to["sub_n_feas"], 1), 0.0).mean())
@@ -137,7 +151,8 @@ def _run_stats(recs, rng):
                f_path_share=float(sum(s["f_path"] for s in st) / max(sum(s["records"] for s in st), 1)),
                sim_seconds=float(np.mean([r["sim_seconds"] for r in recs])),
                score_seconds=float(np.mean([r["score_seconds"] for r in recs])),
-               test_seconds=float(np.mean([r.get("test_seconds", 0.0) for r in recs])))
+               test_seconds=float(np.mean([r.get("test_seconds", 0.0) for r in recs])),
+               unfinalized=int(sum(s["unfinalized"] for s in st)), introduced=int(sum(s["introduced"] for s in st)))
     out["content_share"] = 1.0 - out["board_share"]
     for key in ("stages", "packet_delay", "path_delay"):
         acc = {}
@@ -331,6 +346,17 @@ def write_tables(out, res, info):
         for pt, v in stats[c]["path_delay"].items():
             dest = {"credential": "C", "F content": "F", "I content": "I"}[pt]
             md.append(f"| {c} | {pt} (at {dest}) | {v['mean']:.1f} s | {v['sd']:.1f} s |")
+    md += ["", "| Cell | Observer, first half of the window [95% CI] | Second half [95% CI] | Second minus first [95% CI] | Agree |",
+           "|---|---|---|---|---|"]
+    for d in diag:
+        if d["kind"] == "observer by half of the window":
+            f, g = d["first"], d["second"]
+            md.append(f"| {d['cell']} | {_pct(f[0])} [{_pct(f[1])}, {_pct(f[2])}] | {_pct(g[0])} [{_pct(g[1])}, {_pct(g[2])}] | "
+                      f"{_pts(d['change'], d['change_lo'], d['change_hi'])} | {'yes' if d['agree'] else 'no'} |")
+    md += ["", "| Configuration | Cell | Real transactions introduced in the window | Never finalized (quorum timeout) |", "|---|---|---|---|"]
+    for name in EX.CONFIGS:
+        for c, v in res[name][3].items():
+            md.append(f"| {EX.LABEL[name]} | {c} | {v['introduced']:,} | {v['unfinalized']:,} |")
     md += ["", "| Cell | F and I confirmations set by the match board |", "|---|---|"]
     for c in cells:
         md.append(f"| {c} | {_pct(stats[c]['board_share'], 1)} |")

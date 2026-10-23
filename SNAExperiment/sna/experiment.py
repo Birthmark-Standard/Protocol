@@ -178,7 +178,10 @@ def run_stats(run):
     packet type's departure to the record time, over the run's scored real transactions."""
     s, ev = run.subs, run.events
     real, dec = in_flight(run)
-    m = AT.scored_mask(run, np.arange(s["t0"].size)) & s["ok_f"] & s["ok_i"]
+    window = AT.scored_mask(run, np.arange(s["t0"].size))
+    # a real transaction introduced in the window that never reaches a posted record (a quorum timeout)
+    unfinalized = int((window & ~np.isfinite(s["posted"])).sum())
+    m = window & s["ok_f"] & s["ok_i"]
     board = np.r_[s["known_f"][m] >= s["hold_f"][m], s["known_i"][m] >= s["hold_i"][m]]
     f_path = (s["hold_f"][m] > s["known_f"][m]) & (s["reg_f"][m] >= s["reg_i"][m])
     ts, ta = ev["t_send"], ev["t_arr"]
@@ -207,7 +210,8 @@ def run_stats(run):
     for k, arr in enumerate((s["arr_c"][m], s["arr_f"][m], s["arr_i"][m])):
         _stage(path, AT.PTYPES[k], arr - ts[(cr, ca, cb)[k][:, 0]])
     fin = s["final"][m] - s["t0"][m]
-    return dict(real_in_flight=real, decoys_in_flight=dec, board=int(board.sum()), confirmations=int(board.size),
+    return dict(real_in_flight=real, decoys_in_flight=dec, unfinalized=unfinalized, introduced=int(window.sum()),
+                board=int(board.sum()), confirmations=int(board.size),
                 f_path=int(f_path.sum()), records=int(m.sum()), stages=st, packet_delay=delay, path_delay=path,
                 latency_hist=np.histogram(fin, bins=np.arange(0, 3 * 3600 + 10, 10))[0])
 

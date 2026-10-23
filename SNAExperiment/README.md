@@ -147,6 +147,7 @@ Each diagnostic is a scoring variant on the same simulated traffic.
 | Hits by packet type | The observer's submission-level hits split by the type of the packet it named (credential, F content or I content), each against its random rate, with the delay from each packet type's departure to the record time. |
 | Match board share | The share of F's and I's confirmations set by the match board rather than by their own hold release. |
 | Path delay | For credential packets (arrival at C) and F and I content packets (arrival at F or I), the mean and standard deviation of the delay from the packet's departure to its arrival, network time included. |
+| Window halves | The observer's device-named accuracy in the first and the second half of the scored window, in every cell. The two agree when the 95% interval on their difference contains zero. |
 
 ## Controls
 
@@ -166,7 +167,11 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 - Real volume is R = 1, 20 and 100 transactions in flight, each with 100 decoy transactions in flight.
 - Rates are R / D and 100 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 20. The calibration repeats until both counts in flight are within 3% of their targets.
 - The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
-- The scored window lasts 10 D. At R = 1 it is extended to hold 200 real transactions per run on average. Scoring starts after the configuration's longest possible delay, once traffic in flight is steady.
+- Real and decoy transactions arrive at their normal rates from time zero to the end of the run.
+- The warm-up lasts the configuration's longest possible delay: the sum of the caps along the longest path, plus 60 seconds. For the main configuration that is 2,650 seconds. Scoring starts after it, once traffic in flight is steady.
+- The scored window lasts 10 D. At R = 1 it is extended to hold 200 real transactions per run on average. Only records introduced in the window are scored. The in-flight counts, the chance rates and every table use the window only.
+- The cool-down after the window also lasts the longest possible delay, so every record introduced in the window finalizes. A real transaction introduced in the window that never finalizes, which only a quorum timeout can cause, is counted and reported.
+- Packets from the warm-up and the cool-down stay in every vantage's candidate list.
 - The main configuration runs 200 runs per cell. The controls run 50 (every hold off) or 100 runs per cell.
 - A run's traffic depends only on its real volume and run id.
 

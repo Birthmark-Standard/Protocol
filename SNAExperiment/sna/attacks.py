@@ -587,8 +587,9 @@ def compute(run, m: Models, rng):
     base = res["observer"]
     pidx = base["sub"]["pidx"]
     hit_type = np.where(base["sub"]["correct"], cand["ptype"][np.maximum(pidx, 0)], -1).astype(np.int8)
+    half = (s["t0"][srow] >= run.cfg.warmup_s + run.cfg.measure_s / 2).astype(np.int8)   # second half of the window
     out["observer"] = _table(base, rec, idx, np.zeros(n), base, hit_type=hit_type,
-                             tfeas=tfeas.T.astype(np.int8))
+                             tfeas=tfeas.T.astype(np.int8), half=half)
     out["observer_flat"] = _table(res["observer_flat"], rec, idx, np.zeros(n), base)
     um = mid["u"]
     mlo, mhi = _band(um, gm)

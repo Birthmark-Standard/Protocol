@@ -163,6 +163,20 @@ def test_path_delay():
         assert n > 100 and abs(sm / n - 360.0) < 25.0 and mx <= 180.0 + 900.0 + 1.0, k
 
 
+def test_window_halves_and_candidates_outside_the_window():
+    """The half-window flag splits the scored records at the window's midpoint, and the observer's candidates
+    include packets from the warm-up and the cool-down."""
+    m, run, out = _small_scored()
+    s, cfg = run.subs, run.cfg
+    o = out["observer"]
+    t0 = s["t0"][o["sub"]]
+    mid = cfg.warmup_s + cfg.measure_s / 2
+    assert np.array_equal(o["half"].astype(bool), t0 >= mid)
+    assert (t0 >= cfg.warmup_s).all() and (t0 < cfg.warmup_s + cfg.measure_s).all()
+    cand = AT.candidates(run)
+    assert cand["t"].min() < cfg.warmup_s and cand["t"].max() > cfg.warmup_s + cfg.measure_s
+
+
 def test_shuffle_test_is_exact():
     """The shuffle test's derived outcome for the scored permutation equals the scored outcome, and the
     shuffle changes neither the picks (beyond renaming) nor the feasible counts."""
