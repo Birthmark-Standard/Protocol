@@ -61,7 +61,8 @@ class Config:
     real_rate: float = 0.05            # real captures per second, all devices together
     decoy_rate: float = 0.0            # decoy transactions per second
     measure_s: float = MEASURE_S
-    relay_mean: float = 180.0          # every relay hop (A, B, D, E, G, H), every path
+    relay1_mean: float = 60.0          # every first relay hop (A, D, G); a relay knows only its hop position
+    relay2_mean: float = 300.0         # every second relay hop (B, E, H)
     dev_cred_mean: float = 120.0       # the device's credential-channel hold
     dev_content_mean: float = 240.0    # the device's two content-channel holds
     dev_content_i_mean: float = -1.0   # the device's I-channel hold when set (>= 0); default: the same as dev_content_mean
@@ -82,7 +83,7 @@ class Config:
         """An upper bound on capture to posting: every hold at its cap, every schedule at its longest wait."""
         cap = lambda m: CAP_FACTOR * m  # noqa: E731
         dev_i = self.dev_content_mean if self.dev_content_i_mean < 0 else self.dev_content_i_mean
-        relays = 2 * cap(self.relay_mean)
+        relays = cap(self.relay1_mean) + cap(self.relay2_mean)
         cred = (cap(self.dev_cred_mean) + relays + cap(self.c_hold_mean) + cap(self.v_hold_mean) + 3 * cap(self.fanout_mean)
                 + cap(self.gk_mean) + BUNDLE_S * (INCLUSION_MAX if self.gk_inclusion else 1) + BOARD_PUSH_S)
         content = cap(max(self.dev_content_mean, dev_i)) + relays + cap(self.cs_mean)

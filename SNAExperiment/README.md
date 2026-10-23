@@ -82,6 +82,8 @@ There are six component vantages, the passive observer, and the combined view of
 
 Every hold is a geometric lottery on a 10-second tick, released unconditionally at three times its own mean. Each stage's release probability is set so the stage hits its target mean.
 
+A relay picks its hold from its hop position only. A first relay re-encrypts the routing code with the payload, and a second relay forwards the payload alone. A relay cannot tell whether a packet is on the credential path or a content path. The two relay holds add to a mean of 360 s along every path, with a standard deviation of 263.7 s before network time.
+
 Each hold releases on one of three kinds of clock:
 - **The node's own clock:** relays, C, and F's and I's pre-match holds.
 - **The validator's own clock.**
@@ -99,7 +101,8 @@ The device's channels and the post-match lottery use a fresh random phase for ea
 
 | Stage | Target mean | Tick | Release probability per tick | Cap |
 |---|---|---|---|---|
-| Relay hops (A, B, D, E, G, H), every path | 180 s | 10 s | 5.08% | 540 s |
+| First relay hop (A, D, G), every path | 60 s | 10 s | 14.46% | 180 s |
+| Second relay hop (B, E, H), every path | 300 s | 10 s | 3.08% | 900 s |
 | Device's credential-channel hold | 120 s | 10 s | 7.52% | 360 s |
 | Device's content-channel holds, each drawn separately | 240 s | 10 s | 3.84% | 720 s |
 | C's hold before sending CV-1 | 30 s | 10 s | 26.86% | 90 s |
@@ -151,9 +154,9 @@ Each diagnostic is a scoring variant on the same simulated traffic.
 | Label shuffle | Within each run, every candidate's device label is permuted at random on the same scores. | Accuracy falls to the feasible chance rate for every vantage. |
 | Shuffle test | For the observer, the shuffled picks are compared with the permuted unshuffled picks, the feasible counts with the unshuffled ones, and the estimator with 200 further permutations per run. | Whether any shortfall below chance comes from the shuffle, the feasible-set calculation or the estimator. |
 | Every hold off | Every hold, lottery and schedule is set to zero. The 30-second departure grid and the 10-second board push remain. | The combined view's detection passes through when no hold hides it. |
-| Credential path sets the record time | Relays at 180 s, and every credential-side stage at a 120 s mean: the device's credential channel, C, V, the fan-out at 40 s per draw, the gatekeeper and the inclusion lottery. Everything else is off. | The match board sets at least 95% of the confirmations, so the record time follows the credential path. |
-| Content paths set the record time | Relays at 180 s, and the device holds both content channels at a 7,200 s mean. Everything else is off. | Content arrival sets at least 95% of the confirmations. |
-| F content path sets the record time | Relays at 180 s, and the device holds its F channel at a 7,200 s mean. Everything else is off. | F's own content arrival sets F's confirmation, and F's submission is the later one, on at least 95% of the records. |
+| Credential path sets the record time | Relays as in the main run, and every credential-side stage at a 150 s mean: the device's credential channel, C, V, the fan-out at 50 s per draw, the gatekeeper and the inclusion lottery. Everything else is off. About 2% of transactions miss quorum within 30 minutes and are dropped. | The match board sets at least 95% of the confirmations, so the record time follows the credential path. |
+| Content paths set the record time | Relays as in the main run, and the device holds both content channels at a 7,200 s mean. Everything else is off. | Content arrival sets at least 95% of the confirmations. |
+| F content path sets the record time | Relays as in the main run, and the device holds its F channel at a 7,200 s mean. Everything else is off. | F's own content arrival sets F's confirmation, and F's submission is the later one, on at least 95% of the records. |
 
 A device hold delays the packet before it leaves the device, so it adds no noise to a candidate's timing. Each control's measured share is reported with it.
 

@@ -195,6 +195,18 @@ def test_content_server_waits_for_board_push():
         assert (s[f"det_{nm}"][ok] >= s["quorum"][ok]).all()
 
 
+def test_relay_holds_follow_hop_position():
+    """First relays hold for 60 s and second relays for 300 s on every path alike."""
+    run = S.simulate(P.Config(real_rate=0.2, decoy_rate=0.0, measure_s=7200.0), 28)
+    s, ev = run.subs, run.events
+    ts, ta = ev["t_send"], ev["t_arr"]
+    for key in ("ev_cred", "ev_ca", "ev_cb"):
+        e = s[key]
+        first, second = ts[e[:, 1]] - ta[e[:, 0]], ts[e[:, 2]] - ta[e[:, 1]]
+        assert abs(first.mean() - 60.0) < 4.0 and first.max() <= 180.0 + 0.01, key
+        assert abs(second.mean() - 300.0) < 15.0 and second.max() <= 900.0 + 0.01, key
+
+
 def test_post_match_lottery_starts_at_confirmation():
     s = S.simulate(SMALL, 22).subs
     ok = s["ok_f"]

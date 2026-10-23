@@ -183,7 +183,9 @@ def cross_path_overlap(roles):
 
 def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, device_mean):
     """Device (or decoy source) -> addressed hop -> random hop -> destination. The device holds on a
-    fresh clock phase for this channel with its own mean; each relay hop holds on its node clock."""
+    fresh clock phase for this channel with its own mean; each relay hop holds on its node clock, with
+    the mean of its hop position (first or second). Nothing here depends on the path: a relay cannot
+    tell a credential packet from a content packet."""
     n = t0.shape[0]
     dep = LT.hold(r, t0, None, device_mean) + _proc(r, n)
     arr = dep + lat_src[np.arange(n), first] + _jit(r, n)
@@ -191,8 +193,8 @@ def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, device_mea
                     ext_src=src_id)]
     arrs = [arr]
     cur = first
-    for nxt, leg in ((second, legs[1]), (dest, legs[2])):
-        rel = LT.hold(r, arr, w.phase[cur], w.cfg.relay_mean) + _proc(r, n)
+    for nxt, leg, mean in ((second, legs[1], w.cfg.relay1_mean), (dest, legs[2], w.cfg.relay2_mean)):
+        rel = LT.hold(r, arr, w.phase[cur], mean) + _proc(r, n)
         arr = rel + w.lat_int[cur, nxt] + _jit(r, n)
         ids.append(w.ev.add(rel, arr, cur, nxt, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, leg, sub))
         arrs.append(arr)

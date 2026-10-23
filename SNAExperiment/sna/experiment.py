@@ -33,17 +33,17 @@ RUNS = 200                                       # runs per cell, main configura
 TOLERANCE = 0.03                                 # measured in-flight counts within 3% of their targets
 
 MAIN = "main"
-_OFF = dict(relay_mean=180.0, dev_cred_mean=0.0, dev_content_mean=0.0, c_hold_mean=0.0, v_hold_mean=0.0,
+_OFF = dict(relay1_mean=60.0, relay2_mean=300.0, dev_cred_mean=0.0, dev_content_mean=0.0, c_hold_mean=0.0, v_hold_mean=0.0,
             fanout_mean=0.0, gk_mean=0.0, gk_inclusion=False, cs_mean=0.0, post_match=False, reg_bundle_s=0.0,
             reg_post_s=0.0)
 CONFIGS = {
     MAIN: {},
     # every hold, lottery and schedule off
-    "no_holds": dict(_OFF, relay_mean=0.0),
-    # the credential path sets the record time: every credential-side stage holds (120 s), the content
+    "no_holds": dict(_OFF, relay1_mean=0.0, relay2_mean=0.0),
+    # the credential path sets the record time: every credential-side stage holds (150 s), the content
     # paths carry only their relays
-    "first_relay_cred": dict(_OFF, dev_cred_mean=120.0, c_hold_mean=120.0, v_hold_mean=120.0, fanout_mean=40.0,
-                             gk_mean=120.0, gk_inclusion=True),
+    "first_relay_cred": dict(_OFF, dev_cred_mean=150.0, c_hold_mean=150.0, v_hold_mean=150.0, fanout_mean=50.0,
+                             gk_mean=150.0, gk_inclusion=True),
     # the content paths set the record time: the device holds both content channels (7,200 s)
     "first_relay_content": dict(_OFF, dev_content_mean=7200.0),
     # the F content path sets the record time: the device holds its F channel only (7,200 s)
@@ -187,8 +187,8 @@ def run_stats(run):
     for name, v in (
             ("device, credential channel", ts[cr[:, 0]] - s["t0"][m]),
             ("device, content channels", np.r_[ts[ca[:, 0]], ts[cb[:, 0]]] - np.r_[s["t0"][m], s["t0"][m]]),
-            ("relay hops", np.r_[ts[cr[:, 1]] - ta[cr[:, 0]], ts[cr[:, 2]] - ta[cr[:, 1]], ts[ca[:, 1]] - ta[ca[:, 0]],
-                                 ts[ca[:, 2]] - ta[ca[:, 1]], ts[cb[:, 1]] - ta[cb[:, 0]], ts[cb[:, 2]] - ta[cb[:, 1]]]),
+            ("first relay hops (A, D, G)", np.r_[ts[cr[:, 1]] - ta[cr[:, 0]], ts[ca[:, 1]] - ta[ca[:, 0]], ts[cb[:, 1]] - ta[cb[:, 0]]]),
+            ("second relay hops (B, E, H)", np.r_[ts[cr[:, 2]] - ta[cr[:, 1]], ts[ca[:, 2]] - ta[ca[:, 1]], ts[cb[:, 2]] - ta[cb[:, 1]]]),
             ("C before CV-1", s["cv1_s"][m] - s["arr_c"][m]),
             ("V before CV-2", ts[s["ev_cv2"][m]] - ta[s["ev_cv1"][m]]),
             ("C fan-out, per leg", (s["gk_send"][m] - s["cv2_a"][m][:, None]).ravel()),
