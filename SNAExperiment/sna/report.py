@@ -121,8 +121,8 @@ def analyze_config(out, name, seed=12345):
         # the observer in the first and the second half of the window
         h = to["half"].astype(bool)
         parts = {}
-        for name, sel in (("first half", ~h), ("second half", h)):
-            parts[name] = _acc(to["dev_v_correct"][sel], to["run"][sel], rng)
+        for part, sel in (("first half", ~h), ("second half", h)):
+            parts[part] = _acc(to["dev_v_correct"][sel], to["run"][sel], rng)
         num1, den1 = AN.per_run(to["dev_v_correct"][~h].astype(float), to["run"][~h])
         num2, den2 = AN.per_run(to["dev_v_correct"][h].astype(float), to["run"][h])
         idx = rng.integers(0, num1.size, (AN.BOOT, num1.size))
