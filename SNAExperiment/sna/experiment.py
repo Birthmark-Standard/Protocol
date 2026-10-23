@@ -65,14 +65,15 @@ def cell_key(R, decoys=DECOYS):
     return f"R{R:g}_D{decoys:g}"
 
 
-WINDOW_D = 10.0                                  # the scored window lasts 10 D, or longer at small R
+WINDOW_D = 10.0                                  # the scored window lasts at most 10 D ...
+MAX_REAL_PER_RUN = 300                           # ... and holds at most 300 real transactions per run on average
 
 
 def window_s(R, D):
-    """Scored window: WINDOW_D times D, extended at small real volume until it holds MIN_REAL_PER_RUN
-    real transactions on average. Measured in units of D, it holds the same number of records per run
-    under every configuration."""
-    return D * max(WINDOW_D, P.MIN_REAL_PER_RUN / R)
+    """Scored window: WINDOW_D times D, shortened at large real volume to hold MAX_REAL_PER_RUN real
+    transactions on average and extended at small real volume to hold MIN_REAL_PER_RUN. Measured in units
+    of D, it holds the same number of records per run under every configuration."""
+    return D * max(P.MIN_REAL_PER_RUN / R, min(WINDOW_D, MAX_REAL_PER_RUN / R))
 
 
 def config(name, R, D):
