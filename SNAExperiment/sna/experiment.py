@@ -200,12 +200,15 @@ def run_stats(run):
             ("registry posting wait", s["posted"][m] - s["intake"][m]),
             ("capture to finalization", s["final"][m] - s["t0"][m])):
         _stage(st, name, v)
-    delay = {}
+    delay, path = {}, {}
     for k, e in enumerate((cr, ca, cb)):
         _stage(delay, AT.PTYPES[k], s["posted"][m] - ts[e[:, 0]])
+    # from the packet's departure to its arrival at its destination (C, F or I), network time included
+    for k, arr in enumerate((s["arr_c"][m], s["arr_f"][m], s["arr_i"][m])):
+        _stage(path, AT.PTYPES[k], arr - ts[(cr, ca, cb)[k][:, 0]])
     fin = s["final"][m] - s["t0"][m]
     return dict(real_in_flight=real, decoys_in_flight=dec, board=int(board.sum()), confirmations=int(board.size),
-                f_path=int(f_path.sum()), records=int(m.sum()), stages=st, packet_delay=delay,
+                f_path=int(f_path.sum()), records=int(m.sum()), stages=st, packet_delay=delay, path_delay=path,
                 latency_hist=np.histogram(fin, bins=np.arange(0, 3 * 3600 + 10, 10))[0])
 
 

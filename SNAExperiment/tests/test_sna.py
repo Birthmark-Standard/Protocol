@@ -154,6 +154,15 @@ def test_board_share():
     assert st["board"] == int((s["known_f"][m] >= s["hold_f"][m]).sum() + (s["known_i"][m] >= s["hold_i"][m]).sum())
 
 
+def test_path_delay():
+    """Departure to arrival at C, F or I: the two relay holds plus network time, for every packet type."""
+    run = S.simulate(P.Config(real_rate=0.2, decoy_rate=0.0, measure_s=7200.0), 29)
+    st = EX.run_stats(run)["path_delay"]
+    for k in AT.PTYPES:
+        n, sm, sq, mx = st[k]
+        assert n > 100 and abs(sm / n - 360.0) < 25.0 and mx <= 180.0 + 900.0 + 1.0, k
+
+
 def test_shuffle_test_is_exact():
     """The shuffle test's derived outcome for the scored permutation equals the scored outcome, and the
     shuffle changes neither the picks (beyond renaming) nor the feasible counts."""

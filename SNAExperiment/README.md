@@ -146,6 +146,7 @@ Each diagnostic is a scoring variant on the same simulated traffic.
 | Record time at the midpoint | The observer and the content server score with the record time at the midpoint of F's and I's registry submissions. |
 | Hits by packet type | The observer's submission-level hits split by the type of the packet it named (credential, F content or I content), each against its random rate, with the delay from each packet type's departure to the record time. |
 | Match board share | The share of F's and I's confirmations set by the match board rather than by their own hold release. |
+| Path delay | For credential packets (arrival at C) and F and I content packets (arrival at F or I), the mean and standard deviation of the delay from the packet's departure to its arrival, network time included. |
 
 ## Controls
 

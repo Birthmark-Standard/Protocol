@@ -139,7 +139,7 @@ def _run_stats(recs, rng):
                score_seconds=float(np.mean([r["score_seconds"] for r in recs])),
                test_seconds=float(np.mean([r.get("test_seconds", 0.0) for r in recs])))
     out["content_share"] = 1.0 - out["board_share"]
-    for key in ("stages", "packet_delay"):
+    for key in ("stages", "packet_delay", "path_delay"):
         acc = {}
         for s in st:
             for k, (n, sm, sq, mx) in s[key].items():
@@ -326,6 +326,11 @@ def write_tables(out, res, info):
             pd = stats[d["cell"]]["packet_delay"][d["packet"]]
             md.append(f"| {d['cell']} | {d['packet']} | {_pct(d['accuracy'])} [{_pct(d['lo'])}, {_pct(d['hi'])}] | "
                       f"{_pct(d['random'])} | {pd['mean']:.1f} s | {pd['sd']:.1f} s |")
+    md += ["", "| Cell | Packet | Departure to arrival at its destination, mean | Std dev |", "|---|---|---|---|"]
+    for c in cells:
+        for pt, v in stats[c]["path_delay"].items():
+            dest = {"credential": "C", "F content": "F", "I content": "I"}[pt]
+            md.append(f"| {c} | {pt} (at {dest}) | {v['mean']:.1f} s | {v['sd']:.1f} s |")
     md += ["", "| Cell | F and I confirmations set by the match board |", "|---|---|"]
     for c in cells:
         md.append(f"| {c} | {_pct(stats[c]['board_share'], 1)} |")
