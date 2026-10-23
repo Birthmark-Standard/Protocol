@@ -313,8 +313,8 @@ def write_tables(out, res, info):
     for name, x in info["in_flight"].items():
         for cell, v in x.items():
             md.append(f"| {EX.LABEL[name]} | {cell} | {v['real']:.2f} ({v['target_real']:g}) | {v['decoys']:.2f} ({v['target_decoys']}) | {v['runs']} |")
-    md += ["", "## Timing (main run, R = 100)", "", "| Stage | Mean | Std dev | Maximum |", "|---|---|---|---|"]
-    st = stats.get(EX.cell_key(100), {})
+    md += ["", "## Timing (main run, R = 150)", "", "| Stage | Mean | Std dev | Maximum |", "|---|---|---|---|"]
+    st = stats.get(EX.cell_key(150), {})
     for k, v in st.get("stages", {}).items():
         md.append(f"| {k} | {v['mean']:.1f} s | {v['sd']:.1f} s | {v['max']:.1f} s |")
     md += ["", "| Cell | Mean capture to finalization [95% CI] |", "|---|---|"]
@@ -433,7 +433,7 @@ def figures(out, rows, stats):
     f.tight_layout()
     f.savefig(out / "figures" / "device_named.png")
     plt.close(f)
-    c = EX.cell_key(100) if EX.cell_key(100) in stats else cells[0]
+    c = EX.cell_key(150) if EX.cell_key(150) in stats else cells[0]
     f, ax = plt.subplots(figsize=(5, 4.2), dpi=200)
     top = 0.0
     for v in names:

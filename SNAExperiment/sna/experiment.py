@@ -27,9 +27,9 @@ from . import sim as S
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
-REAL_R = (1, 100, 500)                           # real transactions in flight
+REAL_R = (1, 150)                                # real transactions in flight
 DECOYS = 100                                     # decoy transactions in flight
-RUNS = 200                                       # runs per cell, main configuration
+RUNS = 100                                       # runs per cell, every configuration
 TOLERANCE = 0.03                                 # measured in-flight counts within 3% of their targets
 
 MAIN = "main"
@@ -50,14 +50,14 @@ CONFIGS = {
     "first_relay_f": dict(_OFF, dev_content_mean=7200.0, dev_content_i_mean=0.0),
 }
 CONTROLS = tuple(k for k in CONFIGS if k != MAIN)
-CONTROL_RUNS = {"no_holds": 50, "first_relay_cred": 100, "first_relay_content": 100, "first_relay_f": 100}
+CONTROL_RUNS = {"no_holds": 100, "first_relay_cred": 100, "first_relay_content": 100, "first_relay_f": 100}
 LABEL = {MAIN: "Main run", "no_holds": "Every hold off", "first_relay_cred": "Credential path sets the record time",
          "first_relay_content": "Content paths set the record time", "first_relay_f": "F content path sets the record time"}
 # what sets a confirmation under each first-relay control, and so what its intended-path share counts
 INTENDED = {"first_relay_cred": "board", "first_relay_content": "content", "first_relay_f": "f_path"}
 
 CAL_SEED0, MODEL_SEED0, SHUFFLE_SEED = 2_000_000_000, 1_000_000_000, 14_000_000
-CAL_RUNS, CAL_R = 40, 100
+CAL_RUNS, CAL_R = 40, 150
 SHUFFLE_K = 200
 
 
