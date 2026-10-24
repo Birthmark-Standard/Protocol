@@ -38,12 +38,20 @@ def read_records(p: Path) -> list[dict]:
     data = Path(p).read_bytes()
     res, pos, magic = [], 0, b"\x1f\x8b\x08"
     while pos < len(data):
+        # decompress in chunks and keep everything before a break, so a member cut off by an
+        # interruption yields the same records whether or not another member follows it
         d = zlib.decompressobj(wbits=31)
+        parts, end = [], len(data)
         try:
-            raw = d.decompress(data[pos:])
-            complete = d.eof
+            for i in range(pos, len(data), 1 << 20):
+                chunk = data[i:i + (1 << 20)]
+                parts.append(d.decompress(chunk))
+                if d.eof:
+                    end = i + len(chunk) - len(d.unused_data)      # where the next member starts
+                    break
         except zlib.error:
-            raw, complete = b"", False
+            pass
+        raw, complete = b"".join(parts), d.eof
         buf = io.BytesIO(raw)
         while True:
             try:
@@ -51,7 +59,7 @@ def read_records(p: Path) -> list[dict]:
             except (EOFError, pickle.UnpicklingError, ValueError, TypeError, AttributeError, IndexError):
                 break
         if complete:
-            pos = len(data) - len(d.unused_data)
+            pos = end
         else:                                  # damaged member: resume at the next member header
             nxt = data.find(magic, pos + 1)
             if nxt < 0:
@@ -65,9 +73,23 @@ def done_runs(out: Path, name: str) -> set[int]:
 
 
 def resolve_workers(workers) -> int:
+    """Half the available cores by default, so the machine stays usable while the run goes."""
     if workers in (None, "auto"):
-        return max(1, os.cpu_count() or 1)
+        return max(1, (os.cpu_count() or 2) // 2)
     return max(1, int(workers))
+
+
+def lower_priority():
+    """Run this process at below-normal priority: BELOW_NORMAL_PRIORITY_CLASS on Windows, nice 10 elsewhere."""
+    try:
+        if os.name == "nt":
+            import ctypes
+            k = ctypes.windll.kernel32
+            k.SetPriorityClass(k.GetCurrentProcess(), 0x00004000)
+        else:
+            os.nice(10)
+    except Exception:                          # a priority the system refuses leaves the run as it is
+        pass
 
 
 def execute(tasks, worker, out: Path, workers="auto", label=""):
@@ -85,7 +107,7 @@ def execute(tasks, worker, out: Path, workers="auto", label=""):
     handles, t0, finished = {}, time.time(), 0
     pending, it = set(), iter(tasks)
     try:
-        with ProcessPoolExecutor(nw) as ex:
+        with ProcessPoolExecutor(nw, initializer=lower_priority) as ex:
             for _ in range(nw * 2):                   # bounded queue: at most 2 runs per worker in flight
                 t = next(it, None)
                 if t is None:

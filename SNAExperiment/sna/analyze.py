@@ -11,6 +11,7 @@ import numpy as np
 from scipy.stats import norm
 
 from . import attacks as AT
+from . import params as _P
 from .attacks import T_GRID
 
 Z95 = 1.959963984540054
@@ -152,11 +153,13 @@ def _level(t, lvl, T, rng, out):
     return num, den
 
 
-def metrics(records, v, spec, rng):
-    t = stack(records, v)
+def metrics(records, v, spec, rng, t=None, name=None):
+    """Every metric of one vantage in one cell. t: a pre-stacked (and possibly filtered) table of its
+    rows; name: the label written in the row (default: the vantage)."""
+    t = stack(records, v) if t is None else t
     R, T = spec["R"], spec["T"]
     n = int(t["sub"].size)
-    out = dict(cell=spec["key"], vantage=v, R=R, T=T, L=T, runs=len(records), n=n,
+    out = dict(cell=spec["key"], vantage=name or v, R=R, T=T, L=T, runs=len(records), n=n,
                inv_L=1.0 / T, inv_R=1.0 / R)
     if n == 0:
         return out
@@ -182,6 +185,8 @@ def metrics(records, v, spec, rng):
     for q, name in ((0.01, "p_at_1"), (0.05, "p_at_5"), (0.10, "p_at_10"), (0.25, "p_at_25")):
         p, lo, hi = precision_at(conf, c, q)
         out[name], out[name + "_lo"], out[name + "_hi"] = p, lo, hi
+    out["top1_group"] = max(1, int(round(0.01 * conf.size)))
+    out["claim"] = bool(out["p_at_1_hi"] < 0.5 and max_coverage_p50(conf, c) < 0.001)
     out["coverage_p50"] = max_coverage_p50(conf, c)
     out["count_p50"] = int(round(out["coverage_p50"] * conf.size))
     out["decisions"] = int(conf.size)
@@ -233,7 +238,7 @@ def _claims(t, rng, out):
     return out
 
 
-def paired_effect(with_recs, without_recs, v, rng):
+def paired_effect(with_recs, without_recs, v, rng, mask=None):
     """Paired effect on the same real records: accuracy under one build minus accuracy under
     another, matched row by row on (run, transaction, group), with an interval from resampling
     runs. Both builds carry identical traffic."""
@@ -249,6 +254,9 @@ def paired_effect(with_recs, without_recs, v, rng):
             x = base.get(r["run"])
             if x is None:
                 continue
+            if mask is not None:
+                keep = mask(y)
+                y = {k: (a[keep] if isinstance(a, np.ndarray) and a.shape[:1] == keep.shape else a) for k, a in y.items()}
             kx = {(int(a), int(b)): i for i, (a, b) in enumerate(zip(x["sub"], x["group"]))}
             idx = [kx.get((int(a), int(b)), -1) for a, b in zip(y["sub"], y["group"])]
             idx = np.array(idx, np.int64)
@@ -291,6 +299,122 @@ def analyze(cells, loader, seed=12345, references=None):
                 ch[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = paired_effect(w, pr, v, rng)
         changes[name] = ch
     return rows, changes
+
+
+def _lead(v_correct, b_correct, run, rng):
+    """Paired lead of a vantage over the observer on the same rows, with a run-resampled interval."""
+    num, den = per_run(v_correct.astype(float) - b_correct, run)
+    return cluster_boot(num, den, rng)
+
+
+def _row_lookup(records, v):
+    """(run, sub, group) -> device-level correctness of vantage v, as sorted keys and values."""
+    keys, vals = [], []
+    for r in records:
+        x = r["vantages"][v]
+        keys.append((np.int64(r["run"]) << 40) | (x["sub"].astype(np.int64) << 8) | x["group"].astype(np.int64))
+        vals.append(x["dev_v_correct"].astype(float))
+    keys, vals = np.concatenate(keys), np.concatenate(vals)
+    o = np.argsort(keys, kind="stable")
+    return keys[o], vals[o]
+
+
+def _find(lookup, run, sub, group):
+    keys, vals = lookup
+    k = (run.astype(np.int64) << 40) | (sub.astype(np.int64) << 8) | group.astype(np.int64)
+    i = np.minimum(np.searchsorted(keys, k), keys.size - 1)
+    hit = keys[i] == k
+    return np.where(hit, vals[i], np.nan)
+
+
+P_CONFIG = _P.Config()
+FOUR_NODE = ("first_hop_cred", "first_hop_content", "cred_processor")
+
+
+def overlap_analysis(cells, loader, ref_loader, seed=12346):
+    """Under permitted overlap:
+      - the combined vantage of one node, on every record and by the roles it held in the record's
+        transaction, each class labelled identifiable or oracle-conditioned;
+      - for each identifiable class, the first-relay vantage alone and the destination vantage alone on
+        the same records (same record, same node);
+      - the vantages scored on every record, restricted to the four nodes per run of the baseline
+        rotation, so they compare with the baseline as scored;
+      - each single-role vantage paired against the reference build on the records whose transaction
+        has no coincidence between roles on different paths."""
+    from . import experiment as EX, sim as S
+    rng = np.random.default_rng(seed)
+    rows, regression = [], {}
+    for key, spec in cells.items():
+        recs = loader(key)
+        if not recs or "combined" not in recs[0]["vantages"]:
+            continue
+        recs = sorted(recs, key=lambda r: r["run"])
+        dec = float(spec.get("decoys", 0.0))
+        t = stack(recs, "combined")
+        r = metrics(recs, "combined", spec, rng, t=t, name="combined: all records")
+        r["decoys"], r["pair_class"], r["identifiable"] = dec, "all records", None
+        rows.append(r)
+        fh, cs, cp = (_row_lookup(recs, v) for v in ("first_hop_cred", "content_server", "cred_processor"))
+        fr_c = _find(fh, t["run"], t["sub"], t["group"])
+        cs_c, cp_c = _find(cs, t["run"], t["sub"], t["group"]), _find(cp, t["run"], t["sub"], t["group"])
+        dest_c = np.where(np.isfinite(cs_c), cs_c, cp_c)        # X names the record as F or I, else X was its C
+        b = t["dev_b_correct"].astype(float)
+        for code, cls in enumerate(AT.PAIR_CLASSES):
+            sel = t["pair"] == code
+            if not sel.any():
+                continue
+            r = metrics(recs, "combined", spec, rng, t={k: x[sel] for k, x in t.items()}, name=f"combined: {cls}")
+            r["decoys"], r["pair_class"], r["identifiable"] = dec, cls, cls in AT.IDENTIFIABLE
+            if cls in AT.IDENTIFIABLE:
+                for name, vc in (("first_relay_alone", fr_c), ("destination_alone", dest_c)):
+                    ok = sel & np.isfinite(vc)
+                    r[f"{name}_n"] = int(ok.sum())
+                    if ok.any():
+                        r[f"{name}_lead"], r[f"{name}_lead_lo"], r[f"{name}_lead_hi"] = _lead(vc[ok], b[ok], t["run"][ok], rng)
+                cv = t["dev_v_correct"].astype(float)
+                ok = sel & np.isfinite(fr_c) & np.isfinite(dest_c)
+                if ok.any():
+                    # paired on the same rows: combined minus first relay alone, and combined minus the sum
+                    # of the two single-role leads (c - b) - (f - b) - (d - b) = c - f - d + b
+                    r["minus_first_relay"], r["minus_first_relay_lo"], r["minus_first_relay_hi"] = _lead(
+                        cv[ok], fr_c[ok], t["run"][ok], rng)
+                    r["minus_sum"], r["minus_sum_lo"], r["minus_sum_hi"] = _lead(
+                        cv[ok] + b[ok], fr_c[ok] + dest_c[ok], t["run"][ok], rng)
+            r["prevalence"] = float(sel.mean())
+            rows.append(r)
+        for v in FOUR_NODE:
+            tv = stack(recs, v)
+            keep = np.zeros(tv["sub"].size, bool)
+            for rid in np.unique(tv["run"]):
+                gk = S.World(P_CONFIG, EX.traffic_seed(spec["R"], int(rid))).gk_set
+                m = tv["run"] == rid
+                keep[m] = np.isin(tv["group"][m], AT.servers_for(v, int(rid), gk))
+            r = metrics(recs, v, spec, rng, t={k: x[keep] for k, x in tv.items()}, name=f"{v} (four nodes per run)")
+            r["decoys"] = dec
+            rows.append(r)
+        ref = ref_loader(key)
+        if ref:
+            for v in AT.VANTAGES:
+                regression[f"{v}.R{spec['R']:g}.D{spec['decoys']:g}"] = paired_effect(
+                    recs, ref, v, rng, mask=lambda y: y["ov"] == 0)
+    # the records a node can select (it held a destination role), and the split by whether it held a first
+    # relay; on their own random stream so every row above is unchanged
+    rng2 = np.random.default_rng(seed + 1)
+    ident = [AT.PAIR_CODE[c] for c in AT.IDENTIFIABLE]
+    first = [AT.PAIR_CODE[c] for c in AT.PAIR_CLASSES if "first relay" in c]
+    for key, spec in cells.items():
+        recs = loader(key)
+        if not recs or "combined" not in recs[0]["vantages"]:
+            continue
+        recs = sorted(recs, key=lambda r: r["run"])
+        t = stack(recs, "combined")
+        for cls, sel in (("every record the node can select", np.isin(t["pair"], ident)),
+                         ("first relay held", np.isin(t["pair"], first)),
+                         ("no first relay held", ~np.isin(t["pair"], first))):
+            r = metrics(recs, "combined", spec, rng2, t={k: x[sel] for k, x in t.items()}, name=f"combined: {cls}")
+            r["decoys"], r["pair_class"], r["identifiable"], r["prevalence"] = float(spec.get("decoys", 0.0)), cls, None, float(sel.mean())
+            rows.append(r)
+    return rows, regression
 
 
 def bundle_stats(records):

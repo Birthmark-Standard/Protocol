@@ -1,15 +1,14 @@
-"""InternalCompromiseRun: its builds and cells, seeds, the end-to-end delay calibration, the
-attacker's models, and the per-run worker, with the latency, pair-timing and hold-timing
-measurements.
+"""The run: its configurations, cells, seeds, the in-flight calibration, the attacker's models, the
+per-run worker and the run-level measurements.
 
-A cell is a real volume R (real transactions in flight) with 60 decoy transactions in flight.
-Rates follow from the measured end-to-end delay D (capture to registry finalization): real rate
-R / D, decoy rate 60 / D. A decoy is a genuine transaction from one of the decoy infrastructure's
-registered identities, each capturing at a device's rate.
+A cell is a real volume R (real transactions in flight) with 100 decoy transactions in flight. Rates
+follow from the mean end-to-end delay D (capture to the registry posting the record): real rate
+R / D, decoy rate 100 / D. D is calibrated under each configuration's own holds, and the counts in
+flight are measured in every run. A decoy is a genuine transaction from one of the decoy
+infrastructure's registered identities, each capturing at a device's rate.
 
-A build is the protocol as attacked. internal_compromise is the protocol with every hold at the
-specification's timing; each other build removes one mechanism or changes one setting, and is
-paired against internal_compromise record by record.
+The main configuration is the protocol as specified, with the role draw that allows every
+coincidence the routing design permits. The controls change its holds only.
 """
 from __future__ import annotations
 
@@ -23,368 +22,261 @@ import numpy as np
 
 from . import attacks as AT
 from . import params as P
-from . import runner as RN
 from . import sim as S
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
-EXPERIMENT = "InternalCompromiseRun"
 
-REAL_R = (1, 20, 100)                            # real transactions in flight
-DECOYS = 60                                      # decoy transactions in flight
-RUNS = 200                                       # runs per cell
+REAL_R = (1, 150)                                # real transactions in flight
+DECOYS = 100                                     # decoy transactions in flight
+RUNS = 100                                       # runs per cell, every configuration
+TOLERANCE = 0.03                                 # measured in-flight counts within 3% of their targets
 
-BASELINE = "internal_compromise"
-_NONE = dict(c_hold_mean=0.0, v_hold_mean=0.0, gk_inclusion=False, post_match=False, reg_bundle_s=0.0,
-             dev_content_mean=120.0, cs_mean=120.0)
-BUILDS = {
-    BASELINE: {},
-    # each mechanism removed in turn
-    "no_vc_holds": dict(c_hold_mean=0.0, v_hold_mean=0.0),
-    "no_inclusion_lottery": dict(gk_inclusion=False),
-    "no_post_match_lottery": dict(post_match=False),
-    "no_registry_bundling": dict(reg_bundle_s=0.0),
-    "no_role_aware_holds": dict(dev_content_mean=120.0, cs_mean=120.0),
-    "no_mechanisms": _NONE,
-    # alternative settings
-    "relay_180s": dict(relay_mean=180.0),
-    "role_aware_360s": dict(dev_content_mean=360.0, cs_mean=360.0),
-    "gatekeeper_120s": dict(gk_mean=120.0),
+MAIN = "main"
+_OFF = dict(relay1_mean=60.0, relay2_mean=300.0, dev_cred_mean=0.0, dev_content_mean=0.0, c_hold_mean=0.0, v_hold_mean=0.0,
+            fanout_mean=0.0, gk_mean=0.0, gk_inclusion=False, cs_mean=0.0, post_match=False, reg_bundle_s=0.0,
+            reg_post_s=0.0)
+CONFIGS = {
+    MAIN: {},
+    # every hold, lottery and schedule off
+    "no_holds": dict(_OFF, relay1_mean=0.0, relay2_mean=0.0),
+    # the credential path sets the record time: every credential-side stage holds (150 s), the content
+    # paths carry only their relays
+    "first_relay_cred": dict(_OFF, dev_cred_mean=150.0, c_hold_mean=150.0, v_hold_mean=150.0, fanout_mean=50.0,
+                             gk_mean=150.0, gk_inclusion=True),
+    # the content paths set the record time: the device holds both content channels (7,200 s)
+    "first_relay_content": dict(_OFF, dev_content_mean=7200.0),
+    # the F content path sets the record time: the device holds its F channel only (7,200 s)
+    "first_relay_f": dict(_OFF, dev_content_mean=7200.0, dev_content_i_mean=0.0),
 }
-LABEL = {
-    BASELINE: EXPERIMENT,
-    "no_vc_holds": "without V's and C's holds",
-    "no_inclusion_lottery": "without the inclusion lottery (next-boundary bundling)",
-    "no_post_match_lottery": "without the post-match lottery",
-    "no_registry_bundling": "without registry bundling",
-    "no_role_aware_holds": "without role-aware holds (device content and F/I at 120 s)",
-    "no_mechanisms": "without all five",
-    "relay_180s": "relay hops at 180 s",
-    "role_aware_360s": "device content and F/I at 360 s",
-    "gatekeeper_120s": "gatekeeper hold at 120 s",
-}
-REMOVALS = ("no_vc_holds", "no_inclusion_lottery", "no_post_match_lottery", "no_registry_bundling",
-            "no_role_aware_holds", "no_mechanisms")
-ALTERNATIVES = ("relay_180s", "role_aware_360s", "gatekeeper_120s")
+CONTROLS = tuple(k for k in CONFIGS if k != MAIN)
+CONTROL_RUNS = {"no_holds": 100, "first_relay_cred": 100, "first_relay_content": 100, "first_relay_f": 100}
+LABEL = {MAIN: "Main run", "no_holds": "Every hold off", "first_relay_cred": "Credential path sets the record time",
+         "first_relay_content": "Content paths set the record time", "first_relay_f": "F content path sets the record time"}
+# what sets a confirmation under each first-relay control, and so what its intended-path share counts
+INTENDED = {"first_relay_cred": "board", "first_relay_content": "content", "first_relay_f": "f_path"}
 
-CAL_SEED0, MODEL_SEED0 = 2_000_000_000, 1_000_000_000
-LATENCY_SEED0, PAIRS_SEED0, TIMING_SEED0 = 3_000_000, 8_000_000, 11_000_000
+CAL_SEED0, MODEL_SEED0, SHUFFLE_SEED = 2_000_000_000, 1_000_000_000, 14_000_000
+CAL_RUNS, CAL_R = 40, 150
+SHUFFLE_K = 200
 
 
 def cell_key(R, decoys=DECOYS):
     return f"R{R:g}_D{decoys:g}"
 
 
-def grid(build=BASELINE):
-    return [dict(key=cell_key(R), R=float(R), T=float(R + DECOYS), decoys=float(DECOYS), build=build) for R in REAL_R]
+WINDOW_MAIN_S = 3600.0                           # the scored window in the main cells
+MARGIN_S = 300.0                                 # warm-up and cool-down: the longest time measured, plus 5 minutes
 
 
-def window_s(R, D):
-    """Scored window: 3 hours, extended at small real volume until it holds MIN_REAL_PER_RUN real
-    transactions on average (the run count stays the same)."""
-    return max(P.MEASURE_S, P.MIN_REAL_PER_RUN * D / R)
+def windows(longest, name):
+    """Warm-up, scored window and cool-down of one configuration, from the longest capture-to-finalization
+    times measured in the calibration. A control whose holds differ has all three scaled by the ratio of
+    its longest time to the main configuration's."""
+    ratio = longest[name] / longest[MAIN]
+    warm = (longest[MAIN] + MARGIN_S) * ratio
+    return dict(warmup=warm, window=WINDOW_MAIN_S * ratio, cooldown=warm, ratio=ratio, longest=longest[name])
 
 
-def config_of(spec, D):
-    R = spec["R"]
-    return P.Config(real_rate=R / D, decoy_rate=float(spec.get("decoys", DECOYS)) / D, measure_s=window_s(R, D),
-                    **BUILDS[spec.get("build", BASELINE)])
+def window_s(R, D, window):
+    """The scored window, extended at small real volume until it holds MIN_REAL_PER_RUN real transactions on
+    average. Only real records are scored, so a cell needs enough of them."""
+    return max(window, P.MIN_REAL_PER_RUN * D / R)
+
+
+def config(name, R, D, win=None):
+    """One cell of one configuration. win: its windows; without them, a 1-hour window between warm-up and
+    cool-down set by the longest possible delay (the provisional windows of the calibration's first step)."""
+    if win is None:
+        return P.Config(real_rate=R / D, decoy_rate=DECOYS / D, measure_s=WINDOW_MAIN_S, **CONFIGS[name])
+    return P.Config(real_rate=R / D, decoy_rate=DECOYS / D, measure_s=window_s(R, D, win["window"]),
+                    warmup_len=win["warmup"], cooldown_len=win["cooldown"], **CONFIGS[name])
 
 
 def traffic_seed(R, run_id):
-    """Seed of one run's traffic. It depends on the real volume and the run only, so every build
-    carries the same real traffic in the same cell and run, and every vantage reads the same run."""
+    """Seed of one run's traffic. It depends on the real volume and the run only."""
     h = hashlib.sha256(f"sna|R={R:g}|run={run_id}|control=0".encode()).digest()
     return int.from_bytes(h[:8], "little") >> 1
 
 
-# --------------------------------------------------------------------------- calibration
-def calibrate(out=RESULTS, runs=10, force=False):
-    """Mean end-to-end delay D (capture to registry finalization, the later of the two
-    submissions) over real transactions in the scored window, from seeded runs of the baseline
-    build, so rates R / D and decoys / D give R and decoys transactions in flight under it."""
-    p = Path(out) / "calibration.json"
-    if p.exists() and not force:
-        return json.loads(p.read_text())
-    cfg = P.Config(real_rate=0.2)
-    d = []
-    for k in range(runs):
-        run = S.simulate(cfg, CAL_SEED0 + k)
-        s = run.subs
-        m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s) & ~s["decoy"]
-        d.append(s["final"][m] - s["t0"][m])
-    d = np.concatenate(d)
-    fin = d[np.isfinite(d)]
-    cal = dict(D=float(fin.mean()), D_median=float(np.median(fin)), D_p95=float(np.percentile(fin, 95)),
-               n=int(fin.size), dropped=int((~np.isfinite(d)).sum()), runs=runs, build=BASELINE)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(cal, indent=1))
-    return cal
+def config_hash():
+    """Fingerprint of every configuration and the cells, written to run_info.json; a results
+    directory written under other settings is never resumed."""
+    blob = json.dumps(dict(configs={k: P.Config(**v).__dict__ for k, v in CONFIGS.items()}, R=REAL_R, decoys=DECOYS,
+                           window=WINDOW_MAIN_S, margin=MARGIN_S, min_real=P.MIN_REAL_PER_RUN),
+                      sort_keys=True, default=str)
+    return hashlib.sha256(blob.encode()).hexdigest()[:16]
+
+
+# --------------------------------------------------------------------------- in flight
+def leaves(s):
+    """When each transaction leaves the system: the registry posting its record, or, for one that never
+    reaches quorum, the content server dropping it 30 minutes after its content arrived."""
+    drop = np.fmax(s["arr_f"], s["arr_i"]) + P.QUORUM_TIMEOUT_S
+    return np.where(np.isfinite(s["final"]), s["final"], drop)
+
+
+def in_flight(run):
+    """Mean number of real and of decoy transactions in flight over the scored window: from capture to
+    leaving the system."""
+    s, cfg = run.subs, run.cfg
+    a, b = cfg.warmup_s, cfg.warmup_s + cfg.measure_s
+    overlap = np.clip(np.minimum(leaves(s), b) - np.maximum(s["t0"], a), 0.0, None)
+    return float(overlap[~s["decoy"]].sum() / (b - a)), float(overlap[s["decoy"]].sum() / (b - a))
+
+
+def finalize_times(s, cfg):
+    """Capture to finalization of every transaction introduced in the scored window that finalized."""
+    m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s) & np.isfinite(s["final"])
+    return s["final"][m] - s["t0"][m]
+
+
+def calibrate_longest(name, D0=1000.0, runs=CAL_RUNS, R=CAL_R):
+    """The longest capture-to-finalization time under one configuration's holds, measured on the calibration
+    seeds with provisional windows. Delays do not depend on volume, so D0 need not be the calibrated D."""
+    cfg = config(name, R, D0)
+    return float(max(finalize_times(S.simulate(cfg, CAL_SEED0 + k).subs, cfg).max() for k in range(runs)))
+
+
+def calibrate(name, win, D0=1000.0, runs=CAL_RUNS, R=CAL_R, max_iter=6):
+    """D under one configuration's own holds and its own windows. Each iteration runs the cell at rates from
+    the current D, measures the counts in flight and the mean time a transaction stays in the system, and
+    sets D to that time (Little's law); it stops once both counts are within TOLERANCE of their targets."""
+    D, history, ok = D0, [], False
+    for it in range(max_iter):
+        cfg = config(name, R, D, win)
+        real, dec, dur = [], [], []
+        for k in range(runs):
+            run = S.simulate(cfg, CAL_SEED0 + k)
+            s = run.subs
+            m = (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s)
+            dur.append(leaves(s)[m] - s["t0"][m])
+            r, d = in_flight(run)
+            real.append(r)
+            dec.append(d)
+        dur = np.concatenate(dur)
+        h = dict(D=D, real_in_flight=float(np.mean(real)), decoys_in_flight=float(np.mean(dec)),
+                 mean_residence=float(np.mean(dur)), runs=runs, R=R)
+        history.append(h)
+        ok = abs(h["real_in_flight"] / R - 1) <= TOLERANCE and abs(h["decoys_in_flight"] / DECOYS - 1) <= TOLERANCE
+        if ok and it > 0:
+            break
+        D = h["mean_residence"]
+    return dict(D=history[-1]["D"], history=history, converged=ok)
 
 
 # --------------------------------------------------------------------------- models
-def model_path(out, build):
-    """The attacker's likelihood models under one build. An attacker knows the protocol, so each
-    build is attacked with models built under it."""
-    return Path(out) / "models" / f"{build}.pkl"
+def model_path(out, name):
+    """The attacker's likelihood models under one configuration. An attacker knows the protocol, so each
+    configuration is attacked with models built under it."""
+    return Path(out) / "models" / f"{name}.pkl"
 
 
-def ensure_models(out, build):
-    p = model_path(out, build)
+def ensure_models(out, name):
+    p = model_path(out, name)
     if p.exists():
         return
     p.parent.mkdir(parents=True, exist_ok=True)
     t = time.time()
-    m = AT.build_models(P.Config(**BUILDS[build]), seed0=MODEL_SEED0)
+    m = AT.build_models(P.Config(**CONFIGS[name]), seed0=MODEL_SEED0)
     tmp = p.with_suffix(".tmp")
     with open(tmp, "wb") as f:
         pickle.dump(m, f)
     tmp.replace(p)
-    print(f"models ({build}): {m.mc_runs} Monte Carlo runs, {time.time() - t:.0f} s", flush=True)
+    print(f"models ({name}): {m.mc_runs} Monte Carlo runs, {time.time() - t:.0f} s", flush=True)
 
 
-def rec_name(spec):
-    return f"{spec['key']}__{spec.get('build', BASELINE)}"
+def rec_name(name, R):
+    return f"{name}__{cell_key(R)}"
+
+
+# --------------------------------------------------------------------------- run-level measurements
+def _stage(acc, name, v):
+    v = np.asarray(v, float)
+    v = v[np.isfinite(v)]
+    a = acc.setdefault(name, [0, 0.0, 0.0, 0.0])
+    a[0] += v.size
+    a[1] += v.sum()
+    a[2] += (v * v).sum()
+    a[3] = max(a[3], float(v.max())) if v.size else a[3]
+
+
+def run_stats(run):
+    """In-flight counts, what sets each confirmation, every stage's delay, and the delay from each
+    packet type's departure to the record time, over the run's scored real transactions."""
+    s, ev = run.subs, run.events
+    real, dec = in_flight(run)
+    window = AT.scored_mask(run, np.arange(s["t0"].size))
+    # a real transaction introduced in the window that never reaches a posted record (a quorum timeout)
+    unfinalized = int((window & ~np.isfinite(s["posted"])).sum())
+    m = window & s["ok_f"] & s["ok_i"]
+    board = np.r_[s["known_f"][m] >= s["hold_f"][m], s["known_i"][m] >= s["hold_i"][m]]
+    f_path = (s["hold_f"][m] > s["known_f"][m]) & (s["reg_f"][m] >= s["reg_i"][m])
+    ts, ta = ev["t_send"], ev["t_arr"]
+    cr, ca, cb = s["ev_cred"][m], s["ev_ca"][m], s["ev_cb"][m]
+    st = {}
+    for name, v in (
+            ("device, credential channel", ts[cr[:, 0]] - s["t0"][m]),
+            ("device, content channels", np.r_[ts[ca[:, 0]], ts[cb[:, 0]]] - np.r_[s["t0"][m], s["t0"][m]]),
+            ("first relay hops (A, D, G)", np.r_[ts[cr[:, 1]] - ta[cr[:, 0]], ts[ca[:, 1]] - ta[ca[:, 0]], ts[cb[:, 1]] - ta[cb[:, 0]]]),
+            ("second relay hops (B, E, H)", np.r_[ts[cr[:, 2]] - ta[cr[:, 1]], ts[ca[:, 2]] - ta[ca[:, 1]], ts[cb[:, 2]] - ta[cb[:, 1]]]),
+            ("C before CV-1", s["cv1_s"][m] - s["arr_c"][m]),
+            ("V before CV-2", ts[s["ev_cv2"][m]] - ta[s["ev_cv1"][m]]),
+            ("C fan-out, per leg", (s["gk_send"][m] - s["cv2_a"][m][:, None]).ravel()),
+            ("gatekeeper hold", (s["gk_release"][m] - s["gk_arr"][m]).ravel()),
+            ("departure bundling wait", (s["posts"][m] - s["gk_release"][m]).ravel()),
+            ("F/I pre-match hold", np.r_[s["hold_f"][m] - s["arr_f"][m], s["hold_i"][m] - s["arr_i"][m]]),
+            ("post-match lottery", np.r_[s["ready_f"][m] - s["det_f"][m], s["ready_i"][m] - s["det_i"][m]]),
+            ("registry bundle wait", np.r_[s["reg_f"][m] - s["ready_f"][m], s["reg_i"][m] - s["ready_i"][m]]),
+            ("registry posting wait", s["posted"][m] - s["intake"][m]),
+            ("capture to finalization", s["final"][m] - s["t0"][m])):
+        _stage(st, name, v)
+    delay, path = {}, {}
+    for k, e in enumerate((cr, ca, cb)):
+        _stage(delay, AT.PTYPES[k], s["posted"][m] - ts[e[:, 0]])
+    # from the packet's departure to its arrival at its destination (C, F or I), network time included
+    for k, arr in enumerate((s["arr_c"][m], s["arr_f"][m], s["arr_i"][m])):
+        _stage(path, AT.PTYPES[k], arr - ts[(cr, ca, cb)[k][:, 0]])
+    fin = s["final"][m] - s["t0"][m]
+    return dict(real_in_flight=real, decoys_in_flight=dec, unfinalized=unfinalized, introduced=int(window.sum()),
+                board=int(board.sum()), confirmations=int(board.size),
+                f_path=int(f_path.sum()), records=int(m.sum()), stages=st, packet_delay=delay, path_delay=path,
+                latency_hist=np.histogram(fin, bins=np.arange(0, 3 * 3600 + 10, 10))[0])
 
 
 # --------------------------------------------------------------------------- worker
 _W = {}
 
 
-def worker(out, spec, run_id, D):
-    """One run of one cell: simulate once, score every vantage and its paired baseline."""
-    mp = model_path(out, spec.get("build", BASELINE))
+def worker(out, name, R, run_id, D, win):
+    """One run of one cell: simulate once, score every vantage, the shuffle and the diagnostics."""
+    mp = model_path(out, name)
     if _W.get("model_key") != str(mp):
         with open(mp, "rb") as f:
             _W["models"] = pickle.load(f)
         _W["model_key"] = str(mp)
-    cfg = config_of(spec, D)
+    cfg = config(name, R, D, win)
     t = time.time()
-    run = S.simulate(cfg, traffic_seed(spec["R"], run_id))
+    run = S.simulate(cfg, traffic_seed(R, run_id))
     t_sim = time.time() - t
-    recs = AT.compute(run, _W["models"], AT.VANTAGES, run_id)
-    rec = dict(run=run_id, seconds=time.time() - t, sim_seconds=t_sim, vantages=recs,
-               n_real=int((~run.subs["decoy"]).sum()), n_decoy=int(run.subs["decoy"].sum()),
-               bundles=bundle_sizes(run))
-    return [(rec_name(spec), rec)]
+    fin = run.subs["final"] - run.subs["t0"]
+    longest = float(np.nanmax(fin))
+    if longest > cfg.warmup_s:
+        raise RuntimeError(f"{name} R={R} run {run_id}: a transaction took {longest:.1f} s from capture to finalization, "
+                           f"longer than the {cfg.warmup_s:.1f} s warm-up. Stopping, as the run requires.")
+    rng = np.random.default_rng([SHUFFLE_SEED, list(CONFIGS).index(name), int(R), run_id])
+    t = time.time()
+    tables = AT.compute(run, _W["models"], rng)
+    t_score = time.time() - t
+    rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=t_score, vantages=tables, stats=run_stats(run),
+               longest=longest, transactions=int(run.subs["t0"].size))
+    if name == MAIN:
+        t = time.time()
+        rec["shuffle_test"] = AT.shuffle_test(run, _W["models"], rng, SHUFFLE_K)
+        rec["test_seconds"] = time.time() - t
+    return [(rec_name(name, R), rec)]
 
 
-def bundle_sizes(run, window=P.BUNDLE_S):
-    """Histogram (sizes 0..63) of hold releases per 30-second window at each active gatekeeper, over
-    the scored window, on each gatekeeper's own departure grid."""
-    s = run.subs
-    lo_t, hi_t = run.cfg.warmup_s, run.cfg.warmup_s + run.cfg.measure_s
-    hist = np.zeros(64, np.int64)
-    for j, g in enumerate(run.gk_set):
-        ph = run.bundle_phase[g]
-        b = np.ceil((s["gk_release"][:, j] - ph) / window).astype(np.int64)
-        k0, k1 = int(np.ceil((lo_t - ph) / window)), int(np.floor((hi_t - ph) / window))
-        b = b[(b >= k0) & (b < k1)]
-        cnt = np.bincount(b - k0, minlength=k1 - k0)
-        hist += np.bincount(np.minimum(cnt, 63), minlength=64)
-    return hist
-
-
-def write_cells(out, specs, D):
-    p = Path(out) / "cells.json"
-    cells = json.loads(p.read_text()) if p.exists() else {}
-    for s in specs:
-        cells[s["key"]] = dict({k: v for k, v in s.items() if k != "build"}, window_s=window_s(s["R"], D), D=D)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(cells, indent=1))
-
-
-def run_cells(out, specs, runs=RUNS, workers="auto"):
-    """Run every cell for run ids 0..runs-1, resuming what is already on disk. Cells advance
-    together (run 0 of every cell first), so an interrupted sweep is balanced across cells."""
-    out = Path(out)
-    D = calibrate(out)["D"]
-    write_cells(out, specs, D)
-    tasks = []
-    for spec in specs:
-        done = RN.done_runs(out, rec_name(spec))
-        todo = [k for k in range(runs) if k not in done]
-        if todo:
-            ensure_models(out, spec.get("build", BASELINE))
-        tasks += [(str(out), spec, k, D) for k in todo]
-    tasks.sort(key=lambda t: (t[2], t[1]["T"], t[1]["key"]))
-    RN.execute(tasks, worker, out, workers, label="run")
-
-
-def _scored(s, cfg):
-    return (s["t0"] >= cfg.warmup_s) & (s["t0"] < cfg.warmup_s + cfg.measure_s)
-
-
-# --------------------------------------------------------------------------- latency
-def latency(out, runs=20, builds=None):
-    """Capture-to-finalization time of real transactions under each build, with the stages that
-    make it up. Run ids from 3,000,000 up, never used by the main runs. Written to
-    <out>/latency.json."""
-    out = Path(out)
-    D = calibrate(out)["D"]
-    res = {}
-    builds = tuple(builds or BUILDS)
-    for build in builds:
-        for R in REAL_R:
-            spec = dict(R=float(R), decoys=float(DECOYS), build=build)
-            cfg = config_of(spec, D)
-            acc = {k: [] for k in ("total", "to_gatekeeper", "gk_hold", "gk_bundle_wait", "quorum",
-                                  "quorum_to_confirmed", "registry_bundle_wait", "confirmed_to_final")}
-            for k in range(runs):
-                s = S.simulate(cfg, traffic_seed(R, LATENCY_SEED0 + k)).subs
-                m = _scored(s, cfg) & ~s["decoy"] & s["ok_f"] & s["ok_i"]
-                t0 = s["t0"][m]
-                acc["total"].append(s["final"][m] - t0)
-                acc["to_gatekeeper"].append(s["gk_arr"][m].mean(1) - t0)
-                acc["gk_hold"].append((s["gk_release"][m] - s["gk_arr"][m]).mean(1))
-                acc["gk_bundle_wait"].append((s["posts"][m] - s["gk_release"][m]).mean(1))
-                acc["quorum"].append(s["quorum"][m] - t0)
-                last = np.where(s["reg_f"][m] >= s["reg_i"][m], 0, 1)
-                det = np.where(last == 0, s["det_f"][m], s["det_i"][m])
-                reg = np.where(last == 0, s["reg_f"][m], s["reg_i"][m])
-                acc["quorum_to_confirmed"].append(det - s["quorum"][m])
-                acc["registry_bundle_wait"].append(reg - det)
-                acc["confirmed_to_final"].append(s["final"][m] - det)
-            row = {}
-            for k, v in acc.items():
-                v = np.concatenate(v)
-                row[k] = dict(mean=float(v.mean()), median=float(np.median(v)), p95=float(np.percentile(v, 95)))
-            tot = np.concatenate(acc["total"])
-            row["n"] = int(tot.size)
-            h, _ = np.histogram(tot, bins=np.arange(0, 2400 + 10, 10))
-            row["hist10"] = h.tolist()
-            row["largest_bin_share"] = float(h.max() / h.sum())
-            row["occupied_bins"] = int((h > 0).sum())
-            res[f"{build}.R{R}.D{DECOYS}"] = row
-            t = row["total"]
-            print(f"{build:22s} R={R:3d}: capture to finalization mean {t['mean']:.1f} s, "
-                  f"median {t['median']:.1f} s, p95 {t['p95']:.1f} s (n = {row['n']})", flush=True)
-    (out / "latency.json").write_text(json.dumps(dict(runs=runs, rates_from_D=D, cells=res), indent=1))
-    return res
-
-
-# --------------------------------------------------------------------------- F and I submitting together
-def _pairs_one(args):
-    build, R, d, run_id, D = args
-    cfg = config_of(dict(R=float(R), decoys=float(d), build=build), D)
-    run = S.simulate(cfg, traffic_seed(R, PAIRS_SEED0 + run_id))
-    s = run.subs
-    m = _scored(s, cfg) & ~s["decoy"] & s["ok_f"] & s["ok_i"]
-    sub_gap = np.abs(s["reg_f"][m] - s["reg_i"][m])            # as the two submissions leave
-    ready_gap = np.abs(s["ready_f"][m] - s["ready_i"][m])      # at the point of submission, before any registry wait
-    waited = (s["det_f"][m] > s["hold_f"][m] + 1e-9) & (s["det_i"][m] > s["hold_i"][m] + 1e-9)
-    either = (s["det_f"][m] > s["hold_f"][m] + 1e-9) | (s["det_i"][m] > s["hold_i"][m] + 1e-9)
-    per_server = np.r_[s["det_f"][m] > s["hold_f"][m] + 1e-9, s["det_i"][m] > s["hold_i"][m] + 1e-9]
-    W = cfg.reg_bundle_s
-    if W > 0:
-        bf = np.ceil((s["ready_f"][m] - run.reg_phase) / W)
-        bi = np.ceil((s["ready_i"][m] - run.reg_phase) / W)
-        same = bf == bi
-    else:
-        same = np.zeros(m.sum(), bool)
-    return build, R, d, sub_gap, ready_gap, waited, same, either, per_server
-
-
-def pair_gaps(out, builds=None, runs=20, workers="auto"):
-    """How often a record's two registry submissions leave together. For every build and cell: the
-    share of real records whose submissions leave within 5 s of each other; the same at the point
-    of submission, before any registry wait; and, of the pairs separated by more than 5 s at that
-    point, the share that the registry schedule puts back in one bundle. Run ids from 8,000,000
-    up, never used by the main runs. Written to <out>/pair_gaps.json."""
-    import multiprocessing as mp
-    out = Path(out)
-    D = calibrate(out)["D"]
-    builds = tuple(builds or BUILDS)
-    tasks = [(b, R, DECOYS, k, D) for b in builds for R in REAL_R for k in range(runs)]
-    with mp.Pool(RN.resolve_workers(workers)) as pool:
-        res = pool.map(_pairs_one, tasks, chunksize=1)
-    rows = {}
-    for b in builds:
-        for R in REAL_R:
-            x = [r for r in res if r[0] == b and r[1] == R]
-            sg, rg, wt, sm, ei, ps = (np.concatenate([r[i] for r in x]) for i in (3, 4, 5, 6, 7, 8))
-            sep = rg > 5.0
-            reg = P.Config(**BUILDS[b]).reg_bundle_s > 0
-            row = dict(build=b, R=R, decoys=DECOYS, records=int(sg.size), runs=runs,
-                       within5_at_departure=float((sg <= 5.0).mean()),
-                       within5_at_submission=float((rg <= 5.0).mean()),
-                       quorum_outlasted_both_holds=float(wt.mean()),
-                       quorum_outlasted_either_hold=float(ei.mean()),
-                       quorum_outlasted_hold_per_server=float(ps.mean()),
-                       within5_at_submission_when_outlasted=float((rg[wt] <= 5.0).mean()) if wt.any() else float("nan"),
-                       separated=int(sep.sum()),
-                       separated_same_bundle=float(sm[sep].mean()) if sep.any() and reg else float("nan"),
-                       median_gap_at_submission=float(np.median(rg)))
-            rows[f"{b}.R{R}.D{DECOYS}"] = row
-            sb = row["separated_same_bundle"]
-            print(f"{b:22s} R={R:3d}: within 5 s at submission {100 * row['within5_at_submission']:5.1f}%, "
-                  f"as they leave {100 * row['within5_at_departure']:5.1f}%; separated pairs put back in one bundle "
-                  f"{'n/a' if np.isnan(sb) else f'{100 * sb:.1f}%'} (n = {row['records']})", flush=True)
-    (out / "pair_gaps.json").write_text(json.dumps(dict(runs=runs, cells=rows), indent=1))
-    return rows
-
-
-# --------------------------------------------------------------------------- hold timing as simulated
-def _timing_one(args):
-    build, R, d, run_id, D = args
-    cfg = config_of(dict(R=float(R), decoys=float(d), build=build), D)
-    run = S.simulate(cfg, traffic_seed(R, TIMING_SEED0 + run_id))
-    s, ev = run.subs, run.events
-    a, b = cfg.warmup_s, cfg.warmup_s + cfg.measure_s
-    m = _scored(s, cfg) & s["ok_f"] & s["ok_i"]
-    ts, ta = ev["t_send"], ev["t_arr"]
-    cr, ca, cb = s["ev_cred"][m], s["ev_ca"][m], s["ev_cb"][m]
-    st = {
-        "device, credential channel": ts[cr[:, 0]] - s["t0"][m],
-        "device, content channels": np.r_[ts[ca[:, 0]], ts[cb[:, 0]]] - np.r_[s["t0"][m], s["t0"][m]],
-        "relay hops": np.r_[ts[cr[:, 1]] - ta[cr[:, 0]], ts[cr[:, 2]] - ta[cr[:, 1]], ts[ca[:, 1]] - ta[ca[:, 0]],
-                            ts[ca[:, 2]] - ta[ca[:, 1]], ts[cb[:, 1]] - ta[cb[:, 0]], ts[cb[:, 2]] - ta[cb[:, 1]]],
-        "C before CV-1": s["cv1_s"][m] - s["arr_c"][m],
-        "V before CV-2": ts[s["ev_cv2"][m]] - ta[s["ev_cv1"][m]],
-        "C fan-out, per leg": (s["gk_send"][m] - s["cv2_a"][m][:, None]).ravel(),
-        "gatekeeper hold": (s["gk_release"][m] - s["gk_arr"][m]).ravel(),
-        "departure bundling wait": (s["posts"][m] - s["gk_release"][m]).ravel(),
-        "F/I pre-match hold": np.r_[s["hold_f"][m] - s["arr_f"][m], s["hold_i"][m] - s["arr_i"][m]],
-        "post-match lottery": np.r_[s["ready_f"][m] - s["det_f"][m], s["ready_i"][m] - s["det_i"][m]],
-        "registry bundle wait": np.r_[s["reg_f"][m] - s["ready_f"][m], s["reg_i"][m] - s["ready_i"][m]],
-        "capture to finalization": s["final"][m] - s["t0"][m],
-    }
-    # postings per departure bundle at each gatekeeper (every transaction, real and decoy)
-    counts = []
-    for j, g in enumerate(run.gk_set):
-        dep = s["posts"][:, j]
-        W, ph = P.BUNDLE_S, run.bundle_phase[g]
-        k = np.round((dep - ph) / W).astype(np.int64)      # posts sit just after a boundary (processing)
-        k0, k1 = int(np.ceil((a - ph) / W)), int(np.floor((b - ph) / W))
-        k = k[(k >= k0) & (k < k1)] - k0
-        counts.append(np.bincount(k, minlength=k1 - k0))
-    return build, st, np.concatenate(counts)
-
-
-def timing_check(out, builds=(BASELINE, "no_inclusion_lottery"), R=20, runs=10, workers="auto"):
-    """Every stage's simulated hold (mean, standard deviation, maximum), and postings per departure
-    bundle. Run ids from 11,000,000 up, never used by the main runs. Written to
-    <out>/timing_check.json."""
-    import multiprocessing as mp
-    out = Path(out)
-    D = calibrate(out)["D"]
-    with mp.Pool(RN.resolve_workers(workers)) as pool:
-        res = pool.map(_timing_one, [(b, R, DECOYS, k, D) for b in builds for k in range(runs)], chunksize=1)
-    rows = {}
-    for b in builds:
-        x = [r for r in res if r[0] == b]
-        stages = {}
-        for name in x[0][1]:
-            v = np.concatenate([r[1][name] for r in x])
-            v = v[np.isfinite(v)]
-            stages[name] = dict(mean=float(v.mean()), sd=float(v.std()), max=float(v.max()), n=int(v.size))
-        c = np.concatenate([r[2] for r in x])
-        rows[b] = dict(stages=stages, bundle=dict(mean=float(c.mean()), p_lt2=float((c < 2).mean()),
-                                                   p_empty=float((c == 0).mean()), bundles=int(c.size)))
-        print(f"== {b}")
-        for name, v in stages.items():
-            print(f"   {name:28s} mean {v['mean']:7.1f} s  sd {v['sd']:6.1f}  max {v['max']:7.1f}")
-        print(f"   postings per departure bundle: mean {c.mean():.2f}, fewer than 2 {100 * (c < 2).mean():.1f}%, "
-              f"empty {100 * (c == 0).mean():.1f}%", flush=True)
-    (out / "timing_check.json").write_text(json.dumps(dict(R=R, decoys=DECOYS, runs=runs, builds=rows), indent=1))
-    return rows
+def tasks(out, name, runs, D, win, done=lambda name, R: set()):
+    """Every run of one configuration not yet on disk, cells advancing together."""
+    return [(str(out), name, R, k, D, win) for k in range(runs) for R in REAL_R if k not in done(name, R)]
