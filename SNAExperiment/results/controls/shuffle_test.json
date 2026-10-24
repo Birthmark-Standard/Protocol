@@ -1,0 +1,38 @@
+{
+ "R1_D100": {
+  "records": 19943,
+  "runs": 100,
+  "labels_mean": 101.0,
+  "shuffle_mismatches": 1,
+  "scored_equals_derived": true,
+  "feasible_count_mismatches": 0,
+  "exact_accuracy": 0.009900990099009901,
+  "exact_chance": 0.009900990099009901,
+  "mean_accuracy_over_permutations": 0.009835531264102693,
+  "mean_chance_over_permutations": 0.009900148059968252,
+  "sd_accuracy_over_permutations": 0.0009182280847488399,
+  "permutations": 200,
+  "interval_coverage": 0.94,
+  "scored_accuracy": 0.008624580053151481,
+  "scored_chance": 0.009939165470613536,
+  "scored_percentile": 0.055
+ },
+ "R150_D100": {
+  "records": 46087,
+  "runs": 100,
+  "labels_mean": 256.83,
+  "shuffle_mismatches": 0,
+  "scored_equals_derived": true,
+  "feasible_count_mismatches": 0,
+  "exact_accuracy": 0.0038935481465269665,
+  "exact_chance": 0.0038935481465269665,
+  "mean_accuracy_over_permutations": 0.003942217979039642,
+  "mean_chance_over_permutations": 0.00389362162845505,
+  "sd_accuracy_over_permutations": 0.0002906133506076248,
+  "permutations": 200,
+  "interval_coverage": 0.96,
+  "scored_accuracy": 0.004079241434677892,
+  "scored_chance": 0.0038954478389200513,
+  "scored_percentile": 0.7
+ }
+}
