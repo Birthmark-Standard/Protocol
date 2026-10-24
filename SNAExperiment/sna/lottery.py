@@ -1,10 +1,13 @@
 """The hold lottery and the empirical likelihoods built from it.
 
-Every node holds packets on a node-wide clock of 10-second ticks with a random phase, so a release
-lands on the node's own grid and carries no trace of the packet's arrival phase. Each hold has its
-own mean: at every tick the packet is released with a fixed probability, and it is released
-unconditionally at three times the mean. A device's hold uses an independent random phase per
-channel.
+Every hold releases on a clock of 10-second ticks with a random phase, so a release lands on that
+clock's grid and carries no trace of the packet's arrival phase. Each hold has its own mean: at
+every tick the packet is released with a fixed probability, and it is released unconditionally at
+three times the mean. Which clock a hold uses:
+  relays, C (its CV-1 hold and its serialized fan-out), F and I (pre-match)  the node's own clock
+  the validator                                   its own clock
+  a gatekeeper's own hold                         a gatekeeper hold clock, separate from its node clock
+  the device, per channel; F's and I's post-match lottery  a fresh random phase per packet
 
 The attacks' likelihoods are built by Monte Carlo simulation of the whole process (the multi-hop
 total has no closed form), then histogramming.

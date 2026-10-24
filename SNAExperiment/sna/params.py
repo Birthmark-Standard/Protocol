@@ -9,6 +9,7 @@ BUNDLE_S = 30.0            # gatekeeper departure bundling: one boundary every 3
 INCLUSION_P = 0.25         # chance a ready posting boards at each boundary
 INCLUSION_MAX = 12         # it boards unconditionally at the 12th boundary
 REG_BUNDLE_S = 120.0       # registry-level bundling: one schedule shared by every content server
+REG_POST_S = 120.0         # the registry posts merged records on its own schedule with this period
 BOARD_PUSH_S = 10.0        # each match board pushes new matches to every content server on this period
 QUORUM_TIMEOUT_S = 30 * 60 # a content server drops a packet whose quorum has not formed in 30 minutes
 
@@ -39,15 +40,13 @@ INTERVAL_MIN = 20.0        # mean interval between one device's captures (minute
 LAT_EXT_MS = (10.0, 120.0)   # one-way latency external host <-> node, fixed per pair per run
 LAT_INT_MS = (5.0, 80.0)     # node <-> node and node <-> validator
 JITTER_MS = 2.0              # per-packet exponential jitter, mean
-PROC_MS = (0.5, 3.0)         # per-packet processing before a send
+PROC_MS = (0.5, 3.0)         # per-packet processing before a send (uniform, every node)
 VALIDATOR_PROC_MS = (5.0, 50.0)
 GATEKEEPER_PROC_MS = (1.0, 10.0)
 GOSSIP_VALIDATE_MS = (5.0, 50.0)
 
 # --------------------------------------------------------------------------- run window
-WARMUP_S = 60.0 * 60       # transactions start at 0; scoring starts once traffic in flight is steady
 MEASURE_S = 3 * 60 * 60    # scored window (extended at small real volume)
-COOLDOWN_S = 120.0 * 60    # keeps simulating past the window so every scored transaction completes
 MIN_REAL_PER_RUN = 200     # the scored window is extended until it holds this many real
                            #   transactions on average
 
@@ -62,26 +61,45 @@ class Config:
     real_rate: float = 0.05            # real captures per second, all devices together
     decoy_rate: float = 0.0            # decoy transactions per second
     measure_s: float = MEASURE_S
-    relay_mean: float = 120.0          # every relay hop (A, B, D, E, G, H), every path
+    relay1_mean: float = 60.0          # every first relay hop (A, D, G); a relay knows only its hop position
+    relay2_mean: float = 300.0         # every second relay hop (B, E, H)
     dev_cred_mean: float = 120.0       # the device's credential-channel hold
     dev_content_mean: float = 240.0    # the device's two content-channel holds
+    dev_content_i_mean: float = -1.0   # the device's I-channel hold when set (>= 0); default: the same as dev_content_mean
     c_hold_mean: float = 30.0          # C's hold before sending CV-1 (0 = none)
     v_hold_mean: float = 30.0          # V's hold before sending CV-2 (0 = none)
-    fanout_mean: float = 60.0          # C's fan-out, each gatekeeper leg independently
+    fanout_mean: float = 20.0          # C's serialized fan-out: mean of each draw; one leg leaves per success
     gk_mean: float = 30.0              # the gatekeeper's own hold
     gk_inclusion: bool = True          # departure bundling by inclusion lottery (False: next boundary)
-    cs_mean: float = 240.0             # F's and I's pre-match hold
+    cs_mean: float = 120.0             # F's and I's pre-match hold
     post_match: bool = True            # F's and I's post-match lottery after quorum is confirmed
     pm_mean: float = 30.0              # post-match lottery mean
     reg_bundle_s: float = REG_BUNDLE_S # registry-level bundling period; 0 = off
+    reg_post_s: float = REG_POST_S     # the registry's posting schedule period; 0 = posted at intake
+    overlap: bool = True               # relays drawn under the routing design's guarantees only (see sim._roles)
+    warmup_len: float = -1.0           # warm-up before the scored window (s); below 0: the longest possible delay
+    cooldown_len: float = -1.0         # cool-down after the window (s), with arrivals going on; below 0: as above
+
+    @property
+    def max_delay_s(self) -> float:
+        """An upper bound on capture to posting: every hold at its cap, every schedule at its longest wait."""
+        cap = lambda m: CAP_FACTOR * m  # noqa: E731
+        dev_i = self.dev_content_mean if self.dev_content_i_mean < 0 else self.dev_content_i_mean
+        relays = cap(self.relay1_mean) + cap(self.relay2_mean)
+        cred = (cap(self.dev_cred_mean) + relays + cap(self.c_hold_mean) + cap(self.v_hold_mean) + 3 * cap(self.fanout_mean)
+                + cap(self.gk_mean) + BUNDLE_S * (INCLUSION_MAX if self.gk_inclusion else 1) + BOARD_PUSH_S)
+        content = cap(max(self.dev_content_mean, dev_i)) + relays + cap(self.cs_mean)
+        return max(cred, content) + (cap(self.pm_mean) if self.post_match else 0.0) + self.reg_bundle_s + self.reg_post_s + 60.0
 
     @property
     def warmup_s(self) -> float:
-        return WARMUP_S
+        """Scoring starts once traffic in flight is steady."""
+        return self.warmup_len if self.warmup_len >= 0 else self.max_delay_s
 
     @property
     def horizon_s(self) -> float:
-        return self.warmup_s + self.measure_s + COOLDOWN_S
+        """Transactions keep arriving through the cool-down: their packets are candidates for the window's late records."""
+        return self.warmup_s + self.measure_s + (self.cooldown_len if self.cooldown_len >= 0 else self.max_delay_s)
 
     @property
     def real_devices(self) -> int:
@@ -89,7 +107,11 @@ class Config:
 
     @property
     def decoy_sources(self) -> int:
-        return max(1, int(round(self.decoy_rate * INTERVAL_MIN * 60))) if self.decoy_rate > 0 else 0
+        """Decoy identities, each capturing at the real devices' rate per device, so no identity's rate stands out."""
+        if self.decoy_rate <= 0:
+            return 0
+        per_device = self.real_rate / self.real_devices if self.real_rate > 0 else 1.0 / (INTERVAL_MIN * 60)
+        return max(1, int(round(self.decoy_rate / per_device)))
 
     def with_(self, **kw) -> "Config":
         return replace(self, **kw)

@@ -1,167 +1,97 @@
 # Results
 
-InternalCompromiseRun: can a single compromised component of the Birthmark Protocol take a public registry record and name the device that produced it?
+The run has two cells: R = 1 and R = 150 real transactions in flight. Each cell has 100 decoys in flight and 100 runs. Every node is compromised in turn. Intervals are 95% and resample whole runs. The tables are in `results/`.
 
-- Every hold follows the timing in `README.md`: 10-second ticks, geometric release, each capped at three times its own mean.
-- Departure bundling is by inclusion lottery. Registry bundling uses one shared 120-second schedule. The post-match lottery is on.
-- R = 1, 20 and 100 real transactions in flight, with 60 decoys in flight; 200 runs per cell.
-- Every cell of every build met the stability rule: at least 50 right and 50 wrong decisions at the device level for every vantage.
-- The full generated tables are in `results/TABLES.md`. The figures are `results/figures/device_named.png` and `confidence_reliability.png`.
+Device-named accuracy is how often a vantage names the device behind a registry record. It is the correlation rate.
 
-## Summary
+## Correlation rates
 
-1. **No single compromised component does meaningfully better than a passive observer.**
-   - Across the 18 component-and-cell combinations, the largest lead over the observer is +0.24 points [+0.18, +0.30] (content server, R = 100).
-   - It is the only lead whose interval lies above 0.
-   - The validator, which holds a device identity for every approval, is 0.06 to 0.40 points below the observer.
-2. **Every component, the observer included, names the device about 4 to 5 times as often as a guess among the devices that could have produced the record.**
-
-   | | R = 1 | R = 20 | R = 100 |
-   |---|---|---|---|
-   | Observer | 9.91% | 6.46% | 3.48% |
-   | Best component | 9.95% | 6.60% | 3.72% |
-   | Feasible-set guess | 2.03% | 1.55% | 0.77% |
-   | One in N registered devices | 1.43% | 1.09% | 0.54% |
-
-3. **The adversary cannot tell which of its matches are right.**
-   - A component's average confidence in its own match is 6.7% to 8.1% at R = 1, 5.3% to 6.5% at R = 20 and 2.8% to 3.6% at R = 100.
-   - Its 99th-percentile confidence never exceeds 13.6%.
-   - The most confident 1% of any component's matches are right at most 26.5% of the time, with an upper bound of 30.3%.
-   - In no cell do more than 0.019% of a component's decisions fall in a most-confident set that is right more than half the time.
-4. **InternalCompromiseRun passes the claim criterion at R = 1, 20 and 100.**
-   - So does every other build, including the one with all five mechanisms removed.
-   - At 60 decoys, the builds differ in the leads and in the observer's accuracy, which the sections below report.
-5. **Of the five timing mechanisms, the role-aware holds matter most.**
-   - Without them, the validator leads the observer by +2.01, +1.49 and +1.04 points, and the content server by +0.42 to +0.77.
-   - The observer itself gains 0.43 to 0.87 points.
-   - Removed one at a time, the four other mechanisms each change the observer by at most 0.10 points.
-6. **Mean capture to finalization is 1,033 to 1,042 seconds.** The 95th percentile is 1,523 to 1,530 seconds.
-   - Without the role-aware holds the mean is 807 seconds.
-   - With all five mechanisms removed it is 647 to 650 seconds.
-
-## The adversary against InternalCompromiseRun
-
-Device named, in percent [95% CI]. The lead is over the passive observer on the same records, in points [95% CI]. Top 1% is the share of a component's most confident 1% of matches that are right.
-
-| Component | R = 1 | Lead | R = 20 | Lead | R = 100 | Lead | Top 1% right, R = 1 / 20 / 100 |
-|---|---|---|---|---|---|---|---|
-| Passive observer | 9.91 [9.48, 10.33] | reference | 6.46 [6.15, 6.78] | reference | 3.48 [3.40, 3.56] | reference | 25.8 / 13.4 / 6.5 |
-| First hop, credential | 9.89 [9.46, 10.30] | -0.02 [-0.11, +0.06] | 6.47 [6.17, 6.79] | +0.01 [-0.07, +0.09] | 3.47 [3.40, 3.54] | -0.01 [-0.04, +0.01] | 25.4 / 13.7 / 6.2 |
-| First hop, content | 9.89 [9.48, 10.28] | -0.02 [-0.10, +0.06] | 6.47 [6.17, 6.77] | +0.01 [-0.07, +0.09] | 3.47 [3.39, 3.54] | -0.01 [-0.03, +0.01] | 25.4 / 13.7 / 6.2 |
-| Credential processor | 9.91 [9.48, 10.33] | +0.00 [-0.05, +0.05] | 6.46 [6.14, 6.77] | -0.01 [-0.04, +0.03] | 3.47 [3.39, 3.54] | -0.01 [-0.02, +0.00] | 25.5 / 13.5 / 6.4 |
-| Validator | 9.51 [9.10, 9.93] | -0.40 [-0.79, -0.05] | 6.32 [6.05, 6.59] | -0.14 [-0.42, +0.12] | 3.41 [3.33, 3.49] | -0.06 [-0.15, +0.02] | 22.1 / 9.4 / 5.3 |
-| Gatekeeper | 9.95 [9.54, 10.38] | +0.04 [-0.06, +0.14] | 6.45 [6.14, 6.74] | -0.01 [-0.10, +0.07] | 3.46 [3.39, 3.55] | -0.01 [-0.04, +0.01] | 26.5 / 13.8 / 6.7 |
-| Content server | 9.84 [9.52, 10.15] | -0.07 [-0.31, +0.16] | 6.60 [6.35, 6.84] | +0.14 [-0.06, +0.35] | 3.72 [3.64, 3.79] | +0.24 [+0.18, +0.30] | 7.9 / 3.7 / 2.2 |
-
-The content server is the most accurate component at R = 20 and 100. Its confidence is the least useful, though: its most confident 1% of matches are right 2.2% to 7.9% of the time, against 5.3% to 26.5% for every other component.
-
-## The adversary's confidence
-
-Each component's confidence is calibrated on half the runs and scored on the other half (cross-fitted by run parity).
-
-- **Calibration is close for every component except the content server.**
-  - At R = 20, the mean absolute gap between stated confidence and the share of matches that are right is 0.24 to 0.47 points for six components, and 1.35 points for the content server.
-  - Across the ten deciles at R = 20, the content server's stated confidence runs from 3.8% to 8.2%. The share of its matches that are right runs from 5.2% to 8.3%. It is underconfident below its top decile.
-- **The highest confidence any component gives a single match** is 7.8% to 20.9% for the observer, credential processor, validator and gatekeeper. It is 22% to 43% for the first hops and 79% to 86% for the content server.
-  - These are single records.
-  - At most 0.017% of a first hop's decisions fall in a most-confident set right more than half the time. None of the content server's do.
-
-## Claim criterion
-
-The criterion is defined in `README.md`. InternalCompromiseRun passes it in every cell:
-
-| R | Highest upper bound on top-1% precision, any component | Largest share of decisions in a most-confident set right more than half the time |
+| Vantage | R = 1 | R = 150 |
 |---|---|---|
-| 1 | 30.3% (passive observer) | 0.0075% (gatekeeper) |
-| 20 | 17.0% (passive observer) | 0.0186% (credential processor) |
-| 100 | 7.6% (passive observer) | 0.0000% |
+| Passive observer | 4.77% [4.28%, 5.29%] | 2.02% [1.86%, 2.18%] |
+| First hop, credential | 4.77% [4.27%, 5.25%] | 2.04% [1.88%, 2.19%] |
+| First hop, content | 4.77% [4.27%, 5.27%] | 2.04% [1.88%, 2.20%] |
+| Credential processor | 4.78% [4.28%, 5.29%] | 2.03% [1.87%, 2.19%] |
+| Validator | 5.26% [4.85%, 5.66%] | 2.32% [2.17%, 2.48%] |
+| Gatekeeper | 4.79% [4.31%, 5.29%] | 2.04% [1.87%, 2.20%] |
+| Content server | 5.53% [5.12%, 5.93%] | 2.39% [2.26%, 2.53%] |
+| Combined | 4.85% [4.41%, 5.30%] | 2.07% [1.92%, 2.23%] |
 
-Every other build also passes in every cell. Across all ten builds the highest upper bound is 32.9% and the largest share is 0.0728%.
+Chance among the feasible devices is 1.11% at R = 1 and 0.44% at R = 150. Every vantage passes the claim criterion in both cells.
 
-## What each mechanism contributes
+## Lead over the observer
 
-Each build removes one mechanism from InternalCompromiseRun and keeps the rest. It is paired with InternalCompromiseRun on the same records: the effect is the build minus InternalCompromiseRun, in points [95% CI].
+The lead is a vantage's rate minus the observer's rate, in points.
 
-| Build | R | Observer: effect vs InternalCompromiseRun | Validator's lead | Content server's lead | Mean latency |
-|---|---|---|---|---|---|
-| InternalCompromiseRun | 1 | reference | -0.40 [-0.79, -0.05] | -0.07 [-0.31, +0.16] | 1,042 s |
-| InternalCompromiseRun | 20 | reference | -0.14 [-0.42, +0.12] | +0.14 [-0.06, +0.35] | 1,033 s |
-| InternalCompromiseRun | 100 | reference | -0.06 [-0.15, +0.02] | +0.24 [+0.18, +0.30] | 1,037 s |
-| without V's and C's holds | 1 / 20 / 100 | -0.01 [-0.18, +0.16] / -0.10 [-0.26, +0.07] / +0.02 [-0.02, +0.07] | see `results/TABLES.md` | see `results/TABLES.md` | 1,020 to 1,030 s |
-| without the inclusion lottery | 1 / 20 / 100 | +0.06 [-0.15, +0.27] / -0.10 [-0.26, +0.07] / +0.04 [-0.01, +0.10] | | | 1,017 to 1,026 s |
-| without the post-match lottery | 1 / 20 / 100 | -0.03 [-0.19, +0.14] / -0.09 [-0.24, +0.07] / +0.06 [+0.02, +0.11] | | | 999 to 1,010 s |
-| without registry bundling | 1 / 20 / 100 | +0.06 [-0.10, +0.23] / +0.04 [-0.10, +0.18] / +0.06 [+0.01, +0.10] | | | 973 to 983 s |
-| without role-aware holds | 1 | +0.70 [+0.37, +1.05] | +2.01 [+1.58, +2.42] | +0.68 [+0.43, +0.92] | 807 s |
-| without role-aware holds | 20 | +0.87 [+0.60, +1.14] | +1.49 [+1.16, +1.81] | +0.77 [+0.55, +0.99] | 807 s |
-| without role-aware holds | 100 | +0.43 [+0.37, +0.50] | +1.04 [+0.92, +1.15] | +0.42 [+0.35, +0.50] | 807 s |
-| without all five | 1 | +1.46 [+1.16, +1.76] | +1.17 [+0.82, +1.51] | +0.13 [-0.07, +0.33] | 650 s |
-| without all five | 20 | +1.31 [+1.05, +1.59] | +0.91 [+0.58, +1.23] | +0.30 [+0.08, +0.51] | 647 s |
-| without all five | 100 | +0.73 [+0.66, +0.81] | +0.64 [+0.54, +0.74] | +0.25 [+0.17, +0.32] | 649 s |
+| Vantage | R = 1 | R = 150 |
+|---|---|---|
+| Credential processor | +0.01 [-0.01, +0.03] | +0.01 [-0.00, +0.01] |
+| Validator | +0.49 [-0.01, +0.94] | +0.29 [+0.11, +0.47] |
+| Gatekeeper | +0.03 [-0.07, +0.10] | +0.02 [-0.01, +0.04] |
+| Content server | +0.76 [+0.49, +1.01] | +0.37 [+0.24, +0.49] |
+| Combined | +0.08 [+0.03, +0.13] | +0.05 [+0.03, +0.07] |
 
-- **Role-aware holds** (device content channels and F/I pre-match hold at 240 s, against 120 s everywhere else) are the only single mechanism whose removal moves any number by more than 0.10 points.
-  - Removing them makes the observer more accurate.
-  - It also hands the validator a lead of 1 to 2 points.
-- **V's and C's holds, the inclusion lottery, the post-match lottery and registry bundling** each move the observer by 0.10 points or less when removed alone.
-  - Two of the twelve effects have intervals above 0: the post-match lottery and registry bundling, both at R = 100, +0.06 points each.
-  - None moves the best component's accuracy by more than 0.13 points (`results/TABLES.md`).
-- **Removed together, the five raise the observer by 0.73 to 1.46 points.** That is about twice the effect of removing the role-aware holds alone.
-  - The difference points to the four smaller mechanisms mattering together more than any one of them alone.
-  - That contrast (all five removed, against role-aware holds removed) has no paired interval here.
-- **The four smaller mechanisms cost about 160 seconds of mean latency between them.** The difference between 807 and 650 seconds measures this. The role-aware holds cost about 230 seconds.
+The content server leads the observer in both cells. The validator leads at R = 150. The credential processor and the gatekeeper match the observer.
 
-## Alternative settings
+## Rate against volume
 
-Each build changes one setting of InternalCompromiseRun and is paired with it on the same records.
+The product of the rate in percent and (100 + R) is the rate scaled by everything in flight.
 
-| Build | R | Observer: effect vs InternalCompromiseRun | Validator's lead | Content server's lead | Mean latency |
-|---|---|---|---|---|---|
-| relay hops at 180 s | 1 | -0.62 [-0.83, -0.41] | -0.37 [-0.78, -0.00] | -0.43 [-0.71, -0.16] | 1,199 s |
-| relay hops at 180 s | 20 | -0.57 [-0.73, -0.40] | +0.10 [-0.18, +0.37] | -0.01 [-0.22, +0.20] | 1,189 s |
-| relay hops at 180 s | 100 | -0.30 [-0.35, -0.24] | +0.06 [-0.03, +0.15] | +0.02 [-0.05, +0.09] | 1,192 s |
-| role-aware holds at 360 s | 1 | -1.33 [-1.64, -1.01] | -0.64 [-0.96, -0.30] | -0.15 [-0.41, +0.12] | 1,337 s |
-| role-aware holds at 360 s | 20 | -1.42 [-1.65, -1.17] | -0.17 [-0.41, +0.06] | +0.51 [+0.31, +0.69] | 1,324 s |
-| role-aware holds at 360 s | 100 | -0.57 [-0.65, -0.49] | -0.28 [-0.36, -0.20] | +0.20 [+0.13, +0.27] | 1,328 s |
-| gatekeeper hold at 120 s | 1 | +0.02 [-0.17, +0.21] | -0.17 [-0.55, +0.19] | -0.03 [-0.30, +0.25] | 1,068 s |
-| gatekeeper hold at 120 s | 20 | -0.11 [-0.28, +0.06] | +0.35 [+0.05, +0.63] | +0.33 [+0.11, +0.56] | 1,059 s |
-| gatekeeper hold at 120 s | 100 | -0.03 [-0.08, +0.03] | +0.13 [+0.04, +0.22] | +0.26 [+0.19, +0.33] | 1,062 s |
+| Vantage | R = 1 | R = 150 |
+|---|---|---|
+| Passive observer | 482 | 505 |
+| Content server | 559 | 598 |
 
-- **Relay hops at 180 s** lower the observer's accuracy by 0.30 to 0.62 points and the strongest component's by 0.51 to 0.72 points. Every lead stays at or below +0.10.
-  - Latency rises by about 155 seconds.
-  - Of the three alternative settings it is the only one that lowers accuracy without opening a lead.
-- **Role-aware holds at 360 s** lower the observer the most, by 0.57 to 1.42 points, at about 290 seconds more latency.
-  - At R = 20 and 100 the content server's lead rises to +0.51 and +0.20.
-  - Its absolute accuracy still falls: 5.55% against 6.60% at R = 20.
-- **The gatekeeper hold at 120 s** leaves the observer unchanged and opens small leads for the validator and the content server at R = 20 and 100 (+0.13 to +0.35).
-  - It costs about 26 seconds.
-  - It gives no gain in accuracy over InternalCompromiseRun.
+The product rises with R. The rate falls more slowly than 1 / (100 + R).
 
-## F and I submitting together
+## Windows and records
 
-Real records at 60 decoys, 20 runs per cell (`results/pair_gaps.json`). Each entry gives the range over R = 1, 20 and 100.
-
-| Build | Within 5 s at submission | Within 5 s as they leave | Separated pairs put back in one bundle |
+| Configuration | Longest capture to finalization | Warm-up and cool-down | Scored window |
 |---|---|---|---|
-| InternalCompromiseRun | 3.7% to 4.0% | 25.3% to 26.3% | 22.5% to 23.3% |
-| without the post-match lottery | 21.3% to 21.8% | 30.8% to 31.4% | 11.8% to 12.5% |
-| without registry bundling | 3.7% to 4.0% | 3.7% to 4.0% | not applicable |
-| without role-aware holds | 8.2% to 8.6% | 50.1% to 51.2% | 45.9% to 46.7% |
-| without all five | 31.2% to 31.7% | 31.2% to 31.7% | not applicable |
-| role-aware holds at 360 s | 2.0% to 2.2% | 14.4% to 14.9% | 12.7% to 13.1% |
+| Main run | 2,316.8 s | 2,616.8 s | 3,600.0 s |
+| Every hold off | 37.6 s | 42.4 s | 58.4 s |
+| Credential path sets the record time | 2,406.0 s | 2,717.5 s | 3,738.7 s |
+| Content paths set the record time | 22,673.7 s | 25,609.8 s | 35,232.7 s |
+| F content path sets the record time | 22,673.7 s | 25,609.8 s | 35,232.7 s |
 
-- **The post-match lottery separates F's and I's submissions.**
-  - Without it, 21% to 22% of pairs submit within 5 seconds of each other; with it, 4%.
-  - Removing it changes the observer's and the strongest component's accuracy by at most 0.12 points.
-- **Registry bundling puts about a quarter of the separated pairs back into one bundle.** Under InternalCompromiseRun, 25% to 26% of pairs leave the registry together.
+The scored window at R = 1 is extended until it holds 200 real transactions per run on average. No transaction exceeded its warm-up.
 
-## Checks and controls
+| Cell | Real records scored | Half-width of the observer's interval |
+|---|---|---|
+| R = 1 | 19,943 | 0.50 points |
+| R = 150 | 46,087 | 0.16 points |
 
-- **Timing.** Measured on 10 runs at R = 20 (`results/timing_check.json`). Every stage's mean lies within 1.2 seconds of its target, and every maximum sits at its cap. The full table is in `README.md`.
-- **Outcome-shuffle control.**
-  - In 25 of the 210 component-and-cell rows across the ten builds, the shuffled-outcome AUC interval excludes 0.5. About 10 would be expected by chance.
-  - Every one lies within 0.013 of 0.5. Confidence AUCs within 0.03 of 0.5 are not read as signal, because permuting within a run keeps each run's success rate, so a small association between runs can survive the shuffle.
+## Decoy identities
 
-## Scope
+Each decoy identity captures at the real device's rate. At R = 1 the real device captures 3.08 times per hour and each of the 100 decoy identities captures 3.08 times per hour. At R = 150 the rates are 3.00 and 2.99 per hour.
 
-- **One decoy level (60).** At 60 decoys every build passes the claim criterion. At lower decoy levels the mechanisms may matter for the criterion itself, as well as for the leads.
-- **Single compromised component.** Collusion between components is not modelled.
-- **The board's posting order is not modelled as a vantage.**
+## Predicted against measured
+
+`PREDICTIONS.md` states each prediction, its basis and its failure rule. A correlation-rate prediction fails only when the rate is above its bound.
+
+| Prediction | Predicted | Measured | Result |
+|---|---|---|---|
+| 1. D and capture to finalization | D within 1% of 1,170.4 s; mean capture to finalization 1,140 s to 1,190 s | D = 1,168.2 s; 1,159.1 s and 1,166.2 s | Holds |
+| 2. Counts in flight | Real within 3% of R, decoys within 3% of 100, in every cell of every configuration | Largest gap: every hold off at R = 150, with 147.97 real (-1.4%) and 98.11 decoys (-1.9%) | Holds |
+| 3. Match board share | 47% to 53%; each control's intended path at least 95% | 49.8% and 50.0%; controls 95.9% to 98.1% | Holds |
+| 4. Departure to arrival | Mean 355.6 s to 364.7 s; standard deviation 258 s to 270 s | Means 357.5 s to 360.7 s; standard deviations 262.0 s to 264.5 s | Holds |
+| 5. Shuffle test | Mismatches under 0.1%, no feasible-count change, means within 3% of exact, coverage 90% to 97% | 1 mismatch in 19,943 records, a tie; no feasible-count change; means within 1.3% of exact; coverage 94.0% and 96.0% | Holds |
+| 6. Window halves | The observer's two halves agree in every cell | -0.51 [-1.51, +0.52] and -0.12 [-0.41, +0.17] | Holds |
+| 7. Observer, R = 1 | At most 4.8% | 4.77% | Holds |
+| 7. Content server, R = 1 | At most 5.7% | 5.53% | Holds |
+| 7. Observer, R = 150 | At most 1.9% | 2.02% | Fails |
+| 7. Content server, R = 150 | At most 2.3% | 2.39% | Fails |
+| 8. Cost | Run phase 2.1 to 4.2 hours on 8 workers | 135.7 minutes (2.3 hours) on 8 workers; 140.9 minutes in all | Holds |
+
+Prediction 7 fails at R = 150 for both vantages. The observer is 0.12 points above its bound, and the content server is 0.09 points above it. Both bounds lie inside the measured intervals: [1.86%, 2.18%] for the observer and [2.26%, 2.53%] for the content server.
+
+## Diagnostics
+
+| Cell | Observer, timing evidence off | Multiple of chance | Observer, record time at the midpoint | Content server, record time at the midpoint |
+|---|---|---|---|---|
+| R = 1 | 3.30% [2.83%, 3.78%] | ×2.96 | +0.45 [+0.20, +0.69] | +0.36 [+0.15, +0.57] |
+| R = 150 | 1.56% [1.42%, 1.70%] | ×3.53 | +0.20 [+0.09, +0.30] | +0.16 [+0.06, +0.27] |
+
+The observer stays above chance with its timing evidence off. A record time at the midpoint, which the protocol does not publish, raises both rates.
+
+The credential path control leaves 456 real transactions at R = 1 and 1,108 at R = 150 unfinalized at their quorum timeout. Every other configuration finalizes every transaction.
