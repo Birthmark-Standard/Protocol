@@ -191,7 +191,7 @@ The gatekeeper's own hold (see Hold timing) already randomizes when a given pack
 
 Once a packet's own hold has expired, it does not depart in the next bundle automatically. Instead, at each successive 30-second boundary it draws independently for inclusion in that boundary's bundle: 25% chance of boarding, 75% chance of carrying over to the next boundary. The cap is 12 boundaries (360 seconds, exactly 3× the 120-second mean), after which the packet is included unconditionally. This gives a measured mean inclusion-lottery wait of 101 seconds (see Hold timing); the cap's truncation of the geometric tail brings the realized mean below the 120-second value the uncapped geometric would predict. Bundles therefore contain a mix of packets from a range of arrival times — packets that became ready moments apart can land in different bundles, and packets that became ready up to 360 seconds apart can land in the same one. The earlier, simpler version (every ready packet joined the very next boundary) narrowed this mixing window to near zero, handing a patient observer direct correspondence between "ready time" and "departure bundle."
 
-Packets within the same bundle have no observable order relative to each other, since they depart at the same moment. Measured at an earlier operating point (60 decoys in flight, to be remeasured at 100): mean 2.33 postings per bundle at one gatekeeper, 32.4% of bundles hold fewer than two postings, and 10.0% are empty.
+Packets within the same bundle have no observable order relative to each other, since they depart at the same moment.
 
 Whether the first-relay lottery should receive the same bundling treatment is open.
 
