@@ -1,12 +1,12 @@
 # Predictions
 
-Written and committed before the run. Each item states what counts as a failure. `RESULTS.md` sets every prediction against its measured value.
+Each prediction, bound and failure rule was committed before the run. Each item states what counts as a failure. `RESULTS.md` sets every prediction against its measured value.
 
 ## 1. Mean capture to finalization
 
 **Prediction.** D is within 1% of 1,170.4 s. The mean capture-to-posting time of real transactions is between 1,140 s and 1,190 s in every cell of the main configuration.
 
-**Basis.** A calibration at 100 decoys gives D = 1,170.4 s. Delays do not depend on volume, because there is no queueing.
+**Basis.** D depends only on the holds. A calibration of this run's holds at 100 decoys gives 1,170.4 s. Delays do not depend on volume, because there is no queueing.
 
 **Fails if** D differs from 1,170.4 s by more than 1%, or any cell's mean lies outside 1,140 to 1,190 s.
 
@@ -26,7 +26,7 @@ Written and committed before the run. Each item states what counts as a failure.
 
 **Fails if** any main cell is outside 47% to 53%.
 
-**Controls.** The intended path's share is at least 95% in every cell of every first-relay control. The small simulations that set the controls measured 96.1% for the credential path, 98.1% for the content paths and 96.8% for the F content path. A control fails this prediction if any cell is below 95%.
+**Controls.** The intended path's share is at least 95% in every cell of every first-relay control. Each control's holds are set so that its intended path is the later one on almost every transaction. A control fails this prediction if any cell is below 95%.
 
 ## 4. Departure to arrival at C, F or I
 
@@ -76,6 +76,8 @@ Together these add about 0.16 s to the mean. Their spread of tens of millisecond
 
 ## 8. Cost
 
-**Prediction.** One run of every cell of every configuration costs 204 s of worker time on the machine that profiled it, 94% of it scoring. 100 runs cost 5.7 worker-hours there. Scaled to Sam's machine by its measured speed against the profiling machine, the run phase takes 2.1 to 4.2 hours on the default 8 workers. The low end assumes 8 workers deliver the throughput of 16. The high end assumes each worker runs at the speed it has with 16.
+**Prediction.** The run phase takes 2.1 to 4.2 hours on the default 8 workers of the machine that runs it.
+
+**Basis.** One run of every cell of every configuration costs 204 s of worker time on the machine that profiled it, 94% of it scoring. 100 runs cost 5.7 worker-hours there. The range scales that cost to the running machine by its measured speed. The low end assumes the run is limited by the machine's total throughput. The high end assumes it is limited by the speed of each worker.
 
 **Fails if** the run phase, from the first run to the last, takes more than 4.2 hours on the default workers.
