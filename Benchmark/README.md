@@ -3,7 +3,7 @@
 This folder measures two things on one machine.
 
 - **Part A.** The device-side cost of one Birthmark capture: SHA-256 over a RAW-sized file, seven ECIES encryptions, and the small AES-256-GCM and SHA-256 operations around them.
-- **Part B.** The cost of proving, in zero knowledge, knowledge of a message whose SHA-256 hash is public. Part B is not built yet.
+- **Part B.** The cost of proving, in zero knowledge, knowledge of a message whose SHA-256 hash is public, at growing message sizes, on the same machine. The prover is Longfellow-zk.
 
 The target machine is a **Raspberry Pi 4 Model B, 4 GB, Cortex-A72 at 1.5 GHz**, running Raspberry Pi OS 64-bit (aarch64). A Raspberry Pi 5 is also recognised. Any other machine is a dry run. Its output files carry `DRY_RUN_NOT_PI` in the file name and `DRY RUN, NOT PI` on the first line.
 
@@ -219,7 +219,134 @@ The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim i
 
 ## Part B
 
-Not built yet. See `zk/` once Phase 2 is complete.
+Part B measures the time and memory to prove, in zero knowledge, knowledge of a message M such that SHA-256(M) = H, with H public. The prover is Longfellow-zk at commit `8861765fbbfaca7a452da60f8ceb8c6de8e4a003`. `zk/CANDIDATES.md` records why it was chosen. Hekate is attempted separately and is not part of the steps below.
+
+### The statement and the circuit
+
+`zk/longfellow/sha256_zk_bench.cc` builds its own circuit from Longfellow's SHA-256 block circuit:
+
+- H is a public input. The message bytes and the per-block witnesses are private inputs.
+- The length of M is fixed by the circuit, as in Hekate's statement. The padding bytes are circuit constants.
+- Every block is chained to the next. There is no limit on the number of blocks.
+
+Longfellow's own SHA-256 benchmark does not prove this statement. It marks no input public, so H is private there. Its variable-length API also stores the block count in 8 bits, which stops it at 255 blocks.
+
+Zero-knowledge is on in every proof. The Ligero parameters are rate 7 and 132 queries. Longfellow's source states these as about 109 bits of statistical security, and its version-7 mdoc proofs use them.
+
+Two fields are available. `gf2_128` is GF(2^128). `fp64_2` is the quadratic extension of the 64-bit Goldilocks prime.
+
+### Build
+
+On Raspberry Pi OS:
+
+```
+sudo apt install build-essential clang cmake libssl-dev libzstd-dev libgtest-dev libbenchmark-dev zlib1g-dev time
+cd Benchmark
+zk/longfellow/fetch_and_build.sh
+```
+
+clang is required on aarch64. Longfellow's add-with-carry helpers in `lib/algebra/sysdep.h` exist only for x86 and for clang, so the script stops with a message if clang is missing.
+
+The script clones Longfellow at the pinned commit into `zk/build/`, which is git-ignored. On every run it starts from the pinned tree.
+
+On an aarch64 CPU without `pmull` (the Pi 4), Longfellow's default build would execute PMULL and stop with an illegal instruction. The script then makes two changes, records them in `zk/build/longfellow_build_changes.diff`, and copies the diff into every raw log:
+
+1. `lib/CMakeLists.txt`: `-march=armv8-a+crypto` becomes `-march=armv8-a`.
+2. `lib/gf2k/sysdep.h`: the PMULL branch is taken only when the compiler defines `__ARM_FEATURE_AES`, so GF(2^128) uses Longfellow's own NEON code.
+
+Afterwards the script counts crypto-extension instructions in the binary (64-bit PMULL, AES, SHA) and fails if any are present. The 8-bit PMULL form that the NEON code uses is base NEON and is not counted.
+
+`LONGFELLOW_WIDE_LABELS=1` makes one more change: the circuit file format stores wire labels in 4 bytes, not 3. Longfellow aborts when saving a circuit with a label of 2^24 or more, which happens for the SHA-256 circuit at 16 KiB. This changes the file format only, not the proof. Circuits must be saved and loaded by builds with the same setting.
+
+### Swap
+
+Building a circuit needs far more memory than proving with it. In the x86 dry run `20261026T220750Z_vm_DRY_RUN_NOT_PI`, the 4 KiB GF(2^128) circuit peaked at 2,158 MiB to build and 234 MiB to prove. An earlier exploratory dry run, whose output was not kept in raw logs, peaked at about 8.3 GiB to build the 16 KiB circuit.
+
+- Swap may be on for the build and for the `setup` phase only. Every setup time recorded while swap was active is labelled "setup with swap, not comparable".
+- Swap must be off for the `prove` phase. The driver refuses to start while `/proc/swaps` lists any swap.
+
+To add temporary swap on the Pi and remove it afterwards (the file name is an example):
+
+```
+sudo fallocate -l 4G /swapfile-partB && sudo chmod 600 /swapfile-partB
+sudo mkswap /swapfile-partB && sudo swapon /swapfile-partB
+# ... setup phase ...
+sudo swapoff -a
+```
+
+`sudo swapoff -a` turns off all swap, including Raspberry Pi OS's default swap file.
+
+### Run
+
+A run has three phases. `setup` prints a run id, which the other two take.
+
+```
+cd Benchmark
+sudo python3 run_partB.py setup --fields gf2_128 fp64_2 --sizes 1024 4096
+sudo swapoff -a
+sudo python3 run_partB.py prove --run-id RUN_ID --fields gf2_128 fp64_2 --sizes 1024 4096
+sudo python3 run_partB.py hash  --run-id RUN_ID --sizes 1024 4096
+python3 summarize_partB.py RUN_ID
+```
+
+| Phase | What it does |
+|---|---|
+| `setup` | Builds each circuit and saves it to `zk/build/circuits/`. Stops a field at its first failure. |
+| `prove` | Loads each circuit and proves `--repeats` times in one process: at least 5 up to 1 MiB, at least 1 above. The process is pinned to one core, runs under `/usr/bin/time -v`, and has a timeout of 45 minutes per repeat. Before each size, it predicts peak memory and prove time from the sizes already measured. It stops when the prediction is over 80% of RAM or over 30 minutes, and records the reason. |
+| `hash` | Plain SHA-256 of M at each size, and at 30,000,000 B, with the Part A code: OpenSSL default, OpenSSL with capabilities off, and libsodium. |
+
+`--sizes ladder` means 1 KiB, 4 KiB, 16 KiB, 64 KiB, 130,944 B, 256 KiB, then 1 MiB and up by powers of 4. 130,944 B (2,047 compressions) approximates the byte count behind the vendor's "127.9 KiB" figure, which is not published.
+
+Each proof run also checks three things on its first repeat:
+
+- the honest proof verifies;
+- a copy of the proof with one flipped byte is rejected;
+- the honest proof is rejected against a wrong H.
+
+Each check runs in a child process, because Longfellow aborts on some malformed inputs. A run that fails any check is recorded as a failure.
+
+`summarize_partB.py RUN_ID [--field gf2_128|fp64_2]` chooses the field for the comparison. Without `--field` it uses the field with the most measured sizes; on a tie, the faster one at the largest common size.
+
+### Output
+
+| File | Content |
+|---|---|
+| `results/raw/partB_<run_id>_setup_<field>_<bytes>.jsonl` | One circuit build: header (machine, swap state, build changes), the driver's output, `/usr/bin/time -v` fields, the circuit file's SHA-256 |
+| `results/raw/partB_<run_id>_prove_<field>_<bytes>.jsonl` | One prove process: every repeat's times, proof size and checks |
+| `results/raw/partB_<run_id>_prove_<field>_<bytes>_stopped.json` | Why the sweep stopped before this size |
+| `results/raw/partB_<run_id>_hash_<variant>_<small or large>.jsonl` | Plain-hash rows |
+| `results/raw/partB_crossarch_*.jsonl` | The cross-architecture check, below |
+| `results/partB_<date>_<host>.json` | Everything the summary uses |
+| `results/partB_summary.md` | Setup table, measured prove table, field pilot, where the sweep stopped, plain-hash table, ratio table, extrapolation table |
+| `results/comparison.md` | One table (input size; hash time with SHA extensions; hash time without; prover time; prover peak memory; ratio), then Limitations |
+
+Dry-run file names carry `DRY_RUN_NOT_PI`.
+
+### Extrapolation
+
+The summary fits a power law in log-log space to the measured prove times and peak memory of one field, and reports the fit and R². It also gives the linear per-compression scaling from the largest measured point. Both are labelled EXTRAPOLATED wherever they appear, and no table column mixes them with measured values. With only two measured points, R² is 1 by construction, and the summary says so.
+
+### Cross-architecture check
+
+`python3 zk/longfellow/cross_arch_check.py` runs on an x86-64 host. It needs clang, lld, qemu-user and the arm64 development packages. First run `zk/longfellow/fetch_and_build.sh`, then the same with `CROSS_AARCH64=1`. For each field it checks that:
+
+- the circuit built on x86-64 and the one built on aarch64 (QEMU, `-cpu cortex-a72`) are byte-identical and have the same circuit id;
+- aarch64 proves with the x86-64 circuit and passes all checks;
+- each architecture verifies the other's proof, and rejects a copy with one flipped byte.
+
+Timings under QEMU are emulated and are not results.
+
+### A defect found in Longfellow's own benchmark
+
+`BM_ShaZK_Fp64_2` in `lib/circuits/sha/flatsha256_circuit_test.cc` passes the Goldilocks root 2752994695033296049 as a root of unity of order 2^32. Its order is 2^29. Longfellow's `lib/algebra/reed_solomon_test.cc` uses the same root with order 2^29. With order 2^32, the honest proof is rejected. The benchmark never runs the verifier, so the defect does not show there. This driver uses order 2^29.
+
+### What is not measured
+
+- Hekate. It is attempted separately and reported on its own.
+- PMULL on the Pi 4. The board has none, so the GF(2^128) slowdown from the NEON fallback cannot be measured on it.
+- Setup time without swap, for any size whose circuit build needs more memory than the Pi has.
+- Message sizes beyond the stop rules.
+
 
 ## Licence
 
