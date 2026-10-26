@@ -38,7 +38,7 @@ On the Pi 4, Part A's SHA-256 also runs without SHA extensions. Both sides of th
   - Prove 949 ms, verify 11 ms.
   - Proof size 1,039 to 1,046 KiB, peak memory 142 MiB.
   - Signed `ct` prover 0.16.1, hekate 0.38.0, best of three, on battery.
-  - The table is on `main` at `e0099d4` (2026-10-20), where the package version reads 0.3.0. The `v0.3.0` tag (`becc92a`, 2026-10-11) has no benchmark table. The papers' citation of "hekate-mobile 0.3.0" should name the commit.
+  - The 949 ms figure is on hekate-mobile `main` at commit `e0099d48489d489076a15799dd196281385bf2b4` (2026-10-20). It is not on the `v0.3.0` tag (`becc92ac4ac1d5b644f9d12d9b53215543945391`, 2026-10-11), whose README has no benchmark table. At `e0099d4` the package version still reads 0.3.0, which explains the papers' citation of "hekate-mobile 0.3.0". The citation should name the commit.
 - **Flock, M4 Max.** The Flock README reports single-thread SHA-256 proving throughput of 12.6 to 58.2 thousand compressions per second on an Apple M4 Max. The rate rises with batch size, from 1,024 to 262,144. These are batches of independent compressions, without zero-knowledge. This survey could not read the paper's Table 2, so the "about 42,000 per second" figure in the papers was not checked against it.
 
 ## Recommendation
