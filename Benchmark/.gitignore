@@ -1,0 +1,4 @@
+# Build outputs. Raw logs in results/raw/ are kept: every result must trace to them.
+device/bench_capture
+device/bench_capture_native
+__pycache__/
