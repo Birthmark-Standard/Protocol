@@ -36,7 +36,14 @@
 // proof with one flipped byte is rejected, and the honest proof is rejected
 // against a wrong H.
 //
-// Output: JSON lines on stdout (setup, one per repeat, done). Exit status 0
+// --write-proof FILE stores H and the first repeat's proof. --verify-proof
+// FILE loads or builds the circuit, verifies the stored proof against the
+// stored H, checks that a copy with one flipped byte is rejected, and exits.
+// Together with --save-circuit and --load-circuit, these let a circuit or a
+// proof made on one machine be checked on another.
+//
+// Output: JSON lines on stdout (setup, one per repeat, done). The setup line
+// carries the circuit id that Longfellow's compiler computes. Exit status 0
 // if every check passed, 2 if any failed, 1 on bad arguments.
 
 #include <openssl/rand.h>
@@ -286,7 +293,27 @@ struct Options {
   int repeats = 1;
   std::string save_circuit;  // build, write the circuit, exit
   std::string load_circuit;  // read the circuit instead of building it
+  std::string write_proof;   // write H || proof of the first repeat
+  std::string verify_proof;  // verify H || proof from a file, then exit
 };
+
+std::string hex(const uint8_t* b, size_t n) {
+  static const char d[] = "0123456789abcdef";
+  std::string s;
+  for (size_t i = 0; i < n; ++i) {
+    s += d[b[i] >> 4];
+    s += d[b[i] & 15];
+  }
+  return s;
+}
+
+// Public inputs for a given H: the constant one, then the 256 bits of H.
+template <class Field>
+void public_inputs(const uint8_t digest[32], const Field& f, Dense<Field>& pub) {
+  size_t wi = 0;
+  pub.v_[wi++] = f.one();
+  push_digest(digest, wi, pub, f);
+}
 
 bool write_file(const std::string& path, const std::vector<uint8_t>& b) {
   FILE* fp = fopen(path.c_str(), "wb");
@@ -350,11 +377,29 @@ int run(const char* field_name, FieldID field_id, const Field& f,
       "\"compressions\":%zu,\"setup\":\"%s\",\"setup_s\":%.6f,"
       "\"circuit_file_bytes\":%zu,\"circuit\":{\"layers\":%zu,\"inputs\":%zu,"
       "\"public_inputs\":%zu,\"layer_wires\":%zu,\"quad_terms\":%zu},"
-      "\"max_rss_kb_after_setup\":%ld}\n",
+      "\"circuit_id\":\"%s\",\"max_rss_kb_after_setup\":%ld}\n",
       field_name, kPluckerSize, kLigeroRate, kLigeroNreq, msg_len, nb,
       setup.c_str(), t_setup, circuit_file_bytes, c->nl, c->ninputs, c->npub_in,
-      layer_wires, c->nterms(), max_rss_kb());
+      layer_wires, c->nterms(), hex(c->id, sizeof c->id).c_str(), max_rss_kb());
   fflush(stdout);
+
+  if (!opt.verify_proof.empty()) {
+    std::vector<uint8_t> file;
+    std::string result = "unreadable", tampered = "not_run";
+    if (read_file(opt.verify_proof, file) && file.size() > 32) {
+      std::vector<uint8_t> proof(file.begin() + 32, file.end());
+      Dense<Field> pub(1, c->npub_in);
+      public_inputs(file.data(), f, pub);
+      result = verify_in_child(*c, rsf, f, proof, pub);
+      proof[proof.size() / 2] ^= 0x01;
+      tampered = verify_in_child(*c, rsf, f, proof, pub);
+    }
+    bool ok = result == "accepted" && (tampered == "rejected" || tampered == "aborted");
+    printf("{\"type\":\"verify_file\",\"file\":\"%s\",\"result\":\"%s\","
+           "\"tampered_copy\":\"%s\",\"all_checks_passed\":%s}\n",
+           opt.verify_proof.c_str(), result.c_str(), tampered.c_str(), ok ? "true" : "false");
+    return ok ? 0 : 2;
+  }
 
   if (!opt.save_circuit.empty()) {
     std::vector<uint8_t> bytes;
@@ -408,6 +453,11 @@ int run(const char* field_name, FieldID field_id, const Field& f,
         t_serialize = now_s() - t0;
       }
       proof_bytes = buf.size();
+      if (r == 0 && !opt.write_proof.empty()) {
+        std::vector<uint8_t> file(w.digest, w.digest + 32);
+        file.insert(file.end(), buf.begin(), buf.end());
+        if (!write_file(opt.write_proof, file)) return 2;
+      }
 
       t0 = now_s();
       verify_ok = verify_bytes(*c, rsf, f, buf, pub);
@@ -451,7 +501,8 @@ int run(const char* field_name, FieldID field_id, const Field& f,
 int usage(const char* argv0) {
   fprintf(stderr,
           "usage: %s --field gf2_128|fp64_2 --bytes N [--repeats R]\n"
-          "          [--save-circuit FILE | --load-circuit FILE]\n",
+          "          [--save-circuit FILE | --load-circuit FILE]\n"
+          "          [--write-proof FILE | --verify-proof FILE]\n",
           argv0);
   return 1;
 }
@@ -472,6 +523,10 @@ int main(int argc, char** argv) {
       opt.save_circuit = argv[++i];
     } else if (!strcmp(argv[i], "--load-circuit") && i + 1 < argc) {
       opt.load_circuit = argv[++i];
+    } else if (!strcmp(argv[i], "--write-proof") && i + 1 < argc) {
+      opt.write_proof = argv[++i];
+    } else if (!strcmp(argv[i], "--verify-proof") && i + 1 < argc) {
+      opt.verify_proof = argv[++i];
     } else {
       return usage(argv[0]);
     }

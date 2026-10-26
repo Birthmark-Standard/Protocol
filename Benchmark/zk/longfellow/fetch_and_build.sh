@@ -32,6 +32,18 @@
 #      branch without PMULL.
 # Set LONGFELLOW_NO_PMULL=1 to force these changes on any aarch64 CPU.
 #
+# Set LONGFELLOW_WIDE_LABELS=1 to make one more change, on any CPU:
+#   3. lib/proto/circuit_io.h: kBytesPerSizeT = 3 becomes 4. Longfellow's
+#      circuit file format stores wire labels in 3 bytes and aborts when
+#      saving a circuit with a label of 2^24 or more, which happens for the
+#      SHA-256 circuit at 16 KiB. Saving and loading must use builds with the
+#      same setting. This changes the circuit file format only, not the proof.
+#
+# Set CROSS_AARCH64=1 on an x86-64 host to cross-build an aarch64 binary
+# without PMULL instead (used by cross_arch_check.py; needs clang, lld,
+# qemu-user and the arm64 development packages). It uses its own clone and
+# build directory, with -aarch64 appended to their names.
+#
 # Environment: JOBS (parallel compile jobs, default 2).
 
 set -euo pipefail
@@ -41,10 +53,13 @@ LONGFELLOW_COMMIT="8861765fbbfaca7a452da60f8ceb8c6de8e4a003"
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_ROOT="$(cd "$HERE/.." && pwd)/build"
-SRC="$BUILD_ROOT/longfellow-zk"
-OUT="$BUILD_ROOT/longfellow-build"
-INFO="$BUILD_ROOT/longfellow_build_info.json"
-DIFF="$BUILD_ROOT/longfellow_build_changes.diff"
+CROSS="${CROSS_AARCH64:-0}"
+SUFFIX=""
+[ "$CROSS" = "1" ] && SUFFIX="-aarch64"
+SRC="$BUILD_ROOT/longfellow-zk$SUFFIX"
+OUT="$BUILD_ROOT/longfellow-build$SUFFIX"
+INFO="$BUILD_ROOT/longfellow_build_info$SUFFIX.json"
+DIFF="$BUILD_ROOT/longfellow_build_changes$SUFFIX.diff"
 JOBS="${JOBS:-2}"
 
 mkdir -p "$BUILD_ROOT"
@@ -60,7 +75,26 @@ git -C "$SRC" checkout -q -- .
 
 arch="$(uname -m)"
 no_pmull=0
-if [ "$arch" = "aarch64" ]; then
+OBJDUMP=objdump
+CMAKE_EXTRA=()
+if [ "$CROSS" = "1" ]; then
+  arch=aarch64
+  no_pmull=1
+  OBJDUMP=aarch64-linux-gnu-objdump
+  TOOLCHAIN="$BUILD_ROOT/aarch64-cross.cmake"
+  printf '%s\n' \
+    'set(CMAKE_SYSTEM_NAME Linux)' \
+    'set(CMAKE_SYSTEM_PROCESSOR aarch64)' \
+    'set(CMAKE_C_COMPILER clang)' \
+    'set(CMAKE_CXX_COMPILER clang++)' \
+    'set(CMAKE_C_COMPILER_TARGET aarch64-linux-gnu)' \
+    'set(CMAKE_CXX_COMPILER_TARGET aarch64-linux-gnu)' \
+    'set(CMAKE_LIBRARY_ARCHITECTURE aarch64-linux-gnu)' \
+    'set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu /usr/lib/aarch64-linux-gnu)' \
+    'set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)' \
+    'set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=lld" CACHE STRING "")' > "$TOOLCHAIN"
+  CMAKE_EXTRA=(-D CMAKE_TOOLCHAIN_FILE="$TOOLCHAIN")
+elif [ "$arch" = "aarch64" ]; then
   if [ "${LONGFELLOW_NO_PMULL:-0}" = "1" ] || ! grep -m1 '^Features' /proc/cpuinfo | grep -qw pmull; then
     no_pmull=1
   fi
@@ -76,6 +110,16 @@ if [ "$no_pmull" = "1" ]; then
   sed -i 's/^#elif defined(__aarch64__)$/#elif defined(__aarch64__) \&\& defined(__ARM_FEATURE_AES)/' \
     "$SRC/lib/gf2k/sysdep.h"
 fi
+wide_labels=0
+if [ "${LONGFELLOW_WIDE_LABELS:-0}" = "1" ]; then
+  wide_labels=1
+  count="$(grep -c 'kBytesPerSizeT = 3;' "$SRC/lib/proto/circuit_io.h" || true)"
+  if [ "$count" != "1" ]; then
+    echo "expected one kBytesPerSizeT = 3 in lib/proto/circuit_io.h, found $count" >&2
+    exit 1
+  fi
+  sed -i 's/kBytesPerSizeT = 3;/kBytesPerSizeT = 4;/' "$SRC/lib/proto/circuit_io.h"
+fi
 git -C "$SRC" diff > "$DIFF"
 
 # Longfellow's lib/algebra/sysdep.h defines its add-with-carry helpers for
@@ -84,7 +128,7 @@ CXX_BIN="${CXX:-}"
 if [ -z "$CXX_BIN" ]; then
   if command -v clang++ >/dev/null; then
     CXX_BIN=clang++
-  elif [ "$arch" = "aarch64" ]; then
+  elif [ "$arch" = "aarch64" ] || [ "$CROSS" = "1" ]; then
     echo "clang++ is required on aarch64: sudo apt install clang" >&2
     exit 1
   else
@@ -92,7 +136,8 @@ if [ -z "$CXX_BIN" ]; then
   fi
 fi
 
-CXX="$CXX_BIN" cmake -S "$HERE" -B "$OUT" -D LONGFELLOW_SRC="$SRC" -D CMAKE_BUILD_TYPE=Release >/dev/null
+CXX="$CXX_BIN" cmake -S "$HERE" -B "$OUT" -D LONGFELLOW_SRC="$SRC" -D CMAKE_BUILD_TYPE=Release \
+  "${CMAKE_EXTRA[@]}" >/dev/null
 cmake --build "$OUT" --target sha256_zk_bench -j "$JOBS"
 
 # Count crypto-extension instructions in the binary. The 8-bit PMULL form
@@ -101,8 +146,8 @@ cmake --build "$OUT" --target sha256_zk_bench -j "$JOBS"
 # SHA instructions need the crypto extension.
 BIN="$OUT/sha256_zk_bench"
 crypto_count="null"
-if [ "$arch" = "aarch64" ] && command -v objdump >/dev/null; then
-  crypto_count="$(objdump -d "$BIN" | grep -E '\bpmull2?\b.*\.1q|\baes[edm]c?\b|\baesimc\b|\bsha(1|256|512)[a-z0-9]*\b' -c || true)"
+if [ "$arch" = "aarch64" ] && command -v "$OBJDUMP" >/dev/null; then
+  crypto_count="$("$OBJDUMP" -d "$BIN" | grep -E '\bpmull2?\b.*\.1q|\baes[edm]c?\b|\baesimc\b|\bsha(1|256|512)[a-z0-9]*\b' -c || true)"
   if [ "$no_pmull" = "1" ] && [ "$crypto_count" != "0" ]; then
     echo "build without PMULL still contains $crypto_count crypto-extension instructions" >&2
     exit 1
@@ -111,7 +156,9 @@ fi
 
 cat > "$INFO" <<EOF
 {"prover": "longfellow-zk", "url": "$LONGFELLOW_URL", "commit": "$LONGFELLOW_COMMIT",
- "arch": "$arch", "no_pmull_build_changes": $([ "$no_pmull" = "1" ] && echo true || echo false),
+ "arch": "$arch", "cross_build": $([ "$CROSS" = "1" ] && echo true || echo false),
+ "no_pmull_build_changes": $([ "$no_pmull" = "1" ] && echo true || echo false),
+ "wide_label_build_change": $([ "$wide_labels" = "1" ] && echo true || echo false),
  "build_changes_diff": "$(basename "$DIFF")", "crypto_extension_instructions_in_binary": $crypto_count,
  "compiler": "$($CXX_BIN --version | head -1)", "build_type": "Release",
  "binary": "$BIN"}

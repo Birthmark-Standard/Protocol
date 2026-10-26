@@ -1015,7 +1015,9 @@ static void usage(const char *argv0)
     fprintf(stderr,
             "usage: %s [--groups LIST] [--hash-repeats N] [--hash-warmup N]\n"
             "          [--small-repeats N] [--small-warmup N] [--capture-repeats N]\n"
-            "groups: all, or a comma list of a1_openssl,a1_libsodium,a2,a3,a4,a5\n",
+            "          [--hash-bytes N[,N...]]\n"
+            "groups: all, or a comma list of a1_openssl,a1_libsodium,a2,a3,a4,a5,\n"
+            "        hash_openssl,hash_libsodium (SHA-256 at the --hash-bytes sizes)\n",
             argv0);
 }
 
@@ -1023,6 +1025,8 @@ int main(int argc, char **argv)
 {
     const char *groups = "all";
     int hash_repeats = 20, hash_warmup = 2, small_repeats = 2000, small_warmup = 200, capture_repeats = 20;
+    size_t hash_bytes[64];
+    size_t n_hash_bytes = 0;
     static const size_t file_sizes[3] = {FILE_SIZE_LOW, FILE_SIZE_CENTRAL, FILE_SIZE_HIGH};
     static setup_keys keys;
     static capture cap;
@@ -1044,6 +1048,23 @@ int main(int argc, char **argv)
             small_warmup = atoi(argv[++i]);
         else if (strcmp(argv[i], "--capture-repeats") == 0 && i + 1 < (size_t)argc)
             capture_repeats = atoi(argv[++i]);
+        else if (strcmp(argv[i], "--hash-bytes") == 0 && i + 1 < (size_t)argc) {
+            /* Comma list of sizes, each at most FILE_SIZE_HIGH. */
+            char *p = argv[++i], *end;
+            while (*p) {
+                unsigned long long v = strtoull(p, &end, 10);
+                if (end == p || v > FILE_SIZE_HIGH || n_hash_bytes == sizeof hash_bytes / sizeof hash_bytes[0]) {
+                    usage(argv[0]);
+                    return 1;
+                }
+                hash_bytes[n_hash_bytes++] = (size_t)v;
+                p = *end == ',' ? end + 1 : end;
+                if (*end && *end != ',') {
+                    usage(argv[0]);
+                    return 1;
+                }
+            }
+        }
         else {
             usage(argv[0]);
             return 1;
@@ -1116,6 +1137,18 @@ int main(int argc, char **argv)
         if (group_on(groups, "a1_libsodium"))
             run_row("A1", "sha256_file_libsodium", "ContentHash = SHA-256(file), buffer in RAM",
                     "libsodium crypto_hash_sha256 (portable C)", file_sizes[i], hash_warmup, hash_repeats, 1,
+                    op_sha_libsodium, &h);
+    }
+
+    /* Part B: SHA-256 of M at each --hash-bytes size, same code as A1. */
+    for (i = 0; i < n_hash_bytes; i++) {
+        hash_ctx h = {buf, hash_bytes[i]};
+        if (group_on(groups, "hash_openssl"))
+            run_row("B", "sha256_bytes_openssl", "SHA-256(M), M in RAM", "OpenSSL EVP SHA256",
+                    hash_bytes[i], hash_warmup, hash_repeats, 1, op_sha_openssl, &h);
+        if (group_on(groups, "hash_libsodium"))
+            run_row("B", "sha256_bytes_libsodium", "SHA-256(M), M in RAM",
+                    "libsodium crypto_hash_sha256 (portable C)", hash_bytes[i], hash_warmup, hash_repeats, 1,
                     op_sha_libsodium, &h);
     }
 
