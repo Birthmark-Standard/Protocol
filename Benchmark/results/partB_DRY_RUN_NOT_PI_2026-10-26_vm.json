@@ -1,0 +1,852 @@
+{"label": "DRY RUN, NOT PI",
+  "run_id": "20261026T220750Z_vm_DRY_RUN_NOT_PI",
+  "generated_utc": "2026-10-26T22:13:50+00:00",
+  "machine": {
+    "hostname": "vm",
+    "model": "",
+    "is_pi": false,
+    "arch": "x86_64",
+    "uname": "Linux vm 6.18.44-fc-v165 #1 SMP PREEMPT_DYNAMIC @0 x86_64 x86_64",
+    "cpu_model": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+    "cpu_count": 4,
+    "cpu_features": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves arat umip avx512_vnni md_clear arch_capabilities",
+    "sha_extensions": false,
+    "aes_feature": true,
+    "pmull_feature": false,
+    "mem_total_kb": 16477356,
+    "swap_total_kb": 0,
+    "os": "Ubuntu 24.04.5 LTS",
+    "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "pinned_cpu": 3,
+    "cpuinfo_min_freq_khz": null,
+    "cpuinfo_max_freq_khz": null,
+    "scaling_available_governors": null,
+    "perf_event_paranoid": "2",
+    "vcgencmd_version": null,
+    "python": "3.13.17",
+    "governor_before": "not available"
+  },
+  "core": null,
+  "prover": "longfellow-zk",
+  "build": {
+    "info": {
+      "prover": "longfellow-zk",
+      "url": "https://github.com/google/longfellow-zk",
+      "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+      "arch": "x86_64",
+      "no_pmull_build_changes": false,
+      "build_changes_diff": "longfellow_build_changes.diff",
+      "pmull_instructions_in_binary": null,
+      "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+      "build_type": "Release",
+      "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+    },
+    "build_changes_diff": ""
+  },
+  "statement": "knowledge of M with SHA-256(M) = H; H public; length of M fixed by the circuit",
+  "vendor_point_note": "130,944 B (2,047 compressions) approximates the vendor's unpublished byte count for the \"127.9 KiB\" message",
+  "comparison_field": "gf2_128",
+  "comparison_field_rule": "tie on measured sizes; lower median prove time at 4 KiB",
+  "setup": [
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_fp64_2_1024.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 792368,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "fp64_2",
+      "message_bytes": 1024,
+      "compressions": 17,
+      "setup_label": "on this machine, no swap",
+      "swap_active": false,
+      "setup_s": 10.78705,
+      "circuit": {
+        "layers": 9,
+        "inputs": 42857,
+        "public_inputs": 257,
+        "layer_wires": 1278823,
+        "quad_terms": 4044249
+      },
+      "circuit_id": "710cfb19ac815a9d0c7036818db837f6d3ee18069709d82bd850bf652a946cf1",
+      "circuit_file_bytes": 48534694,
+      "circuit_sha256": "84a2c5771b61fb2916f99e79d47c4a0a7cb2556c21f47f39731ef28b6c2f9fd6",
+      "ok": true,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      }
+    },
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_fp64_2_4096.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 3029980,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "fp64_2",
+      "message_bytes": 4096,
+      "compressions": 65,
+      "setup_label": "on this machine, no swap",
+      "swap_active": false,
+      "setup_s": 78.74452,
+      "circuit": {
+        "layers": 9,
+        "inputs": 164585,
+        "public_inputs": 257,
+        "layer_wires": 4894471,
+        "quad_terms": 15485865
+      },
+      "circuit_id": "a1ba957ba4f67ed2dec0523655d08d333b2fb81762ad6df3a408c753bb322a5a",
+      "circuit_file_bytes": 185834086,
+      "circuit_sha256": "e34a680b68ac1b94dc71336e29b615d539b6f60337b02e9cbe20fd22560a7de4",
+      "ok": true,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      }
+    },
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_gf2_128_1024.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 627364,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "gf2_128",
+      "message_bytes": 1024,
+      "compressions": 17,
+      "setup_label": "on this machine, no swap",
+      "swap_active": false,
+      "setup_s": 11.857543,
+      "circuit": {
+        "layers": 13,
+        "inputs": 58497,
+        "public_inputs": 257,
+        "layer_wires": 1105406,
+        "quad_terms": 2543912
+      },
+      "circuit_id": "36ade1a483273741b14f554e73d25308f24bb960698f461b3b2b87664542afe3",
+      "circuit_file_bytes": 30532478,
+      "circuit_sha256": "d689c6ee775802bd98b90651c125c0308e4b74840b7aa26ce6a0c4b93c7617bb",
+      "ok": true,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      }
+    },
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_gf2_128_4096.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 2210272,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "gf2_128",
+      "message_bytes": 4096,
+      "compressions": 65,
+      "setup_label": "on this machine, no swap",
+      "swap_active": false,
+      "setup_s": 51.895729,
+      "circuit": {
+        "layers": 13,
+        "inputs": 224385,
+        "public_inputs": 257,
+        "layer_wires": 4235582,
+        "quad_terms": 9742232
+      },
+      "circuit_id": "085ecdfab092a0e2ff07de68f0c19a0b0b0541cbc2ecb0806c3f8499d0eb2399",
+      "circuit_file_bytes": 116912318,
+      "circuit_sha256": "2372f24570911cb3d4a11b1f05d6ca3fd8d2b7b89142447bb9ee9373d841c424",
+      "ok": true,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      }
+    }
+  ],
+  "prove": [
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_fp64_2_1024.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 80244,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "fp64_2",
+      "message_bytes": 1024,
+      "compressions": 17,
+      "repeats": 5,
+      "threads": 1,
+      "ok": true,
+      "load_s": 1.120475,
+      "circuit": {
+        "layers": 9,
+        "inputs": 42857,
+        "public_inputs": 257,
+        "layer_wires": 1278823,
+        "quad_terms": 4044249
+      },
+      "circuit_id": "710cfb19ac815a9d0c7036818db837f6d3ee18069709d82bd850bf652a946cf1",
+      "zero_knowledge": true,
+      "ligero_rate": 7,
+      "ligero_queries": 132,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      },
+      "swap_active": false,
+      "checks_first_repeat": {
+        "hash_matches_openssl": true,
+        "inputs_complete": true,
+        "prover_ok": true,
+        "verify_honest": true,
+        "verify_honest_child": "accepted",
+        "verify_tampered_proof": "rejected",
+        "verify_wrong_h": "rejected"
+      },
+      "prove": {
+        "n": 5,
+        "min_s": 0.84401,
+        "median_s": 1.198265,
+        "mean_s": 1.1337038,
+        "p95_s": 1.289988,
+        "std_s": 0.17375571780289703
+      },
+      "verify": {
+        "n": 5,
+        "min_s": 0.448291,
+        "median_s": 0.59555,
+        "mean_s": 0.6106192,
+        "p95_s": 0.775084,
+        "std_s": 0.11888878108846099
+      },
+      "witness_median_s": 0.000439,
+      "proof_bytes_median": 225128
+    },
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_fp64_2_4096.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 280688,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "fp64_2",
+      "message_bytes": 4096,
+      "compressions": 65,
+      "repeats": 5,
+      "threads": 1,
+      "ok": true,
+      "load_s": 4.511914,
+      "circuit": {
+        "layers": 9,
+        "inputs": 164585,
+        "public_inputs": 257,
+        "layer_wires": 4894471,
+        "quad_terms": 15485865
+      },
+      "circuit_id": "a1ba957ba4f67ed2dec0523655d08d333b2fb81762ad6df3a408c753bb322a5a",
+      "zero_knowledge": true,
+      "ligero_rate": 7,
+      "ligero_queries": 132,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      },
+      "swap_active": false,
+      "checks_first_repeat": {
+        "hash_matches_openssl": true,
+        "inputs_complete": true,
+        "prover_ok": true,
+        "verify_honest": true,
+        "verify_honest_child": "accepted",
+        "verify_tampered_proof": "rejected",
+        "verify_wrong_h": "rejected"
+      },
+      "prove": {
+        "n": 5,
+        "min_s": 3.843365,
+        "median_s": 4.104784,
+        "mean_s": 4.51759,
+        "p95_s": 6.241843,
+        "std_s": 0.9902411427064117
+      },
+      "verify": {
+        "n": 5,
+        "min_s": 2.03147,
+        "median_s": 2.403157,
+        "mean_s": 2.3942810000000003,
+        "p95_s": 2.804836,
+        "std_s": 0.2906077613468022
+      },
+      "witness_median_s": 0.0018830000000000001,
+      "proof_bytes_median": 377704
+    },
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_gf2_128_1024.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 71000,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "gf2_128",
+      "message_bytes": 1024,
+      "compressions": 17,
+      "repeats": 5,
+      "threads": 1,
+      "ok": true,
+      "load_s": 0.781521,
+      "circuit": {
+        "layers": 13,
+        "inputs": 58497,
+        "public_inputs": 257,
+        "layer_wires": 1105406,
+        "quad_terms": 2543912
+      },
+      "circuit_id": "36ade1a483273741b14f554e73d25308f24bb960698f461b3b2b87664542afe3",
+      "zero_knowledge": true,
+      "ligero_rate": 7,
+      "ligero_queries": 132,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      },
+      "swap_active": false,
+      "checks_first_repeat": {
+        "hash_matches_openssl": true,
+        "inputs_complete": true,
+        "prover_ok": true,
+        "verify_honest": true,
+        "verify_honest_child": "accepted",
+        "verify_tampered_proof": "rejected",
+        "verify_wrong_h": "rejected"
+      },
+      "prove": {
+        "n": 5,
+        "min_s": 0.354617,
+        "median_s": 0.430724,
+        "mean_s": 0.42021800000000004,
+        "p95_s": 0.461672,
+        "std_s": 0.04106795196378802
+      },
+      "verify": {
+        "n": 5,
+        "min_s": 0.116486,
+        "median_s": 0.157703,
+        "mean_s": 0.15428999999999998,
+        "p95_s": 0.190832,
+        "std_s": 0.02665228681558113
+      },
+      "witness_median_s": 0.000762,
+      "proof_bytes_median": 464040
+    },
+    {
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_gf2_128_4096.jsonl",
+      "exit_code": 0,
+      "timed_out": false,
+      "terminated_by_signal": null,
+      "peak_rss_kb": 239936,
+      "throttle": "unknown (vcgencmd not available)",
+      "stderr_tail": "",
+      "field": "gf2_128",
+      "message_bytes": 4096,
+      "compressions": 65,
+      "repeats": 5,
+      "threads": 1,
+      "ok": true,
+      "load_s": 2.210851,
+      "circuit": {
+        "layers": 13,
+        "inputs": 224385,
+        "public_inputs": 257,
+        "layer_wires": 4235582,
+        "quad_terms": 9742232
+      },
+      "circuit_id": "085ecdfab092a0e2ff07de68f0c19a0b0b0541cbc2ecb0806c3f8499d0eb2399",
+      "zero_knowledge": true,
+      "ligero_rate": 7,
+      "ligero_queries": 132,
+      "build": {
+        "info": {
+          "prover": "longfellow-zk",
+          "url": "https://github.com/google/longfellow-zk",
+          "commit": "8861765fbbfaca7a452da60f8ceb8c6de8e4a003",
+          "arch": "x86_64",
+          "no_pmull_build_changes": false,
+          "build_changes_diff": "longfellow_build_changes.diff",
+          "pmull_instructions_in_binary": null,
+          "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "build_type": "Release",
+          "binary": "/home/user/Protocol/Benchmark/zk/build/longfellow-build/sha256_zk_bench"
+        },
+        "build_changes_diff": ""
+      },
+      "swap_active": false,
+      "checks_first_repeat": {
+        "hash_matches_openssl": true,
+        "inputs_complete": true,
+        "prover_ok": true,
+        "verify_honest": true,
+        "verify_honest_child": "accepted",
+        "verify_tampered_proof": "rejected",
+        "verify_wrong_h": "rejected"
+      },
+      "prove": {
+        "n": 5,
+        "min_s": 1.311949,
+        "median_s": 1.440739,
+        "mean_s": 1.4832994,
+        "p95_s": 1.705823,
+        "std_s": 0.16780804429853774
+      },
+      "verify": {
+        "n": 5,
+        "min_s": 0.508529,
+        "median_s": 0.589377,
+        "mean_s": 0.5941316000000001,
+        "p95_s": 0.666612,
+        "std_s": 0.07089123882963255
+      },
+      "witness_median_s": 0.0027649999999999997,
+      "proof_bytes_median": 725320
+    }
+  ],
+  "stops": [
+    {
+      "type": "stopped",
+      "label": "DRY RUN, NOT PI",
+      "run_id": "20261026T220750Z_vm_DRY_RUN_NOT_PI",
+      "field": "fp64_2",
+      "message_bytes": 16384,
+      "compressions": 257,
+      "reason": "no circuit file zk/build/circuits/fp64_2_16384.circuit; run the setup phase for this size",
+      "predicted_prove_s": 14.500748303139401,
+      "predicted_peak_rss_kb": 1013035.2137897913,
+      "measured_points_time": [
+        [
+          17,
+          1.198265
+        ],
+        [
+          65,
+          4.104784
+        ]
+      ],
+      "measured_points_rss_kb": [
+        [
+          17,
+          80244
+        ],
+        [
+          65,
+          280688
+        ]
+      ],
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_fp64_2_16384_stopped.json"
+    },
+    {
+      "type": "stopped",
+      "label": "DRY RUN, NOT PI",
+      "run_id": "20261026T220750Z_vm_DRY_RUN_NOT_PI",
+      "field": "gf2_128",
+      "message_bytes": 16384,
+      "compressions": 257,
+      "reason": "no circuit file zk/build/circuits/gf2_128_16384.circuit; run the setup phase for this size",
+      "predicted_prove_s": 4.96678723402838,
+      "predicted_peak_rss_kb": 835887.2587509417,
+      "measured_points_time": [
+        [
+          17,
+          0.430724
+        ],
+        [
+          65,
+          1.440739
+        ]
+      ],
+      "measured_points_rss_kb": [
+        [
+          17,
+          71000
+        ],
+        [
+          65,
+          239936
+        ]
+      ],
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_gf2_128_16384_stopped.json"
+    }
+  ],
+  "hash": [
+    {
+      "n": 20,
+      "min_ms": 148.414138,
+      "median_ms": 236.8090255,
+      "mean_ms": 212.16874925000002,
+      "p95_ms": 243.996398,
+      "std_ms": 38.30532097953799,
+      "variant": "caps_off",
+      "name": "sha256_bytes_openssl",
+      "bytes": 30000000,
+      "path": "OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_caps_off_large.jsonl"
+    },
+    {
+      "n": 2000,
+      "min_ms": 0.004087,
+      "median_ms": 0.006901,
+      "mean_ms": 0.007251124,
+      "p95_ms": 0.007948,
+      "std_ms": 0.0049510716358982226,
+      "variant": "caps_off",
+      "name": "sha256_bytes_openssl",
+      "bytes": 1024,
+      "path": "OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_caps_off_small.jsonl"
+    },
+    {
+      "n": 2000,
+      "min_ms": 0.013883,
+      "median_ms": 0.0236655,
+      "mean_ms": 0.024607905,
+      "p95_ms": 0.031684,
+      "std_ms": 0.008771104226644004,
+      "variant": "caps_off",
+      "name": "sha256_bytes_openssl",
+      "bytes": 4096,
+      "path": "OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_caps_off_small.jsonl"
+    },
+    {
+      "n": 20,
+      "min_ms": 87.146491,
+      "median_ms": 107.568866,
+      "mean_ms": 106.72091035000001,
+      "p95_ms": 109.884233,
+      "std_ms": 4.997934060178931,
+      "variant": "default",
+      "name": "sha256_bytes_openssl",
+      "bytes": 30000000,
+      "path": "OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_large.jsonl"
+    },
+    {
+      "n": 20,
+      "min_ms": 143.224668,
+      "median_ms": 176.218691,
+      "mean_ms": 180.6272151,
+      "p95_ms": 212.065157,
+      "std_ms": 27.59952405172655,
+      "variant": "default",
+      "name": "sha256_bytes_libsodium",
+      "bytes": 30000000,
+      "path": "libsodium crypto_hash_sha256 (portable C)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_large.jsonl"
+    },
+    {
+      "n": 2000,
+      "min_ms": 0.002572,
+      "median_ms": 0.002609,
+      "mean_ms": 0.0028075265,
+      "p95_ms": 0.003027,
+      "std_ms": 0.001795936558834813,
+      "variant": "default",
+      "name": "sha256_bytes_openssl",
+      "bytes": 1024,
+      "path": "OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_small.jsonl"
+    },
+    {
+      "n": 2000,
+      "min_ms": 0.004502,
+      "median_ms": 0.004615,
+      "mean_ms": 0.005311859,
+      "p95_ms": 0.007601,
+      "std_ms": 0.0030795149517883727,
+      "variant": "default",
+      "name": "sha256_bytes_libsodium",
+      "bytes": 1024,
+      "path": "libsodium crypto_hash_sha256 (portable C)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_small.jsonl"
+    },
+    {
+      "n": 2000,
+      "min_ms": 0.009489,
+      "median_ms": 0.009618,
+      "mean_ms": 0.014506087,
+      "p95_ms": 0.015755,
+      "std_ms": 0.06555319212208609,
+      "variant": "default",
+      "name": "sha256_bytes_openssl",
+      "bytes": 4096,
+      "path": "OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_small.jsonl"
+    },
+    {
+      "n": 2000,
+      "min_ms": 0.01689,
+      "median_ms": 0.021207499999999997,
+      "mean_ms": 0.0258933905,
+      "p95_ms": 0.037342,
+      "std_ms": 0.0354495226703236,
+      "variant": "default",
+      "name": "sha256_bytes_libsodium",
+      "bytes": 4096,
+      "path": "libsodium crypto_hash_sha256 (portable C)",
+      "throttle": "unknown (vcgencmd not available)",
+      "raw_file": "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_small.jsonl"
+    }
+  ],
+  "pilot": [
+    {
+      "message_bytes": 1024,
+      "median_prove_s": {
+        "fp64_2": 1.198265,
+        "gf2_128": 0.430724
+      },
+      "faster": "gf2_128"
+    },
+    {
+      "message_bytes": 4096,
+      "median_prove_s": {
+        "fp64_2": 4.104784,
+        "gf2_128": 1.440739
+      },
+      "faster": "gf2_128"
+    }
+  ],
+  "ratios": [
+    {
+      "field": "fp64_2",
+      "message_bytes": 1024,
+      "prove_median_s": 1.198265,
+      "openssl_default": {
+        "hash_median_ms": 0.002609,
+        "path": "OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI)",
+        "ratio": 459281.3338443847
+      },
+      "openssl_caps_off": {
+        "hash_median_ms": 0.006901,
+        "path": "OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0)",
+        "ratio": 173636.42950297057
+      },
+      "libsodium": {
+        "hash_median_ms": 0.004615,
+        "path": "libsodium crypto_hash_sha256 (portable C)",
+        "ratio": 259645.7204767064
+      }
+    },
+    {
+      "field": "fp64_2",
+      "message_bytes": 4096,
+      "prove_median_s": 4.104784,
+      "openssl_default": {
+        "hash_median_ms": 0.009618,
+        "path": "OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI)",
+        "ratio": 426781.45144520694
+      },
+      "openssl_caps_off": {
+        "hash_median_ms": 0.0236655,
+        "path": "OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0)",
+        "ratio": 173450.12782320258
+      },
+      "libsodium": {
+        "hash_median_ms": 0.021207499999999997,
+        "path": "libsodium crypto_hash_sha256 (portable C)",
+        "ratio": 193553.41270776853
+      }
+    },
+    {
+      "field": "gf2_128",
+      "message_bytes": 1024,
+      "prove_median_s": 0.430724,
+      "openssl_default": {
+        "hash_median_ms": 0.002609,
+        "path": "OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI)",
+        "ratio": 165091.6059793024
+      },
+      "openssl_caps_off": {
+        "hash_median_ms": 0.006901,
+        "path": "OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0)",
+        "ratio": 62414.72250398493
+      },
+      "libsodium": {
+        "hash_median_ms": 0.004615,
+        "path": "libsodium crypto_hash_sha256 (portable C)",
+        "ratio": 93331.31094257855
+      }
+    },
+    {
+      "field": "gf2_128",
+      "message_bytes": 4096,
+      "prove_median_s": 1.440739,
+      "openssl_default": {
+        "hash_median_ms": 0.009618,
+        "path": "OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI)",
+        "ratio": 149796.1114576835
+      },
+      "openssl_caps_off": {
+        "hash_median_ms": 0.0236655,
+        "path": "OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0)",
+        "ratio": 60879.296866746954
+      },
+      "libsodium": {
+        "hash_median_ms": 0.021207499999999997,
+        "path": "libsodium crypto_hash_sha256 (portable C)",
+        "ratio": 67935.3530590593
+      }
+    }
+  ],
+  "extrapolation": {
+    "label": "EXTRAPOLATED",
+    "field": "gf2_128",
+    "target_bytes": 30000000,
+    "target_compressions": 468750,
+    "largest_measured": {
+      "message_bytes": 4096,
+      "compressions": 65
+    },
+    "prove_s": {
+      "power_law_fit": {
+        "exponent": 0.9002888576667776,
+        "log_coefficient": -3.3929981702799608,
+        "r2": 1.0,
+        "points": 2
+      },
+      "power_law": 4284.74385956607,
+      "linear_from_largest": 10389.944711538463
+    },
+    "prove_peak_rss_kb": {
+      "power_law_fit": {
+        "exponent": 0.9079302248662454,
+        "log_coefficient": 8.598075127460445,
+        "r2": 1.0,
+        "points": 2
+      },
+      "power_law": 763687311.700465,
+      "linear_from_largest": 1730307692.3076923
+    },
+    "setup_peak_rss_kb": {
+      "power_law_fit": {
+        "exponent": 0.9389863053183973,
+        "log_coefficient": 10.688933663316213,
+        "r2": 1.0,
+        "points": 2
+      },
+      "power_law": 9270029331.00027,
+      "linear_from_largest": 15939461538.461538,
+      "largest_measured": {
+        "message_bytes": 4096,
+        "compressions": 65
+      }
+    }
+  },
+  "raw_files": [
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_caps_off_large.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_caps_off_small.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_large.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_hash_default_small.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_fp64_2_1024.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_fp64_2_16384_stopped.json",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_fp64_2_4096.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_gf2_128_1024.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_gf2_128_16384_stopped.json",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_prove_gf2_128_4096.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_fp64_2_1024.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_fp64_2_4096.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_gf2_128_1024.jsonl",
+    "results/raw/partB_20261026T220750Z_vm_DRY_RUN_NOT_PI_setup_gf2_128_4096.jsonl"
+  ]
+}

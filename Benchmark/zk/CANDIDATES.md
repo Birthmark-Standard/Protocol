@@ -38,7 +38,7 @@ On the Pi 4, Part A's SHA-256 also runs without SHA extensions. Both sides of th
   - Prove 949 ms, verify 11 ms.
   - Proof size 1,039 to 1,046 KiB, peak memory 142 MiB.
   - Signed `ct` prover 0.16.1, hekate 0.38.0, best of three, on battery.
-  - The table is on `main` at `e0099d4` (2026-10-20), where the package version reads 0.3.0. The `v0.3.0` tag (`becc92a`, 2026-10-11) has no benchmark table. The papers' citation of "hekate-mobile 0.3.0" should name the commit.
+  - The 949 ms figure is on hekate-mobile `main` at commit `e0099d48489d489076a15799dd196281385bf2b4` (2026-10-20). It is not on the `v0.3.0` tag (`becc92ac4ac1d5b644f9d12d9b53215543945391`, 2026-10-11), whose README has no benchmark table. At `e0099d4` the package version still reads 0.3.0, which explains the papers' citation of "hekate-mobile 0.3.0". The citation should name the commit.
 - **Flock, M4 Max.** The Flock README reports single-thread SHA-256 proving throughput of 12.6 to 58.2 thousand compressions per second on an Apple M4 Max. The rate rises with batch size, from 1,024 to 262,144. These are batches of independent compressions, without zero-knowledge. This survey could not read the paper's Table 2, so the "about 42,000 per second" figure in the papers was not checked against it.
 
 ## Recommendation
@@ -77,3 +77,14 @@ Not recommended for the Pi 4 comparison:
 - SP1, because its proofs are zero-knowledge only after a Groth16 or PLONK wrap.
 - halo2, plonky2 and Plonky3, because none has a ready zero-knowledge SHA-256 at the commits read.
 - circom/rapidsnark and gnark are feasible but use trusted-setup SNARKs. Their circuit size per message limits them to small messages on 4 GB.
+
+## Findings while building Part B with Longfellow-zk
+
+These were found after the survey, while writing the Part B driver. The README's Part B section has the details.
+
+- **Statement.** Longfellow's own SHA-256 benchmark marks no input public, so H is private there and it does not prove our statement. Its variable-length API also stops at 255 blocks. The Part B driver builds its own fixed-length circuit with H public.
+- **Root of unity.** `BM_ShaZK_Fp64_2` passes the Goldilocks root 2752994695033296049 with order 2^32. Its order is 2^29, which is what `lib/algebra/reed_solomon_test.cc` uses. With 2^32 the honest proof is rejected. The benchmark never verifies, so the defect does not show there. The driver uses 2^29.
+- **PMULL.** Longfellow's CMake builds aarch64 with `-march=armv8-a+crypto`, and its GF(2^128) code then uses 64-bit PMULL, which the Pi 4 lacks. `fetch_and_build.sh` switches it to Longfellow's NEON code on such CPUs, and checks the binary for crypto-extension instructions.
+- **Compiler.** On aarch64 Longfellow builds only with clang.
+- **Memory.** Building the circuit needs far more memory than proving with it. In the x86 dry run, the 4 KiB GF(2^128) circuit peaked at 2,158 MiB to build and 234 MiB to prove.
+- **Circuit file format.** Wire labels are 3 bytes, and saving aborts at 2^24 or more (the 16 KiB circuit). `LONGFELLOW_WIDE_LABELS=1` builds with 4-byte labels.

@@ -2,3 +2,4 @@
 device/bench_capture
 device/bench_capture_native
 __pycache__/
+zk/build/
