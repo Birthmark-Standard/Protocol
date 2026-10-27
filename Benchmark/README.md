@@ -9,7 +9,7 @@ The target machine is a **Raspberry Pi 4 Model B, 4 GB, Cortex-A72 at 1.5 GHz**,
 
 The papers state device cost as "calculated from published benchmarks". This folder replaces those calculations with measurements. Every number in `results/` is computed from a raw log in `results/raw/`.
 
-Section and table numbers refer to the versions in `Docs/`: the Protocol paper v124, the Integration paper v41 and the Messaging Structure v118.
+Section and table numbers refer to the versions in `Docs/`: the Protocol paper v124, the Integration paper v41 and the Messaging Structure v119.
 
 ## Part A
 
@@ -146,7 +146,7 @@ All sizes are named constants in `device/sizes.h`.
 - `binding_hash`: SHA-256(Enc_FullPacketHash), 48 B.
 
 **A5. Whole capture.**
-- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure (v118), "Device-side construction", steps 1 to 9:
+- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure (v119), "Device-side construction", steps 1 to 9:
   - ContentHash;
   - n and h(metadata), then FullPacketHash;
   - replay_nonce, BlindShare_key, Enc_FullPacketHash and binding_hash;

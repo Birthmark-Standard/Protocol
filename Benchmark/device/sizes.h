@@ -20,7 +20,7 @@
  * Field and packet sizes for the Part A benchmark.
  *
  * Field sizes come from Table A.1 of the Integration paper (v41) and the
- * Birthmark Protocol Messaging Structure (v118). Several are marked
+ * Birthmark Protocol Messaging Structure (v119). Several are marked
  * "Estimate" there. Change them here; every other file reads them from this
  * header.
  */
