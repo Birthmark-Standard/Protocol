@@ -19,9 +19,10 @@
 /*
  * Field and packet sizes for the Part A benchmark.
  *
- * Field sizes come from Table A.1 of the Integration paper (v29) and the
- * Per-Leg Message Specification. Several are marked "Estimate" there. Change
- * them here; every other file reads them from this header.
+ * Field sizes come from Table A.1 of the Integration paper (v41) and the
+ * Birthmark Protocol Messaging Structure (v118). Several are marked
+ * "Estimate" there. Change them here; every other file reads them from this
+ * header.
  */
 
 #ifndef BENCHMARK_SIZES_H

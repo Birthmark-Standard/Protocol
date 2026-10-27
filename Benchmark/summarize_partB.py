@@ -167,15 +167,26 @@ def load(run_id):
             "peak_rss_kb": tv.get("max_rss_kb"),
             "throttle": summarize_partA.throttle_flag(header.get("before"), after.get("after")),
             "stderr_tail": (after.get("stderr") or "")[-600:],
+            "swap_activity": after.get("swap_activity"),
+            "peak_rss_method": header.get("peak_rss_method", "GNU time -v"),
         }
+        sa = after.get("swap_activity")
+        swapped = bool(sa and sa.get("pages_swapped"))
         if header["phase"] == "setup":
             st = next((x for x in lines if x.get("type") == "setup"), {})
             saved = next((x for x in lines if x.get("type") == "circuit_saved"), {})
             cf = next((x for x in lines if x.get("type") == "circuit_file"), {})
             swap_on = bool((header.get("swap") or {}).get("active") or (after.get("swap_after") or {}).get("active"))
+            # Logs without swap_activity predate its recording; treat active swap as used.
+            if swap_on and (swapped or sa is None):
+                setup_label = SWAP_LABEL
+            elif swap_on:
+                setup_label = "swap on, no pages swapped"
+            else:
+                setup_label = "on this machine, no swap"
             setups.append(dict(common, field=header["field"], message_bytes=header["message_bytes"],
                                compressions=header["compressions"],
-                               setup_label=SWAP_LABEL if swap_on else "on this machine, no swap",
+                               setup_label=setup_label,
                                swap_active=swap_on, setup_s=st.get("setup_s"), circuit=st.get("circuit"),
                                circuit_id=st.get("circuit_id"), circuit_file_bytes=saved.get("bytes"),
                                circuit_sha256=cf.get("sha256"),
@@ -186,8 +197,8 @@ def load(run_id):
             runs = [x for x in lines if x.get("type") == "run"]
             done = next((x for x in lines if x.get("type") == "done"), {})
             ok = common["exit_code"] == 0 and done.get("all_checks_passed") is True \
-                and len(runs) == header.get("repeats")
-            rec = dict(common, field=header["field"], message_bytes=header["message_bytes"],
+                and len(runs) == header.get("repeats") and not swapped
+            rec = dict(common, phase_kind="prove", field=header["field"], message_bytes=header["message_bytes"],
                        compressions=header["compressions"], repeats=header.get("repeats"),
                        threads=header.get("threads"), ok=ok, load_s=st.get("setup_s"),
                        circuit=st.get("circuit"), circuit_id=st.get("circuit_id"),
@@ -459,6 +470,9 @@ def render_summary(res, json_rel, dry):
 
 
 def failure_text(r):
+    sa = r.get("swap_activity") or {}
+    if r.get("phase_kind") == "prove" and sa.get("pages_swapped"):
+        return "FAILED: pages were swapped during proving"
     if r.get("timed_out"):
         return "FAILED: timed out"
     if r.get("terminated_by_signal"):
@@ -594,6 +608,12 @@ def limitations(res):
              "Longfellow's own SHA-256 benchmark marks no input public, so its published figures prove a "
              "different statement; this run uses its own circuit.")
     L.append("- Threads: one, pinned, to match the single-core hash in Part A.")
+    if any(p.get("swap_active") for p in res["prove"]):
+        L.append("- Swap: some prove runs started with swap active (--allow-active-swap, for a machine "
+                 "without sudo). Any run during which a page was swapped in or out is counted as failed.")
+    methods = sorted({r.get("peak_rss_method") for r in res["prove"] + res["setup"] if r.get("peak_rss_method")})
+    if methods:
+        L.append("- Peak memory method: " + "; ".join(methods) + ".")
     L.append("- Root of unity: for Fp64_2 the driver uses the root 2752994695033296049 with order 2^29. "
              "Longfellow's BM_ShaZK_Fp64_2 benchmark passes order 2^32, with which an honest proof is rejected.")
     L.append("- Plain hash: M is in RAM; no disk reads.")

@@ -25,6 +25,7 @@ Hash times at 30,000,000 B are measured. Every prover cell at 30,000,000 B is EX
 - Setup: circuit construction is not included in the prover time. It is reported separately in partB_summary.md. Setup rows that ran with swap are labelled "setup with swap, not comparable".
 - Statement: H is public and the length of M is fixed by the circuit, as in Hekate's statement. Longfellow's own SHA-256 benchmark marks no input public, so its published figures prove a different statement; this run uses its own circuit.
 - Threads: one, pinned, to match the single-core hash in Part A.
+- Peak memory method: GNU time -v.
 - Root of unity: for Fp64_2 the driver uses the root 2752994695033296049 with order 2^29. Longfellow's BM_ShaZK_Fp64_2 benchmark passes order 2^32, with which an honest proof is rejected.
 - Plain hash: M is in RAM; no disk reads.
 - Failures and stops:

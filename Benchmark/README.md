@@ -9,14 +9,22 @@ The target machine is a **Raspberry Pi 4 Model B, 4 GB, Cortex-A72 at 1.5 GHz**,
 
 The papers state device cost as "calculated from published benchmarks". This folder replaces those calculations with measurements. Every number in `results/` is computed from a raw log in `results/raw/`.
 
+Section and table numbers refer to the versions in `Docs/`: the Protocol paper v124, the Integration paper v41 and the Messaging Structure v118.
+
 ## Part A
 
 ### Build
 
-On Raspberry Pi OS:
+First check what is installed. `check_prereqs.py` needs no root and installs nothing. It lists every missing command, library and package for Parts A and B, with the `apt install` line that someone with admin rights can run:
 
 ```
-sudo apt install build-essential pkg-config libsodium-dev libssl-dev python3
+cd Benchmark
+python3 check_prereqs.py
+```
+
+Part A needs `build-essential pkg-config libsodium-dev libssl-dev python3`. Then:
+
+```
 cd Benchmark/device
 make
 ```
@@ -27,19 +35,17 @@ make
 
 ```
 cd Benchmark
-sudo python3 run_partA.py
+python3 run_partA.py
 ```
 
 Before you run it, let the Pi cool to idle and close other programs. Use a heatsink or fan if you have one.
 
-With `sudo`, the driver:
+The driver:
 
-- sets the cpufreq governor to `performance` and restores it afterwards;
 - runs the C program pinned to core 3 with `taskset -c 3`;
-- reads `vcgencmd measure_temp`, `vcgencmd get_throttled` and `vcgencmd measure_clock arm` before and after each run;
-- hands the files it created back to your user.
+- reads `vcgencmd measure_temp`, `vcgencmd get_throttled` and `vcgencmd measure_clock arm` before and after each run, where `vcgencmd` is available.
 
-Without `sudo` the governor is left unchanged, and the summary records which governor was in use.
+sudo is optional. Run as root (`sudo python3 run_partA.py`), the driver also sets the cpufreq governor to `performance`, restores it afterwards, and hands the files it created back to your user. Without root, the governor is left unchanged, and the summary records which governor was in use.
 
 The driver runs the C program twice:
 
@@ -140,7 +146,7 @@ All sizes are named constants in `device/sizes.h`.
 - `binding_hash`: SHA-256(Enc_FullPacketHash), 48 B.
 
 **A5. Whole capture.**
-- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Per-Leg Message Specification, steps 1 to 9:
+- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure (v118), "Device-side construction", steps 1 to 9:
   - ContentHash;
   - n and h(metadata), then FullPacketHash;
   - replay_nonce, BlindShare_key, Enc_FullPacketHash and binding_hash;
@@ -213,6 +219,7 @@ The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim i
 - **No SHA extensions on the Pi 4.** The claim for ARMv8 crypto extensions cannot be tested on this board.
 - **KDF.** HKDF-SHA256 is a placeholder. The papers say the key-derivation function is not yet specified. The HKDF call is timed as its own row.
 - **Sizes.** Several field sizes are estimates in Table A.1 (Cred_HW, key_ref, claim). They are approximate. The 300 B ContP is outside the spec.
+- **replay_nonce.** Integration v41 defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
 - **Padding.** The format is not specified. Padded wraps use zero bytes.
 - **Subgroup check.** The spec checks ℓ·GP with an unclamped multiplication. This code instead converts GP to Edwards form and calls libsodium's `crypto_core_ed25519_is_valid_point`, which includes the prime-order subgroup check. The check runs at setup and is not timed.
 - **Libraries.** The results depend on the installed libsodium and OpenSSL versions. Both are recorded in every raw log.
@@ -237,10 +244,9 @@ Two fields are available. `gf2_128` is GF(2^128). `fp64_2` is the quadratic exte
 
 ### Build
 
-On Raspberry Pi OS:
+Part B needs `build-essential clang cmake git libssl-dev libzstd-dev libgtest-dev libbenchmark-dev zlib1g-dev`, and optionally `time`. Installing them needs admin rights; `python3 check_prereqs.py` lists what is missing. The build itself needs no root:
 
 ```
-sudo apt install build-essential clang cmake libssl-dev libzstd-dev libgtest-dev libbenchmark-dev zlib1g-dev time
 cd Benchmark
 zk/longfellow/fetch_and_build.sh
 ```
@@ -262,10 +268,13 @@ Afterwards the script counts crypto-extension instructions in the binary (64-bit
 
 Building a circuit needs far more memory than proving with it. In the x86 dry run `20261026T220750Z_vm_DRY_RUN_NOT_PI`, the 4 KiB GF(2^128) circuit peaked at 2,158 MiB to build and 234 MiB to prove. An earlier exploratory dry run, whose output was not kept in raw logs, peaked at about 8.3 GiB to build the 16 KiB circuit.
 
-- Swap may be on for the build and for the `setup` phase only. Every setup time recorded while swap was active is labelled "setup with swap, not comparable".
-- Swap must be off for the `prove` phase. The driver refuses to start while `/proc/swaps` lists any swap.
+For every run of every phase, the driver records swap activity: the change in pages swapped in and out (`/proc/vmstat`), and the most swap in use, sampled every 0.5 s.
 
-To add temporary swap on the Pi and remove it afterwards (the file name is an example):
+- **Setup.** Swap may be on. A setup during which any page was swapped in or out is labelled "setup with swap, not comparable". A setup with swap on but no page swapped is labelled "swap on, no pages swapped".
+- **Prove.** Swap must be off. The driver refuses to start while `/proc/swaps` lists any swap.
+- **Without sudo**, swap cannot be turned off. `--allow-active-swap` lets the prove phase run with swap on. Any run during which a page is swapped in or out then counts as failed, and the Limitations section says the flag was used.
+
+Adding or removing swap needs sudo. To add temporary swap and remove it afterwards (the file name is an example):
 
 ```
 sudo fallocate -l 4G /swapfile-partB && sudo chmod 600 /swapfile-partB
@@ -282,12 +291,14 @@ A run has three phases. `setup` prints a run id, which the other two take.
 
 ```
 cd Benchmark
-sudo python3 run_partB.py setup --fields gf2_128 fp64_2 --sizes 1024 4096
-sudo swapoff -a
-sudo python3 run_partB.py prove --run-id RUN_ID --fields gf2_128 fp64_2 --sizes 1024 4096
-sudo python3 run_partB.py hash  --run-id RUN_ID --sizes 1024 4096
+python3 run_partB.py setup --fields gf2_128 fp64_2 --sizes 1024 4096
+sudo swapoff -a     # with sudo; without it, add --allow-active-swap to the prove line
+python3 run_partB.py prove --run-id RUN_ID --fields gf2_128 fp64_2 --sizes 1024 4096
+python3 run_partB.py hash  --run-id RUN_ID --sizes 1024 4096
 python3 summarize_partB.py RUN_ID
 ```
+
+sudo is optional here too. Run as root, the prove and hash phases set the `performance` governor and restore it afterwards. Peak memory comes from GNU `time -v` where it is installed, otherwise from the `wait4` resource usage of the process. Each raw log names the method used.
 
 | Phase | What it does |
 |---|---|
