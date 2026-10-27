@@ -351,9 +351,39 @@ Timings under QEMU are emulated and are not results.
 
 `BM_ShaZK_Fp64_2` in `lib/circuits/sha/flatsha256_circuit_test.cc` passes the Goldilocks root 2752994695033296049 as a root of unity of order 2^32. Its order is 2^29. Longfellow's `lib/algebra/reed_solomon_test.cc` uses the same root with order 2^29. With order 2^32, the honest proof is rejected. The benchmark never runs the verifier, so the defect does not show there. This driver uses order 2^29.
 
+### Hekate
+
+Hekate is attempted on the Pi with its own `sha256` example, at commit `3268d3a3fe8fab6e59c87d60a84a33645369ce01`, which pins prover 0.16.1, the version behind the vendor's 949 ms figure. The example is built with the constant-time (`ct`) prover, as in that figure, and runs with zero-knowledge on.
+
+Hekate's open code is AGPL-3.0-only. Its prover is a closed, signed binary that the build downloads from `releases.oumuamua.dev` and checks against the SHA-256 and two signatures in Hekate's manifest. Nothing in this repository links Hekate code. No x86-64 Linux prover is published, so there is no dry run.
+
+Build (no root needed; Rust 1.88 or later, which `rustup` can install for the current user):
+
+```
+cd Benchmark
+zk/hekate/fetch_and_build.sh
+```
+
+The script counts crypto-extension instructions in the prover library. The Pi 4 has no PMULL, AES or SHA instructions. If the count is not zero, the prover is expected to stop with an illegal instruction. The run still goes ahead, so that the failure is recorded.
+
+Run, in the same run as Longfellow:
+
+```
+python3 run_partB.py hekate --run-id RUN_ID --threads 1 --sizes 1024 4096 130944
+python3 run_partB.py hekate --run-id RUN_ID --threads 4 --sizes 1024 4096 130944
+```
+
+- `--threads 1` sets `RAYON_NUM_THREADS=1` and pins to one core, like Longfellow. `--threads 4` uses cores 0 to 3 and is labelled "4 threads".
+- Each repeat is one process and one proof over a fresh random message. At least 5 repeats per size up to 1 MiB.
+- The example is given the smallest trace that holds the blocks. If it rejects that size without crashing, the driver retries one step larger, up to four times, and records every attempt.
+- An illegal instruction or any other crash is recorded and ends the Hekate attempt.
+- The swap rules and stop rules are the same as for the prove phase.
+
+The summary reports Hekate in its own table, by thread count, and `comparison.md` adds a Hekate section. Hekate's example verifies only the honest proof; the tampered-proof and wrong-H checks cover Longfellow only.
+
 ### What is not measured
 
-- Hekate. It is attempted separately and reported on its own.
+- Hekate, if its prover does not run on the Pi 4. The failure is then reported instead.
 - PMULL on the Pi 4. The board has none, so the GF(2^128) slowdown from the NEON fallback cannot be measured on it.
 - Setup time without swap, for any size whose circuit build needs more memory than the Pi has.
 - Message sizes beyond the stop rules.
