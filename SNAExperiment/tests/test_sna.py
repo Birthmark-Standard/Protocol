@@ -376,7 +376,7 @@ def test_typed_beats_pooled_when_one_content_path_sets_the_record():
     import json
     name = "first_relay_f"
     m = AT.build_models(P.Config(**EX.CONFIGS[name]), min_samples=20000, max_runs=20)
-    info = json.loads((EX.RESULTS / "run_info.json").read_text())
+    info = json.loads((EX.ROOT / "results" / "C1" / "run_info.json").read_text())
     cfg = EX.config(name, 20, info["D"][name], info["windows"][name]).with_(measure_s=8000.0)
     o = t = 0
     for k in range(2):

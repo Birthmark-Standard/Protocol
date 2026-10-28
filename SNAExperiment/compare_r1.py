@@ -1,6 +1,6 @@
 """Compare the R = 1 cell of a new run with the R = 1 cell of an earlier run, decision by decision.
 
-    python compare_r1.py OLD_RESULTS [--new results_new]
+    python compare_r1.py results/C1 --new results/C2
 
 OLD_RESULTS and --new are results directories (each holding raw/ and run_info.json) or their raw/ folders.
 Every configuration's R = 1 file is read from both sides, run by run, for every vantage the earlier run
@@ -116,7 +116,7 @@ def compare(old, new):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("old", help="the earlier run's results directory, or its raw/ folder")
-    ap.add_argument("--new", default="results_new", help="the new run's results directory (default: %(default)s)")
+    ap.add_argument("--new", default="results/C2", help="the new run's results directory (default: %(default)s)")
     a = ap.parse_args(argv)
     for side, d in (("earlier run", a.old), ("new run", a.new)):
         if not (results_dir(d) / "raw").is_dir():

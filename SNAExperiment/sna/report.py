@@ -1,11 +1,11 @@
-"""Analysis of the run's per-decision records, and every file in results/.
+"""Analysis of the run's per-decision records, and every file in results/C2/.
 
-results/summary.json, summary.csv   every row of the main configuration
-results/controls/                   each control's rows, the shuffle test, the intended-path shares
-results/timing.json                 every stage's delay, capture to finalization, packet-type delays
-results/run_info.json               seeds, runs per cell, D, the calibration and the in-flight counts
-results/TABLES.md, PAPER_TABLE.md   the tables
-results/figures/                    the figures
+results/C2/summary.json, summary.csv   every row of the main configuration
+results/C2/controls/                   each control's rows, the shuffle test, the intended-path shares
+results/C2/timing.json                 every stage's delay, capture to finalization, packet-type delays
+results/C2/run_info.json               seeds, runs per cell, D, the calibration and the in-flight counts
+results/C2/TABLES.md, PAPER_TABLE.md   the tables
+results/C2/figures/                    the figures
 """
 from __future__ import annotations
 
@@ -287,7 +287,7 @@ def _dump(path, obj):
     Path(path).write_text(json.dumps(obj, indent=1, default=float))
 
 
-# --------------------------------------------------------------------------- every file in results/
+# --------------------------------------------------------------------------- every file in results/C2/
 def write_all(out, run_info):
     out = Path(out)
     res = {name: analyze_config(out, name) for name in EX.CONFIGS}
