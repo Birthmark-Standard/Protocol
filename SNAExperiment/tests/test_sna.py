@@ -410,3 +410,30 @@ def test_typed_diagnostic_moves_no_other_interval(tmp_path):
     a = (a[0], a[1], [d for d in a[2] if d["kind"] not in typed], a[3])
     js = lambda x: json.dumps(x, sort_keys=True, default=lambda o: o.tolist() if hasattr(o, "tolist") else str(o))  # noqa: E731
     assert js(a) == js(b)
+
+
+def test_compare_r1_counts_differing_decisions(tmp_path):
+    """compare_r1 compares every R = 1 decision of the vantages the earlier run scored, counts a row as
+    differing when any of its columns differs, skips vantages only the new run has, and flags runs on one side only."""
+    import compare_r1
+    m, run, out = _small_scored()
+    f = EX.rec_name("main", 1)
+
+    def write(d, recs):
+        p = RN.raw_path(tmp_path / d, f)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with gzip.open(p, "ab") as h:
+            for r in recs:
+                pickle.dump(r, h)
+    old = {v: x for v, x in out.items() if v != "observer_typed"}
+    write("old", [dict(run=0, vantages=old), dict(run=1, vantages=old)])
+    write("same", [dict(run=0, vantages=out), dict(run=1, vantages=out)])
+    res = compare_r1.compare(tmp_path / "old", tmp_path / "same")
+    n = sum(int(x["sub"].size) for x in old.values()) * 2
+    assert res["compared"] == n and res["differ"] == 0 and not res["incomplete"]
+    bad = {v: {c: a.copy() for c, a in x.items()} for v, x in out.items()}
+    bad["observer"]["dev_v_correct"][0] ^= 1
+    bad["first_hop"]["dev_top1"][3] += 1.0
+    write("bad", [dict(run=0, vantages=bad)])
+    res = compare_r1.compare(tmp_path / "old", tmp_path / "bad")
+    assert res["differ"] == 2 and res["dev_outcome_differ"] == 1 and res["incomplete"]
