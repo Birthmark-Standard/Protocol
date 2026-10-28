@@ -27,7 +27,9 @@ submission (the chosen packet belongs to the record's own capture). Every node i
 turn: one pass over the records per node yields each vantage that node holds.
 
 Every pass also scores two variants on the same likelihoods: the label shuffle (every candidate's
-device label permuted within the run) and, for the observer, a flat timing likelihood.
+device label permuted within the run) and, for the observer, a flat timing likelihood. The observer
+is also scored as if told each packet's true type, with one density per type: a control for what the
+padding and the indistinguishable packet types are worth at the first hop.
 """
 from __future__ import annotations
 
@@ -152,6 +154,7 @@ def _true_samples(run, acc):
     y, ym = u_of[sub] - sk, m_of[sub] - sk
     add = lambda name, x: acc.setdefault(name, []).append(np.asarray(x, float).ravel())  # noqa: E731
     add("y", y)
+    add("ptype", cand["ptype"][k])                # each sample's true packet type, for the typed observer
     add("y_mid", ym)
     # first hop: the own hold of the packet it relayed
     add("fh_x", cand["hold"][k, 0])
@@ -188,6 +191,8 @@ def build_models(cfg: P.Config, seed0=1_000_000_000, min_samples=300_000, max_ru
     m = Models(mc_runs=k, samples={n: int(np.isfinite(v).sum()) for n, v in cat.items()})
     g = LT.EmpiricalLogPDF(cat["y"], bw_y)
     m.pdf["g"] = g
+    # the typed observer's control: one density per true packet type, from the same samples and bin width as g
+    m.pdf["g_type"] = tuple(LT.EmpiricalLogPDF(cat["y"][cat["ptype"] == k], bw_y) for k in range(len(PTYPES)))
     for name in ("fh", "cs", "gk", "c"):
         m.pdf[name] = CondPDF(cat[f"{name}_x"], cat[f"{name}_y"], g, bw_x)
         xs = cat[f"{name}_x"]
@@ -327,6 +332,17 @@ def _random_rate(o, lvl):
 
 def _band(u, pdf):
     return u - pdf.support[1], u - pdf.support[0] + 1e-9
+
+
+def _typed(y, ptype, dens):
+    """log p(y) with each column scored under the density of its own packet type; a column of no type is
+    -inf. Each type's samples are a subset of g's, so its support lies inside g's band."""
+    out = np.full(y.shape, -np.inf)
+    for k, d in enumerate(dens):
+        c = ptype == k
+        if c.any():
+            out[:, c] = d(y[:, c])
+    return out
 
 
 class _MixtureV:
@@ -545,7 +561,9 @@ def compute(run, m: Models, rng):
     """Score every vantage of one run, each node compromised in turn. rng draws the random order in
     which ties break and the label permutation of the shuffle. Returns {vantage: per-row table}:
 
-      observer, observer_flat (flat timing likelihood), observer_mid (record time at the midpoint)
+      observer, observer_flat (flat timing likelihood), observer_mid (record time at the midpoint),
+      observer_typed (each packet scored under the density of its true type: what the observer gains
+                         when the packet type is revealed at the first hop)
       first_hop          every node, every record; took_part_A, took_part_DG, claim
       cred_processor     every node outside the gatekeeper set, every record; took_part, claim
       gatekeeper         each active gatekeeper, every record
@@ -572,27 +590,36 @@ def compute(run, m: Models, rng):
     g, gm = pdf["g"], pdf["g_mid"]
     out = {}
 
-    # the observer, its flat-timing variant, and its hits by packet type
-    tfeas = np.zeros((3, n), bool)
+    # the observer, its flat-timing variant, its typed variant (told each packet's true type), and the hits of
+    # the observer and the typed observer by packet type
+    gt = pdf["g_type"]
+    tfeas = {nm: np.zeros((3, n), bool) for nm in ("observer", "observer_typed")}
 
     def obs_extra(nm, rows, lo, hi, W, is_t):
-        if nm == "observer":
+        if nm in tfeas:
             ok = is_t & np.isfinite(W)
             for k in range(3):
-                tfeas[k, rows] = (ok & (cand["ptype"][lo:hi] == k)[None, :]).any(1)
+                tfeas[nm][k, rows] = (ok & (cand["ptype"][lo:hi] == k)[None, :]).any(1)
 
     def obs(rows, k0, k1):
-        lg = g(u[rows][:, None] - cand["t"][None, k0:k1])
-        return dict(observer=lg, observer_flat=np.where(np.isfinite(lg), 0.0, -np.inf))
+        y = u[rows][:, None] - cand["t"][None, k0:k1]
+        lg = g(y)
+        return dict(observer=lg, observer_flat=np.where(np.isfinite(lg), 0.0, -np.inf),
+                    observer_typed=_typed(y, cand["ptype"][k0:k1], gt))
     lo, hi = _band(u, g)
-    res = score_blocks(lo, hi, cand, obs, truth, ("observer", "observer_flat"), lse=("observer",), extra=obs_extra)
+    res = score_blocks(lo, hi, cand, obs, truth, ("observer", "observer_flat", "observer_typed"),
+                       lse=("observer", "observer_typed"), extra=obs_extra)
     base = res["observer"]
-    pidx = base["sub"]["pidx"]
-    hit_type = np.where(base["sub"]["correct"], cand["ptype"][np.maximum(pidx, 0)], -1).astype(np.int8)
+
+    def hits(o):
+        pidx = o["sub"]["pidx"]
+        return np.where(o["sub"]["correct"], cand["ptype"][np.maximum(pidx, 0)], -1).astype(np.int8)
     half = (s["t0"][srow] >= run.cfg.warmup_s + run.cfg.measure_s / 2).astype(np.int8)   # second half of the window
-    out["observer"] = _table(base, rec, idx, np.zeros(n), base, hit_type=hit_type,
-                             tfeas=tfeas.T.astype(np.int8), half=half)
+    out["observer"] = _table(base, rec, idx, np.zeros(n), base, hit_type=hits(base),
+                             tfeas=tfeas["observer"].T.astype(np.int8), half=half)
     out["observer_flat"] = _table(res["observer_flat"], rec, idx, np.zeros(n), base)
+    out["observer_typed"] = _table(res["observer_typed"], rec, idx, np.zeros(n), base, hit_type=hits(res["observer_typed"]),
+                                   tfeas=tfeas["observer_typed"].T.astype(np.int8))
     um = mid["u"]
     mlo, mhi = _band(um, gm)
     resm = score_blocks(mlo, mhi, cand, lambda rows, k0, k1: dict(observer_mid=gm(um[rows][:, None] - cand["t"][None, k0:k1])),
