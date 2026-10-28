@@ -59,8 +59,10 @@ def _clean(r):
 def analyze_config(out, name, seed=12345):
     """Every row of one configuration: each vantage on all its records; each node vantage on the records in
     which the node held no coincident role; the combined view by the roles the node held; the label
-    shuffle of every vantage; and the diagnostics."""
+    shuffle of every vantage; and the diagnostics. The typed observer's diagnostic draws from its own random
+    generator, so its presence moves no other interval."""
     rng = np.random.default_rng(seed)
+    rng_t = np.random.default_rng(seed + 1)
     rows, shuffle, diag, stats = [], [], [], {}
     for R in EX.REAL_R:
         recs = sorted(RN.load(out, EX.rec_name(name, R)), key=lambda r: r["run"])
@@ -137,6 +139,19 @@ def analyze_config(out, name, seed=12345):
             rnd = float(np.where(to["sub_n_feas"] > 0, to["tfeas"][:, k] / np.maximum(to["sub_n_feas"], 1), 0.0).mean())
             diag.append(dict(base, kind="observer submission hit by packet type", packet=pt, accuracy=a, lo=lo, hi=hi,
                              random=rnd, n=int(to["sub"].size)))
+        # the observer told each packet's true type, paired with the pooled observer on the same records
+        # (absent from records scored before this control existed)
+        if "observer_typed" in recs[0]["vantages"]:
+            tt = AN.stack(recs, "observer_typed")
+            r = _clean(AN.metrics(recs, "observer_typed", spec, rng_t, t=tt, name="Observer told the packet type"))
+            pooled_mult = r["dev_baseline"] / r["dev_baseline_random"] if r["dev_baseline_random"] > 0 else math.nan
+            diag.append(dict(base, kind="packet type revealed", typed=r, pooled=r["dev_baseline"], pooled_lo=r["dev_baseline_lo"],
+                             pooled_hi=r["dev_baseline_hi"], pooled_chance=r["dev_baseline_random"], pooled_multiple=pooled_mult))
+            for k, pt in enumerate(AT.PTYPES):
+                a, lo, hi = _acc(tt["hit_type"] == k, tt["run"], rng_t)
+                rnd = float(np.where(tt["sub_n_feas"] > 0, tt["tfeas"][:, k] / np.maximum(tt["sub_n_feas"], 1), 0.0).mean())
+                diag.append(dict(base, kind="typed observer submission hit by packet type", packet=pt, accuracy=a, lo=lo, hi=hi,
+                                 random=rnd, n=int(tt["sub"].size)))
         stats[spec["key"]] = _run_stats(recs, rng)
         if name == EX.MAIN:
             stats[spec["key"]]["shuffle_test"] = _shuffle_test(recs, rng)
@@ -324,8 +339,9 @@ def write_tables(out, res, info):
         if r:
             md.append(f"| {c} | {r['n']:,} | {_pct(r['dev_accuracy'])} [{_pct(r['dev_ci_lo'])}, {_pct(r['dev_ci_hi'])}] | "
                       f"{100 * (r['dev_ci_hi'] - r['dev_ci_lo']) / 2:.2f} points |")
-    md += ["", "## Timing (main run, R = 150)", "", "| Stage | Mean | Std dev | Maximum |", "|---|---|---|---|"]
-    st = stats.get(EX.cell_key(150), {})
+    md += ["", f"## Timing (main run, R = {max(EX.REAL_R):g}, the largest cell)", "", "| Stage | Mean | Std dev | Maximum |",
+           "|---|---|---|---|"]
+    st = stats.get(EX.cell_key(max(EX.REAL_R)), {})
     for k, v in st.get("stages", {}).items():
         md.append(f"| {k} | {v['mean']:.1f} s | {v['sd']:.1f} s | {v['max']:.1f} s |")
     md += ["", "| Cell | Mean capture to finalization [95% CI] |", "|---|---|"]
@@ -371,6 +387,39 @@ def write_tables(out, res, info):
     md += ["", "| Cell | F and I confirmations set by the match board |", "|---|---|"]
     for c in cells:
         md.append(f"| {c} | {_pct(stats[c]['board_share'], 1)} |")
+    md += ["", "## Packet type revealed", "",
+           "The observer scored as if told each packet's true type, one density per type, on the same records as the pooled "
+           "observer. It covers the first hop only: no likelihood follows packets across later links. The typed observer can "
+           "have fewer feasible devices, so both chance rates and both multiples are shown.", "",
+           "| Configuration | Cell | Pooled observer [95% CI] | Chance | Multiple | Told the type [95% CI] | Chance | Multiple | "
+           "Lead over pooled [95% CI] | Top 1% right, upper bound | Coverage above 50% | Claim |",
+           "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for name in EX.CONFIGS:
+        for d in res[name][2]:
+            if d["kind"] != "packet type revealed":
+                continue
+            r = d["typed"]
+            if not r.get("stable"):
+                md.append(f"| {EX.LABEL[name]} | {d['cell']} | {_pct(d['pooled'])} | {_pct(d['pooled_chance'])} | | unstable | "
+                          f"{_pct(r['dev_random'])} | | | | | {_claim(r)} |")
+                continue
+            md.append(f"| {EX.LABEL[name]} | {d['cell']} | {_pct(d['pooled'])} [{_pct(d['pooled_lo'])}, {_pct(d['pooled_hi'])}] | "
+                      f"{_pct(d['pooled_chance'])} | ×{d['pooled_multiple']:.2f} | {_pct(r['dev_accuracy'])} [{_pct(r['dev_ci_lo'])}, "
+                      f"{_pct(r['dev_ci_hi'])}] | {_pct(r['dev_random'])} | ×{r['dev_lift_random']:.2f} | "
+                      f"{_pts(r['dev_contribution'], r['dev_contribution_lo'], r['dev_contribution_hi'])} | {_pct(r['p_at_1_hi'], 1)} | "
+                      f"{_pct(r['coverage_p50'], 3)} | {_claim(r)} |")
+    md += ["", "| Configuration | Cell | Packet type | Pooled observer submission hit [95% CI] | Told the type [95% CI] | "
+           "Random rate, pooled | Random rate, told the type |", "|---|---|---|---|---|---|---|"]
+    for name in EX.CONFIGS:
+        dd = res[name][2]
+        for d in dd:
+            if d["kind"] != "typed observer submission hit by packet type":
+                continue
+            p = next((x for x in dd if x["kind"] == "observer submission hit by packet type" and x["cell"] == d["cell"]
+                      and x["packet"] == d["packet"]), None)
+            pooled = f"{_pct(p['accuracy'])} [{_pct(p['lo'])}, {_pct(p['hi'])}]" if p else "n/a"
+            md.append(f"| {EX.LABEL[name]} | {d['cell']} | {d['packet']} | {pooled} | {_pct(d['accuracy'])} [{_pct(d['lo'])}, "
+                      f"{_pct(d['hi'])}] | {_pct(p['random']) if p else 'n/a'} | {_pct(d['random'])} |")
     md += ["", "## Label shuffle", "", "| Configuration | Cell | Vantage | Shuffled accuracy [95% CI] | Chance | Pass |",
            "|---|---|---|---|---|---|"]
     for name in EX.CONFIGS:
@@ -444,7 +493,7 @@ def figures(out, rows, stats):
     f.tight_layout()
     f.savefig(out / "figures" / "device_named.png")
     plt.close(f)
-    c = EX.cell_key(150) if EX.cell_key(150) in stats else cells[0]
+    c = EX.cell_key(max(EX.REAL_R)) if EX.cell_key(max(EX.REAL_R)) in stats else cells[-1]   # the largest cell
     f, ax = plt.subplots(figsize=(5, 4.2), dpi=200)
     top = 0.0
     for v in names:
@@ -457,7 +506,7 @@ def figures(out, rows, stats):
     ax.plot([0, top * 1.1], [0, top * 1.1], color="#5f5e5a", linestyle=":", linewidth=1)
     ax.set_xlabel("vantage's confidence in its match (%)", fontsize=8)
     ax.set_ylabel("matches actually right (%)", fontsize=8)
-    ax.set_title(f"{c}: confidence against outcome, by decile", fontsize=9)
+    ax.set_title(f"{c} (the largest cell): confidence against outcome, by decile", fontsize=9)
     ax.legend(fontsize=6, frameon=False)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)

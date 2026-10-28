@@ -144,7 +144,7 @@ def load(run_id):
     if not names:
         raise SystemExit(f"no raw logs for run {run_id} in {RAW}")
     machine, label = None, None
-    setups, proves, hashes, stops, raw_files = [], [], [], [], []
+    setups, proves, hashes, stops, raw_files, hekate = [], [], [], [], [], []
     for name in names:
         path = os.path.join(RAW, name)
         rel = os.path.relpath(path, HERE)
@@ -167,15 +167,26 @@ def load(run_id):
             "peak_rss_kb": tv.get("max_rss_kb"),
             "throttle": summarize_partA.throttle_flag(header.get("before"), after.get("after")),
             "stderr_tail": (after.get("stderr") or "")[-600:],
+            "swap_activity": after.get("swap_activity"),
+            "peak_rss_method": header.get("peak_rss_method", "GNU time -v"),
         }
+        sa = after.get("swap_activity")
+        swapped = bool(sa and sa.get("pages_swapped"))
         if header["phase"] == "setup":
             st = next((x for x in lines if x.get("type") == "setup"), {})
             saved = next((x for x in lines if x.get("type") == "circuit_saved"), {})
             cf = next((x for x in lines if x.get("type") == "circuit_file"), {})
             swap_on = bool((header.get("swap") or {}).get("active") or (after.get("swap_after") or {}).get("active"))
+            # Logs without swap_activity predate its recording; treat active swap as used.
+            if swap_on and (swapped or sa is None):
+                setup_label = SWAP_LABEL
+            elif swap_on:
+                setup_label = "swap on, no pages swapped"
+            else:
+                setup_label = "on this machine, no swap"
             setups.append(dict(common, field=header["field"], message_bytes=header["message_bytes"],
                                compressions=header["compressions"],
-                               setup_label=SWAP_LABEL if swap_on else "on this machine, no swap",
+                               setup_label=setup_label,
                                swap_active=swap_on, setup_s=st.get("setup_s"), circuit=st.get("circuit"),
                                circuit_id=st.get("circuit_id"), circuit_file_bytes=saved.get("bytes"),
                                circuit_sha256=cf.get("sha256"),
@@ -186,8 +197,8 @@ def load(run_id):
             runs = [x for x in lines if x.get("type") == "run"]
             done = next((x for x in lines if x.get("type") == "done"), {})
             ok = common["exit_code"] == 0 and done.get("all_checks_passed") is True \
-                and len(runs) == header.get("repeats")
-            rec = dict(common, field=header["field"], message_bytes=header["message_bytes"],
+                and len(runs) == header.get("repeats") and not swapped
+            rec = dict(common, phase_kind="prove", field=header["field"], message_bytes=header["message_bytes"],
                        compressions=header["compressions"], repeats=header.get("repeats"),
                        threads=header.get("threads"), ok=ok, load_s=st.get("setup_s"),
                        circuit=st.get("circuit"), circuit_id=st.get("circuit_id"),
@@ -202,6 +213,13 @@ def load(run_id):
                     x["time_s"]["host_witness"] + x["time_s"]["fill_inputs"] for x in runs)
                 rec["proof_bytes_median"] = statistics.median(x["proof_bytes"] for x in runs)
             proves.append(rec)
+        elif header["phase"] == "hekate":
+            parsed = next((x for x in lines if x.get("type") == "hekate_parsed"), {})
+            hekate.append(dict(common, threads=header["threads"], message_bytes=header["message_bytes"],
+                               compressions=header["compressions"], repeat=header["repeat"],
+                               num_vars=header["num_vars"], parsed=parsed, build=header.get("hekate_build"),
+                               ok=common["exit_code"] == 0 and parsed.get("success") is True and not swapped
+                               and parsed.get("compressions") == header["compressions"]))
         elif header["phase"] == "hash":
             for r in lines:
                 if r.get("type") != "row" or r.get("status") != "ok":
@@ -210,7 +228,7 @@ def load(run_id):
                 hashes.append(dict(s, variant=header["variant"], name=r["name"], bytes=r["bytes"],
                                    path=summarize_partA.path_label(machine, header["variant"], r["name"]),
                                    throttle=common["throttle"], raw_file=rel))
-    return machine, label, setups, proves, hashes, stops, raw_files
+    return machine, label, setups, proves, hashes, stops, raw_files, hekate
 
 
 def choose_field(proves, wanted):
@@ -243,7 +261,8 @@ def hash_row(hashes, name, variant, nbytes):
 
 
 def summarize(run_id, wanted_field=None):
-    machine, label, setups, proves, hashes, stops, raw_files = load(run_id)
+    machine, label, setups, proves, hashes, stops, raw_files, hekate_runs = load(run_id)
+    hekate = aggregate_hekate(hekate_runs)
     dry = label == summarize_partA.DRY_LABEL
     sha_ext = machine["sha_extensions"]
     field, field_rule = choose_field(proves, wanted_field)
@@ -329,6 +348,7 @@ def summarize(run_id, wanted_field=None):
         "comparison_field": field, "comparison_field_rule": field_rule,
         "setup": setups, "prove": proves, "stops": stops, "hash": hashes, "pilot": pilot,
         "ratios": ratios, "extrapolation": extrap, "raw_files": raw_files,
+        "hekate": hekate, "hekate_runs": hekate_runs,
     }
 
     host = re.sub(r"[^A-Za-z0-9_.-]", "_", machine["hostname"])
@@ -453,12 +473,16 @@ def render_summary(res, json_rel, dry):
     L.append("")
 
     L += extrapolation_lines(res)
+    L += hekate_summary_lines(res)
     if dry:
         L += [f"{summarize_partA.DRY_LABEL}. None of the numbers above is a Raspberry Pi measurement.", ""]
     return "\n".join(L)
 
 
 def failure_text(r):
+    sa = r.get("swap_activity") or {}
+    if r.get("phase_kind") == "prove" and sa.get("pages_swapped"):
+        return "FAILED: pages were swapped during proving"
     if r.get("timed_out"):
         return "FAILED: timed out"
     if r.get("terminated_by_signal"):
@@ -559,6 +583,7 @@ def render_comparison(res, hash_with, hash_without, dry):
     L.append("Hash times at 30,000,000 B are measured. Every prover cell at 30,000,000 B is EXTRAPOLATED.")
     L.append(f"{res['vendor_point_note']}.")
     L.append("")
+    L += hekate_comparison_lines(res, hash_without)
     L += limitations(res)
     if dry:
         L += [f"{summarize_partA.DRY_LABEL}. None of the numbers above is a Raspberry Pi measurement.", ""]
@@ -576,7 +601,7 @@ def limitations(res):
              "class, an in-order Cortex-A8 at 800 MHz. These results do not show what a Cortex-A8 would measure.")
     L.append("- Prover: Longfellow-zk. It is open source (Apache-2.0), zero-knowledge, needs no trusted setup, "
              "proves the full chained SHA-256 of one message, and builds from a pinned commit. Hekate, the "
-             "system the papers cite, has a closed prover binary; it is not part of this run.")
+             "system the papers cite, has a closed prover binary. " + hekate_status(res))
     L.append(f"- Zero-knowledge: on in every proof (Ligero rate 7, 132 queries; Longfellow's source states "
              f"about 109 bits of statistical security).")
     L.append("- Setup: circuit construction is not included in the prover time. It is reported separately in "
@@ -594,6 +619,12 @@ def limitations(res):
              "Longfellow's own SHA-256 benchmark marks no input public, so its published figures prove a "
              "different statement; this run uses its own circuit.")
     L.append("- Threads: one, pinned, to match the single-core hash in Part A.")
+    if any(p.get("swap_active") for p in res["prove"]):
+        L.append("- Swap: some prove runs started with swap active (--allow-active-swap, for a machine "
+                 "without sudo). Any run during which a page was swapped in or out is counted as failed.")
+    methods = sorted({r.get("peak_rss_method") for r in res["prove"] + res["setup"] if r.get("peak_rss_method")})
+    if methods:
+        L.append("- Peak memory method: " + "; ".join(methods) + ".")
     L.append("- Root of unity: for Fp64_2 the driver uses the root 2752994695033296049 with order 2^29. "
              "Longfellow's BM_ShaZK_Fp64_2 benchmark passes order 2^32, with which an honest proof is rejected.")
     L.append("- Plain hash: M is in RAM; no disk reads.")
@@ -607,6 +638,107 @@ def limitations(res):
             L.append(f"  - {s['field']}, {size_label(s['message_bytes'])}: stopped, {s['reason']}.")
     else:
         L.append("- Failures: none in this run.")
+    L.append("")
+    return L
+
+
+def aggregate_hekate(runs):
+    """One row per (threads, size): stats over the successful repeats, and the failed attempts."""
+    groups = {}
+    for r in runs:
+        groups.setdefault((r["threads"], r["message_bytes"]), []).append(r)
+    rows = []
+    for (threads, n), rs in sorted(groups.items()):
+        ok = [r for r in rs if r["ok"]]
+        row = {"threads": threads, "message_bytes": n, "compressions": rs[0]["compressions"],
+               "attempts": len(rs), "failed_attempts": [r for r in rs if not r["ok"]], "ok": bool(ok)}
+        if ok:
+            row["bytes_hashed"] = ok[0]["parsed"].get("message_bytes")
+            row["num_vars"] = ok[0]["num_vars"]
+            row["prove"] = stats_s([r["parsed"]["prove_s"] for r in ok])
+            row["verify_median_s"] = statistics.median(r["parsed"]["verify_s"] for r in ok
+                                                       if r["parsed"].get("verify_s") is not None)
+            row["trace_median_s"] = statistics.median(r["parsed"]["trace_s"] for r in ok
+                                                      if r["parsed"].get("trace_s") is not None)
+            row["proof_bytes_median"] = statistics.median(r["parsed"]["proof_bytes"] for r in ok
+                                                          if r["parsed"].get("proof_bytes"))
+            row["peak_rss_kb"] = max(r["peak_rss_kb"] or 0 for r in ok)
+            row["throttled"] = any(r["throttle"] == "THROTTLED" for r in ok)
+        rows.append(row)
+    return rows
+
+
+def hekate_status(res):
+    if not res["hekate_runs"]:
+        return "It was not run in this run."
+    if any(h["ok"] for h in res["hekate"]):
+        return "Its own sha256 example was run on this machine and is reported in its own table."
+    first = res["hekate_runs"][0]
+    return f"Its own sha256 example was attempted on this machine and failed: {failure_text(first)}."
+
+
+def hekate_summary_lines(res):
+    L = ["## Hekate (attempted on this machine)", ""]
+    if not res["hekate_runs"]:
+        return L + ["Not run in this run.", ""]
+    b = next((r["build"] for r in res["hekate_runs"] if r.get("build")), None) or {}
+    L.append(f"Hekate's own `sha256` example at commit `{b.get('commit')}`, features `{b.get('features')}` "
+             f"(constant-time prover), zero-knowledge on, one proof per process. Prover library SHA-256 "
+             f"`{b.get('prover_library_sha256')}`; crypto-extension instructions in it: "
+             f"{b.get('crypto_extension_instructions_in_prover')}; this CPU has PMULL: {b.get('cpu_has_pmull')}.")
+    L.append("Hekate's example verifies only the honest proof. It has no tampered-proof or wrong-H check, so "
+             "those checks cover Longfellow only.")
+    L.append("")
+    L += ["| Threads | Size | Compressions | Bytes hashed | n | Prove min | Prove median | Prove p95 | "
+          "Verify median | Proof size | Peak memory | Status |",
+          "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|"]
+    for h in res["hekate"]:
+        if h["ok"]:
+            pr = h["prove"]
+            retries = len(h["failed_attempts"])
+            status = "ok" + (f" ({retries} attempt(s) at a smaller trace rejected)" if retries else "")
+            if h.get("throttled"):
+                status += ", THROTTLED"
+            L.append(f"| {h['threads']} | {size_label(h['message_bytes'])} | {h['compressions']:,} | "
+                     f"{h['bytes_hashed']:,} | {pr['n']} | {fmt_s(pr['min_s'])} | {fmt_s(pr['median_s'])} | "
+                     f"{fmt_s(pr['p95_s'])} | {fmt_s(h['verify_median_s'])} | "
+                     f"{h['proof_bytes_median'] / 1e3:,.0f} kB | {fmt_mib(h['peak_rss_kb'])} | {status} |")
+        else:
+            why = failure_text(h["failed_attempts"][-1]) if h["failed_attempts"] else "FAILED"
+            L.append(f"| {h['threads']} | {size_label(h['message_bytes'])} | {h['compressions']:,} | | 0 | | | | | | "
+                     f"| {why} |")
+    L.append("")
+    L.append("Hekate's example hashes (compressions × 64 − 9) bytes, the most that many compressions hold, so "
+             "\"Bytes hashed\" can differ slightly from the size. The compression count is the same.")
+    L.append("")
+    return L
+
+
+def hekate_comparison_lines(res, hash_without):
+    rows = [h for h in res["hekate"] if h["ok"]]
+    if not rows:
+        return []
+    L = ["## Hekate on the same machine", "",
+         "Hekate's own sha256 example, zero-knowledge on. Peak memory is the whole proving process.", "",
+         "| Threads | Input size | Hash time without (ms) | Prover time | Prover peak memory | "
+         "Ratio (prover ÷ hash without) |", "|---:|---|---:|---:|---:|---:|"]
+    for h in rows:
+        ho = hash_without(h["message_bytes"])
+        ratio = f"{h['prove']['median_s'] / (ho['median_ms'] / 1e3):,.0f}" if ho else "n/a"
+        L.append(f"| {h['threads']} | {size_label(h['message_bytes'])} | {fmt_ms(ho['median_ms']) if ho else 'n/a'} | "
+                 f"{fmt_s(h['prove']['median_s'])} s | {fmt_mib(h['peak_rss_kb'])} | {ratio} |")
+    one = sorted((h for h in rows if h["threads"] == 1), key=lambda h: h["compressions"])
+    if len(one) >= 1:
+        largest = one[-1]
+        fit = fit_power_law([(h["compressions"], h["prove"]["median_s"]) for h in one])
+        lin = largest["prove"]["median_s"] * TARGET_COMPRESSIONS / largest["compressions"]
+        pl = f"{at(fit, TARGET_COMPRESSIONS):,.0f} s ({EXTRAP}, power law, {fit['points']} points" + (
+            f", R² {fit['r2']:.4f})" if fit["r2"] is not None else ")") if fit else "n/a"
+        L.append("")
+        L.append(f"Hekate, 1 thread, at 30,000,000 B: {pl}; {lin:,.0f} s ({EXTRAP}, linear from "
+                 f"{size_label(largest['message_bytes'])}).")
+        if fit and fit["points"] == 2:
+            L.append("With two points the power law passes through both, so R² is 1 by construction.")
     L.append("")
     return L
 

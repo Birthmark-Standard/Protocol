@@ -148,6 +148,7 @@ Each diagnostic is a scoring variant on the same simulated traffic.
 | Match board share | The share of F's and I's confirmations set by the match board rather than by their own hold release. |
 | Path delay | For credential packets (arrival at C) and F and I content packets (arrival at F or I), the mean and standard deviation of the delay from the packet's departure to its arrival, network time included. |
 | Window halves | The observer's device-named accuracy in the first and the second half of the scored window, in every cell. The two agree when the 95% interval on their difference contains zero. |
+| Packet type revealed | The observer scored as if told each packet's true type (credential, F content or I content). Each packet is scored under the record-time density of its own type, built from the same Monte Carlo samples and bin width as the pooled density. It is paired with the pooled observer on the same records, in every cell of every configuration, with each one's chance rate and multiple of chance, the lead, and its hits by the type of the packet it named. It shows what the observer gains when the packet type is revealed, which is what the padding is worth at the first hop. It covers the first hop only: no likelihood follows packets across later links. In the main cells it mostly separates credential packets from content packets, because F and I content have the same delay to the record. A typed density can rule out more candidates, so a gain can come from a smaller feasible set; the two chance rates show it. |
 
 ## Controls
 
@@ -164,7 +165,7 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 
 ## Cells and runs
 
-- Real volume is R = 1 and 150 transactions in flight, each with 100 decoy transactions in flight.
+- Real volume is R = 1, 100 and 300 transactions in flight, each with 100 decoy transactions in flight.
 - Rates are R / D and 100 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 150. The calibration repeats until both counts in flight are within 3% of their targets.
 - The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
 - Real and decoy transactions arrive at their normal rates from time zero to the end of the run.
@@ -174,7 +175,7 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 - A control whose holds differ from the main configuration's has its warm-up, window and cool-down scaled by the ratio of its longest capture-to-finalization time to the main configuration's.
 - Packets from the warm-up and the cool-down stay in every vantage's candidate list.
 - Every configuration runs 100 runs per cell.
-- A run's traffic depends only on its real volume and run id.
+- A run's traffic depends only on its real volume and run id. So does its scoring, through a random order of the devices drawn from the configuration, the volume and the run id. A cell kept from an earlier run therefore reproduces that run's decisions on the same platform and package versions. `results/run_info.json` records the Python, numpy and scipy versions and the platform.
 
 Intervals on accuracy resample whole runs, with a cluster bootstrap of 2,000 resamples. AUC intervals use the clustered-data variance of Obuchowski (1997).
 
@@ -235,4 +236,5 @@ The simulation uses the 20-node pool and the transaction described above. It doe
 - the jurisdiction filter or the skew in the device's choice of destinations;
 - the grouping of device-table lines by destination pseudonym;
 - a first-hop vantage that is told which destination a routing code leads to;
-- any evidence a second relay holds.
+- any evidence a second relay holds;
+- active timing attacks (delay, drop or injection of packets), which are future work.

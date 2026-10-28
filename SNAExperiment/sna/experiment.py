@@ -15,6 +15,7 @@ from __future__ import annotations
 import hashlib
 import json
 import pickle
+import platform
 import time
 from pathlib import Path
 
@@ -27,7 +28,7 @@ from . import sim as S
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
-REAL_R = (1, 150)                                # real transactions in flight
+REAL_R = (1, 100, 300)                           # real transactions in flight
 DECOYS = 100                                     # decoy transactions in flight
 RUNS = 100                                       # runs per cell, every configuration
 TOLERANCE = 0.03                                 # measured in-flight counts within 3% of their targets
@@ -106,6 +107,13 @@ def config_hash():
                            window=WINDOW_MAIN_S, margin=MARGIN_S, min_real=P.MIN_REAL_PER_RUN),
                       sort_keys=True, default=str)
     return hashlib.sha256(blob.encode()).hexdigest()[:16]
+
+
+def versions():
+    """The interpreter, numerical packages and platform a run is made on, for run_info.json. Decisions are
+    reproduced exactly only on the same versions, so these are recorded; they never enter config_hash."""
+    import scipy
+    return dict(python=platform.python_version(), numpy=np.__version__, scipy=scipy.__version__, platform=platform.platform())
 
 
 # --------------------------------------------------------------------------- in flight
