@@ -45,6 +45,12 @@ def run(out, runs, workers):
         info.update(config_hash=EX.config_hash(), seeds=dict(calibration=EX.CAL_SEED0, models=EX.MODEL_SEED0,
                     shuffle=EX.SHUFFLE_SEED, traffic="sha256 of the volume and run id"), decoys=EX.DECOYS, R=list(EX.REAL_R))
     info["runs_per_cell"] = {EX.MAIN: runs, **{c: min(EX.CONTROL_RUNS[c], runs) for c in EX.CONTROLS}}
+    v = EX.versions()                              # recorded, never part of config_hash
+    if "versions" not in info:
+        info["versions"] = v
+    elif info["versions"] != v:
+        info.setdefault("versions_on_resume", []).append(v)
+        print(f"warning: resumed under other versions than the run started with: {v}", flush=True)
     p.write_text(json.dumps(info, indent=1))
     for name in EX.CONFIGS:
         EX.ensure_models(out, name)
