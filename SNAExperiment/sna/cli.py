@@ -2,7 +2,7 @@
 
   run   calibrates D under every configuration's own holds, builds the attacker's models, simulates
         and scores every run of the main configuration and the controls, and writes every file in
-        results/. Resumable: rerunning the same command skips the runs already on disk.
+        results/C2/. Resumable: rerunning the same command skips the runs already on disk.
 
 Results depend on the cell and run id only, never on the worker count or the order runs finish in.
 """
@@ -67,7 +67,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run"])
-    ap.add_argument("--out", help="results directory (default: results/)")
+    ap.add_argument("--out", help="results directory (default: results/C2/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: half the cores)")
     ap.add_argument("--runs", type=int, default=EX.RUNS, help="runs per cell of the main configuration (default: %(default)s); "
                     "each control runs its own count or this, whichever is smaller")

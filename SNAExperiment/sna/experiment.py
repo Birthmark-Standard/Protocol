@@ -26,7 +26,7 @@ from . import params as P
 from . import sim as S
 
 ROOT = Path(__file__).resolve().parent.parent
-RESULTS = ROOT / "results"
+RESULTS = ROOT / "results" / "C2"
 
 REAL_R = (1, 100, 300)                           # real transactions in flight
 DECOYS = 100                                     # decoy transactions in flight
