@@ -1,4 +1,4 @@
-(* BM_Quorum_Collusion.pv   (v90 design)
+(* BM_Quorum_Collusion_TWIN.pv   (v90 design)
 Property I (two gatekeepers): with gatekeepers 1 and 2 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check.
 
 Leaked keys: g1_sk, g1_sign_sk, g2_sk, g2_sign_sk.
@@ -10,13 +10,13 @@ reachable. Boards are public: the attacker can read and write them. Honest
 gatekeepers and the quorum are as in the pipeline of the other models.
 
 Queries and expected answers.
- 1  quorum_reached(p,v) ==> c_checked(p,v)      expected: true
+ 1  quorum_reached(p,v) ==> c_checked(p,v)      expected: false in this twin (true in the model)
     No quorum forms for a (FullPacketHash, verdict) pair C did not check.
  2  c_checked_w(p,v,w) ==> v_issued(v,w) && c_asked(p,w)      expected: true
     C accepts only a verdict V issued for a wrapped value C itself sent.
  3  event(quorum_reached(p,v))      expected: "not event(quorum_reached(p,v)) is false"
     Sanity: a quorum is reachable, so 1 and 2 are not true because the pipeline is dead.
-THIS FILE IS THE TWIN. Fault: the quorum of boards 1 and 2 does not verify C's signature. Expected: NOT equivalent (or the query FAILS). *)
+THIS FILE IS THE TWIN. Fault: the quorum of boards 1 and 2 does not verify C's signature. Expected: query 1 is false. *)
 
 type skey.
 type pkey.

@@ -1,4 +1,4 @@
-(* BM_Registry_Convergence.pv   (v90 design)
+(* BM_Registry_Convergence_TWIN.pv   (v90 design)
 Property H: one compromised content channel server F cannot, on its own, make the registry finalise a record I did not sign; and what I signs is bound to what the device sent.
 
 Leaked keys: f_device_sk, f_sign_sk, c_sign_sk (F fully compromised; c_sign_sk stands for F's ring key). I is honest. The full honest pipeline runs behind them (device, C, V, three gatekeepers, quorum). The attacker plays F: it reads content packets, boards and quorum output, and may send I any packet.
@@ -8,7 +8,7 @@ accepts a record when it holds two signatures, one under F's registry key and
 one under I's, over the same (ContentHash, verdict, m).
 
 Queries and expected answers.
- a  registry_final(h,v,m) ==> i_signed(h,v,m)      expected: true
+ a  registry_final(h,v,m) ==> i_signed(h,v,m)      expected: false in this twin (true in the model)
     The registry cannot finalise a record I did not sign.
  c  i_signed_n(h,n,v,m) ==> device_sent(h,n,m)      expected: true
     F knows (h,n) and can send I a packet with a different m. FullPacketHash
@@ -18,7 +18,7 @@ Queries and expected answers.
  d  i_signed_n(h,n,v,m) ==> device_sent_hn(h,n)      expected: true
     ContentHash and the nonce, and so the verdict, are bound to a real device submission.
  s  event(registry_final(h,v,m))      expected: "not event(...) is false" (sanity)
-THIS FILE IS THE TWIN. Fault: the registry accepts two signatures from the same signer (both under F's key). Query a must FAIL. Expected: NOT equivalent (or the query FAILS). *)
+THIS FILE IS THE TWIN. Fault: the registry accepts two signatures from the same signer (both under F's key). Expected: query a is false. *)
 
 type skey.
 type pkey.

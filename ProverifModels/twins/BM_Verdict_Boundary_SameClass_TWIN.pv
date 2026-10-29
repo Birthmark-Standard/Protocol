@@ -18,7 +18,7 @@ pipeline's other outputs are ciphertexts to keys the attacker does not hold, the
 (C's gatekeeper packets). What the upgrade adds is that the whole pipeline runs under the attacker's control of V's answers: V may answer, delay or alter
 any reply.
 
-Result (expected, not yet run): equivalence is NOT proved. The compromised validator opens the token of device 1 and reads claimX (left) or claimY (right).
+Expected: observational equivalence cannot be proved. The compromised validator opens the token of device 1 and reads claimX (left) or claimY (right).
 The public registry output pairs hash(imgX) with judge(claimX), so the claim ties the device to the record. This is the limit the paper states: the
 verdict is a public attribute that partitions the population, and the proof holds within one verdict class. *)
 

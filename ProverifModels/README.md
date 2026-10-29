@@ -37,6 +37,8 @@ proverif twins/BM_Baseline_Noncorrelation_TWIN.pv
 | `BM_Quorum_Forgery.pv` | Properties G, I (one gatekeeper compromised) | Can a quorum form for a (FullPacketHash, verdict) pair that C did not check? Does C accept only verdicts the validator issued? | Queries 1 and 2 true; quorum reachable |
 | `BM_Quorum_Collusion.pv` | Properties G, I (two gatekeepers compromised) | Same questions, with two of the three gatekeepers fully compromised | Queries 1 and 2 true; quorum reachable |
 | `BM_Registry_Convergence.pv` | Property H | One content channel server (F) fully compromised. Can the registry finalize a record that the other server (I) did not sign? Can F change the optional fields of a record? | Queries a, c, d true; s reachable |
+| `BM_FirstRelay_Compromise.pv` | Property K | A first relay's Server Transit Key leaked, with a passive observer of every leg of one content path (device, first relay, second relay, destination). The relay sees each device's address with its packet. Can it derive either device's ContentHash? | `not attacker(hash(secret_img_1[]))` and `not attacker(hash(secret_img_2[]))` are true |
+| `BM_Token_Binding.pv` | Property L | C compromised: the attacker plays C and may send the validator any token with any wrapped value, or the same token twice. Is a verdict issued for a (replay nonce, wrapped value) pair the device did not commit to? Does each commitment back at most one verdict? | Queries 1 and 2 true; a verdict is reachable |
 | `BM_Pipeline_Liveness.pv` | none | Does the honest pipeline reach every stage? | All 8 events reachable |
 | `BM_Quorum_Forgery_RingExclusion.pv` | none (sensitivity check) | Quorum_Forgery with the ring exclusion absent: gatekeeper 1's signing key is also C's, and is leaked. Which check then protects the quorum? | Queries 1 and 2 true; quorum reachable |
 
@@ -59,8 +61,12 @@ model cannot see the fault, and its "true" proves nothing.
 | `BM_Quorum_Collusion_TWIN.pv` | The quorum of boards 1 and 2 does not verify C's signature | Query 1 is false |
 | `BM_Quorum_Forgery_RingExclusion_TWIN.pv` | The honest gatekeepers skip the validator-signature check | Query 1 is false |
 | `BM_Registry_Convergence_TWIN.pv` | The registry accepts two signatures from the same signer | Query a is false |
+| `BM_FirstRelay_Compromise_TWIN.pv` | The device does not encrypt the payload under the destination's Channel Key | Both queries are false |
+| `BM_Token_Binding_TWIN.pv` | The validator does not compare the binding hash in the token with the wrapped value it is handed | Queries 1 and 2 are false |
+| `BM_Token_Binding_NoNonceClaim_TWIN.pv` | The validator does not claim the replay nonce | Query 1 is true; query 2 is false |
+| `BM_Token_Binding_NonAtomic_TWIN.pv` | Checking that the nonce is unused and recording it are separate steps | Query 1 is true; query 2 is false |
 
-`BM_Verdict_Boundary_Control.pv` is the twin of `BM_Verdict_Boundary_SameClass.pv`. It
+`twins/BM_Verdict_Boundary_SameClass_TWIN.pv` is the twin of `BM_Verdict_Boundary_SameClass.pv`. It
 marks the boundary of Property E rather than a property of the protocol: a validator that
 sees a rare verdict has fewer candidate records, so the proof holds within one verdict
 class.
@@ -73,9 +79,9 @@ Three proof techniques are used:
   side and asks whether any adversary, given everything it is allowed to observe or leak in
   that model, can tell which scenario it is in. "True" means it cannot: the property holds.
   `cannot be proved` or `is false` means it can, or ProVerif could not show it.
-- **Secrecy query, `not attacker(X)`** (Properties A, E): asks whether a value ever
+- **Secrecy query, `not attacker(X)`** (Properties A, E, K): asks whether a value ever
   becomes derivable by the adversary. "True" means it never does.
-- **Correspondence query** (Properties G, H, I): asks whether one event can occur only
+- **Correspondence query** (Properties G, H, I, L): asks whether one event can occur only
   after another has occurred. "True" means it cannot. The models also ask whether the
   final event is reachable. There `not event(X) is false` means X can happen, so the other
   queries are not true merely because nothing happens.
@@ -96,6 +102,12 @@ The correspondence queries, numbered as in the files:
   d. `i_signed_n(h,n,v,m) ==> device_sent_hn(h,n)`: the ContentHash and nonce, and so the
      verdict, belong to a real device submission.
   s. `registry_final(h,v,m)` is reachable.
+- **Token binding model:**
+  1. `v_issued(rn,e) ==> dev_committed(rn,e)`: the validator issues a verdict only for a (replay nonce,
+     wrapped value) pair the device committed to.
+  2. `inj-event(v_issued(rn,e)) ==> inj-event(dev_committed(rn,e))`: each device commitment backs at
+     most one verdict.
+  3. `v_issued(rn,e)` is reachable.
 
 ## What "true" means for the equivalence models
 
