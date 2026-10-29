@@ -1,21 +1,7 @@
-(* BM_Token_Binding_TWIN.pv   (v105 design, token binding)
-TWIN: the validator does not compare the binding hash in the token with the wrapped FullPacketHash C presents. Expected result: the first query is false (a verdict is issued for a wrapped value the device never committed to).
+(* BM_Token_Binding_TWIN.pv   (v105 design, token binding and single use, serialized check)
+TWIN: the validator does not compare the binding hash in the token with the wrapped FullPacketHash C presents. It still claims the nonce atomically, as in the model. Expected result: the first query is false (a verdict is issued for a wrapped value the device never committed to), and so is the injective query.
 
-Property L: the credential validator issues a verdict for a wrapped FullPacketHash only if the device that sent the token committed to that wrapped value.
-
-Vantage point: the credential channel server C is compromised. The adversary plays C. It receives everything C receives from the device (the token, the
-FullPacketHash and BlindShare_key) and may send the validator any token and any wrapped value, including a genuine token paired with a wrapped value of its own.
-The token is encrypted to the validator, so the adversary cannot read or build one; it can only pass along tokens the device made.
-
-What the device does: it generates BlindShare_key, wraps FullPacketHash under it to form the wrapped value, hashes the wrapped value to form the binding hash, and puts the
-binding hash in the token with its credential, a replay nonce and its claim. The wrap is deterministic given BlindShare_key, as the gatekeepers' recomputation requires.
-
-What the validator does: it decrypts the token, checks the credential, and compares the binding hash with the hash of the wrapped value it was handed. The twin omits that comparison.
-
-What the queries ask: (1) whether a verdict is ever issued for a (replay nonce, wrapped value) pair that the device did not commit to; (2) whether a verdict can be issued at all, so that (1) is not true merely because nothing happens.
-The credential is a private name that stands for one registered device credential. Membership is modeled as equality with it. The replay log is not modeled; each genuine token is a distinct nonce.
-
-Expected: query (1) true and query (2) false (an issuing run exists) on the model; query (1) false on the twin. The twin must fail, or this model's "true" proves nothing. *)
+Everything else is as in BM_Token_Binding.pv. Expected: queries (1) and (1b) false, query (2) false. *)
 
 type skey.
 type pkey.
@@ -38,8 +24,12 @@ free claim: bitstring.
 
 event dev_committed(bitstring, bitstring).
 event v_issued(bitstring, bitstring).
+event nonce_recorded(bitstring, bitstring).
+
+restriction rn: bitstring, id1: bitstring, id2: bitstring; event(nonce_recorded(rn, id1)) && event(nonce_recorded(rn, id2)) ==> id1 = id2.
 
 query rn: bitstring, e: bitstring; event(v_issued(rn, e)) ==> event(dev_committed(rn, e)).
+query rn: bitstring, e: bitstring; inj-event(v_issued(rn, e)) ==> inj-event(dev_committed(rn, e)).
 query rn: bitstring, e: bitstring; event(v_issued(rn, e)).
 
 let device =
@@ -54,11 +44,14 @@ let device =
     let enc_token = aenc((cred, rn, claim, binding), pk(v_token_sk), rnd_token) in
     out(pub, (enc_token, fullpackethash, blindshare_key)).
 
+
 let validator =
     !
     in(pub, (enc_token_in: bitstring, wrapped_in: bitstring));
     let (cred_in: bitstring, rn_in: bitstring, claim_in: bitstring, binding_in: bitstring) = adec(enc_token_in, v_token_sk) in
     if (cred_in = cred) then
+        new run_id: bitstring;
+        event nonce_recorded(rn_in, run_id);
         event v_issued(rn_in, wrapped_in).
 
 process
