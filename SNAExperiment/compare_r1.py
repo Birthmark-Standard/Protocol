@@ -114,7 +114,8 @@ def compare(old, new):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0],
+                                 epilog="Example: " + __doc__.split("\n\n")[1].strip())
     ap.add_argument("old", help="the earlier run's results directory, or its raw/ folder")
     ap.add_argument("--new", default="results/C2", help="the new run's results directory (default: %(default)s)")
     a = ap.parse_args(argv)
