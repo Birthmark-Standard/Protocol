@@ -1,0 +1,48 @@
+windows (main): longest capture to finalization 2316.8 s; warm-up 2616.8 s, window 3600.0 s, cool-down 2616.8 s
+windows (no_holds): longest capture to finalization 37.6 s; warm-up 42.4 s, window 58.4 s, cool-down 42.4 s
+windows (first_relay_cred): longest capture to finalization 2406.0 s; warm-up 2717.5 s, window 3738.7 s, cool-down 2717.5 s
+windows (first_relay_content): longest capture to finalization 22673.7 s; warm-up 25609.8 s, window 35232.7 s, cool-down 25609.8 s
+windows (first_relay_f): longest capture to finalization 22673.7 s; warm-up 25609.8 s, window 35232.7 s, cool-down 25609.8 s
+calibration (main): D = 1168.2 s; in flight at R = 150: real 148.82, decoys 100.39
+calibration (no_holds): D = 20.5 s; in flight at R = 150: real 148.57, decoys 100.92
+calibration (first_relay_cred): D = 1174.3 s; in flight at R = 150: real 148.21, decoys 100.30
+calibration (first_relay_content): D = 10944.9 s; in flight at R = 150: real 148.01, decoys 99.78
+calibration (first_relay_f): D = 7569.9 s; in flight at R = 150: real 148.07, decoys 99.58
+models (main): 93 Monte Carlo runs, 12 s
+models (no_holds): 137 Monte Carlo runs, 11 s
+models (first_relay_cred): 84 Monte Carlo runs, 11 s
+models (first_relay_content): 27 Monte Carlo runs, 13 s
+models (first_relay_f): 27 Monte Carlo runs, 12 s
+run: 1500 runs on 8 workers
+run: 50/1500 runs, 9.7 min elapsed, ETA 282.5 min
+run: 100/1500 runs, 23.0 min elapsed, ETA 321.6 min
+run: 150/1500 runs, 37.3 min elapsed, ETA 335.3 min
+run: 200/1500 runs, 51.0 min elapsed, ETA 331.6 min
+run: 250/1500 runs, 64.9 min elapsed, ETA 324.6 min
+run: 300/1500 runs, 78.7 min elapsed, ETA 314.9 min
+run: 350/1500 runs, 83.4 min elapsed, ETA 274.0 min
+run: 400/1500 runs, 87.4 min elapsed, ETA 240.4 min
+run: 450/1500 runs, 91.4 min elapsed, ETA 213.3 min
+run: 500/1500 runs, 95.6 min elapsed, ETA 191.2 min
+run: 550/1500 runs, 99.4 min elapsed, ETA 171.7 min
+run: 600/1500 runs, 103.9 min elapsed, ETA 155.8 min
+run: 650/1500 runs, 118.7 min elapsed, ETA 155.2 min
+run: 700/1500 runs, 134.8 min elapsed, ETA 154.0 min
+run: 750/1500 runs, 151.6 min elapsed, ETA 151.6 min
+run: 800/1500 runs, 167.5 min elapsed, ETA 146.6 min
+run: 850/1500 runs, 183.5 min elapsed, ETA 140.3 min
+run: 900/1500 runs, 200.4 min elapsed, ETA 133.6 min
+run: 950/1500 runs, 215.2 min elapsed, ETA 124.6 min
+run: 1000/1500 runs, 230.4 min elapsed, ETA 115.2 min
+run: 1050/1500 runs, 246.0 min elapsed, ETA 105.4 min
+run: 1100/1500 runs, 260.9 min elapsed, ETA 94.9 min
+run: 1150/1500 runs, 276.1 min elapsed, ETA 84.0 min
+run: 1200/1500 runs, 291.9 min elapsed, ETA 73.0 min
+run: 1250/1500 runs, 325.6 min elapsed, ETA 65.1 min
+run: 1300/1500 runs, 361.3 min elapsed, ETA 55.6 min
+run: 1350/1500 runs, 397.6 min elapsed, ETA 44.2 min
+run: 1400/1500 runs, 434.0 min elapsed, ETA 31.0 min
+run: 1450/1500 runs, 468.7 min elapsed, ETA 16.2 min
+run: 1500/1500 runs, 513.7 min elapsed, ETA 0.0 min
+wrote results\C2/summary.json, summary.csv, TABLES.md, PAPER_TABLE.md, controls/, figures/, timing.json, run_info.json
+done in 521.0 min; results in results\C2
