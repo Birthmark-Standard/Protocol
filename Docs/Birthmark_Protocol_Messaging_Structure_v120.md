@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Docs/Birthmark_Protocol_Messaging_Structure_v120.md
+# Birthmark Protocol Messaging Structure v120
+========
 # Birthmark Protocol Messaging Structure v119
+>>>>>>>> d70ca20c5d7008a3efd942312127e883ce63af3e:Docs/Birthmark_Protocol_Messaging_Structure_v119.md
 
 **Notation.** `||` = concatenation. `ECIES(pk; m)` = randomized IND-CCA2 public-key encryption. `AEAD(k; m)` = AES-256-GCM. `Sign(sk; m)` = Ed25519. `RSign(ring; m)` = unlinkable 1-of-n ring signature over a ring. `ECIESb((GP, pk); m)` = ECIES to a blinded destination key (a Channel Key): the sender picks a random scalar e, sends EPK = e·GP in place of the usual ephemeral public key, and derives the AEAD key from e·pk and EPK. The holder of the secret scalar sk with pk = sk·GP derives the same value as sk·EPK.
 
@@ -98,7 +102,7 @@ The device routing table does not name the second relay or the destination serve
 **Channel Key.** A destination node holds one secret scalar sk. For each line, the builder picks a random scalar r, computes GP = r·B, where B is the X25519 base point, and discards r. GP lies in the prime-order subgroup by construction. The builder sends GP to the node, and the node checks that GP is not the identity and that ℓ·GP is the identity, where ℓ is the order of the prime-order subgroup. The check uses an unclamped scalar multiplication, since X25519 clamps its scalar. The node returns pk = sk · GP only if the check passes, and the line carries (GP, pk), which is the node's Channel Key as the device sees it. The device encrypts with ECIESb: it sends EPK = e·GP and derives the AEAD key from e·pk and EPK. The node derives the same value as sk · EPK. Three properties follow:
 
 - The node holds no per-line state and cannot tell which line a packet used. EPK is a uniformly random point whichever GP produced it.
-- A holder of the device routing table sees GP and pk but cannot tie them to the node without solving a decisional Diffie-Hellman problem in the prime-order subgroup. Key-privacy of ElGamal with a per-key generator follows from the same assumption (Bellare, Boldyreva, Desai and Pointcheval, ASIACRYPT 2001). The AEAD layer and a table holder who probes a candidate node are not analysed, and the key-derivation function is not yet specified.
+- A holder of the device routing table sees GP and pk but cannot tie them to the node without solving a decisional Diffie-Hellman problem in the prime-order subgroup. Key-privacy of ElGamal with a per-key generator follows from the same assumption (Bellare, Boldyreva, Desai and Pointcheval, ASIACRYPT 2001). The AEAD layer, the key-derivation function (HKDF-SHA256 per RFC 5869, with a distinct info string for each layer) and a table holder who probes a candidate node are not analysed.
 - The builder sees every GP and pk but never sk.
 
 A node rejects any GP that fails the subgroup check.
