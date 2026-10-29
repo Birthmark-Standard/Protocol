@@ -167,7 +167,7 @@ Each row of `summary.csv`, `summary.json` and `controls/*.csv` is one vantage, o
 | `prevalence`, `identifiable` | for a class of the combined view: its share of records, and whether it holds a destination role |
 | `sub_*` | the same measures at the submission level: the named packet belongs to the record's own capture |
 
-The papers report `count_p50`, `coverage_p50` and `auc`. `claim` applies the older thresholds of the claim criterion.
+The papers report `count_p50`, `coverage_p50`, `auc`, `shuffle_auc` (the AUC with device labels shuffled) and the confidence deciles in `summary.json` (`reliability`). `claim` applies the older thresholds of the claim criterion; the papers use neither the `p_at_1_hi` bound nor the 0.1% threshold, and report the largest group itself.
 
 ## Diagnostics
 
