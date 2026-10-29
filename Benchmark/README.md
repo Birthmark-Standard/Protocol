@@ -7,9 +7,32 @@ This folder measures two things on one machine.
 
 The target machine is a **Raspberry Pi 4 Model B, 4 GB, Cortex-A72 at 1.5 GHz**, running Raspberry Pi OS 64-bit (aarch64). A Raspberry Pi 5 is also recognised. Any other machine is a dry run. Its output files carry `DRY_RUN_NOT_PI` in the file name and `DRY RUN, NOT PI` on the first line.
 
-The papers state device cost as "calculated from published benchmarks". This folder replaces those calculations with measurements. Every number in `results/` is computed from a raw log in `results/raw/`.
+## What the papers use, and what `results/` holds
 
-Section and table numbers refer to the versions in `Docs/`: the Protocol paper v124, the Integration paper v41 and the Messaging Structure v119.
+The papers calculate the device-side cost from published benchmarks: the Protocol paper in Appendix B and Table A.3, the Integration paper in Section 8. They report no measurement from this folder and no measurement on a Raspberry Pi.
+
+Every file in `results/` is a dry run on an x86-64 virtual machine. Every file name carries `DRY_RUN_NOT_PI`. These runs show that the scripts build, pass their self-tests and write their output. They are not Raspberry Pi measurements. Every number in `results/` is computed from a raw log in `results/raw/`.
+
+| File | Content |
+|---|---|
+| `results/partA_DRY_RUN_NOT_PI_2026-10-26_vm.json` | Part A statistics for every row |
+| `results/partA_summary_DRY_RUN_NOT_PI.md` | Part A summary table |
+| `results/partB_DRY_RUN_NOT_PI_2026-10-26_vm.json` | Part B statistics |
+| `results/partB_summary_DRY_RUN_NOT_PI.md` | Part B summary tables |
+| `results/comparison_DRY_RUN_NOT_PI.md` | Hash time against prover time and memory |
+| `results/raw/` | The raw logs behind every number above |
+
+## On a Raspberry Pi 4
+
+From `Benchmark/`:
+
+1. `python3 check_prereqs.py` lists what is missing, with the `apt install` line.
+2. Part A: `cd device && make && cd ..`, then `python3 run_partA.py`.
+3. Part B: `zk/longfellow/fetch_and_build.sh`, then `python3 run_partB.py setup`, `prove` and `hash`, then `python3 summarize_partB.py RUN_ID`, as in "Part B, Run" below.
+
+On a Pi, the output files carry no `DRY_RUN_NOT_PI` and land in `results/` beside the dry runs. Part A and Part B below describe each step and each file.
+
+Section and table numbers refer to the versions in `Docs/`: the Protocol paper v128, the Integration paper v42 and the Messaging Structure v120.
 
 ## Part A
 
@@ -146,7 +169,7 @@ All sizes are named constants in `device/sizes.h`.
 - `binding_hash`: SHA-256(Enc_FullPacketHash), 48 B.
 
 **A5. Whole capture.**
-- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure (v119), "Device-side construction", steps 1 to 9:
+- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure (v120), "Device-side construction", steps 1 to 9:
   - ContentHash;
   - n and h(metadata), then FullPacketHash;
   - replay_nonce, BlindShare_key, Enc_FullPacketHash and binding_hash;
@@ -192,7 +215,7 @@ The summary checks three claims against measured medians. Each claim line names 
 
 | Claim | Source | Compared rows |
 |---|---|---|
-| "2 to 10 ms for encryption" | Protocol paper; Integration §8.1 | `ecies_seven_layers`, variant `default` |
+| "2 to 10 ms for encryption" | Protocol paper, Section 7. Integration §8.1 calculates 6.6 to 9.2 ms, inside this range. | `ecies_seven_layers`, variant `default` |
 | "430 to 600 ms for hashing a 30 MB file without hardware extensions" | Integration §8.2 | At 30,000,000 B: `sha256_file_openssl` in `default` (only if the CPU has no SHA extensions); `sha256_file_openssl` in `caps_off`; `sha256_file_libsodium` in `default` |
 | "120 to 170 ms with ARMv8 crypto extensions" | Integration §8.2 | `sha256_file_openssl` at 30,000,000 B in `default`, only if the CPU has `sha2` |
 
@@ -219,7 +242,7 @@ The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim i
 - **No SHA extensions on the Pi 4.** The claim for ARMv8 crypto extensions cannot be tested on this board.
 - **KDF.** HKDF-SHA256 is a placeholder. The papers say the key-derivation function is not yet specified. The HKDF call is timed as its own row.
 - **Sizes.** Several field sizes are estimates in Table A.1 (Cred_HW, key_ref, claim). They are approximate. The 300 B ContP is outside the spec.
-- **replay_nonce.** Integration v41 defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
+- **replay_nonce.** Integration v42 defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
 - **Padding.** The format is not specified. Padded wraps use zero bytes.
 - **Subgroup check.** The spec checks ℓ·GP with an unclamped multiplication. This code instead converts GP to Edwards form and calls libsodium's `crypto_core_ed25519_is_valid_point`, which includes the prime-order subgroup check. The check runs at setup and is not timed.
 - **Libraries.** The results depend on the installed libsodium and OpenSSL versions. Both are recorded in every raw log.
@@ -266,7 +289,7 @@ Afterwards the script counts crypto-extension instructions in the binary (64-bit
 
 ### Swap
 
-Building a circuit needs far more memory than proving with it. In the x86 dry run `20261026T220750Z_vm_DRY_RUN_NOT_PI`, the 4 KiB GF(2^128) circuit peaked at 2,158 MiB to build and 234 MiB to prove. An earlier exploratory dry run, whose output was not kept in raw logs, peaked at about 8.3 GiB to build the 16 KiB circuit.
+Building a circuit needs far more memory than proving with it. In the x86 dry run `20261026T220750Z_vm_DRY_RUN_NOT_PI`, the 4 KiB GF(2^128) circuit peaked at 2,158 MiB to build and 234 MiB to prove.
 
 For every run of every phase, the driver records swap activity: the change in pages swapped in and out (`/proc/vmstat`), and the most swap in use, sampled every 0.5 s.
 

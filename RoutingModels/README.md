@@ -18,8 +18,10 @@ different code.
 Runtime is about one second. Expected output was produced with Python 3.13 and
 NumPy 2.5.3. The two Monte Carlo scripts depend on NumPy's random generator
 (PCG64) and on the order in which cells run (one generator per script, seeded
-once). A different NumPy version can move an estimate by a few tenths of a
-point. `closed_form.py` and `coincidence_exact.py` do not sample.
+once). A different NumPy version can move an estimate: by a few tenths of a
+point in the cells the paper quotes, and by up to about a point in the cells
+with the fewest packets. `closed_form.py` and `coincidence_exact.py` do not
+sample.
 
 ## Which script supports which sentence in the paper
 
@@ -42,9 +44,3 @@ output are extra cells that the paper does not quote.
 * `closed_form.py` treats F and I as independent and codes as equal.
 * `coincidence_exact.py` assumes uniform choice. A real table builder may
   weight nodes differently.
-
-## Disclosure
-
-The first versions of these scripts were written with help from Anthropic's
-Claude models, as stated in the paper's Generative AI paragraph. The author reviewed them
-and is responsible for them.
