@@ -129,7 +129,9 @@ The correspondence queries, numbered as in the files:
   denial). The symbolic adversary sees the order of registry outputs, which separates the
   two scenarios for a timing reason. Holds, bundling and decoys address this; ProVerif
   cannot show it. Appendix D of the paper evaluates it empirically.
-- Replay logging (`replay_nonce`), `key_ref`, the manufacturer-key identifier, holds, padding.
+- The structure of `replay_nonce` (its day count and offline bit) and how long the validator keeps
+  its log. `BM_Token_Binding.pv` models the nonce as an atomic name and its claim as one atomic step.
+- `key_ref`, the manufacturer-key identifier, holds, padding.
 - The optional fields are modeled as one field. The specification uses a metadata hash and
   a parent hash, with presence flags.
 - Coordinated compromise of several components, such as the validator together with a
