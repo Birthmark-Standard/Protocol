@@ -147,8 +147,3 @@ registry-signing keys, and `g1_sk`/`g1_sign_sk`, `g2_sk`/`g2_sign_sk`, `g3_sk`/`
 for the three gatekeepers' terminus and signing keys respectively. `fullpackethash` is
 FullPacketHash and `blindshare_key` is BlindShare_key. `fph_m` is a private marker standing
 for one device's FullPacketHash.
-
-## Files
-
-`generator/gen_models.py` builds every model except SameClass and its twin from shared
-blocks.
