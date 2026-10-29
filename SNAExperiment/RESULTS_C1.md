@@ -1,6 +1,6 @@
 # Results
 
-The run has two cells: R = 1 and R = 150 real transactions in flight. Each cell has 100 decoys in flight and 100 runs. Every node is compromised in turn. Intervals are 95% and resample whole runs. The tables are in `results/`.
+The run has two cells: R = 1 and R = 150 real transactions in flight. Each cell has 100 decoys in flight and 100 runs. Every node is compromised in turn. Intervals are 95% and resample whole runs. The tables are in `results/C1/`.
 
 Device-named accuracy is how often a vantage names the device behind a registry record. It is the correlation rate.
 
@@ -67,7 +67,7 @@ Each decoy identity captures at the real device's rate. At R = 1 the real device
 
 ## Predicted against measured
 
-`PREDICTIONS.md` states each prediction, its basis and its failure rule. A correlation-rate prediction fails only when the rate is above its bound.
+`PREDICTIONS_C1.md` states each prediction, its basis and its failure rule. A correlation-rate prediction fails only when the rate is above its bound.
 
 | Prediction | Predicted | Measured | Result |
 |---|---|---|---|

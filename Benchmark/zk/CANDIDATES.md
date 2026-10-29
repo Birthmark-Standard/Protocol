@@ -4,7 +4,7 @@ This file surveys zero-knowledge provers for one statement: knowledge of a messa
 
 Nothing here is measured. Figures marked "vendor-reported" come from the project's own README. Figures marked ESTIMATE are this survey's estimates, with the basis given. Neither kind may appear in `results/`.
 
-Research date: 2026-10-26. Sources were read at the commits listed. This environment's network policy blocked `oumuamua.dev`, `arxiv.org` and `eprint.iacr.org`. The Flock paper's Table 2 and Hekate's online documentation were therefore not read directly. Their GitHub repositories were.
+Research date: 2026-10-26. Sources were read at the commits listed. The survey was written against the Integration paper v29 and the Protocol paper v109, which did not cite Hekate. Their successors, v41 and v124, do: reference [19] (Integration) and [29] (Protocol) is "Mobile ZK Benchmarks (hekate-mobile 0.3.0)" at oumuamua.dev/mobile/benchmarks, published 12 October 2026. This environment's network policy blocked `oumuamua.dev`, `arxiv.org` and `eprint.iacr.org`. The Flock paper's Table 2 and Hekate's online documentation were therefore not read directly. Their GitHub repositories were.
 
 ## A constraint that affects most candidates
 
@@ -38,7 +38,8 @@ On the Pi 4, Part A's SHA-256 also runs without SHA extensions. Both sides of th
   - Prove 949 ms, verify 11 ms.
   - Proof size 1,039 to 1,046 KiB, peak memory 142 MiB.
   - Signed `ct` prover 0.16.1, hekate 0.38.0, best of three, on battery.
-  - The 949 ms figure is on hekate-mobile `main` at commit `e0099d48489d489076a15799dd196281385bf2b4` (2026-10-20). It is not on the `v0.3.0` tag (`becc92ac4ac1d5b644f9d12d9b53215543945391`, 2026-10-11), whose README has no benchmark table. At `e0099d4` the package version still reads 0.3.0, which explains the papers' citation of "hekate-mobile 0.3.0". The citation should name the commit.
+  - In the hekate-mobile GitHub repository, the 949 ms figure is on `main` at commit `e0099d48489d489076a15799dd196281385bf2b4` (2026-10-20). It is not on the `v0.3.0` tag (`becc92ac4ac1d5b644f9d12d9b53215543945391`, 2026-10-11), whose README has no benchmark table. At `e0099d4` the package version still reads 0.3.0.
+  - The papers (Integration v41 [19], Protocol v124 [29]) cite the vendor's web page oumuamua.dev/mobile/benchmarks, published 12 October 2026, not the repository. This environment's network policy blocks that host, so what the page showed on 12 October is not checked here.
 - **Flock, M4 Max.** The Flock README reports single-thread SHA-256 proving throughput of 12.6 to 58.2 thousand compressions per second on an Apple M4 Max. The rate rises with batch size, from 1,024 to 262,144. These are batches of independent compressions, without zero-knowledge. This survey could not read the paper's Table 2, so the "about 42,000 per second" figure in the papers was not checked against it.
 
 ## Recommendation

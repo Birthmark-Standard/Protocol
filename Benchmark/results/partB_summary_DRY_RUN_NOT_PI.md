@@ -87,4 +87,8 @@ With two points the power law passes through both, so R² is 1 by construction a
 - Memory, prove process (EXTRAPOLATED): the lower of the two estimates is 728.3 GiB, which does not fit in this machine's RAM and does not fit in 8 GB. Basis: the measured growth in the rows above.
 - Memory, setup (EXTRAPOLATED): the lower of the two estimates is 8,840.6 GiB, which does not fit in this machine's RAM and does not fit in 8 GB. Basis: the measured growth in the rows above.
 
+## Hekate (attempted on this machine)
+
+Not run in this run.
+
 DRY RUN, NOT PI. None of the numbers above is a Raspberry Pi measurement.

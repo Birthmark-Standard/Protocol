@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Docs/Birthmark_Protocol_Messaging_Structure_v120.md
 # Birthmark Protocol Messaging Structure v120
+========
+# Birthmark Protocol Messaging Structure v119
+>>>>>>>> d70ca20c5d7008a3efd942312127e883ce63af3e:Docs/Birthmark_Protocol_Messaging_Structure_v119.md
 
 **Notation.** `||` = concatenation. `ECIES(pk; m)` = randomized IND-CCA2 public-key encryption. `AEAD(k; m)` = AES-256-GCM. `Sign(sk; m)` = Ed25519. `RSign(ring; m)` = unlinkable 1-of-n ring signature over a ring. `ECIESb((GP, pk); m)` = ECIES to a blinded destination key (a Channel Key): the sender picks a random scalar e, sends EPK = e·GP in place of the usual ephemeral public key, and derives the AEAD key from e·pk and EPK. The holder of the secret scalar sk with pk = sk·GP derives the same value as sk·EPK.
 

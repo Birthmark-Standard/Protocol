@@ -4,10 +4,19 @@ This experiment tests the Semantic Non-Assembly property of the Birthmark Protoc
 
 The experiment simulates the protocol's full message flow, with real and decoy traffic. It attacks every record from each internal vantage, with every node of the pool compromised in turn.
 
-- `RESULTS.md` has every finding.
-- `results/PAPER_TABLE.md` has the headline tables.
-- `results/TABLES.md` has the full generated tables.
-- `PREDICTIONS.md` has the predictions written before the run.
+- `RESULTS_C1.md` has every finding.
+- `results/C1/PAPER_TABLE.md` has the headline tables.
+- `results/C1/TABLES.md` has the full generated tables.
+- `PREDICTIONS_C1.md` has the predictions written before the run.
+
+## Experiments
+
+| Experiment | Cells | Results folder | Predictions | Results | Code |
+|---|---|---|---|---|---|
+| C1 | R = 1 and 150 | `results/C1/` | `PREDICTIONS_C1.md` | `RESULTS_C1.md` | `5a138228417cdb522f11712c5d2d4309e4c5ba27`, the commit that added the results. Its code is the same as `0187bc1`. At that commit the configuration hash is `3767ea7a7f82e097`, the value in `results/C1/run_info.json`. |
+| C2 | R = 1, 100 and 300, with the packet-type control | `results/C2/` | `PREDICTIONS_C2.md` | `RESULTS_C2.md` | to be filled after the run |
+
+The code writes to `results/C2/` by default. `python compare_r1.py results/C1 --new results/C2` compares the R = 1 cells of the two experiments, decision by decision.
 
 ## What is measured
 
@@ -115,7 +124,7 @@ The device's channels and the post-match lottery use a fresh random phase for ea
 | Registry bundle wait | uniform | shared 120 s schedule | not applicable | 120 s |
 | Registry posting wait | one offset per run | registry's 120 s schedule | not applicable | 120 s |
 
-The measured mean, standard deviation and maximum of every stage are in `results/timing.json` and `results/TABLES.md`.
+The measured mean, standard deviation and maximum of every stage are in `results/C1/timing.json` and `results/C1/TABLES.md`.
 
 ## The attack
 
@@ -148,6 +157,7 @@ Each diagnostic is a scoring variant on the same simulated traffic.
 | Match board share | The share of F's and I's confirmations set by the match board rather than by their own hold release. |
 | Path delay | For credential packets (arrival at C) and F and I content packets (arrival at F or I), the mean and standard deviation of the delay from the packet's departure to its arrival, network time included. |
 | Window halves | The observer's device-named accuracy in the first and the second half of the scored window, in every cell. The two agree when the 95% interval on their difference contains zero. |
+| Packet type revealed | The observer scored as if told each packet's true type (credential, F content or I content). Each packet is scored under the record-time density of its own type, built from the same Monte Carlo samples and bin width as the pooled density. It is paired with the pooled observer on the same records, in every cell of every configuration, with each one's chance rate and multiple of chance, the lead, and its hits by the type of the packet it named. It shows what the observer gains when the packet type is revealed, which is what the padding is worth at the first hop. It covers the first hop only: no likelihood follows packets across later links. In the main cells it mostly separates credential packets from content packets, because F and I content have the same delay to the record. A typed density can rule out more candidates, so a gain can come from a smaller feasible set; the two chance rates show it. |
 
 ## Controls
 
@@ -164,9 +174,9 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 
 ## Cells and runs
 
-- Real volume is R = 1 and 150 transactions in flight, each with 100 decoy transactions in flight.
+- Real volume is R = 1, 100 and 300 transactions in flight, each with 100 decoy transactions in flight.
 - Rates are R / D and 100 / D. D is the mean time a transaction stays in the system, from capture to the registry posting its record. It is calibrated under each configuration's own holds on 40 runs at R = 150. The calibration repeats until both counts in flight are within 3% of their targets.
-- The counts in flight are measured in every run and reported beside their targets in `results/run_info.json`.
+- The counts in flight are measured in every run and reported beside their targets in `results/C1/run_info.json`.
 - Real and decoy transactions arrive at their normal rates from time zero to the end of the run.
 - The warm-up lasts the longest capture-to-finalization time measured in the calibration, plus 5 minutes. Scoring starts after it, once traffic in flight is steady. Every run checks that no transaction takes longer than the warm-up, and stops if one does.
 - The scored window lasts 1 hour in the main cells. At R = 1 it is extended until it holds 200 real transactions per run on average, because only real records are scored. Only records introduced in the window are scored. The in-flight counts, the chance rates and every table use the window only.
@@ -174,7 +184,7 @@ A device hold delays the packet before it leaves the device, so it adds no noise
 - A control whose holds differ from the main configuration's has its warm-up, window and cool-down scaled by the ratio of its longest capture-to-finalization time to the main configuration's.
 - Packets from the warm-up and the cool-down stay in every vantage's candidate list.
 - Every configuration runs 100 runs per cell.
-- A run's traffic depends only on its real volume and run id.
+- A run's traffic depends only on its real volume and run id. So does its scoring, through a random order of the devices drawn from the configuration, the volume and the run id. A cell kept from an earlier run therefore reproduces that run's decisions on the same platform and package versions. `results/C1/run_info.json` records the Python, numpy and scipy versions and the platform.
 
 Intervals on accuracy resample whole runs, with a cluster bootstrap of 2,000 resamples. AUC intervals use the clustered-data variance of Obuchowski (1997).
 
@@ -193,7 +203,7 @@ On Windows, use `py -m pip install -r requirements.txt` and `py -m sna run`.
 1. calibrates D;
 2. builds the attacker's models;
 3. simulates and scores every run of the main configuration and the controls;
-4. writes every file in `results/`.
+4. writes every file in `results/C2/`.
 
 It is resumable: rerunning the same command skips the runs already on disk. Results depend only on the cell and run id, not on the worker count or completion order. A results directory written under other settings is refused.
 
@@ -207,24 +217,24 @@ It is resumable: rerunning the same command skips the runs already on disk. Resu
 
 | Path | Contents |
 |---|---|
-| `RESULTS.md` | every finding |
-| `PREDICTIONS.md` | the predictions, written and committed before the run |
-| `results/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
-| `results/TABLES.md` | the full tables |
-| `results/PAPER_TABLE.md` | the headline tables |
-| `results/controls/` | each control's rows, and the shuffle test |
-| `results/timing.json` | every stage's delay, capture to finalization, packet-type delays and the match board share, per configuration and cell |
-| `results/run_info.json` | seeds, runs per cell, D and its calibration, the counts in flight, the cost per run |
-| `results/figures/device_named.png` | how often each vantage names the device, against chance |
-| `results/figures/confidence_reliability.png` | each vantage's confidence against how often it is right |
-| `results/figures/latency.png` | capture to registry posting |
+| `RESULTS_C1.md` | every finding |
+| `PREDICTIONS_C1.md` | the predictions, written and committed before the run |
+| `results/C1/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
+| `results/C1/TABLES.md` | the full tables |
+| `results/C1/PAPER_TABLE.md` | the headline tables |
+| `results/C1/controls/` | each control's rows, and the shuffle test |
+| `results/C1/timing.json` | every stage's delay, capture to finalization, packet-type delays and the match board share, per configuration and cell |
+| `results/C1/run_info.json` | seeds, runs per cell, D and its calibration, the counts in flight, the cost per run |
+| `results/C1/figures/device_named.png` | how often each vantage names the device, against chance |
+| `results/C1/figures/confidence_reliability.png` | each vantage's confidence against how often it is right |
+| `results/C1/figures/latency.png` | capture to registry posting |
 | `sna/params.py` | every numeric input |
 | `sna/lottery.py` | the hold lottery and the likelihood densities |
 | `sna/sim.py` | the simulator |
 | `sna/attacks.py` | record and candidate extraction, likelihood models, scoring of every vantage, the shuffle test |
 | `sna/analyze.py` | metrics and intervals |
 | `sna/experiment.py` | configurations, cells, seeds, calibration, the run worker |
-| `sna/report.py` | every file in `results/` |
+| `sna/report.py` | every file in `results/C2/` |
 | `sna/runner.py` | resumable parallel execution |
 | `tests/` | fast tests |
 
@@ -235,4 +245,5 @@ The simulation uses the 20-node pool and the transaction described above. It doe
 - the jurisdiction filter or the skew in the device's choice of destinations;
 - the grouping of device-table lines by destination pseudonym;
 - a first-hop vantage that is told which destination a routing code leads to;
-- any evidence a second relay holds.
+- any evidence a second relay holds;
+- active timing attacks (delay, drop or injection of packets), which are future work.

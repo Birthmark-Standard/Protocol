@@ -103,7 +103,7 @@ def _small_scored(seed=15):
     return m, run, AT.compute(run, m, np.random.default_rng(seed))
 
 
-VANT = {"observer", "observer_flat", "observer_mid", "first_hop", "cred_processor", "gatekeeper", "combined",
+VANT = {"observer", "observer_flat", "observer_mid", "observer_typed", "first_hop", "cred_processor", "gatekeeper", "combined",
         "content_server", "content_server_mid", "validator"}
 
 
@@ -303,3 +303,137 @@ def test_loader_reads_resumed_file(tmp_path):
     after = sorted(r["run"] for r in RN.load(tmp_path, "y"))
     assert before and set(before) <= set(after)
     assert after == before + [5, 6, 7, 8]
+
+
+# --------------------------------------------------------------------------- the observer told the packet type
+def test_every_candidate_has_a_packet_type():
+    """Every device packet on the wire, real or decoy, is a credential, F content or I content packet."""
+    cand = AT.candidates(S.simulate(SMALL, 31))
+    assert cand["ptype"].size > 0 and set(np.unique(cand["ptype"])) == {0, 1, 2}
+
+
+def test_typed_densities_split_the_pooled_samples():
+    """The three typed densities come from the pooled density's own samples, one third each, at its bin width."""
+    m = AT.build_models(P.Config(), min_samples=3000, max_runs=3)
+    g, gt = m.pdf["g"], m.pdf["g_type"]
+    assert len(gt) == 3 and all(d.bw == g.bw for d in gt)
+    assert all(g.support[0] <= d.support[0] and d.support[1] <= g.support[1] for d in gt)
+
+
+def test_typed_with_the_pooled_density_is_the_observer():
+    """With each typed density replaced by the pooled one, the typed observer is the observer, decision for decision."""
+    import copy
+    m = AT.build_models(P.Config(), min_samples=3000, max_runs=3)
+    m2 = copy.deepcopy(m)
+    m2.pdf["g_type"] = (m.pdf["g"],) * 3
+    run = S.simulate(SMALL.with_(measure_s=900.0), 15)
+    out = AT.compute(run, m2, np.random.default_rng(15))
+    o, t = out["observer"], out["observer_typed"]
+    for k in t:
+        assert np.array_equal(o[k], t[k], equal_nan=o[k].dtype.kind == "f"), k
+
+
+def test_typed_hits_by_packet_type_add_up():
+    """The typed observer's submission-level hits by packet type sum to its submission-level hits."""
+    m, run, out = _small_scored()
+    t = out["observer_typed"]
+    assert set(np.unique(t["hit_type"])) <= {-1, 0, 1, 2}
+    assert np.array_equal(t["hit_type"] >= 0, t["sub_v_correct"].astype(bool))
+    assert (t["tfeas"].sum(1) <= t["sub_n_feas"]).all()
+    assert np.array_equal(t["dev_b_correct"], out["observer"]["dev_v_correct"])     # paired with the pooled observer
+
+
+def test_typed_agrees_with_pooled_when_packets_leave_together():
+    """With every hold off, a capture's three packets leave together, so the three types share one delay to the record
+    and telling the observer the type changes almost no decision."""
+    name = "no_holds"
+    m = AT.build_models(P.Config(**EX.CONFIGS[name]), min_samples=20000, max_runs=20)
+    run = S.simulate(EX.config(name, 20, 20.5).with_(measure_s=600.0), 100)
+    out = AT.compute(run, m, np.random.default_rng(0))
+    o, t = out["observer"]["dev_v_correct"], out["observer_typed"]["dev_v_correct"]
+    assert o.size > 300 and (o != t).mean() <= 0.01
+
+
+def test_typed_densities_inform_when_the_credential_path_sets_the_record():
+    """When the credential path sets the record time, the credential packet leaves after its device hold and the
+    content packets at capture, so each type's own density fits held-out true packets better than the pooled one."""
+    name = "first_relay_cred"
+    cfg = P.Config(**EX.CONFIGS[name])
+    m = AT.build_models(cfg, min_samples=100000, max_runs=200)     # smaller models' 1 s bins are too noisy for the gap
+    acc = {}
+    for seed in (7, 8, 9):                                          # seeds outside the models' own
+        AT._true_samples(S.simulate(cfg.with_(decoy_rate=0.0, real_rate=0.2), seed), acc)
+    y, pt = np.concatenate(acc["y"]), np.concatenate(acc["ptype"])
+    for k in range(3):
+        lt, lg = m.pdf["g_type"][k](y[pt == k]), m.pdf["g"](y[pt == k])
+        ok = np.isfinite(lt) & np.isfinite(lg)
+        assert ok.mean() > 0.99 and (lt[ok] - lg[ok]).mean() > 0.0, AT.PTYPES[k]
+
+
+def test_typed_beats_pooled_when_one_content_path_sets_the_record():
+    """When the F content path sets the record time, the F packet carries the timing and the other two do not, so the
+    observer told the type names the device more often than the pooled observer on the same records."""
+    import json
+    name = "first_relay_f"
+    m = AT.build_models(P.Config(**EX.CONFIGS[name]), min_samples=20000, max_runs=20)
+    info = json.loads((EX.ROOT / "results" / "C1" / "run_info.json").read_text())
+    cfg = EX.config(name, 20, info["D"][name], info["windows"][name]).with_(measure_s=8000.0)
+    o = t = 0
+    for k in range(2):
+        out = AT.compute(S.simulate(cfg, 300 + k), m, np.random.default_rng(k))
+        o += int(out["observer"]["dev_v_correct"].sum())
+        t += int(out["observer_typed"]["dev_v_correct"].sum())
+    assert t > o + 3
+
+
+def test_typed_diagnostic_moves_no_other_interval(tmp_path):
+    """The typed observer's diagnostic draws from its own random generator: every other row, interval and statistic of
+    the analysis is the same with and without the typed observer in the records."""
+    import json
+    from sna import report as RP
+    m = AT.build_models(P.Config(), min_samples=3000, max_runs=3)
+    name = "no_holds"
+    for d in ("with", "without"):
+        p = RN.raw_path(tmp_path / d, EX.rec_name(name, EX.REAL_R[0]))
+        p.parent.mkdir(parents=True)
+    for k in range(4):
+        run = S.simulate(SMALL.with_(measure_s=900.0), 40 + k)
+        rec = dict(run=k, sim_seconds=0.0, score_seconds=0.0, vantages=AT.compute(run, m, np.random.default_rng(k)),
+                   stats=EX.run_stats(run))
+        for d in ("with", "without"):
+            r = dict(rec, vantages={v: x for v, x in rec["vantages"].items() if d == "with" or v != "observer_typed"})
+            with gzip.open(RN.raw_path(tmp_path / d, EX.rec_name(name, EX.REAL_R[0])), "ab") as f:
+                pickle.dump(r, f)
+    a, b = RP.analyze_config(tmp_path / "with", name), RP.analyze_config(tmp_path / "without", name)
+    typed = ("packet type revealed", "typed observer submission hit by packet type")
+    assert any(d["kind"] in typed for d in a[2]) and not any(d["kind"] in typed for d in b[2])
+    a = (a[0], a[1], [d for d in a[2] if d["kind"] not in typed], a[3])
+    js = lambda x: json.dumps(x, sort_keys=True, default=lambda o: o.tolist() if hasattr(o, "tolist") else str(o))  # noqa: E731
+    assert js(a) == js(b)
+
+
+def test_compare_r1_counts_differing_decisions(tmp_path):
+    """compare_r1 compares every R = 1 decision of the vantages the earlier run scored, counts a row as
+    differing when any of its columns differs, skips vantages only the new run has, and flags runs on one side only."""
+    import compare_r1
+    m, run, out = _small_scored()
+    f = EX.rec_name("main", 1)
+
+    def write(d, recs):
+        p = RN.raw_path(tmp_path / d, f)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with gzip.open(p, "ab") as h:
+            for r in recs:
+                pickle.dump(r, h)
+    old = {v: x for v, x in out.items() if v != "observer_typed"}
+    write("old", [dict(run=0, vantages=old), dict(run=1, vantages=old)])
+    write("same", [dict(run=0, vantages=out), dict(run=1, vantages=out)])
+    res = compare_r1.compare(tmp_path / "old", tmp_path / "same")
+    n = sum(int(x["sub"].size) for x in old.values()) * 2
+    assert res["compared"] == n and res["differ"] == 0 and not res["incomplete"]
+    bad = {v: {c: a.copy() for c, a in x.items()} for v, x in out.items()}
+    bad["observer"]["dev_v_correct"][0] ^= 1
+    bad["first_hop"]["dev_top1"][3] += 1.0
+    write("bad", [dict(run=0, vantages=bad)])
+    res = compare_r1.compare(tmp_path / "old", tmp_path / "bad")
+    assert res["differ"] == 2 and res["dev_outcome_differ"] == 1 and res["incomplete"]

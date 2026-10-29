@@ -2,7 +2,7 @@
 
   run   calibrates D under every configuration's own holds, builds the attacker's models, simulates
         and scores every run of the main configuration and the controls, and writes every file in
-        results/. Resumable: rerunning the same command skips the runs already on disk.
+        results/C2/. Resumable: rerunning the same command skips the runs already on disk.
 
 Results depend on the cell and run id only, never on the worker count or the order runs finish in.
 """
@@ -45,6 +45,12 @@ def run(out, runs, workers):
         info.update(config_hash=EX.config_hash(), seeds=dict(calibration=EX.CAL_SEED0, models=EX.MODEL_SEED0,
                     shuffle=EX.SHUFFLE_SEED, traffic="sha256 of the volume and run id"), decoys=EX.DECOYS, R=list(EX.REAL_R))
     info["runs_per_cell"] = {EX.MAIN: runs, **{c: min(EX.CONTROL_RUNS[c], runs) for c in EX.CONTROLS}}
+    v = EX.versions()                              # recorded, never part of config_hash
+    if "versions" not in info:
+        info["versions"] = v
+    elif info["versions"] != v:
+        info.setdefault("versions_on_resume", []).append(v)
+        print(f"warning: resumed under other versions than the run started with: {v}", flush=True)
     p.write_text(json.dumps(info, indent=1))
     for name in EX.CONFIGS:
         EX.ensure_models(out, name)
@@ -61,7 +67,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="python -m sna", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run"])
-    ap.add_argument("--out", help="results directory (default: results/)")
+    ap.add_argument("--out", help="results directory (default: results/C2/)")
     ap.add_argument("--workers", default="auto", help="worker processes (default: half the cores)")
     ap.add_argument("--runs", type=int, default=EX.RUNS, help="runs per cell of the main configuration (default: %(default)s); "
                     "each control runs its own count or this, whichever is smaller")
