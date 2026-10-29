@@ -1,4 +1,4 @@
-(* BM_Gatekeeper_Compromise.pv   (v90 design, identity swap)
+(* BM_Gatekeeper_Compromise_TWIN.pv   (v90 design, identity swap)
 Property J: a fully compromised gatekeeper 1 learns nothing about which device a token belongs to.
 
 Vantage point: gatekeeper 1, with its own keys, plus the public channel, all three match boards and the registry.
@@ -19,8 +19,8 @@ It says nothing about content, because the contents are the same in both worlds.
 
 The twin (twins/ folder) makes V fold the credential into the verdict. The
 credential then reaches the boards, F and the registry. The twin must come out
-NOT equivalent, or this model's "true" proves nothing.
-THIS FILE IS THE TWIN. Fault: V folds the credential into the verdict, judge((claim, token)). Expected: NOT equivalent (or the query FAILS). *)
+with observational equivalence not proved, or this model's "true" proves nothing.
+THIS FILE IS THE TWIN. Fault: V folds the credential into the verdict, judge((claim, token)). Expected: observational equivalence cannot be proved. *)
 
 type skey.
 type pkey.

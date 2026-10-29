@@ -1,7 +1,7 @@
 (* BM_Token_Binding_TWIN.pv   (v105 design, token binding and single use, serialized check)
 TWIN: the validator does not compare the binding hash in the token with the wrapped FullPacketHash C presents. It still claims the nonce atomically, as in the model. Expected result: the first query is false (a verdict is issued for a wrapped value the device never committed to), and so is the injective query.
 
-Everything else is as in BM_Token_Binding.pv. Expected: queries (1) and (1b) false, query (2) false. *)
+Everything else is as in BM_Token_Binding.pv. Expected: queries (1) and (2) false, and query (3) false (an issuing run exists). *)
 
 type skey.
 type pkey.

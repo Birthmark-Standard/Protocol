@@ -1,6 +1,6 @@
-(* BM_Registry_Convergence_BoundFields.pv   (v90 design, PROPOSED FIX)
-FullPacketHash = hash(ContentHash, n, optional fields). Everything else as in BM_Registry_Convergence.pv.
-Expected: query c now TRUE. If it is still false, the fix is not enough.
+(* BM_Registry_Convergence.pv   (v90 design)
+FullPacketHash = hash(ContentHash, n, optional fields).
+Expected: query c true.
 
 Property H: one compromised content channel server F cannot, on its own, make the registry finalise a record I did not sign; and what I signs is bound to what the device sent.
 
@@ -13,7 +13,7 @@ one under I's, over the same (ContentHash, verdict, m).
 Queries and expected answers.
  a  registry_final(h,v,m) ==> i_signed(h,v,m)      expected: true
     The registry cannot finalise a record I did not sign.
- c  i_signed_n(h,n,v,m) ==> device_sent(h,n,m)      expected: TRUE (with the fix)
+ c  i_signed_n(h,n,v,m) ==> device_sent(h,n,m)      expected: true
     F knows (h,n) and can send I a packet with a different m. With the fix,
     FullPacketHash = hash(h,n,m), so I computes a different FullPacketHash and finds
     no quorum. In the unfixed model (BM_Registry_Convergence.pv) this query is false.

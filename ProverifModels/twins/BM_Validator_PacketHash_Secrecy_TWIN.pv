@@ -1,4 +1,4 @@
-(* BM_Validator_PacketHash_Secrecy.pv   (v90 design)
+(* BM_Validator_PacketHash_Secrecy_TWIN.pv   (v90 design)
 Properties A and E: a fully compromised validator V does not learn PacketHash.
 
 What is leaked: v_token_sk and v_sign_sk (all of V's keys). The attacker plays
@@ -14,7 +14,7 @@ V never sees).
 What "true" means: query attacker(ph_m) is not derivable. The wrap and the
 secrecy of BlindShare_key (which only reaches the gatekeepers, encrypted) hold.
 The twin sends PacketHash to V in the clear; the query must then FAIL.
-THIS FILE IS THE TWIN. Fault: C sends PacketHash to V without the BlindShare wrap. Expected: NOT equivalent (or the query FAILS). *)
+THIS FILE IS THE TWIN. Fault: C sends PacketHash to V without the BlindShare wrap. Expected: the query is false. *)
 
 type skey.
 type pkey.

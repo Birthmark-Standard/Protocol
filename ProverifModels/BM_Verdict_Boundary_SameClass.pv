@@ -17,7 +17,7 @@ pipeline's other outputs are ciphertexts to keys the attacker does not hold, the
 (C's gatekeeper packets). What the upgrade adds is that the whole pipeline runs under the attacker's control of V's answers: V may answer, delay or alter
 any reply.
 
-Result (expected, not yet run): observational equivalence is true. *)
+Expected: observational equivalence is true. *)
 
 type skey.
 type pkey.
