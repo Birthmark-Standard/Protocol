@@ -14,7 +14,7 @@ The experiment simulates the protocol's full message flow, with real and decoy t
 | Experiment | Cells | Results folder | Predictions | Results | Code |
 |---|---|---|---|---|---|
 | C1 | R = 1 and 150 | `results/C1/` | `PREDICTIONS_C1.md` | `RESULTS_C1.md` | `5a138228417cdb522f11712c5d2d4309e4c5ba27`, the commit that added the results. Its code is the same as `0187bc1`. At that commit the configuration hash is `3767ea7a7f82e097`, the value in `results/C1/run_info.json`. |
-| C2 | R = 1, 100 and 300, with the packet-type control | `results/C2/` | `PREDICTIONS_C2.md` | `RESULTS_C2.md` | to be filled after the run |
+| C2 | R = 1, 100 and 300, with the packet-type control | `results/C2/` | `PREDICTIONS_C2.md` | `RESULTS_C2.md` | `d70ca20c5d7008a3efd942312127e883ce63af3e`, recorded in `code_commit.txt`. At that commit the configuration hash is `c54e444f07f27a7a`, the value in `results/C2/run_info.json`. |
 
 The code writes to `results/C2/` by default. `python compare_r1.py results/C1 --new results/C2` compares the R = 1 cells of the two experiments, decision by decision.
 
