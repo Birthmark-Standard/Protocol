@@ -244,6 +244,7 @@ The full run of C2 took 8.7 hours on 8 worker processes.
 | Script | What it prints |
 |---|---|
 | `compare_r1.py` | `python compare_r1.py OLD_RESULTS --new NEW_RESULTS` compares the R = 1 cells of two runs, decision by decision, from their `raw/` folders, and prints how many decisions differ and the package versions each run recorded. `raw/` folders are not in this repository; they exist on the machine that made a run. |
+| `conf_tail.py` | `python conf_tail.py results/C2 --cell main__R100_D100 --vantage content_server` reads one cell's `raw/` files and prints, for one vantage: the calibrated-confidence percentiles; for each level from 0.9 down to 0.05, how many guesses reach it, how many of those are right, and their mean confidence; the confidence in each half of the runs; the belief the model gives each record's true device, and how many records reach 0.5, 0.3, 0.2 and 0.1; the most confident hit and miss; and the `--top` most confident guesses (default 25). `--vantage combined` reads the combined view. It writes nothing. |
 
 ## Contents
 
