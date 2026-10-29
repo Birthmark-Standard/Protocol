@@ -1,4 +1,4 @@
-# Birthmark Protocol Messaging Structure v118
+# Birthmark Protocol Messaging Structure v120
 
 **Notation.** `||` = concatenation. `ECIES(pk; m)` = randomized IND-CCA2 public-key encryption. `AEAD(k; m)` = AES-256-GCM. `Sign(sk; m)` = Ed25519. `RSign(ring; m)` = unlinkable 1-of-n ring signature over a ring. `ECIESb((GP, pk); m)` = ECIES to a blinded destination key (a Channel Key): the sender picks a random scalar e, sends EPK = e·GP in place of the usual ephemeral public key, and derives the AEAD key from e·pk and EPK. The holder of the secret scalar sk with pk = sk·GP derives the same value as sk·EPK.
 
@@ -23,7 +23,7 @@ Every key has one purpose. No key is used both to decrypt and to sign, and no ke
 
 **Server Transit Keys belong to nodes, not roles.** A, B, C, D, E, F, G, H and I are per-transaction roles, and any Registry Node can hold any of them, subject to the role rules below. Each node therefore holds one Server Transit Key pair and a full table of every other node's Server Transit public key. "A-transit", "C-transit" and so on in the leg table mean the Server Transit Key of whichever node holds that role for a given transaction. The V→C leg also uses C's Server Transit Key, so validators hold the table too. This follows from position labels naming roles rather than node identities: a role-specific key pair for every role a node might ever be assigned would work against that principle, not with it.
 
-**Channel Keys belong to nodes, not roles.** A node that can be a destination holds one Channel Key scalar sk, and uses it whichever of C, F or I it is in a given transaction. It tells the credential packet from a content packet by the plaintext length: CredP is 139 bytes, and ContP\_F and ContP\_I are 49, 81 or 113 bytes.
+**Channel Keys belong to nodes, not roles.** A node that can be a destination holds one Channel Key scalar sk, and uses it whichever of C, F or I it is in a given transaction. It tells the credential packet from a content packet by the plaintext length: CredP is 203 bytes, and ContP\_F and ContP\_I are 49, 81 or 113 bytes.
 
 **Per-transaction values** (fresh each transaction, never reused):
 
@@ -98,7 +98,7 @@ The device routing table does not name the second relay or the destination serve
 **Channel Key.** A destination node holds one secret scalar sk. For each line, the builder picks a random scalar r, computes GP = r·B, where B is the X25519 base point, and discards r. GP lies in the prime-order subgroup by construction. The builder sends GP to the node, and the node checks that GP is not the identity and that ℓ·GP is the identity, where ℓ is the order of the prime-order subgroup. The check uses an unclamped scalar multiplication, since X25519 clamps its scalar. The node returns pk = sk · GP only if the check passes, and the line carries (GP, pk), which is the node's Channel Key as the device sees it. The device encrypts with ECIESb: it sends EPK = e·GP and derives the AEAD key from e·pk and EPK. The node derives the same value as sk · EPK. Three properties follow:
 
 - The node holds no per-line state and cannot tell which line a packet used. EPK is a uniformly random point whichever GP produced it.
-- A holder of the device routing table sees GP and pk but cannot tie them to the node without solving a decisional Diffie-Hellman problem in the prime-order subgroup. Key-privacy of ElGamal with a per-key generator follows from the same assumption (Bellare, Boldyreva, Desai and Pointcheval, ASIACRYPT 2001). The AEAD layer and a table holder who probes a candidate node are not analysed, and the key-derivation function is not yet specified.
+- A holder of the device routing table sees GP and pk but cannot tie them to the node without solving a decisional Diffie-Hellman problem in the prime-order subgroup. Key-privacy of ElGamal with a per-key generator follows from the same assumption (Bellare, Boldyreva, Desai and Pointcheval, ASIACRYPT 2001). The AEAD layer, the key-derivation function (HKDF-SHA256 per RFC 5869, with a distinct info string for each layer) and a table holder who probes a candidate node are not analysed.
 - The builder sees every GP and pk but never sk.
 
 A node rejects any GP that fails the subgroup check.
