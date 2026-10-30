@@ -129,7 +129,9 @@ The correspondence queries, numbered as in the files:
   denial). The symbolic adversary sees the order of registry outputs, which separates the
   two scenarios for a timing reason. Holds, bundling and decoys address this; ProVerif
   cannot show it. Appendix D of the paper evaluates it empirically.
-- Replay logging (`replay_nonce`), `key_ref`, the manufacturer-key identifier, holds, padding.
+- The structure of `replay_nonce` (its day count and offline bit) and how long the validator keeps
+  its log. `BM_Token_Binding.pv` models the nonce as an atomic name and its claim as one atomic step.
+- `key_ref`, the manufacturer-key identifier, holds, padding.
 - The optional fields are modeled as one field. The specification uses a metadata hash and
   a parent hash, with presence flags.
 - Coordinated compromise of several components, such as the validator together with a
@@ -147,8 +149,3 @@ registry-signing keys, and `g1_sk`/`g1_sign_sk`, `g2_sk`/`g2_sign_sk`, `g3_sk`/`
 for the three gatekeepers' terminus and signing keys respectively. `fullpackethash` is
 FullPacketHash and `blindshare_key` is BlindShare_key. `fph_m` is a private marker standing
 for one device's FullPacketHash.
-
-## Files
-
-`generator/gen_models.py` builds every model except SameClass and its twin from shared
-blocks.
