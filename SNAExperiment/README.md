@@ -283,4 +283,4 @@ The simulation uses the 20-node pool and the transaction described above. It doe
 - the grouping of device-table lines by destination pseudonym;
 - a first-hop vantage that is told which destination a routing code leads to;
 - any evidence a second relay holds;
-- active timing attacks (delay, drop or injection of packets), which are future work.
+- active timing attacks (delay, drop or injection of packets). The Protocol paper argues them in Table A.2, row 7 and does not simulate them. Other attacker methods are future work.

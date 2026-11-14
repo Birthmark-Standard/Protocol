@@ -137,12 +137,17 @@ Each row is timed with `clock_gettime(CLOCK_MONOTONIC_RAW)`, one sample per oper
   - The shared secret is e·pk, which is one variable-base multiplication.
 - ECIESb (layers 2, 3, 4), to a Channel Key (GP, pk):
   - EPK = e·GP and the shared secret e·pk, which are two variable-base multiplications.
-- Key derivation:
-  - HKDF-SHA256, with ikm = shared secret, salt = EPK, and a fixed info string.
-  - It outputs the 32 B AES-256-GCM key and the 12 B nonce.
-  - The nonce is fresh on every call because e is fresh. It is not sent.
-- Wire layout: version byte (1) ‖ EPK (32) ‖ ciphertext ‖ tag (16). The overhead is 49 B, which matches Table A.1.
-- AAD is the version byte and EPK.
+- Key derivation in the specification (Messaging Structure v129):
+  - HKDF-SHA256 with an empty salt.
+  - Input: the shared secret e·pk.
+  - Info string: a layer label, then EPK, then the recipient public key, with the Generator Point GP appended for ECIESb.
+  - The specification does not fix the label strings.
+- Key derivation in this code:
+  - HKDF-SHA256, with ikm = the shared secret e·pk, salt = EPK, and one fixed info string for every layer, ECIES and ECIESb alike.
+  - It outputs the 32 B AES-256-GCM key and a 12 B nonce. The nonce is not sent.
+- Wire layout: a version byte (1 B), EPK (32 B), the ciphertext, then the AES-256-GCM tag (16 B). The overhead is 49 B, which matches Table A.1.
+- AEAD nonce: the specification uses a fixed all-zero 96-bit nonce and empty associated data on every ECIES layer, because each key is single-use (e is fresh). This code uses the HKDF-derived nonce, and the version byte and EPK as associated data.
+- Padding: in the specification, a wrap's plaintext is a 2-byte length prefix, the payload, then padding up to the drawn wire size minus 49 B. The drawn wire size is uniform over 420 to 460 B, or 820 to 860 B for the gatekeeper fan-out. This code has no length prefix and no draw. It pads with zero bytes to a fixed 460 B plaintext, 509 B on the wire.
 
 | Row | Layer | Plaintext |
 |---|---|---:|
@@ -154,7 +159,7 @@ Each row is timed with `clock_gettime(CLOCK_MONOTONIC_RAW)`, one sample per oper
 | `eciesb_layer3_4_contp_300B_stress` | 3 and 4, a stress case larger than the spec allows | 300 B |
 | `ecies_layer5_wrap_credp` | 5, routing code 16 + CredP (252) | 268 B |
 | `ecies_layer6_7_wrap_contp` | 6 and 7, routing code 16 + ContP (81 + 49) | 146 B |
-| `ecies_layer5_7_wrap_padded_460B` | 5 to 7, padded to the upper end of Table A.2's 420 to 460 B | 460 B |
+| `ecies_layer5_7_wrap_padded_460B` | 5 to 7, zero-padded to a fixed 460 B plaintext | 460 B |
 | `ecies_seven_layers` | All seven layers in spec order, unpadded wraps, ContP at 81 B | |
 | `ecies_seven_layers_padded` | The same, wraps padded to 460 B | |
 
@@ -240,10 +245,10 @@ The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim i
 - **Core class.** The papers' figures are calculated for a Cortex-A8, an in-order core at 800 MHz. The Cortex-A72 is out of order and runs at 1.5 GHz. These results do not show what a Cortex-A8 would measure.
 - **Clock.** The Cortex-A72 is named here at 1.5 GHz. Some Pi 4 boards run at 1.8 GHz. The summary records the maximum frequency the board reports and notes any difference.
 - **No SHA extensions on the Pi 4.** The claim for ARMv8 crypto extensions cannot be tested on this board.
-- **KDF.** HKDF-SHA256 is a placeholder. The papers say the key-derivation function is not yet specified. The HKDF call is timed as its own row.
-- **Sizes.** Several field sizes are estimates in Table A.1 (Cred_HW, key_ref, claim). They are approximate. The 300 B ContP is outside the spec.
+- **KDF and AEAD inputs.** The code's HKDF-SHA256 call uses salt = EPK and one fixed info string. The specification uses an empty salt and an info string of a layer label, EPK and the recipient public key, with GP for ECIESb. The code derives the AES-256-GCM nonce and authenticates the version byte and EPK. The specification uses an all-zero nonce and empty associated data. The HKDF call is timed as its own row.
+- **Sizes.** The plaintext sizes match the specification's layer table: T 82 B (131 B encrypted), CredP 203 B (252 B), ContP 49 B (98 B) with 32 B per optional field. Cred_HW, key_ref and claim are estimates in Table A.1. The 300 B ContP is outside the spec.
 - **replay_nonce.** Integration v42 defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
-- **Padding.** The format is not specified. Padded wraps use zero bytes.
+- **Padding.** The code pads with zero bytes to a fixed 460 B plaintext, with no 2-byte length prefix and no drawn size. The specification's wire size is 420 to 460 B, or 820 to 860 B for the gatekeeper fan-out, so the padded rows encrypt more bytes than the specification's largest ordinary wrap.
 - **Subgroup check.** The spec checks ℓ·GP with an unclamped multiplication. This code instead converts GP to Edwards form and calls libsodium's `crypto_core_ed25519_is_valid_point`, which includes the prime-order subgroup check. The check runs at setup and is not timed.
 - **Libraries.** The results depend on the installed libsodium and OpenSSL versions. Both are recorded in every raw log.
 
