@@ -409,7 +409,7 @@ def summarize(out, dry=False):
     names = sorted(p.name[:-len(".pkl.gz")] for p in (out / "raw").glob("*.pkl.gz"))
     for exp in ("c3", "c4", "c5"):
         fs = [n for n in names if n.startswith(exp + "_")]
-        if not fs:
+        if not fs or exp not in SUMMARY:
             continue
         rows = RP.summarize(out, fs, **SUMMARY[exp]())
         RP.write(out, rows, f"TABLES_{exp.upper()}", f"Experiment {exp.upper()}", dry)

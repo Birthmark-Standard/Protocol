@@ -36,14 +36,6 @@ def posting_bound(R, decoys, per_device=None, draws=400_000):
     return _BOUND[key]
 
 
-def _cells(names):
-    out = {}
-    for n in names:
-        job, variant, cell = n.split("__")
-        out.setdefault((job, variant), []).append(float(cell[1:]))
-    return out
-
-
 def summarize(out, files, classes=None, decoys_of=None, bound_na=(), seed=12345):
     """Rows for every vantage of the given raw files. classes: {vantage: (column, {code: label})} to split a
     vantage's rows; decoys_of(job, variant) -> decoys in flight; bound_na: vantages the bound does not apply to."""
