@@ -82,7 +82,7 @@ def candidates(run):
     ptype = np.full(pk.size, -1, np.int8)
     for lg, k in _PTYPE.items():
         ptype[leg == lg] = k
-    return dict(t=ev["t_send"][pk], sub=sub, msub=sub, dev=ev["ext_src"][pk].astype(np.int64), ptype=ptype,
+    return dict(t=ev["t_send"][pk], sub=sub, msub=sub, dev=ev["ext_src"][pk].astype(np.int64), ptype=ptype, ev=pk,
                 node=ev["dst"][pk].astype(np.int64)[:, None],
                 hold=np.where(f >= 0, ev["t_send"][np.maximum(f, 0)] - ev["t_arr"][pk], np.nan)[:, None])
 
