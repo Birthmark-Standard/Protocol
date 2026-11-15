@@ -28,7 +28,11 @@ C4 has cells R = 1 and 100. R = 300 runs only if time remains, last in the job q
 
 ## How the tracer treats the ambiguity inside a hold
 
-A relay's hold is geometric on its node's 10-second ticks. For one release probability p, an assignment of k arrivals to k departures has likelihood Π p (1 − p)^(n_i − 1), where n_i is the number of ticks packet i waited. The sum of the n_i is fixed by the arrival and departure times, whatever the assignment. So every assignment that respects causality, the cap and the tick grid has the same likelihood. The tracer does not guess among them. It counts them. A packet's posterior over departures is the share of valid assignments that give it each departure. Two positions mix at one node: a first relay (mean 60 s) and a second relay (mean 300 s). Their p differ, so an assignment that swaps a first-relay packet and a second-relay packet has a different weight, and the tracer weighs it so. The position is visible on the inbound link: a packet from an external host is at a first relay. The tracer enumerates each relay's busy periods exactly, and checks the enumeration against brute force on small cases.
+A relay's hold is geometric on its node's 10-second ticks. For one release probability p, an assignment of k arrivals to k departures has likelihood Π p (1 − p)^(n_i − 1), where n_i is the number of ticks packet i waited. The sum of the n_i is fixed by the arrival and departure times, whatever the assignment. So every assignment that respects causality, the cap and the tick grid has the same likelihood. The tracer does not guess among them. It counts them. A packet's posterior over departures is the share of valid assignments that give it each departure. Two positions mix at one node: a first relay (mean 60 s) and a second relay (mean 300 s). Their p differ, so an assignment that swaps a first-relay packet and a second-relay packet has a different weight, and the tracer weighs it so. The position is visible on the inbound link: a packet from an external host is at a first relay.
+
+A node's problem splits into independent pieces, the connected components of its possible pairings. For a piece with at most 10 arrivals the tracer counts every complete pairing exactly, by a forward and backward sum over the sets of arrivals used. A larger piece is approximated by matrix scaling (Sinkhorn), which balances the weight matrix until each departure is used once and each arrival once. On 396 small cases built from the hold weights, the Sinkhorn share of a pairing differs from brute-force enumeration by at most 0.035 in the median case, 0.15 at the 90th percentile and 0.23 in the worst; the exact count differs by under 10^−14. Pieces with more than 10 arrivals occur when a node is busy: a second relay holds packets for up to 900 s.
+
+The tracer follows every leg the wire shows, as a global passive observer can: the relays; at a destination, an arrival that stays to C's CV-1 or to one of the node's registry submissions (the origin of a submission is on the wire, because the origin floods it to every peer at once); the validator's CV-1 to CV-2; and each reply reaching C to the two submissions it leads to, by the quorum timing estimated from the link latencies it measures on the wire. It scores a device by its triples of packets near the record, one packet as the credential packet and two as content packets, jointly: the reply, the two submissions at two different nodes, their timing after the reply, and the record's posting after the later submission.
 
 ## Arithmetic used throughout
 
@@ -87,7 +91,7 @@ For comparison, (1 − e^(−λ)) / λ is 9.64%, 4.87% and 2.43%.
 | R = 1 | 5.0% to 10.5% (point 7.5%) | 1.0 to 2.2 | 10.5% |
 | R = 100 | 2.4% to 5.3% (point 3.9%) | 1.0 to 2.3 | 5.3% |
 
-The tracer is never reliably below the observer on the same records. The label shuffle returns it to chance. With no decoys at R = 1 it names the device on 100% of records, because one device is left. On small cases its posterior equals brute-force enumeration to within 10^−9.
+The tracer is never reliably below the observer on the same records. The label shuffle returns it to chance. With no decoys at R = 1 it names the device on 100% of records, because one device is left. On small cases the pairing shares it counts exactly equal brute-force enumeration to within 10^−9.
 
 **Basis.**
 - The bound from the posting schedule caps any vantage that uses the record time.
@@ -231,3 +235,5 @@ Every table shows the bound from the posting schedule beside each row it applies
 - Item 2a, the ceiling attacker, was added.
 - The K-record attacker runs first on the observer's posteriors, with its own predictions.
 - The tracer's gate is the every-hold-and-schedule-off control.
+- The tracer section first said the tracer counts valid assignments exactly per busy period. The code approximated every node by matrix scaling. It now counts pieces of up to 10 arrivals exactly and approximates larger ones, and the section states the approximation and its error against brute force. The brute-force prediction in item 2 now applies to the pieces counted exactly. This corrects a description that did not match the code.
+- The tracer section now says the tracer follows the destination, validator and quorum legs, and scores a transaction's three packets jointly. The first tracer used only the relays and pooled densities from a packet's arrival to the record, and so ignored legs a global passive observer sees. This is a modeling error in the attacker; the predictions in items 1 to 4 are unchanged.
