@@ -39,7 +39,8 @@ def test_default_options_are_c2():
     """Every new option at its default, written out, gives the same run."""
     a = S.simulate(_cfg(), 3)
     b = S.simulate(_cfg(decoy_factor=1.0, workload="W0", edit_share=0.0, quorum_timeout_s=1800.0, board_window_s=0.0,
-                        grid_off=False, mark_actor="", mark_target=-1), 3)
+                        grid_off=False, mark_actor="", mark_target=-1, withhold_share=0.0, n_validators=1,
+                        real_val_split=(), decoy_val_split=()), 3)
     _same_run(a, b)
 
 
@@ -234,3 +235,24 @@ def test_validator_withholding():
     assert np.allclose(d.subs["cv2_s"][~held], a.subs["cv2_s"][~held])
     assert not np.isfinite(h.subs["posted"][h.subs["withheld"]]).any()
     assert d.subs["marked"].sum() > 0
+
+
+def test_several_validators():
+    cfg = _cfg(R=100, hours=1, n_validators=3, real_val_split=(0.5, 0.3, 0.2), decoy_val_split=(0.4, 0.4, 0.2))
+    run = S.simulate(cfg, 14)
+    s, ev = run.subs, run.events
+    # each identity keeps one key, and its legs go to that key's validator
+    for src in np.unique(s["src"])[:50]:
+        assert np.unique(s["val"][s["src"] == src]).size == 1
+    assert np.array_equal(ev["dst"][s["ev_cv1"]], S.VAL + s["val"])
+    assert np.array_equal(ev["src"][s["ev_cv2"]], S.VAL + s["val"])
+    assert np.bincount(s["val"][~s["decoy"]], minlength=3).min() > 0
+
+
+def test_each_validator_scores_only_its_own_replies(tmp_path):
+    cfg = _cfg(R=100, hours=1, n_validators=2, real_val_split=(0.5, 0.5), decoy_val_split=(0.5, 0.5))
+    run = S.simulate(cfg, 15)
+    tab = AT.compute(run, ST.models(tmp_path), np.random.default_rng(4), vantages=("validator",))
+    for k in (0, 1):
+        t = tab[f"validator_{k}"]
+        assert not t["dev_v_correct"][t["own"] == 0].any()       # a record of another key's device is never named

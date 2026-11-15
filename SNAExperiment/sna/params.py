@@ -109,6 +109,9 @@ class Config:
     withhold_share: float = 0.0        # validator withholding: share of identities the withholding validator serves
     withhold_len: float = 0.0          # window length (s); one window every withhold_len + WITHHOLD_GAP_S from the warm-up's end
     withhold_mode: str = "withhold"    # withhold: no reply; delay: the reply leaves at the window's end
+    n_validators: int = 1              # validators, each with its own Token Key
+    real_val_split: tuple = ()         # share of real devices registered with each validator (empty: all with the first)
+    decoy_val_split: tuple = ()        # share of decoy identities registered with each validator
 
     @property
     def max_delay_s(self) -> float:
@@ -168,4 +171,4 @@ class Config:
 
 NEW_FIELDS = ("decoy_factor", "workload", "edit_share", "edit_same_source", "quorum_timeout_s", "board_window_s", "grid_off",
               "mark_actor", "mark_mode", "mark_delta", "mark_target", "resub_mean_s", "withhold_share", "withhold_len",
-              "withhold_mode")
+              "withhold_mode", "n_validators", "real_val_split", "decoy_val_split")

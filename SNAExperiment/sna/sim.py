@@ -102,9 +102,15 @@ class World:
         self.post_phase = float(rng_regpost.uniform(0, max(cfg.reg_post_s, 1.0)))
         # streams for the C3 to C5 options, spawned after the fifteen above so those are unchanged: the
         # workloads, the edit chains, and the active attacks with their resubmissions
-        self.rng_work, self.rng_edit, self.rng_mark, _ = (np.random.default_rng(s) for s in ss.spawn(4))
+        self.rng_work, self.rng_edit, self.rng_mark, self.rng_val = (np.random.default_rng(s) for s in ss.spawn(4))
         self.lat_tab = {}
         self.served = {}
+        self.vkey = {}
+        if cfg.n_validators > 1:
+            # further validators: their latencies to the nodes and their hold-clock phases (the first is C2's)
+            rv = self.rng_val
+            self.vlat = rv.uniform(*P.LAT_INT_MS, size=(cfg.n_validators, P.N_NODES)) / 1000
+            self.vphase = np.r_[0.0, rv.uniform(0, P.TICK_S, cfg.n_validators - 1)]
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -301,16 +307,23 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
     # C -> V -> C: C holds on its node clock, then sends CV-1; V processes, holds on its own clock,
     # and replies (APPROVED with sigma_V; the reply is padded in the relay class either way)
     cv1_s = LT.hold(r, arr_c, w.phase[C], cfg.c_hold_mean) + _proc(r, S)
-    cv1_a = cv1_s + w.lat_int[C, VAL] + _jit(r, S)
-    ev_cv1 = w.ev.add(cv1_s, cv1_a, C, VAL, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV1, sub)
+    vi = _validator_of(w, src, src0, n_src, decoy)
+    if cfg.n_validators > 1:
+        # several validators: each transaction goes to the validator its key_ref names
+        lat_cv = np.where(vi == 0, w.lat_int[C, VAL], w.vlat[vi, C])
+        vnode, vph = VAL + vi, np.where(vi == 0, w.v_phase, w.vphase[vi])
+    else:
+        lat_cv, vnode, vph = w.lat_int[C, VAL], VAL, w.v_phase
+    cv1_a = cv1_s + lat_cv + _jit(r, S)
+    ev_cv1 = w.ev.add(cv1_s, cv1_a, C, vnode, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV1, sub)
     cv2_s = cv1_a + r.uniform(*P.VALIDATOR_PROC_MS, S) / 1000
-    cv2_s = LT.hold(r, cv2_s, w.v_phase, cfg.v_hold_mean)
+    cv2_s = LT.hold(r, cv2_s, vph, cfg.v_hold_mean)
     if mk["d_v"] is not None:                    # a validator mark: the reply leaves late
         cv2_s = cv2_s + mk["d_v"]
     if cfg.mark_actor == "validator_withhold":
         cv2_s = _withhold(w, mk, cv2_s, src, src0, n_src, decoy)
-    cv2_a = cv2_s + w.lat_int[VAL, C] + _jit(r, S)
-    ev_cv2 = w.ev.add(cv2_s, cv2_a, VAL, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
+    cv2_a = cv2_s + lat_cv + _jit(r, S)
+    ev_cv2 = w.ev.add(cv2_s, cv2_a, vnode, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
 
     # fan-out, serialized: from C's receipt of CV-2, the transaction's three legs share one draw per
     # tick of C's node clock; each successful draw sends the next leg in a random order, and the
@@ -387,7 +400,23 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
                 ready_f=out["f"][4], ready_i=out["i"][4], known_f=out["f"][5], known_i=out["i"][5],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk,
                 marked=mk["marked"], mark_path=mk["path"], dropped=mk["drop"] if mk["drop"] is not None else np.zeros(S, bool),
-                withheld=mk.get("withheld", np.zeros(S, bool)))
+                withheld=mk.get("withheld", np.zeros(S, bool)), val=vi)
+
+
+def _validator_of(w, src, src0, n_src, decoy):
+    """The validator (Token Key) of each transaction's credential: drawn once per identity from the split; with one
+    validator, always the first. A user's machine (edits) uses the first."""
+    cfg = w.cfg
+    if cfg.n_validators <= 1:
+        return np.zeros(src.shape[0], np.int64)
+    if src0 not in w.vkey:
+        split = np.asarray(cfg.decoy_val_split if decoy else cfg.real_val_split, float)
+        if split.size != cfg.n_validators:
+            raise ValueError("a validator split needs one share per validator")
+        w.vkey[src0] = w.rng_val.choice(cfg.n_validators, size=max(n_src, 1), p=split / split.sum())
+    k = src - src0
+    own = (k >= 0) & (k < w.vkey[src0].size)
+    return np.where(own, w.vkey[src0][np.clip(k, 0, w.vkey[src0].size - 1)], 0)
 
 
 def _withhold(w, mk, cv2_s, src, src0, n_src, decoy):

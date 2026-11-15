@@ -573,6 +573,10 @@ def compute(run, m: Models, rng, drop_dev=None, drop_dev_validator=None, vantage
 
     Every node-scored table carries nroles, the roles the node held in the record's transaction.
 
+    With several validators (cfg.n_validators > 1) it also scores validator_k, each validator alone on its own
+    replies (column own: the record's device holds that validator's key), and cred_processor_keyed, C reading
+    key_ref, with each source address's key known to the attacker.
+
     Options for C3 to C5, all off by default: drop_dev removes the packets of these source addresses from
     every candidate set (a party that knows them); drop_dev_validator removes these devices' replies from the
     validator's candidates; vantages limits the vantages scored (the observer is always scored);
@@ -590,6 +594,11 @@ def compute(run, m: Models, rng, drop_dev=None, drop_dev_validator=None, vantage
     if drop_dev is not None:
         keep_c = ~np.isin(cand["dev"], np.asarray(list(drop_dev), np.int64))
         cand = {k: v[keep_c] for k, v in cand.items()}
+    multi = run.cfg.n_validators > 1
+    if multi:
+        # with several validators: each source address's Token Key, known to the attacker (an upper bound)
+        key_of = dict(zip(s["src"].tolist(), s["val"].tolist()))
+        cand["key"] = np.array([key_of.get(int(d), 0) for d in cand["dev"]], np.int64)
     labels = np.unique(np.r_[cand["dev"], s["src"]])
     tie = _relabel(labels, rng)                   # ties break in a random order of the devices
     cand["dev"], rec["dev"], mid["dev"] = tie(cand["dev"]), tie(rec["dev"]), tie(mid["dev"])
@@ -663,6 +672,10 @@ def compute(run, m: Models, rng, drop_dev=None, drop_dev_validator=None, vantage
             mine = np.nonzero(s["C"] == X)[0]
             mine = mine[np.argsort(m_all[mine], kind="stable")]
             mix, role = _MixtureV(cand["t"], m_all[mine], np.ones(mine.size), pdf["c"], pdf["c_q"], g, pi=pi), "cred_processor"
+            if multi:
+                # C reads key_ref: its transactions under each key explain only packets from addresses with that key
+                mix_k = {k: _MixtureV(cand["t"], m_all[mine[s["val"][mine] == k]], np.ones(int((s["val"][mine] == k).sum())),
+                                      pdf["c"], pdf["c_q"], g, pi=pi) for k in range(run.cfg.n_validators)}
         mine_pk = cand["node"][:, 0] == X
         hold = np.where(mine_pk, cand["hold"][:, 0], np.nan)
 
@@ -682,9 +695,17 @@ def compute(run, m: Models, rng, drop_dev=None, drop_dev_validator=None, vantage
                 t_cs = np.where(named, cs(x, y) + csq(x) - lg0, 0.0)
             t_mix = np.where(ok, mix.block(u[rows], k0, k1) - lg0, 0.0)
             neg = -np.inf
-            return {"first_hop": np.where(ok, lg + t_fh, neg), role: np.where(ok, lg + t_mix, neg),
+            res_ = {"first_hop": np.where(ok, lg + t_fh, neg), role: np.where(ok, lg + t_mix, neg),
                     "combined": np.where(ok, lg + t_fh + t_cs + t_mix, neg)}
-        names = ("first_hop", role, "combined")
+            if multi and role == "cred_processor":
+                t_k = np.zeros(y.shape)
+                for k, mk in mix_k.items():
+                    cols = cand["key"][k0:k1] == k
+                    if cols.any():
+                        t_k[:, cols] = (mk.block(u[rows], k0, k1) - lg0)[:, cols]
+                res_["cred_processor_keyed"] = np.where(ok, lg + t_k, neg)
+            return res_
+        names = ("first_hop", role, "combined") + (("cred_processor_keyed",) if multi and role == "cred_processor" else ())
         node_extra = None
         if "node" in hooks:
             node_extra = (lambda nm, rows, lo_, hi_, W, is_t, X=X: hooks["node"](X, rows, lo_, hi_, W) if nm == "first_hop" else None)
@@ -703,6 +724,10 @@ def compute(run, m: Models, rng, drop_dev=None, drop_dev_validator=None, vantage
             claim = mix.own_share(u, r[role]["sub"]["pidx"]) > pi       # evidence favours its own transactions
             parts["cred_processor"].append(_table(r[role], rec, idx, grp, base, took_part=(s["C"][srow] == X).astype(np.int8),
                                                   claim=claim.astype(np.int8), nroles=nr, pair=pair))
+            if multi:
+                parts.setdefault("cred_processor_keyed", []).append(
+                    _table(r["cred_processor_keyed"], rec, idx, grp, base, took_part=(s["C"][srow] == X).astype(np.int8),
+                           nroles=nr, pair=pair))
         parts["combined"].append(_table(r["combined"], rec, idx, grp, base, took_part=(pair != PAIR_CODE["no role"]).astype(np.int8),
                                         nroles=nr, pair=pair))
     for k, v in parts.items():
@@ -742,14 +767,24 @@ def compute(run, m: Models, rng, drop_dev=None, drop_dev_validator=None, vantage
     r = score_blocks(vlo, vhi, vc, lambda rows, k0, k1: dict(validator=gV(u[rows][:, None] - vc["t"][None, k0:k1])),
                      truth, ("validator",), lse=("validator",))
     out["validator"] = _table(r["validator"], rec, idx, np.zeros(n), base)
+    if multi:
+        # each validator alone: its own replies, so only its own devices and same-key decoys are its candidates
+        for k in range(run.cfg.n_validators):
+            ok_k = s["val"][o] == k
+            vk = dict(t=vc["t"][ok_k], sub=vc["sub"][ok_k], msub=vc["msub"][ok_k], dev=vc["dev"][ok_k], dev_shuf=vc["dev_shuf"][ok_k])
+            rk = score_blocks(vlo, vhi, vk, lambda rows, k0, k1, vk=vk: dict(v=gV(u[rows][:, None] - vk["t"][None, k0:k1])),
+                              truth, ("v",), lse=("v",))
+            out[f"validator_{k}"] = _table(rk["v"], rec, idx, np.full(n, k), base, own=(s["val"][srow] == k).astype(np.int8))
     return _finish(out, vantages, hooks)
 
 
 def _finish(out, vantages, hooks):
     """Keep the requested vantages; keep the candidate set, the records and the label maps only for hooks."""
     keep_internal = bool(hooks)
-    return {k: v for k, v in out.items()
-            if (k.startswith("_") and keep_internal) or (not k.startswith("_") and (vantages is None or k in vantages))}
+    want = (lambda k: True) if vantages is None else (
+        lambda k: k in vantages or (k.startswith("validator_") and "validator" in vantages)
+        or (k == "cred_processor_keyed" and "cred_processor" in vantages))
+    return {k: v for k, v in out.items() if (k.startswith("_") and keep_internal) or (not k.startswith("_") and want(k))}
 
 
 def shuffle_test(run, m: Models, rng, K=200):
