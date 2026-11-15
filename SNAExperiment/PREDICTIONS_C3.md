@@ -24,7 +24,7 @@ C3 has cells R = 1 and 100 for every item, and R = 300 for items 1 and 2. Traffi
 
 **Competition.** A device-named rate of the form 1 / (1 + N b), where N is the number of other identities and b a constant per vantage and cell. b comes from C2. At R = 1 the observer gives b = 0.1996. With that b, the formula gives 2.39% at R = 100 (C2: 2.33%) and 1.21% at R = 300 (C2: 1.39%). So it holds within about 15%. Removing decoys removes their share of N.
 
-**Bound from the posting schedule.** The registry posts records every 120 s, and every record posted at one boundary carries the same time. No vantage that names a device from the record time can tell two records of one posting apart. Records are posted at (R + 100) / D per second, so a posting holds on average λ = 120 (R + 100) / D other records. A record shares its posting with 1 + Poisson(λ) records, and any such vantage is right at most E[1 / (1 + Poisson(λ))] = (1 − e^(−λ)) / λ of the time. That is 9.64% at R = 1 (λ = 10.37), 4.87% at R = 100 (λ = 20.54) and 2.43% at R = 300 (λ = 41.09). Model-seed numbers agree: a real record shares its posting with 21.4 records on average at R = 100, and E[1 / size] is 4.88%. The bound does not hold for a vantage that learns more than the time of each record, such as a party with a cryptographic link.
+**Bound from the posting schedule.** The registry posts records every 120 s, and every record posted at one boundary carries the same time. No vantage that names a device from the record time can tell two records of one posting apart. Records are posted at (R + 100) / D per second, so a posting holds on average λ = 120 (R + 100) / D other records: 10.37 at R = 1, 20.54 at R = 100 and 41.09 at R = 300. Finding one record is then right at most E[1 / (1 + Poisson(λ))] = (1 − e^(−λ)) / λ of the time: 9.64%, 4.87% and 2.43%. Naming a device is right at most E[k / n] of the time, where n is the records in the posting and k those of the record's device, because a device can have more than one record in a posting. A device makes 0.10 records per posting, so this bound is 10.5% at R = 1, 5.3% at R = 100 and 2.67% at R = 300 (Poisson arithmetic, 400,000 draws). Model-seed numbers agree: a real record shares its posting with 21.4 records on average at R = 100, and E[1 / size] is 4.88%. The bound does not hold for a vantage that learns more than the time of each record, such as a party with a cryptographic link.
 
 ## 1. Decoy knowledge: chance
 
@@ -73,7 +73,7 @@ The combined-view machinery multiplies a node's likelihood ratios across the rol
 
 | Coalition (class) | R = 1 | R = 100 | R = 300 |
 |---|---|---|---|
-| Validator with a gatekeeper (every record) | 6.0% to 9.64%, lead +1.2 to +4.9 points | 3.0% to 4.87%, lead +0.7 to +2.5 points | 1.5% to 2.43% |
+| Validator with a gatekeeper (every record) | 6.0% to 10.5%, lead +1.2 to +5.7 points | 3.0% to 5.3%, lead +0.7 to +3.0 points | 1.5% to 2.67% |
 | Validator with C (records whose credential path ended at that node) | 25% to 65% | 15% to 45% | 8% to 35% |
 | First relay with C on its path | 20% to 60% | 12% to 40% | 6% to 30% |
 | First relay with F or I on its path | 60% to 85% | 45% to 75% | 30% to 65% |
@@ -81,7 +81,7 @@ The combined-view machinery multiplies a node's likelihood ratios across the rol
 Every coalition rate is at least the larger of its two parties' rates, within its interval.
 
 **Basis.**
-- Validator with a gatekeeper. Every transaction passes all three gatekeepers. The validator names the device of every credential, and the gatekeeper knows when each of its postings left. Together they know each transaction's device and posting time. The record still carries only its time, so the bound from the posting schedule caps the coalition: 9.64%, 4.87% and 2.43%. Its floor is the validator alone (C2: 5.26%, 2.66% and 1.52%), plus the gatekeeper's timing. The range runs from just above the validator to the bound.
+- Validator with a gatekeeper. Every transaction passes all three gatekeepers. The validator names the device of every credential, and the gatekeeper knows when each of its postings left. Together they know each transaction's device and posting time. The record still carries only its time, so the bound from the posting schedule caps the coalition: 10.5%, 5.3% and 2.67%. Its floor is the validator alone (C2: 5.26%, 2.66% and 1.52%), plus the gatekeeper's timing. The range runs from just above the validator to the bound.
 - Validator with C. C sends CV-1 and receives CV-2 for its own transactions, so the coalition knows the device of each one, and when C fanned it out. C handles 1/17 of transactions: 0.0051 per second at R = 1 and 0.0101 at R = 100. From fan-out to record, about 600 s holds most of the spread, so about 3 (R = 1) and 6 (R = 100) of C's transactions compete for each record. The record's own posting narrows this to the few in one 120 s slot. The rate is then about one over the competitors with a plausible slot: 1/3 to 2/3 at R = 1. This class is not capped by the posting schedule, because only one of the 10 to 20 records in a posting usually comes from C's transactions.
 - First relay with C. The first relay knows the device of its packet and sends it to the second relay B. C sees the packet arrive from B. Another packet goes from B to the same C within B's hold cap (900 s) at about 0.013 / 19 per second, so 0.6 on average at R = 1. The pair then acts like validator with C, less this ambiguity.
 - First relay with F or I. F holds the record's ContentHash, so it knows which content packet produced the record. The first relay D knows the device of the packet it sent to E. The only ambiguity is another packet from E to the same F within E's hold cap: 0.6 on average at R = 1, 1.2 at R = 100 and 2.4 at R = 300. The rate is about (1 − e^(−x)) / x for x such packets, before the timing likelihood is used: 75%, 58% and 38%. The ranges allow ±15 points for timing that separates some of them.
@@ -144,3 +144,11 @@ Every component vantage moves by the same multiple as the observer, within ±20%
 **Fails if** any R = 1 decision differs, or a count in flight is off by more than 3%.
 
 **Can fail.** A new option that draws from a C2 stream would change every later draw.
+
+## Reporting the bound
+
+Every table shows the bound from the posting schedule beside each row it applies to. Rows with a link from a record to its transaction (F, I, and a first relay with F or I) are marked not applicable.
+
+## Changes before the run
+
+The device-naming bound was first given as the record bound (9.64%, 4.87% and 2.43%). It is E[k / n], which is about a tenth higher, because a device can have two records in one posting. The validator-with-a-gatekeeper ranges were raised to match.

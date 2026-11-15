@@ -32,7 +32,7 @@ A relay's hold is geometric on its node's 10-second ticks. For one release proba
 
 ## Arithmetic used throughout
 
-**Bound from the posting schedule.** As in `PREDICTIONS_C3.md`: every record posted at one 120 s boundary carries the same time. So any vantage that names a device from the record time alone is right at most E[1 / (1 + Poisson(λ))] of the time, with λ = 120 (R + 100) / D. That is 9.64% at R = 1 and 4.87% at R = 100. This holds for the observer, the tracer and every timing vantage, however good its timing. When a device has several records in one posting, the bound is the device's share of that posting instead. Linking records across postings, as the K-record attacker does, is not bound by it.
+**Bound from the posting schedule.** As in `PREDICTIONS_C3.md`: every record posted at one 120 s boundary carries the same time. So any vantage that names a device from the record time alone is right at most E[k / n] of the time, where n is the records in the posting and k those of the record's device. With λ = 120 (R + 100) / D other records per posting and 0.10 records of one device per posting, that is 10.5% at R = 1 and 5.3% at R = 100 under W0. Finding one record, as in C5, is bound by E[1 / (1 + Poisson(λ))] instead: 9.64% and 4.87%. This holds for the observer, the tracer and every timing vantage, however good its timing. Linking records across postings, as the K-record attacker does, is not bound by it.
 
 **Packets pending at a relay.** Packets enter the relays at 3 (R + 100) / D per second: 0.26 at R = 1 and 0.51 at R = 100. Each packet passes one first relay and one second relay, over 20 nodes. By Little's law, pending at a second relay = 0.26 / 20 × 300 = 3.9 at R = 1 and 7.7 at R = 100. At a first relay it is 0.26 / 20 × 60 = 0.78 at R = 1 and 1.5 at R = 100.
 
@@ -47,9 +47,36 @@ A second control is added for the tracer: every hold and every schedule off, inc
 
 **Basis.** The every-hold-off control has D = 20.49 s, so transactions arrive at (R + 100) / D = 4.93 per second at R = 1 and 9.76 at R = 100. Quorum falls on the three gatekeepers' 30-second grids, about 10 s of transactions per grid point: 49 at R = 1 and 98 at R = 100. There are 17 × 16 = 272 ordered (F, I) pairs. So another transaction shares a record's F, I and quorum point 0.18 times on average at R = 1. When two grid points share one push tick, it is 0.36, and 0.54 when three do. A record is named right with probability (1 − e^(−x)) / x: 91%, 84% and 77%. At R = 100 the counts double, giving 84%, 71% and 61%. With every schedule off, the only ambiguity is two packets at one relay within 3 ms of processing. A node relays 4.93 × 3 × 2 / 20 = 1.48 packets per second at R = 1, so another packet arrives within 2.5 ms of a given one for about 0.7% of packets. Half of those pairs are still ordered right, and the device's other two packets usually settle the rest.
 
+**Gate.** The tracer's sanity check is the second control: at least 99% in both cells. If it fails, nothing else of C4 is run until the cause is found. The every-hold-off control is reported with its range and is not a gate.
+
 **Fails if** either cell lies outside its range, or the second control is below 99%.
 
 **Can fail.** The range rests on how push ticks and grid points line up, which this arithmetic does not model.
+
+## 2a. Ceiling attacker
+
+The ceiling attacker is told each transaction's true posting. For a record it picks one of that posting's records at random and names its device. It needs no tracer and runs first.
+
+**Prediction.** Its device-named accuracy, beside the bound:
+
+| Workload | R = 1 | R = 100 | R = 300 |
+|---|---|---|---|
+| W0 | 10.5% (10.0% to 11.0%) | 5.3% (5.1% to 5.6%) | 2.67% (2.55% to 2.80%) |
+| W1 | 10.5% (10.0% to 11.0%) | 5.9% (5.5% to 6.3%) | — |
+| W2 | 12.0% (11.0% to 13.0%) | 6.3% (5.7% to 6.9%) | — |
+| W-mismatch | 12.0% (11.0% to 13.0%) | 6.3% (5.7% to 6.9%) | — |
+
+For comparison, (1 − e^(−λ)) / λ is 9.64%, 4.87% and 2.43%.
+
+**Basis.**
+- A record from a device that makes x records per posting shares its posting with 1 + Poisson(x) of its own records and Poisson(λ − x) others. Its accuracy is the mean of (1 + X) / (1 + X + Y), from 400,000 draws.
+- Under W0, x = 0.10 in every cell.
+- Under W1, records come more often from fast devices, so x is larger on average. At R = 1 the one device keeps its rate.
+- Under W2 and W-mismatch at R = 1, 30.4% of the device's records fall in sessions, where x = 0.71.
+
+**Fails if** a cell lies outside its range.
+
+**Can fail.** Postings are not exactly Poisson: the registry bundle and the posting schedule line up records. The model-seed E[1 / size] at R = 100 (4.88%) matches the formula (4.87%), which suggests they are close.
 
 ## 2. Tracer, main configuration
 
@@ -57,16 +84,16 @@ A second control is added for the tracer: every hold and every schedule off, inc
 
 | Cell | Tracer | Multiple of the observer | Upper bound |
 |---|---|---|---|
-| R = 1 | 5.0% to 9.64% (point 7.5%) | 1.0 to 2.0 | 9.64% |
-| R = 100 | 2.4% to 4.87% (point 3.9%) | 1.0 to 2.1 | 4.87% |
+| R = 1 | 5.0% to 10.5% (point 7.5%) | 1.0 to 2.2 | 10.5% |
+| R = 100 | 2.4% to 5.3% (point 3.9%) | 1.0 to 2.3 | 5.3% |
 
 The tracer is never reliably below the observer on the same records. The label shuffle returns it to chance. With no decoys at R = 1 it names the device on 100% of records, because one device is left. On small cases its posterior equals brute-force enumeration to within 10^−9.
 
 **Basis.**
 - The bound from the posting schedule caps any vantage that uses the record time.
-- The observer already reaches about half of it: 4.77 / 9.64 = 0.49 at R = 1, and 2.33 / 4.87 = 0.48 at R = 100.
+- The observer already reaches about 45% of it: 4.77 / 10.5 = 0.45 at R = 1, and 2.33 / 5.3 = 0.44 at R = 100.
 - The tracer knows where each packet went with little ambiguity at the first relays (0.78 to 1.5 pending), and with more at the second relays (3.9 to 7.7 pending). So it gets more of the bound, but not all.
-- The point estimates assume 0.8 of the bound.
+- The point estimates assume about 0.75 of the bound.
 
 **Fails if** the tracer exceeds the bound by more than its interval, lies outside its range, or is reliably below the observer.
 
@@ -90,7 +117,26 @@ A Registry Node takes part in the registry's consensus, so it reads each submiss
 
 ## 4. K records
 
-**Prediction.**
+The K-record attacker runs first on the passive observer's posteriors. It runs on the tracer's posteriors afterwards, if time allows.
+
+**Prediction, on the observer's posteriors.**
+
+| K | R = 1, W0 | R = 100, W0 |
+|---|---|---|
+| 1 | equal to the observer, decision by decision | equal to the observer |
+| 2 | 7.9% (4.7% to 12.6%) | 3.9% (2.3% to 6.2%) |
+| 3 | 11.2% (6.7% to 17.9%) | 5.6% (3.4% to 9.0%) |
+| 5 | 18.2% (10.9% to 29.1%) | 9.5% (5.7% to 15.2%) |
+| 10 | 36.7% (22% to 59%) | — |
+| 20 | 67.5% (40% to 100%) | — |
+
+- At R = 1 the smallest tested K above 50% is 20.
+- At R = 100 no K up to 5 reaches 50%.
+- Under W1 and W2 the curve keeps its shape, starting from each workload's K = 1 rate.
+
+**Basis.** The Gaussian score model below with d = 0.66 at R = 1 and 0.58 at R = 100, fitted to the observer's C2 rates. The ranges are 0.6 to 1.6 times each value. The model gives K = 14 for 50% at R = 1.
+
+**Prediction, on the tracer's posteriors.**
 - At K = 1 the K-record attacker equals the tracer, decision by decision.
 - Accuracy rises with K in every cell and workload.
 - At R = 1, W0, the smallest K at which accuracy exceeds 50% is between 2 and 10, point estimate 5.
@@ -122,10 +168,12 @@ A Registry Node takes part in the registry's consensus, so it reads each submiss
 
 **Can fail.** The R = 100 range is wide because the two cases differ that much. The R = 1 range excludes 20 and "never".
 
+**Reporting.** The K-record rows are marked not applicable for the bound from the posting schedule, because they link records across postings.
+
 ## 5. Edit chains
 
 **Prediction.**
-- At a 100% same-source share, accuracy on a chain of L records equals the K-record accuracy at K = L within its interval, and is at most 10% higher (relative) from the parent's posting.
+- At a 100% same-source share, accuracy on a chain of L records equals the K-record accuracy at K = L, with the same posteriors, within its interval, and is at most 10% higher (relative) from the parent's posting.
 - At 50% it is lower than at 100% for every L of 2 or more. It is about the K-record accuracy at K = 1 + (L − 1) / 2.
 - At L = 1 both shares equal the tracer.
 
@@ -172,3 +220,14 @@ The tracer and the K-record attacker keep the order W0 ≤ W-mismatch for every 
 **Fails if** any R = 1 decision differs.
 
 **Can fail.** A new option that draws from a C2 stream would change every later draw.
+
+## Reporting the bound
+
+Every table shows the bound from the posting schedule beside each row it applies to. Rows with a link from a record to its transaction (the Registry Node) or across postings (K records, edit chains) are marked not applicable.
+
+## Changes before the run
+
+- The device-naming bound was first given as the record bound (9.64% and 4.87%). It is E[k / n], 10.5% and 5.3%, because a device can have two records in one posting. The tracer's ranges were raised to match.
+- Item 2a, the ceiling attacker, was added.
+- The K-record attacker runs first on the observer's posteriors, with its own predictions.
+- The tracer's gate is the every-hold-and-schedule-off control.
