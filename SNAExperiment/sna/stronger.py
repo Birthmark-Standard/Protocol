@@ -212,6 +212,8 @@ CEIL_SEED = 16_000_000
 C5_WINDOW = 67 * 3600.0                        # about 200 of the target's transactions per run
 C5_DELTAS = (0, 60, 300, 600, 900, 1200, 1500, 1800, 2400, 3600)
 C5_RESUB = (1800, 3600, 7200, 21600)
+C5_WITHHOLD_SHARE = (0.1, 0.25, 0.5, 1.0)
+C5_WITHHOLD_LEN = (600, 1800, 3600, 7200)
 TARGET_SEED, C5_MODEL_SEED0 = 17_000_000, EX.MODEL_SEED0 + 60_000
 
 
@@ -232,6 +234,11 @@ def c5_settings():
     for actor in ("first_relay", "access"):
         for mres in C5_RESUB:
             out[f"{actor}_drop_m{mres}"] = dict(mark_actor=actor, mark_mode="drop", resub_mean_s=float(mres))
+    for mode in ("withhold", "delay"):
+        for share in C5_WITHHOLD_SHARE:
+            for L in C5_WITHHOLD_LEN:
+                out[f"vwh_{mode}_s{int(share * 100)}_L{int(L // 60)}"] = dict(
+                    mark_actor="validator_withhold", withhold_mode=mode, withhold_share=share, withhold_len=float(L))
     return out
 
 
@@ -245,7 +252,10 @@ def c5_config(R, setting, target):
 
 def c5_model(out, setting):
     """The attacker's model of the marked system: record time minus anchor, every real device marked, on the
-    model seeds (R = 100, a 6-hour window)."""
+    model seeds (R = 100, a 6-hour window). Withholding leaves the target's own transactions unchanged, so the
+    withholding validator uses the unmarked validator's model."""
+    if setting.startswith("vwh_"):
+        setting = "validator_d0_t1800"
     key = ("c5", setting)
     if key in _C:
         return _C[key]
@@ -286,7 +296,9 @@ def work_c5(out, R, setting, run_id):
     s = run.subs
     mine = (s["src"] == target) & ~s["decoy"] & (s["gen"] == 0) & (s["t0"] >= window[0]) & (s["t0"] < window[1])
     fixed = ((s["A"] == 0) | (s["D"] == 0) | (s["G"] == 0))[mine]
+    held = s["withheld"]
     rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=time.time() - t, target=target, marks=res,
+               withheld=int(held.sum()), withheld_dropped=int((held & ~np.isfinite(s["posted"])).sum()),
                target_transactions=int(mine.sum()), fixed_node_share=float(fixed.mean()) if fixed.size else float("nan"),
                model_samples=n_model)
     return [(rec_name("c5", setting, R), rec)]
@@ -299,8 +311,10 @@ JOBS = {
     "c3_conc": dict(fn=work_c3_conc, cells=(1, 100), variants=("f5", "f25"), files=("c3_concentration",)),
     "c3_vol": dict(fn=work_c3_vol, cells=(1, 100), variants=("v50", "v10", "v0"), files=("c3_volume",)),
     "c4_obs": dict(fn=work_c4_obs, cells=(1, 100), variants=tuple(C4_VARIANTS), files=("c4_obs",)),
-    "c5_marks": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" not in k), files=("c5",)),
+    "c5_marks": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" not in k and not k.startswith("vwh_")),
+                     files=("c5",)),
     "c5_drops": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" in k), files=("c5",)),
+    "c5_withhold": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh_")), files=("c5",)),
 }
 
 
@@ -373,7 +387,7 @@ def run(out, jobs, runs, workers="auto", label=None):
     models(out)
     if any(j.startswith("c3_kc") for j in jobs):
         extra(out)
-    c5 = sorted({v for j in jobs if j.startswith("c5") for v in JOBS[j]["variants"]})
+    c5 = sorted({("validator_d0_t1800" if v.startswith("vwh_") else v) for j in jobs if j.startswith("c5") for v in JOBS[j]["variants"]})
     if c5:
         RN.execute([(str(out), v) for v in c5 if not (out / "models" / f"c5_{v}.pkl").exists()], _build_c5_model, out,
                    workers, label="c5 models")

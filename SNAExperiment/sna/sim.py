@@ -104,6 +104,7 @@ class World:
         # workloads, the edit chains, and the active attacks with their resubmissions
         self.rng_work, self.rng_edit, self.rng_mark, _ = (np.random.default_rng(s) for s in ss.spawn(4))
         self.lat_tab = {}
+        self.served = {}
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -306,6 +307,8 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
     cv2_s = LT.hold(r, cv2_s, w.v_phase, cfg.v_hold_mean)
     if mk["d_v"] is not None:                    # a validator mark: the reply leaves late
         cv2_s = cv2_s + mk["d_v"]
+    if cfg.mark_actor == "validator_withhold":
+        cv2_s = _withhold(w, mk, cv2_s, src, src0, n_src, decoy)
     cv2_a = cv2_s + w.lat_int[VAL, C] + _jit(r, S)
     ev_cv2 = w.ev.add(cv2_s, cv2_a, VAL, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
 
@@ -383,7 +386,31 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
                 ready_f=out["f"][4], ready_i=out["i"][4], known_f=out["f"][5], known_i=out["i"][5],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk,
-                marked=mk["marked"], mark_path=mk["path"], dropped=mk["drop"] if mk["drop"] is not None else np.zeros(S, bool))
+                marked=mk["marked"], mark_path=mk["path"], dropped=mk["drop"] if mk["drop"] is not None else np.zeros(S, bool),
+                withheld=mk.get("withheld", np.zeros(S, bool)))
+
+
+def _withhold(w, mk, cv2_s, src, src0, n_src, decoy):
+    """Validator withholding: inside each window the validator replies to its target and withholds, or delays to the
+    window's end, its reply to every other credential it serves (a share of identities, drawn once per run). A
+    withheld transaction fails. The target's replies inside a window are the marked transactions."""
+    cfg = w.cfg
+    if src0 not in w.served:
+        w.served[src0] = w.rng_mark.random(max(n_src, 1)) < cfg.withhold_share
+    served = w.served[src0][np.clip(src - src0, 0, max(n_src, 1) - 1)]
+    period = cfg.withhold_len + P.WITHHOLD_GAP_S
+    x = cv2_s - cfg.warmup_s
+    inwin = (x >= 0) & (np.mod(x, period) < cfg.withhold_len)
+    tgt = (src == cfg.mark_target) & (not decoy)
+    hold = served & inwin & ~tgt
+    mk["withheld"] = hold
+    mk["marked"] = tgt & inwin
+    mk["path"] = np.where(mk["marked"], 4, -1).astype(np.int8)
+    if cfg.withhold_mode == "delay":
+        end = cfg.warmup_s + period * np.floor(np.maximum(x, 0) / period) + cfg.withhold_len
+        return np.where(hold, end, cv2_s)
+    mk["drop"] = hold                            # no reply: the transaction never reaches quorum
+    return cv2_s
 
 
 def _marks(w, S, src, decoy, gen):
@@ -392,6 +419,8 @@ def _marks(w, S, src, decoy, gen):
     Only the target's own first transactions are marked; resubmissions and edits are not."""
     cfg = w.cfg
     none = dict(marked=np.zeros(S, bool), path=np.full(S, -1, np.int8), d=[(None, None)] * 3, d_v=None, drop=None)
+    if cfg.mark_actor == "validator_withhold":
+        return dict(none, withheld=np.zeros(S, bool))
     if not cfg.mark_actor or decoy or gen > 0 or cfg.mark_target == -1:
         return none
     marked = (src == cfg.mark_target) if cfg.mark_target >= 0 else np.ones(S, bool)   # -2: every real device (models)
@@ -580,8 +609,9 @@ def _register(w, subs, lo, hi, split, gen):
         posted = intake
     # the midpoint of F's and I's registry submissions (used only by a scoring diagnostic)
     mid = np.where(okf & oki, 0.5 * (rf + ri), np.nan)
+    # when each submission's flood has reached every node: on the wire, the latest arrival of its flood frames
     for k, v in (("ev_reg_f", ev_rf), ("ev_reg_i", ev_ri), ("intake", intake), ("posted", posted), ("final", posted),
-                 ("mid", mid)):
+                 ("mid", mid), ("reach_f", reach[0]), ("reach_i", reach[1])):
         if k not in subs:
             subs[k] = np.full(subs["t0"].shape[0], -1 if k.startswith("ev_") else np.nan, v.dtype)
         elif subs[k].shape[0] < hi:

@@ -5,7 +5,7 @@ its act, the one most likely to be the marked transaction's. Its anchor is a tim
   first relay        when it released the packet it held (delay), or when the packet reached it (drop)
   access network     the latest of the times it released the target's packets (delay), or when the first
                      packet left the device (drop)
-  validator          when it sent the reply
+  validator          when it sent the reply (also when it withholds the other credentials' replies)
 It scores every record by the density of (record time minus anchor) under the marked system, built on the model
 seeds with every real device marked (a histogram with 15-second bins), and picks the highest; records of one posting tie, and a tie breaks at
 random. Record-finding accuracy is the share of marked transactions whose record (for a drop, the
@@ -41,7 +41,7 @@ def anchors(run):
         elif cfg.mark_actor == "access":
             t = ts[e[:, 0]] if drop else ta[e[:, 0]]
             a = np.fmin(a, t) if drop else np.fmax(a, t)
-    if cfg.mark_actor == "validator":
+    if cfg.mark_actor.startswith("validator"):          # marking its target's reply, or withholding the others
         a = s["cv2_s"][m]
     target = m.copy()
     if drop:
