@@ -17,6 +17,7 @@ C5 has cells R = 1 and 100. Flooding is not simulated. The device does not choos
 | Quorum timeouts | 1,800 s (the specification), 1,500 s and 1,200 s | 1,500 s is near the longest natural gap (1,544 s). 1,200 s is about its 99th percentile (1,122 s) |
 | Match board window | An option: a board keeps postings for 1,800 s, and F or I cannot confirm against a posting older than that. Off in C2 and by default; reported both ways for content marks | The specification keeps postings for 30 minutes. The simulator does not model it |
 | Resubmission | The device waits 2,400 s from capture for its record, then resubmits after an exponential delay with mean 30 minutes, 1 hour, 2 hours or 6 hours. The resubmission is a new transaction with fresh lines and fresh holds, from the same source address | 2,400 s is just past the longest natural delay (2,326 s). No paper gives the delay distribution |
+| Validator withholding | The validator answers its target's credential normally and, inside each window, withholds (never replies to) or delays (replies at the window's end to) every other credential it serves, decoys included. Windows of 10, 30, 60 and 120 minutes, one every window plus 2 hours. The validator serves a share of 10%, 25%, 50% or 100% of identities, drawn per identity; the others are served normally | The reverse of a mark: the actor controls the competing transactions, not its target's |
 
 ## Sources of numbers
 
@@ -57,7 +58,7 @@ A mark moves a record to another posting, but every posting at every time is ful
 
 ## 2. Bound
 
-**Prediction.** No actor, at any Δ or timeout, finds the marked record more often than 9.64% at R = 1 or 4.87% at R = 100, beyond its interval.
+**Prediction.** No marking actor (the first relay, the access-network adversary, or the validator delaying its target's own reply), at any Δ or timeout, finds the marked record more often than 9.64% at R = 1 or 4.87% at R = 100, beyond its interval. The bound does not cover an actor that withholds or delays the other transactions (item 11): it changes how many records share a posting.
 
 **Basis.** The bound from the posting schedule.
 
@@ -202,6 +203,29 @@ If items 2 to 8 hold, the paper's argued row on active timing attacks would read
 
 The gameplan expected a mark past the natural maximum delay to make the record stand out. This file predicts that it does not.
 
+## 11. Validator withholding
+
+The validator answers its target's credentials and withholds or delays its replies to every other credential it serves, decoys included, over a window. It then looks for the record of a target transaction it answered inside the window, as in item 3, with the validator's anchor (its reply to the target).
+
+**Prediction.** Record-finding for the target's transactions answered inside a window:
+
+| Share served | Mode | R = 1: 10, 30, 60, 120 min | R = 100: 10, 30, 60, 120 min |
+|---|---|---|---|
+| 10%, 25% | withhold or delay | each 0.8% to 3.5% | each 0.4% to 2.0% |
+| 50% | withhold or delay | each 1.5% to 5% | each 0.6% to 2.5% |
+| 100% | withhold | 2% to 7%; 18% to 37%; 50% to 75%; 70% to 90% | 1% to 4%; 16% to 33%; 48% to 72%; 68% to 88% |
+| 100% | delay | 1% to 5%; 14% to 30%; 47% to 72%; 66% to 88% | 0.8% to 3%; 12% to 26%; 42% to 66%; 64% to 86% |
+
+The point values are 1.7, 2.0, 1.9 and 2.2% (withhold, 10%); 2.2, 3.2, 3.2 and 3.4% (withhold, 50%); 4.2, 27.6, 63.6 and 81.8% (withhold, 100%); and 2.6, 21.5, 59.6 and 78.7% (delay, 100%) at R = 1. At R = 100 they are 2.0, 24.1, 59.8 and 78.3% (withhold, 100%) and 1.5, 18.2, 53.8 and 75.9% (delay, 100%). With no transaction withheld the same arithmetic gives 1.6% at R = 1 and 1.15% at R = 100, the validator's baseline of item 3.
+
+Under delay, a delayed reply arrives late, and its transaction drops at the quorum timeout when its gap plus the delay exceeds 30 minutes: 0.2%, 19%, 59% and 79% of the delayed transactions for windows of 10, 30, 60 and 120 minutes (within ±8 points). Under withhold every withheld transaction fails.
+
+**Basis.** Arithmetic on the model seeds' delays from reply to record (1,700,100,000 onwards, six runs at R = 100), with no attacker run. Records are a Poisson stream at (R + 100) / D. A served transaction whose reply falls in the window is removed (withhold) or moved to the window's end (delay). The records of transactions answered before the window still post for up to about 2,200 s, so a short window removes little. Only when the validator serves nearly all traffic do the postings around the target's record empty. At a share of 50% or less the other validators' traffic still fills each posting. Each range is about ±35% of its point value, with a floor of ±1 point.
+
+**Fails if** a cell lies outside its range or a drop share lies outside ±8 points.
+
+**Can fail.** The arithmetic treats records as independent of one another and ignores the timeout's effect on records posting after the window.
+
 ## 10. Sanity
 
 **Prediction.** Δ = 0 reproduces the unmarked run, transaction by transaction. With default options the code reproduces C2's R = 1 decisions exactly.
@@ -211,3 +235,8 @@ The gameplan expected a mark past the natural maximum delay to make the record s
 **Fails if** any time or decision differs.
 
 **Can fail.** A mark option that draws from a C2 stream would change every later draw.
+
+## Changes before the run
+
+- Item 2 first said no actor beats the bound from the posting schedule. That holds for an actor that marks its target's own transactions, and it is now limited to those actors. An actor that withholds the other transactions changes how many records share a posting, so the bound does not apply to it. This is a modeling error in the first statement.
+- Item 11, validator withholding, and its parameters were added.
