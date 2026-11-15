@@ -1,0 +1,174 @@
+# Predictions for C4: link-level tracer, Registry Node, K records and workloads
+
+Written before the run. A prediction counts as made before the run once this file is committed. Each item states the prediction, its basis, what counts as a failure, and whether it can fail.
+
+C4 has cells R = 1 and 100. R = 300 runs only if time remains, last in the job queue.
+
+## Parameters
+
+| Parameter | Value | Reason |
+|---|---|---|
+| W1 | Each identity's rate is a device's rate times a factor drawn from a lognormal with σ = 0.90, then scaled so each population's mean factor is 1. Real devices and decoy identities draw alike | A slow and a fast device (10th and 90th percentiles) differ by a factor of 10.0. The scaling keeps R and 100 in flight |
+| W1 at R = 1 | The one real device keeps the rate of the cell | R fixes that device's rate |
+| W2 | W1, plus sessions for 20% of identities. A session starts at 1 per 12 hours, lasts a uniform 10 to 60 minutes, and multiplies the identity's rate by 10. Rates between sessions are scaled down so each population's mean rate holds | A photographer at an event. 30.4% of a session identity's captures fall in sessions |
+| W2 at R = 1 | The one real device has sessions; decoy identities have them with probability 0.2 | At R = 1 the case of interest is the one device at an event. W1 covers a device without sessions |
+| W-mismatch | Real devices follow W2. Decoy identities keep C2's single rate | Decoy operators who do not copy real behavior |
+| K values | R = 1: 1, 2, 3, 5, 10, 20. R = 100: 1, 2, 3, 5, with a 2-hour window; 10 and 20 under W1 and W2 only | As agreed. At R = 100 a device makes 2.99 captures per hour |
+| Edit chains: share of captures edited | 30% | Most captures are published as shot; a minority are edited |
+| Edit chains: edits per edited capture | 1 + Poisson(0.5), at most 4 | A capture and a few edits: chains of 2 to 5 records, mean 2.5 for an edited capture |
+| Edit chains: delay from the parent's posting to the edit's capture | 5 minutes plus an exponential with mean 30 minutes | The editor opens a file that verifies against the registry, so the edit follows the parent's posting. A short delay keeps chains inside the window |
+| Edit chains: same-source share | 100% and 50% | 100% is the upper bound. Otherwise the edit comes from the user's machine: one second source address per device, used only for its edits |
+| Edit chains: decoys | Decoy identities edit with the same parameters. A decoy edit points to an earlier record of the same decoy identity | Decoys copy the real mix |
+| Edit chains: volume | Capture rates are divided by 1.45 (1 + 0.3 × 1.5), so captures and edits together keep R and 100 in flight | The cell's volume counts every transaction |
+
+## Sources of numbers
+
+- **C2:** `results/C2`. Observer 4.77% and 2.33% at R = 1 and 100. Chance 1.11% and 0.55%.
+- **Model-seed numbers:** the main configuration on seeds from 1,700,000,000, which no evaluation run and no model uses, as in `PREDICTIONS_C3.md`. No attacker was run on them.
+
+## How the tracer treats the ambiguity inside a hold
+
+A relay's hold is geometric on its node's 10-second ticks. For one release probability p, an assignment of k arrivals to k departures has likelihood Π p (1 − p)^(n_i − 1), where n_i is the number of ticks packet i waited. The sum of the n_i is fixed by the arrival and departure times, whatever the assignment. So every assignment that respects causality, the cap and the tick grid has the same likelihood. The tracer does not guess among them. It counts them. A packet's posterior over departures is the share of valid assignments that give it each departure. Two positions mix at one node: a first relay (mean 60 s) and a second relay (mean 300 s). Their p differ, so an assignment that swaps a first-relay packet and a second-relay packet has a different weight, and the tracer weighs it so. The position is visible on the inbound link: a packet from an external host is at a first relay. The tracer enumerates each relay's busy periods exactly, and checks the enumeration against brute force on small cases.
+
+## Arithmetic used throughout
+
+**Bound from the posting schedule.** As in `PREDICTIONS_C3.md`: every record posted at one 120 s boundary carries the same time. So any vantage that names a device from the record time alone is right at most E[1 / (1 + Poisson(λ))] of the time, with λ = 120 (R + 100) / D. That is 9.64% at R = 1 and 4.87% at R = 100. This holds for the observer, the tracer and every timing vantage, however good its timing. When a device has several records in one posting, the bound is the device's share of that posting instead. Linking records across postings, as the K-record attacker does, is not bound by it.
+
+**Packets pending at a relay.** Packets enter the relays at 3 (R + 100) / D per second: 0.26 at R = 1 and 0.51 at R = 100. Each packet passes one first relay and one second relay, over 20 nodes. By Little's law, pending at a second relay = 0.26 / 20 × 300 = 3.9 at R = 1 and 7.7 at R = 100. At a first relay it is 0.26 / 20 × 60 = 0.78 at R = 1 and 1.5 at R = 100.
+
+## 1. Tracer, every hold off
+
+**Prediction.** The tracer names the device on 70% to 95% of records at R = 1 and 55% to 88% at R = 100. That is below the 95% the prompt asks for. The ambiguity that remains is this:
+- The every-hold-off control keeps the gatekeepers' 30-second departure grid and the 10-second board push.
+- So F and I learn of quorum, and submit, on shared push ticks. The content packets waiting at one F for one tick cannot be paired with their submissions.
+- The device is still named when the I side is unique. So a record is ambiguous only when another transaction shares its F, its I and its tick.
+
+A second control is added for the tracer: every hold and every schedule off, including the departure grid and the board push. In it, the tracer names the device on at least 99% of records in both cells.
+
+**Basis.** The every-hold-off control has D = 20.49 s, so transactions arrive at (R + 100) / D = 4.93 per second at R = 1 and 9.76 at R = 100. Quorum falls on the three gatekeepers' 30-second grids, about 10 s of transactions per grid point: 49 at R = 1 and 98 at R = 100. There are 17 × 16 = 272 ordered (F, I) pairs. So another transaction shares a record's F, I and quorum point 0.18 times on average at R = 1. When two grid points share one push tick, it is 0.36, and 0.54 when three do. A record is named right with probability (1 − e^(−x)) / x: 91%, 84% and 77%. At R = 100 the counts double, giving 84%, 71% and 61%. With every schedule off, the only ambiguity is two packets at one relay within 3 ms of processing. A node relays 4.93 × 3 × 2 / 20 = 1.48 packets per second at R = 1, so another packet arrives within 2.5 ms of a given one for about 0.7% of packets. Half of those pairs are still ordered right, and the device's other two packets usually settle the rest.
+
+**Fails if** either cell lies outside its range, or the second control is below 99%.
+
+**Can fail.** The range rests on how push ticks and grid points line up, which this arithmetic does not model.
+
+## 2. Tracer, main configuration
+
+**Prediction.**
+
+| Cell | Tracer | Multiple of the observer | Upper bound |
+|---|---|---|---|
+| R = 1 | 5.0% to 9.64% (point 7.5%) | 1.0 to 2.0 | 9.64% |
+| R = 100 | 2.4% to 4.87% (point 3.9%) | 1.0 to 2.1 | 4.87% |
+
+The tracer is never reliably below the observer on the same records. The label shuffle returns it to chance. With no decoys at R = 1 it names the device on 100% of records, because one device is left. On small cases its posterior equals brute-force enumeration to within 10^−9.
+
+**Basis.**
+- The bound from the posting schedule caps any vantage that uses the record time.
+- The observer already reaches about half of it: 4.77 / 9.64 = 0.49 at R = 1, and 2.33 / 4.87 = 0.48 at R = 100.
+- The tracer knows where each packet went with little ambiguity at the first relays (0.78 to 1.5 pending), and with more at the second relays (3.9 to 7.7 pending). So it gets more of the bound, but not all.
+- The point estimates assume 0.8 of the bound.
+
+**Fails if** the tracer exceeds the bound by more than its interval, lies outside its range, or is reliably below the observer.
+
+**Can fail.** If the tracer's gain is small, it falls below 5.0% at R = 1.
+
+## 3. Registry Node
+
+A Registry Node takes part in the registry's consensus, so it reads each submission. It knows which F and I submitted each record, and when. A link observer sees the same submissions arrive as constant-size frames from their origins, but not which record each one belongs to. `sim.py` floods each submission from its origin to every peer, so the origin and the time are on the wire. The Registry Node adds the link from each record to its two submissions.
+
+**Prediction.** The Registry Node with the tracer names the device on 25% to 65% of records at R = 1, and on 8% to 30% at R = 100. It is not bound by the posting schedule.
+
+**Basis.**
+- Knowing the record's F and I, the candidates are the content packets that reached F, and those that reached I, in the window before the submission. That window is about 570 s when F's hold sets the time, and longer when quorum does. A node receives content packets at 2 (R + 100) / (17 D) per second: 0.0102 at R = 1 and 0.0201 at R = 100. That gives about 6 and 12 per side, of which about half are plausible by timing.
+- Each candidate traces back through a second relay to about 3 devices at R = 1 and 6 at R = 100.
+- The true device is in both sides. A false device is in both by chance about 9 × 9 / 101 ≈ 0.8 times at R = 1, and 36 × 36 / 206 ≈ 6.3 times at R = 100.
+- So the rate is about 1 / 1.8 = 55% at R = 1 and 1 / 7.3 = 14% at R = 100, before timing weights. The ranges allow for the weights in either direction.
+
+**Fails if** either cell lies outside its range.
+
+**Can fail.** The counts of devices per side are rough.
+
+## 4. K records
+
+**Prediction.**
+- At K = 1 the K-record attacker equals the tracer, decision by decision.
+- Accuracy rises with K in every cell and workload.
+- At R = 1, W0, the smallest K at which accuracy exceeds 50% is between 2 and 10, point estimate 5.
+- At R = 100, W0, accuracy at K = 5 is between 20% and 99.9%, point estimate 50%.
+- The devices with at least K records in the 2-hour window at R = 100 (of 103):
+
+| K | W0 | W1 | W2 |
+|---|---|---|---|
+| 2 | 101 | 81 | 80 |
+| 3 | 97 | 68 | 67 |
+| 5 | 73 | 47 | 46 |
+| 10 | 8.5 | 19 | 19 |
+| 20 | 0 | 4.5 | 4.9 |
+
+**Basis.** Two cases bracket the tracer.
+- **Sharp posterior.** If each record's posterior is spread evenly over the devices behind its posting, a false device survives K records only by being in all K postings. Each identity is in a given posting with probability p = 1 − e^(−λ / N): 0.098 at R = 1 (N = 101) and 0.095 at R = 100 (N = 206). The rate is then E[1 / (1 + Bin(N − 1, p^K))]:
+
+  | K | R = 1 | R = 100 |
+  |---|---|---|
+  | 2 | 64% | 46% |
+  | 3 | 96% | 92% |
+  | 5 | 100% | 99.9% |
+
+- **Soft posterior.** If each record adds a Gaussian score with true-device advantage d, set so K = 1 gives 0.8 of the bound (d = 0.92 at R = 1, 0.82 at R = 100), then summing K records gives advantage d√K. The rate first exceeds 50% at K = 7 at R = 1 and K = 11 at R = 100.
+- The observer's own posterior (d = 0.66 at R = 1) would need K = 14.
+- The table of devices is Poisson with mean 2.99 per hour over 2 hours, mixed over each workload's rate factors, from 2,000 draws.
+
+**Fails if** the K = 1 decisions differ from the tracer's, accuracy falls with K by more than its interval, or a value lies outside its range.
+
+**Can fail.** The R = 100 range is wide because the two cases differ that much. The R = 1 range excludes 20 and "never".
+
+## 5. Edit chains
+
+**Prediction.**
+- At a 100% same-source share, accuracy on a chain of L records equals the K-record accuracy at K = L within its interval, and is at most 10% higher (relative) from the parent's posting.
+- At 50% it is lower than at 100% for every L of 2 or more. It is about the K-record accuracy at K = 1 + (L − 1) / 2.
+- At L = 1 both shares equal the tracer.
+
+**Basis.**
+- A chain is a public set of records that share a user. At 100% they share a source address, so the attacker sums over L records as the K-record attacker does.
+- At 50%, the edits from the user's machine add evidence for a different address, not the camera's. So on average the camera's sum covers 1 + (L − 1) / 2 records.
+- An edit's capture follows its parent's posting by at least 5 minutes, so the lower bound removes only candidates that are already unlikely.
+
+**Fails if** 50% is not below 100% at some L of 2 or more, or the 100% curve leaves the K-record interval.
+
+**Can fail.** Chains of 4 and 5 records are rare (about 1.4% of edited captures have 4 edits), so those rows may not meet the stability rule.
+
+## 6. Workloads
+
+**Prediction.** Chance and the passive observer:
+
+| Workload | Chance, R = 1 | Observer, R = 1 | Chance, R = 100 | Observer, R = 100 |
+|---|---|---|---|---|
+| W0 | 1.11% | equal to C2 | 0.55% | equal to C2 |
+| W1 | 1.36% | 3.3% to 4.8% | 0.68% | 2.0% to 2.7% |
+| W2 | 1.39% | 4% to 8% | 0.68% | 2.0% to 2.8% |
+| W-mismatch | 1.11% | 5.5% to 9% | 0.55% | 2.2% to 2.9% |
+
+The tracer and the K-record attacker keep the order W0 ≤ W-mismatch for every K at R = 1. The counts in flight are within 3% of their targets in every workload and cell.
+
+**Basis.**
+- **Chance.** Chance rises under W1 and W2 because a slow identity is feasible less often: p(m) = 1 − e^(−2.23 m), mixed over the factors (4,000 draws).
+- **W1.** Fast decoys outscore the one real device more often, so the observer falls at R = 1.
+- **Session bound.** In a session the real device makes 21.4 captures per hour, 0.71 per posting. Its posting then holds about 1.71 of its records out of 11.1, so the posting bound for its in-session records is about 15%.
+- **W-mismatch at R = 1.** The real device's sum dominates in a session, and 30.4% of its records are in sessions, so: 0.304 × (12% to 15%) + 0.696 × (3.5% to 4.8%) = 6% to 8%.
+- **W2 at R = 1.** About one decoy identity is in a session at any time (20 × 0.049), so the real device is the top only about half the time in a session.
+- **At R = 100,** only 8% of real records fall in sessions (26.5% of captures come from session devices, times 30.4%), so the effect is small.
+
+**Fails if** a measured chance differs by more than 10%, a rate lies outside its range, or a count in flight is off by more than 3%.
+
+**Can fail.** The W1 and W2 ranges rest on a direction argument and the bound, not on a fitted model.
+
+## 7. Sanity
+
+**Prediction.** With default options the code reproduces C2's R = 1 decisions exactly.
+
+**Basis.** New behavior sits behind new options whose defaults are C2's.
+
+**Fails if** any R = 1 decision differs.
+
+**Can fail.** A new option that draws from a C2 stream would change every later draw.
