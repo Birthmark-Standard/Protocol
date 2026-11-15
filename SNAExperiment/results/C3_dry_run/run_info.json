@@ -1,0 +1,73 @@
+{
+ "jobs": {
+  "c3_kc": {
+   "hash": "1e9584cd683d17cd",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "all"
+   ],
+   "runs": 2
+  },
+  "c3_conc": {
+   "hash": "8bc29fce4b9018f1",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "f5",
+    "f25"
+   ],
+   "runs": 2
+  },
+  "c3_vol": {
+   "hash": "1c5afd62090d636a",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "v50",
+    "v10",
+    "v0"
+   ],
+   "runs": 2
+  },
+  "c3_kc_r300": {
+   "hash": "72114d44486bd1cf",
+   "cells": [
+    300
+   ],
+   "variants": [
+    "all"
+   ],
+   "runs": 2
+  }
+ },
+ "code_commit": "46430928430f1308120a47c3e7d6110a46102b0f",
+ "predictions_commit": {
+  "C3": "46430928430f1308120a47c3e7d6110a46102b0f",
+  "C4": "46430928430f1308120a47c3e7d6110a46102b0f",
+  "C5": "9ee7e46d37ecdc84ae18721c6ef20c0b337d94a6"
+ },
+ "c2_config_hash": "c54e444f07f27a7a",
+ "seeds": {
+  "traffic": "sha256 of the volume and run id, as C2",
+  "models": 1000000000,
+  "rates": 1000050000,
+  "operators": 15000000
+ },
+ "versions": {
+  "python": "3.11.17",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39"
+ },
+ "label": "dry run, 2 runs per cell",
+ "elapsed_min": {
+  "c3_kc,c3_conc,c3_vol,c3_kc_r300": 4.966347312927246
+ }
+}
