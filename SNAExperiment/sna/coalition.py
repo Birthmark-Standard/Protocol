@@ -12,12 +12,17 @@ node's own posting when it is a gatekeeper, and after the reply otherwise, toget
 arrival after the reply when the node is the record's F or I. Each record is classed by the node's role in
 its transaction.
 
-A first relay with the destination on its path. Scored on the records whose transaction used that path:
-  content path (D with F, G with I): F holds the record and the content packet's arrival from E. Its
-      candidates are the packets D sent to that E; each is weighed by the density of the second hop.
-  credential path (A with C): C holds its transactions' arrivals from B and their fan-out times. Its
-      candidates are pairs (C's transaction, a packet A sent to that transaction's B), weighed by the density
-      of the second hop and the density of the record time after the fan-out.
+A first relay with the destination on its path. A relay decrypts its transit layer and forwards the rest, so the
+inner packet (CredP, ContP_F or ContP_I, an encryption to the destination's Channel Key under a fresh ephemeral
+key) is byte-identical at the first relay and at the destination. The pair matches it exactly, with no timing:
+the first relay holds the source address it came from. Scored on the records whose transaction used the path:
+  content path (D with F, G with I): F holds the record's ContentHash, so the pair names the device of the record
+      exactly.
+  credential path (A with C): the pair names the device of each of C's transactions that came through A. C holds
+      FullPacketHash, which the record does not carry, so it links a transaction to a record by timing: as a
+      Registry Node it reads the match boards, and finds its transaction's postings by FullPacketHash. The pair
+      scores each such transaction by the density of the record time after the transaction's quorum (the second
+      posting) and names the device of the best.
 """
 from __future__ import annotations
 
@@ -50,9 +55,10 @@ def build_extra(cfg: P.Config, gV, seed0=1_000_000_000, runs=93) -> Extra:
 Each conditional is held as the density of the residual y - x (the record time after the node's own event)
 given x in 30-second bins, which is far less sparse than a density over (x, y) cells.
     p2   arrival at the destination minus the first relay's departure (second hop, pooled over the paths)
-    gCm  the record time minus the fan-out median, for the credential-path coalition"""
+    gCm  the record time minus the fan-out median
+    gQ   the record time minus the transaction's quorum (its second posting), for the credential-path coalition"""
     mc = cfg.with_(decoy_rate=0.0, real_rate=max(cfg.real_rate, 0.2))
-    acc = {k: [] for k in ("y", "xc", "yg", "xg", "yfa", "xfa", "p2", "cm")}
+    acc = {k: [] for k in ("y", "xc", "yg", "xg", "yfa", "xfa", "p2", "cm", "uq")}
     for k in range(runs):
         run = S.simulate(mc, seed0 + k)
         s, ts = run.subs, run.events["t_send"]
@@ -63,6 +69,7 @@ given x in 30-second bins, which is far less sparse than a density over (x, y) c
         acc["y"].append(y)
         acc["xc"].append(med - cv)
         acc["cm"].append(u - med)
+        acc["uq"].append(u - s["quorum"][ok])
         acc["yg"].append(np.repeat(y, 3))
         acc["xg"].append((s["posts"][ok] - cv[:, None]).ravel())
         acc["yfa"].append(np.r_[y, y])
@@ -77,7 +84,7 @@ given x in 30-second bins, which is far less sparse than a density over (x, y) c
     e.pdf["gG"] = Residual(c["xg"], c["yg"])
     e.pdf["gFA"] = Residual(c["xfa"], c["yfa"])
     e.pdf["qFA"] = LT.EmpiricalLogPDF(c["xfa"][np.isfinite(c["xfa"])], AT.BW_X)
-    for k, src in (("p2", "p2"), ("gCm", "cm")):
+    for k, src in (("p2", "p2"), ("gCm", "cm"), ("gQ", "uq")):
         x = c[src]
         e.pdf[k] = LT.EmpiricalLogPDF(x[np.isfinite(x)], AT.BW_Y)
     return e
@@ -205,68 +212,32 @@ def validator_with_node(run, m, ex, out, nodelr):
 
 
 def path_coalitions(run, ex, out):
-    """Tables of a first relay with the destination on its path, on the records whose transaction used the
-    path: kind 0 credential (A with C), 1 F content (D with F), 2 I content (G with I)."""
-    s, ev, rec, tie, shuf = run.subs, run.events, out["_rec"], out["_tie"], out["_shuf"]
-    cand, base = out["_cand"], out["_base"]
-    p2, gC = ex.pdf["p2"], ex.pdf["gCm"]
+    """Tables of a first relay with the destination on its path, on the records whose transaction used the path:
+    kind 0 credential (A with C), 1 F content (D with F), 2 I content (G with I)."""
+    s, rec, tie, shuf, base = run.subs, out["_rec"], out["_tie"], out["_shuf"], out["_base"]
+    gQ = ex.pdf["gQ"]
     u, srow, n = rec["u"], rec["sub"], rec["sub"].size
-    # every first-hop packet: its first relay, its departure from it and the next hop it was sent to
-    ts, ta, dst = ev["t_send"], ev["t_arr"], ev["dst"]
-    fwd = np.full(ts.shape[0], -1, np.int64)
-    for key in ("ev_cred", "ev_ca", "ev_cb"):
-        fwd[s[key][:, 0]] = s[key][:, 1]
-    first = ev["src"] == S.EXT
-    first &= np.isin(np.arange(ts.size), np.r_[s["ev_cred"][:, 0], s["ev_ca"][:, 0], s["ev_cb"][:, 0]])
-    pk = np.nonzero(first & (fwd >= 0))[0]
-    relay, dep, nxt = dst[pk], ts[fwd[pk]], dst[fwd[pk]]
-    dev = tie(ev["ext_src"][pk].astype(np.int64))
-    key = relay.astype(np.int64) * 64 + nxt
-    order = np.lexsort((dep, key))
-    key, dep, dev = key[order], dep[order], dev[order]
-    lo_p2, hi_p2 = p2.support
-    m_all = np.sort(s["gk_send"], 1)[:, 1]
+    dev_all = tie(s["src"].astype(np.int64))           # the source address each packet came from, as A, D or G see it
+    q = s["quorum"]
     labs, scs, ri, kind, grp = [], [], [], [], []
     for i in range(n):
         j = srow[i]
-        for k, (fr, sr, dn, arr) in enumerate((("A", "B", "C", "arr_c"), ("D", "E", "F", "arr_f"), ("G", "H", "I", "arr_i"))):
-            kk = int(s[fr][j]) * 64 + int(s[sr][j])
-            if k > 0:
-                a = s[arr][j]
-                b0, b1 = np.searchsorted(key, kk, "left"), np.searchsorted(key, kk, "right")
-                d = dep[b0:b1]
-                c0, c1 = np.searchsorted(d, a - hi_p2), np.searchsorted(d, a - lo_p2, "right")
-                sc = p2(a - d[c0:c1])
-                lab = dev[b0:b1][c0:c1]
-            else:
-                # C's transactions whose record time fits, each paired with A's packets to that transaction's B
-                Cn = int(s["C"][j])
-                mine = np.nonzero((s["C"] == Cn) & np.isfinite(m_all))[0]
-                y = u[i] - m_all[mine]
-                lc = gC(y)
-                mine, lc = mine[np.isfinite(lc)], lc[np.isfinite(lc)]
-                lab_l, sc_l = [], []
-                for jj, l1 in zip(mine, lc):
-                    kj = int(s["A"][j]) * 64 + int(s["B"][jj])
-                    b0, b1 = np.searchsorted(key, kj, "left"), np.searchsorted(key, kj, "right")
-                    d = dep[b0:b1]
-                    a = s["arr_c"][jj]
-                    c0, c1 = np.searchsorted(d, a - hi_p2), np.searchsorted(d, a - lo_p2, "right")
-                    lab_l.append(dev[b0:b1][c0:c1])
-                    sc_l.append(l1 + p2(a - d[c0:c1]))
-                lab = np.concatenate(lab_l) if lab_l else np.zeros(0, np.int64)
-                sc = np.concatenate(sc_l) if sc_l else np.zeros(0)
-            ok = np.isfinite(sc)
-            lab, sc = lab[ok], sc[ok]
-            if lab.size:
-                u_, inv = np.unique(lab, return_inverse=True)
-                mx = sc.max()
-                agg = np.log(np.bincount(inv, weights=np.exp(sc - mx))) + mx
-                lab, sc = u_, agg
-            labs.append(lab)
-            scs.append(sc)
-            ri.append(i)
-            kind.append(k)
-            grp.append(int(s[fr][j]) * 32 + int(s[dn][j]))
+        # content paths: the inner packet matched exactly; F (or I) holds the record
+        for k, (fr, dn) in ((1, ("D", "F")), (2, ("G", "I"))):
+            labs.append(np.array([dev_all[j]]))
+            scs.append(np.zeros(1))
+            ri.append(i); kind.append(k); grp.append(int(s[fr][j]) * 32 + int(s[dn][j]))
+        # credential path: C's transactions that came through A, each with its device; the record by timing
+        mine = np.nonzero((s["C"] == s["C"][j]) & (s["A"] == s["A"][j]) & np.isfinite(q))[0]
+        sc = gQ(u[i] - q[mine])
+        ok = np.isfinite(sc)
+        lab, sc = dev_all[mine[ok]], sc[ok]
+        if lab.size:
+            uu, inv = np.unique(lab, return_inverse=True)
+            mx = sc.max()
+            lab, sc = uu, np.log(np.bincount(inv, weights=np.exp(sc - mx))) + mx
+        labs.append(lab)
+        scs.append(sc)
+        ri.append(i); kind.append(0); grp.append(int(s["A"][j]) * 32 + int(s["C"][j]))
     ri = np.array(ri, np.int64)
     return DS.table(labs, scs, rec, ri, np.array(grp), base, rec["dev"][ri], shuf, path=np.array(kind, np.int8))
