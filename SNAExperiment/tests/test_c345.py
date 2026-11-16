@@ -438,3 +438,50 @@ def test_several_validators_job_tables(tmp_path):
     assert {"validator_0", "validator_1", "validator_2", "cred_processor_keyed"} <= set(tab)
     for k in range(3):
         assert not tab[f"validator_{k}"]["dev_v_correct"][tab[f"validator_{k}"]["own"] == 0].any()
+
+
+# --------------------------------------------------------------------------- C6: blind-issued one-time certificates
+def _otc(R=100, hours=2.0, **kw):
+    from sna import onetime as OT
+    return _cfg(R=R, hours=hours, candidate=OT.NAME, **ST.VALIDATORS, **kw)
+
+
+def test_onetime_shares_captures_with_the_credential_path():
+    from sna import onetime as OT
+    a = S.simulate(_cfg(R=100, hours=2.0, **ST.VALIDATORS), 51)
+    b = OT.simulate(_otc(), 51)
+    for k in ("t0", "src", "decoy"):
+        assert np.array_equal(a.subs[k][a.subs["gen"] == 0], b.subs[k][b.subs["gen"] == 0]), k
+    # the issuer is the identity's validator draw
+    assert np.array_equal(a.subs["val"][a.subs["gen"] == 0], b.subs["issuer"][b.subs["gen"] == 0])
+
+
+def test_onetime_packet_route_and_record():
+    from sna import onetime as OT
+    run = OT.simulate(_otc(), 52)
+    s, ev = run.subs, run.events
+    assert np.all((s["A"] != s["B"]) & (s["A"] != s["D"]) & (s["B"] != s["D"]))
+    e = s["ev_pk"]
+    assert np.all(ev["src"][e[:, 0]] == S.EXT) and np.array_equal(ev["dst"][e[:, 2]], s["D"])
+    ok = np.isfinite(s["posted"])
+    assert ok.mean() > 0.9
+    # a submission leaves on the shared 120 s schedule; the record posts on the 120 s schedule after its flood
+    ph = run.reg_phase
+    x = np.mod(s["reg"][ok] - ph, 120.0)
+    assert np.all((x < 0.01) | (x > 119.99))
+    assert np.all(s["posted"][ok] >= s["reach"][ok]) and np.all(s["posted"][ok] - s["reach"][ok] <= 120.0 + 1e-6)
+    assert not any(k in s for k in ("ev_cred", "ev_cv1", "posts"))     # no C, validator or gatekeepers
+
+
+def test_onetime_threshold_refills():
+    from sna import onetime as OT
+    run = OT.simulate(_otc(R=1, hours=24.0), 53)
+    rf, s = run.refills, run.subs
+    assert np.all(rf["n"] == 20)
+    real = rf["src"] == 0
+    caps = int(((s["src"] == 0) & (s["gen"] == 0)).sum())
+    assert abs(real.sum() - caps / 20) <= 1.5                       # one refill per 20 captures
+    assert np.array_equal(s["ready"], s["t0"])                       # nobody runs dry under the threshold rule
+    # a refill fires at the time of a capture of the same identity
+    for i, t in zip(rf["src"][:50], rf["t"][:50]):
+        assert np.any((s["src"] == i) & (np.abs(s["t0"] - t) < 1e-9))

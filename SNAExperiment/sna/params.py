@@ -61,6 +61,7 @@ EDIT_MAX = 4               #   at most 4
 EDIT_DELAY_MIN_S = 300.0   # an edit's capture follows its parent's posting by 5 minutes
 EDIT_DELAY_MEAN_S = 1800.0 #   plus an exponential with mean 30 minutes
 MACHINE_OFFSET = 200_000   # source address of a user's machine: the device's address plus this
+CANDIDATES = ("credential path", "blind-issued one-time certificates")
 RESUB_WAIT_S = 2400.0      # a device that sees no record by this long after capture resubmits
 WITHHOLD_GAP_S = 7200.0    # validator withholding: time between one window's end and the next one's start
 
@@ -112,6 +113,12 @@ class Config:
     n_validators: int = 1              # validators, each with its own Token Key
     real_val_split: tuple = ()         # share of real devices registered with each validator (empty: all with the first)
     decoy_val_split: tuple = ()        # share of decoy identities registered with each validator
+    # the second candidate (sna/onetime.py); every default leaves the credential path as C2's
+    candidate: str = "credential path" # "credential path" or "blind-issued one-time certificates"
+    otc_hold_mean: float = 0.0         # blind-issued one-time certificates: the device's hold before sending (0 = natural)
+    otc_batch: int = 20                # certificates per refill
+    otc_refill_at: int = 5             # threshold rule: a refill when the stock falls to this many
+    cert_expiry_s: float = 14 * 86400.0  # an unused certificate expires this long after issuance
 
     @property
     def max_delay_s(self) -> float:
@@ -171,4 +178,5 @@ class Config:
 
 NEW_FIELDS = ("decoy_factor", "workload", "edit_share", "edit_same_source", "quorum_timeout_s", "board_window_s", "grid_off",
               "mark_actor", "mark_mode", "mark_delta", "mark_target", "resub_mean_s", "withhold_share", "withhold_len",
-              "withhold_mode", "n_validators", "real_val_split", "decoy_val_split")
+              "withhold_mode", "n_validators", "real_val_split", "decoy_val_split", "candidate", "otc_hold_mean",
+              "otc_batch", "otc_refill_at", "cert_expiry_s")

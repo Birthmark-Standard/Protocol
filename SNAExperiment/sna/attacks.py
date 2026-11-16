@@ -74,8 +74,9 @@ def candidates(run):
     pk = np.nonzero(relay & ~np.isin(ev["ext_src"], bad_src))[0]
     pk = pk[np.argsort(ev["t_send"][pk], kind="stable")]
     fwd_of = np.full(ev["t_send"].shape[0], -1, np.int64)
-    for key in ("ev_cred", "ev_ca", "ev_cb"):
-        fwd_of[s[key][:, 0]] = s[key][:, 1]
+    for key in ("ev_cred", "ev_ca", "ev_cb", "ev_pk"):           # ev_pk: the one packet of the second candidate
+        if key in s:
+            fwd_of[s[key][:, 0]] = s[key][:, 1]
     f = fwd_of[pk]
     sub = np.where(ev["kind"][pk] == S.K_BIRTHMARK, ev["sub"][pk], -1).astype(np.int64)
     leg = ev["leg"][pk]
