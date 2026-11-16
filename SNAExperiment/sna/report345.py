@@ -227,11 +227,13 @@ def num(x, f="{:.2f}"):
     return "—" if x is None or (isinstance(x, float) and not math.isfinite(x)) else f.format(x)
 
 
-def markdown(rows, title, dry=False):
+def markdown(rows, title, dry=False, note=None):
     lines = []
     if dry:
         lines.append("DRY RUN: fewer runs than the full count. These numbers are not results.\n")
     lines.append(f"# {title}\n")
+    if note:
+        lines.append(note + "\n")
     lines.append("Chance is the expected accuracy of naming, for each decision, one candidate drawn uniformly from those "
                  "the vantage finds feasible; zero when the truth is not feasible.\n")
     lines.append("| File | Vantage | Runs | Decisions | Device named [95% CI] | Chance | Multiple | Lead over observer | "
@@ -275,12 +277,16 @@ def markdown(rows, title, dry=False):
     return "\n".join(lines) + "\n"
 
 
-def write(out, rows, stem, title, dry=False):
+C4_NOTE = ("This run has no tracer row and no Registry Node row. The tracer did not meet its entry condition: in the main "
+           "configuration, on model seeds, it was below the passive observer. See `PREDICTIONS_C4.md`, changes before the run.")
+
+
+def write(out, rows, stem, title, dry=False, note=None):
     out = Path(out)
     clean = [{k: v for k, v in r.items() if k != "temperature"} for r in rows]
     stem = stem + ("_dry_run" if dry else "")
     (out / f"{stem}.json").write_text(json.dumps(clean, indent=1, default=float))
-    (out / f"{stem}.md").write_text(markdown(rows, title, dry))
+    (out / f"{stem}.md").write_text(markdown(rows, title, dry, note))
 
 
 # --------------------------------------------------------------------------- C6: the two candidates side by side

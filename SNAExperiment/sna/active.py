@@ -63,8 +63,10 @@ def model_samples(run):
 
 
 def build_model(cfg, seeds, bw=15.0):
+    """The density of the record time after the anchor; None when no marked transaction ever posts a record (a
+    mark longer than the quorum timeout drops every one), and the attacker then finds nothing."""
     x = np.concatenate([model_samples(S.simulate(cfg, sd)) for sd in seeds])
-    return LT.EmpiricalLogPDF(x, bw), int(x.size)
+    return (LT.EmpiricalLogPDF(x, bw) if x.size else None), int(x.size)
 
 
 def score(run, pdf, rng, window):
@@ -76,7 +78,7 @@ def score(run, pdf, rng, window):
     fin = np.nonzero(np.isfinite(s["posted"]))[0]
     o = np.argsort(s["posted"][fin], kind="stable")
     rs, ru = fin[o], s["posted"][fin][o]
-    lo, hi = pdf.support
+    lo, hi = pdf.support if pdf is not None else (0.0, 0.0)
     correct = np.zeros(m.size, np.int8)
     found = ((target >= 0) & np.isfinite(s["posted"][np.maximum(target, 0)])).astype(np.int8)
     nfeas = np.zeros(m.size, np.int32)
@@ -84,7 +86,7 @@ def score(run, pdf, rng, window):
     top1, s_true = np.full(m.size, -np.inf), np.full(m.size, -np.inf)
     lse, ent = np.full((m.size, nT), np.nan), np.full((m.size, nT), np.nan)
     rank = np.full(m.size, -1, np.int32)
-    for i in range(m.size):
+    for i in range(m.size if pdf is not None else 0):
         if not np.isfinite(a[i]):
             continue
         b0, b1 = np.searchsorted(ru, a[i] + lo, "left"), np.searchsorted(ru, a[i] + hi, "right")

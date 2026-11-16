@@ -519,3 +519,13 @@ def test_long_run_rates_follow_the_workload():
 def run_lam(run, i):
     from sna import onetime as OT
     return OT.LAST_LAM.get(int(i), np.nan)
+
+
+def test_c5_mark_longer_than_the_timeout_finds_nothing():
+    from sna import active as AC
+    cfg = _cfg(R=100, hours=1.0, mark_actor="validator", mark_delta=3600.0, mark_target=-2, quorum_timeout_s=1200.0)
+    pdf, n = AC.build_model(cfg, [61])
+    assert pdf is None and n == 0
+    run = S.simulate(cfg.with_(mark_target=0), 62)
+    res = AC.score(run, None, np.random.default_rng(0), (cfg.warmup_s, cfg.warmup_s + cfg.measure_s))
+    assert not res["correct"].any()

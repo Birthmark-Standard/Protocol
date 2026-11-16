@@ -594,7 +594,7 @@ def summarize(out, dry=False):
             rows = RP.summarize_c4(out, fs)
         else:
             rows = RP.summarize_c5(out, fs)
-        RP.write(out, rows, f"TABLES_{exp.upper()}", f"Experiment {exp.upper()}", dry)
+        RP.write(out, rows, f"TABLES_{exp.upper()}", f"Experiment {exp.upper()}", dry, note=RP.C4_NOTE if exp == "c4" else None)
 
 
 def costs(out):
