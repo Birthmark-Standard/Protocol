@@ -15,6 +15,7 @@ The Protocol paper reports it in Appendix D. The experiment has been run twice, 
 | C3 | R = 1 and 100; R = 300 for decoy knowledge and coalitions | `results/C3/` | `PREDICTIONS_C3.md` | not run | recorded in the run's `run_info.json` |
 | C4 | R = 1 and 100 | `results/C4/` | `PREDICTIONS_C4.md` | not run | recorded in the run's `run_info.json` |
 | C5 | R = 1 and 100 | `results/C5/` | `PREDICTIONS_C5.md` | not run | recorded in the run's `run_info.json` |
+| C6 | R = 1 and 100 | `results/C6/` | `PREDICTIONS_C6.md` | not run | recorded in the run's `run_info.json` |
 
 The code writes to `results/C2/` by default. `results/C2/` also holds the run's console output (`run_log.txt`) and the Python packages installed on the machine that ran it (`versions_before_run.txt`).
 
@@ -294,13 +295,32 @@ Each run of a job writes one record per output file in `raw/`, so a job is resum
 
 **Chance**, in every table: the expected accuracy of naming, for each decision, one candidate drawn uniformly from the candidates the vantage finds feasible for it (a device with a packet the vantage's densities allow, or for C5 a record its density allows), and zero when the truth is not feasible. A variant that changes the candidate set, such as known decoys, gets its chance by the same definition from its own feasible candidates.
 
-`results/C3_dry_run/` holds a dry run of C3 on 2 runs per cell, on model seeds.
+`results/C3_dry_run/` holds a dry run of C3 on 2 runs per cell, on model seeds; `results/C6_dry_run/` one of C6.
 
 A full run uses the evaluation seed set of C3 to C5 (`eval_seed` in `sna/stronger.py`). Add `--dry` for a dry run on model seeds; its tables are named `_dry_run` and say so on their first line:
 
 ```
 python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 --runs 2 --dry --out results/C3_dry_run
 ```
+
+## Experiment C6: two candidates
+
+C6 simulates two candidates on the same relay layer and compares them: the **credential path** (C2's main configuration, here with three validators split 50/30/20) and **blind-issued one-time certificates** (`sna/onetime.py`). Neither is a baseline. Both use the same captures from the same devices (one seed gives both the same capture times and sources), the same relay holds and schedules, the registry's 120-second submission and posting schedules, the C4 workloads and edit chains, the evaluation seeds of C3 to C5, the same metrics and the same definition of chance.
+
+In blind-issued one-time certificates, each capture is one packet: through a first relay and a second relay, with the same wrapping as a content packet, to one destination Registry Node, which submits it to the registry. Certificates come from three issuers (split as the validators), 20 at a time when a device's stock falls to 5, directly from the issuer; they expire after two weeks. A natural variant has no device hold; a lengthened-hold variant holds the packet on the device 693 s on average, so its latency matches the credential path's.
+
+Vantages in both candidates: the passive observer, each first relay, the destination (F or I in the credential path, the destination Registry Node in the other), and a first relay with the destination on its path. In blind-issued one-time certificates also: the destination told each source address's issuer (`destination_keyed`, an upper bound); each issuer alone, with the observer, with one first relay, and with the destination Registry Node; and the issuer withholding or delaying refills. The K-record, ceiling and edit-chain attackers run on both.
+
+```
+python -m sna.stronger c6 c6_issuer --runs 100 --out results/C6
+```
+
+| Job | What | Cells |
+|---|---|---|
+| `c6` | both candidates (`cp`, `otc` natural, `otcL` lengthened hold) under W0, W1, W2, W-mismatch and the two edit-chain settings | R = 1, 100 (2-hour window at R = 100) |
+| `c6_issuer` | the target's issuer withholding, delaying, or not touching refills, windows of 10 to 120 minutes | R = 1, 100 (67-hour window) |
+
+The job writes `TABLES_C6.md` (and `.json`): one table per vantage with both candidates in adjacent rows for each cell and workload, and each candidate's measured latency beside it; then the spread, calibration and reliability sections of the C3 to C5 tables. `C6_PARTIES.md` lists what each party holds in each candidate, from the design descriptions only.
 
 ## Scripts
 
@@ -316,7 +336,7 @@ python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 --runs 2 --dry --out resu
 | Path | Contents |
 |---|---|
 | `RESULTS_C1.md`, `RESULTS_C2.md` | every finding |
-| `PREDICTIONS_C1.md` to `PREDICTIONS_C5.md` | the predictions, written and committed before the run; each of C3 to C5 lists its changes before the run |
+| `PREDICTIONS_C1.md` to `PREDICTIONS_C6.md` | the predictions, written and committed before the run; each of C3 to C5 lists its changes before the run |
 | `results/C3_dry_run/` | the C3 dry run: its tables, cost per run and `run_info.json` |
 | `C1_C2_figures.csv` | every reported figure of C1 and C2, one row each, with its value in each experiment and whether it changed |
 | `results/C*/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
@@ -337,9 +357,11 @@ python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 --runs 2 --dry --out resu
 | `sna/experiment.py` | configurations, cells, seeds, calibration, the run worker |
 | `sna/report.py` | every file in `results/C2/` |
 | `sna/runner.py` | resumable parallel execution |
-| `sna/stronger.py` | the C3 to C5 jobs, their cells and variants, the worker, and the tables |
+| `sna/stronger.py` | the C3 to C6 jobs, their cells and variants, the worker, and the tables |
 | `sna/decoys.py`, `sna/coalition.py`, `sna/krecord.py`, `sna/tracer.py`, `sna/active.py`, `sna/devscore.py` | the C3 to C5 attackers |
-| `sna/report345.py` | the C3 to C5 tables |
+| `sna/onetime.py` | blind-issued one-time certificates: its simulator and its attackers |
+| `sna/report345.py` | the C3 to C6 tables |
+| `C6_PARTIES.md` | what each party holds in each candidate of C6 |
 | `tests/` | fast tests |
 
 ## What this experiment does not test
