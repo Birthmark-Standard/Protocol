@@ -65,6 +65,7 @@ from . import params as P
 from . import sim as S
 
 M_MAX = 200         # end points kept per device packet
+CHUNK = 2000        # device packets per block of the end-point product
 EXACT_ROWS = 10     # pieces with at most this many arrivals are counted exactly
 W_MIN = 1e-6        # smaller path weights are dropped
 ITER = 60           # Sinkhorn iterations
@@ -247,10 +248,34 @@ def link_latency(ev):
     return lat
 
 
-def known_estimate(t2, C, lat, gk_set):
-    """When each node learns of quorum, estimated from the reply's arrival at C (t2): rows t2, columns nodes Z."""
-    via = lat[C, gk_set][:, None] + lat[gk_set][:, :P.N_NODES]          # (3, Z)
-    return t2[:, None] + np.sort(via, axis=0)[1][None, :]
+def known_estimate(t2, C, lat, run):
+    """When each node learns of quorum, estimated from the reply's arrival at C (t2): rows t2, columns nodes Z.
+
+    It follows the protocol with every hold at its first possible release: C's fan-out leg leaves at the next tick
+    of C's clock (at once with no fan-out hold); the gatekeeper releases at the next tick of its hold clock (at once
+    with no hold) and posts at the next boundary of its 30-second departure grid (no grid when the schedules are
+    off); the board pushes at its next 10-second push; the push reaches Z after the link's latency. Quorum is the
+    second of the three. The tracer is given each clock's, grid's and push schedule's phase: a global observer
+    reads them from the times departures and submissions leave, so this is an upper bound on what it learns."""
+    cfg = run.cfg
+    t2 = np.asarray(t2, float)
+    out = np.empty((3, t2.size, P.N_NODES))
+    gproc = 0.5 * (P.GATEKEEPER_PROC_MS[0] + P.GATEKEEPER_PROC_MS[1]) / 1000
+    proc = 0.5 * (PROC[0] + PROC[1])
+    leg = t2 if cfg.fanout_mean <= 0 else LT.next_tick(t2, run.phase[C])
+    for j, g in enumerate(run.gk_set):
+        g = int(g)
+        chk = leg + proc + lat[C, g] + gproc
+        rel = chk if cfg.gk_mean <= 0 else LT.next_tick(chk, run.gk_phase[g])
+        if not cfg.grid_off:
+            ph = run.bundle_phase[g]
+            rel = ph + P.BUNDLE_S * np.ceil((rel - ph) / P.BUNDLE_S)
+        post = rel + proc
+        if not cfg.grid_off:
+            ph = run.push_phase[g]
+            post = ph + P.BOARD_PUSH_S * np.ceil((post - ph) / P.BOARD_PUSH_S)
+        out[j] = post[:, None] + lat[g, :P.N_NODES][None, :]
+    return np.sort(out, axis=0)[1]
 
 
 def brute_force(W, skip):
@@ -368,37 +393,17 @@ class Tracer:
             W = sparse.csr_matrix((w, (r, c)), shape=(arr.size, dep.size))
             self.val[int(v)] = (arr, dep, Assoc(W, np.zeros(arr.size)).solve()[0])
         self.reach_of = dict(zip(org_e.tolist(), reach.tolist()))
-        # quorum: each reply's arrival at C paired with its two submissions
+        # quorum: each reply's estimate of when each node learns of quorum; the joint score pairs a reply with
+        # submissions by it
         lat = link_latency(ev)
-        self.via = np.full((P.N_NODES, P.N_NODES), np.nan)
-        for X in range(P.N_NODES):
-            self.via[X] = known_estimate(np.zeros(1), X, lat, run.gk_set)[0]
         c2a = _sorted(cv2, ev["t_arr"])
         t2, Cn = ev["t_arr"][c2a], ev["dst"][c2a]
-        org_sorted = org_e[np.argsort(ev["t_send"][org_e], kind="stable")]
-        f_org, f_t = ev["src"][org_sorted], ev["t_send"][org_sorted]
-        qd = dens["Q"]
-        R_, C_, V_ = [], [], []
+        self.ke = np.full((c2a.size, P.N_NODES), np.nan)
+        self.ke_row = {int(e): i for i, e in enumerate(c2a)}
         for X in range(P.N_NODES):
             rows = np.nonzero(Cn == X)[0]
-            if rows.size == 0:
-                continue
-            ke = known_estimate(t2[rows], X, lat, run.gk_set)               # (rows, Z)
-            for Z in range(P.N_NODES):
-                if Z == X:
-                    continue
-                cols = np.nonzero(f_org == Z)[0]
-                if cols.size == 0:
-                    continue
-                tz = f_t[cols]
-                a0 = np.searchsorted(tz, ke[:, Z] + qd.support[0])
-                a1 = np.searchsorted(tz, ke[:, Z] + qd.support[1], "right")
-                r, c = _ragged(a0, a1)
-                w = np.exp(qd(tz[c] - ke[r, Z]))
-                R_.append(rows[r]); C_.append(cols[c]); V_.append(w)
-        Wq = sparse.csr_matrix((np.concatenate(V_) if V_ else [], (np.concatenate(R_) if R_ else [], np.concatenate(C_) if C_ else [])),
-                               shape=(c2a.size, org_sorted.size))
-        self.quorum = (c2a, org_sorted, Assoc(Wq, np.zeros(c2a.size), need=2.0).solve()[0])
+            if rows.size:
+                self.ke[rows] = known_estimate(t2[rows], X, lat, run)
 
     def end_points(self, first_events):
         """For each device first-hop event: (end-point event ids, types (0 reply at C, 1 submission), times, weights),
@@ -438,8 +443,6 @@ class Tracer:
                 ends_e.append(e); ends_type.append(typ); ends_t.append(t); ends_z.append(z); ends_s.append(ts)
             return idx_of[e]
         RD, CD, VD = [], [], []
-        q_rows, q_cols, Qs = self.quorum
-        qrow = {int(e): i for i, e in enumerate(q_rows)}
         vmap = {}
         for v, (arr, dep, Vs) in self.val.items():
             for i, e in enumerate(arr):
@@ -459,7 +462,7 @@ class Tracer:
                     continue
                 g = off[src] + int(np.searchsorted(self.cols[src], arr_e))
                 w = w / matched[r]
-                if c < c1.size:                              # a CV-1: on to the validator's reply, then to quorum
+                if c < c1.size:                              # a CV-1: on to the validator's reply
                     v, i = vmap.get(int(c1[c]), (None, None))
                     if v is None:
                         continue
@@ -472,14 +475,6 @@ class Tracer:
                         # the reply reaching C, kept for the joint score of a transaction
                         RD.append(g); CD.append(end((e2, 2), 2, float(ev["t_arr"][e2]), int(ev["dst"][e2]), float(ev["t_arr"][e2])))
                         VD.append(wx)
-                        qi = qrow.get(e2)
-                        if qi is None:
-                            continue
-                        qr = Qs.getrow(qi)
-                        for jj, y in zip(qr.indices, qr.data):
-                            e3 = int(q_cols[jj])
-                            RD.append(g); CD.append(end((e3, 0), 0, self.reach_of[e3], int(ev["src"][e3]), float(ev["t_send"][e3])))
-                            VD.append(wx * y / 2.0)
                 else:                                        # a submission
                     e2 = int(fr[c - c1.size])
                     RD.append(g); CD.append(end((e2, 1), 1, self.reach_of[e2], int(ev["src"][e2]), float(ev["t_send"][e2]))); VD.append(w)
@@ -498,7 +493,6 @@ class Tracer:
             R1.append(np.full(row.nnz, k)); C1.append(off[X] + row.indices); V1.append(row.data)
         G1 = sparse.csr_matrix((np.concatenate(V1) if V1 else [], (np.concatenate(R1) if R1 else [], np.concatenate(C1) if C1 else [])),
                                shape=(fe.size, n_dep))
-        T = (G1 @ (G2 @ GD)).tocsr()
         n = fe.size
         E = np.full((n, M_MAX), -1, np.int64)
         TY = np.zeros((n, M_MAX), np.int8)
@@ -506,32 +500,135 @@ class Tracer:
         WW = np.zeros((n, M_MAX))
         ZZ = np.full((n, M_MAX), -1, np.int64)
         TS = np.full((n, M_MAX), np.nan)
-        for k in range(n):
-            a, b = T.indptr[k], T.indptr[k + 1]
-            w, j = T.data[a:b], T.indices[a:b]
-            keep = w >= W_MIN
-            w, j = w[keep], j[keep]
-            if w.size > M_MAX:
-                top = np.argpartition(-w, M_MAX)[:M_MAX]
-                w, j = w[top], j[top]
-            E[k, :w.size], TY[k, :w.size], TT[k, :w.size], WW[k, :w.size] = ends_e[j], ends_type[j], ends_t[j], w
-            ZZ[k, :w.size], TS[k, :w.size] = ends_z[j], ends_s[j]
+        for c0 in range(0, n, CHUNK):                    # device packets in chunks, multiplied from their side
+            T = ((G1[c0:c0 + CHUNK] @ G2) @ GD).tocsr()
+            for kk in range(T.shape[0]):
+                k = c0 + kk
+                a, b = T.indptr[kk], T.indptr[kk + 1]
+                w, j = T.data[a:b], T.indices[a:b]
+                keep = w >= W_MIN
+                w, j = w[keep], j[keep]
+                if w.size > M_MAX:
+                    top = np.argpartition(-w, M_MAX)[:M_MAX]
+                    w, j = w[top], j[top]
+                E[k, :w.size], TY[k, :w.size], TT[k, :w.size], WW[k, :w.size] = ends_e[j], ends_type[j], ends_t[j], w
+                ZZ[k, :w.size], TS[k, :w.size] = ends_z[j], ends_s[j]
+            del T
         self.ZZ, self.TS = ZZ, TS
         return E, TY, TT, WW
 
 
 # --------------------------------------------------------------------------- densities and scoring
+class Tailed:
+    """A density fitted on the model seeds, mixed with a uniform tail of weight 1 / (n + 1) over a range MARGIN of its
+    span wider on each side, so a value just past the samples is unlikely rather than impossible."""
+    MARGIN = 0.05
+
+    def __init__(self, pdf, n):
+        self.pdf = pdf
+        lo, hi = pdf.support
+        w = max(self.MARGIN * (hi - lo), 1e-3)
+        self.support = (lo - w, hi + w)
+        self.eps = 1.0 / (n + 1)
+        self.tail = np.log(self.eps) - np.log(self.support[1] - self.support[0])
+
+    def __call__(self, x):
+        x = np.asarray(x, float)
+        with np.errstate(divide="ignore"):
+            f = self.pdf(x) + np.log1p(-self.eps)
+        inside = (x >= self.support[0]) & (x <= self.support[1])
+        return np.where(inside, np.logaddexp(f, self.tail), -np.inf)
+
+
+class Atom:
+    """A density with a point mass at 0 (a delay that is exactly zero in some cases, such as a record posted the
+    moment its later submission has reached every node), as a box of width 2 POINT around 0, plus the density
+    of the other samples."""
+    POINT = 1e-6
+
+    def __init__(self, x):
+        z = np.abs(x) <= 1e-9
+        self.p0 = float(z.mean())
+        rest = x[~z]
+        self.rest = LT.EmpiricalLogPDF(rest, AT.BW_Y if np.ptp(rest) > 50 else 0.001) if rest.size > 1 else None
+        lo, hi = (-self.POINT, self.POINT)
+        if self.rest is not None:
+            lo, hi = min(lo, self.rest.support[0]), max(hi, self.rest.support[1])
+        self.support = (lo, hi)
+
+    def __call__(self, x):
+        x = np.asarray(x, float)
+        with np.errstate(divide="ignore"):
+            a = np.where(np.abs(x) <= self.POINT, np.log(self.p0) - np.log(2 * self.POINT), -np.inf)
+            b = np.log1p(-self.p0) + self.rest(x) if self.rest is not None else np.full(x.shape, -np.inf)
+        return np.logaddexp(a, b)
+
+
+def _fit(x):
+    """A tracer density from model-seed samples: a point mass at 0 when at least 1% of samples are exactly 0."""
+    if np.mean(np.abs(x) <= 1e-9) >= 0.01:
+        return Atom(x)
+    return LT.EmpiricalLogPDF(x, AT.BW_Y if np.ptp(x) > 50 else 0.001)
+
+
+class Interval:
+    """The probability that a time bundled onto a schedule of period B fell in the interval that ends at its departure:
+    x is the departure after an anchor, r the model-seed samples of the time before bundling after the same anchor,
+    and the value is log P(x - B < r <= x) by the samples' distribution, mixed with a uniform tail of weight
+    1 / (n + 1)."""
+
+    def __init__(self, r, B):
+        self.r = np.sort(r)
+        self.B = B
+        lo, hi = self.r[0], self.r[-1]
+        w = max(Tailed.MARGIN * (hi - lo), 1e-3)
+        self.support = (lo - w, hi + B + w)
+        self.eps = 1.0 / (self.r.size + 1)
+        self.tail = self.eps * B / (self.support[1] - self.support[0])
+
+    def __call__(self, x):
+        x = np.asarray(x, float)
+        n = self.r.size
+        p = (np.searchsorted(self.r, x, "right") - np.searchsorted(self.r, x - self.B, "right")) / n
+        inside = (x >= self.support[0]) & (x <= self.support[1])
+        with np.errstate(divide="ignore"):
+            return np.where(inside, np.log((1 - self.eps) * p + self.tail), -np.inf)
+
+
+class Window:
+    """The record time after the later submission has reached every node, under a posting schedule of period B: the
+    record posts at the next boundary, so any value in [0, B] has the same likelihood."""
+
+    def __init__(self, B):
+        self.B = B
+        self.support = (-1e-6, B + 1e-6)
+
+    def __call__(self, x):
+        x = np.asarray(x, float)
+        return np.where((x >= self.support[0]) & (x <= self.support[1]), 0.0, -np.inf)
+
+
 def densities(cfg, seed0, runs=20):
     """On the model seeds: a submission after its content packet's arrival (sub); a submission after the estimate
-    of when its node learned of quorum (Q); the record time after a submission has reached every node (F)."""
-    mc = cfg.with_(decoy_rate=0.0, real_rate=max(cfg.real_rate, 0.2))
+    of when its node learned of quorum (Q); the record time after a submission has reached every node (F); a content
+    packet's send time after its credential packet's (o); the record time after the later submission has reached
+    every node (post). The model runs carry the cell's whole load (real and decoy together) as real traffic.
+
+    Under registry-level bundling a submission leaves at the next boundary of a schedule shared by every content
+    server, so its time tells only the bundle interval its ready time fell in: sub and Q are then Interval
+    likelihoods of the ready time. Under the posting schedule the record posts at the next boundary after the later
+    submission has reached every node, so post is a Window over one period, and F is fitted with BW_X-wide bins so it
+    does not follow one run's schedule phases."""
+    mc = cfg.with_(decoy_rate=0.0, real_rate=max(cfg.real_rate + cfg.decoy_rate, 0.2), measure_s=min(cfg.measure_s, 4 * 3600.0))
+    bundle, posting = cfg.reg_bundle_s > 0, cfg.reg_post_s > 0
     sub, qq, f, so, pw = [], [], [], [], []
     for k in range(runs):
         run = S.simulate(mc, seed0 + k)
         s = run.subs
         ok = np.isfinite(s["posted"])
         u = s["posted"][ok]
-        sub.append(np.r_[s["reg_f"][ok] - s["arr_f"][ok], s["reg_i"][ok] - s["arr_i"][ok]])
+        tf, ti = (s["ready_f"], s["ready_i"]) if bundle else (s["reg_f"], s["reg_i"])
+        sub.append(np.r_[tf[ok] - s["arr_f"][ok], ti[ok] - s["arr_i"][ok]])
         f.append(np.r_[u - s["reach_f"][ok], u - s["reach_i"][ok]])
         pw.append(u - np.fmax(s["reach_f"][ok], s["reach_i"][ok]))
         lat = link_latency(run.events)
@@ -540,20 +637,30 @@ def densities(cfg, seed0, runs=20):
             j = idx[s["C"][idx] == Cx]
             if j.size == 0:
                 continue
-            ke = known_estimate(s["cv2_a"][j], Cx, lat, run.gk_set)
-            qq.append(np.r_[s["reg_f"][j] - ke[np.arange(j.size), s["F"][j]], s["reg_i"][j] - ke[np.arange(j.size), s["I"][j]]])
+            ke = known_estimate(s["cv2_a"][j], Cx, lat, run)
+            qq.append(np.r_[tf[j] - ke[np.arange(j.size), s["F"][j]], ti[j] - ke[np.arange(j.size), s["I"][j]]])
         cs = run.events["t_send"]
         so.append(np.r_[cs[s["ev_ca"][:, 0]] - cs[s["ev_cred"][:, 0]], cs[s["ev_cb"][:, 0]] - cs[s["ev_cred"][:, 0]]])
     out = {}
     for name, x in (("sub", sub), ("Q", qq), ("F", f), ("o", so), ("post", pw)):
         x = np.concatenate(x)
         x = x[np.isfinite(x)]
-        out[name] = LT.EmpiricalLogPDF(x, AT.BW_Y if np.ptp(x) > 50 else 0.001)
+        if bundle and name in ("sub", "Q"):
+            out[name] = Interval(x, cfg.reg_bundle_s)
+        elif posting and name == "post":
+            out[name] = Window(cfg.reg_post_s)
+        elif posting and name == "F":
+            out[name] = Tailed(LT.EmpiricalLogPDF(x, AT.BW_X), x.size)
+        else:
+            out[name] = Tailed(_fit(x), x.size)
     return out
 
 
 def score(run, m, dens, out, registry=False, tracer=None):
-    """The tracer's (or the Registry Node's) table, on the observer's candidates and records."""
+    """The tracer's (or the Registry Node's) table, on the observer's candidates and records. Every device with a
+    triple of packets near the record is scored by the joint likelihood (_joint); the Registry Node fixes the two
+    submissions to the record's own. A device without one is scored by its content packets' end points alone and
+    ranks below."""
     from . import devscore as DS
     cand, rec, base, shuf = out["_cand"], out["_rec"], out["_base"], out["_shuf"]
     tr = tracer or Tracer(run, dens)
@@ -563,154 +670,144 @@ def score(run, m, dens, out, registry=False, tracer=None):
     u, n = rec["u"], rec["sub"].size
     s = run.subs
     lo, hi = AT._band(u, m.pdf["g"])
-    col_c, col_t = DS.Collector(n, cand["dev"]), DS.Collector(n, cand["dev"])
+    col = DS.Collector(n, cand["dev"])
     pF = dens["F"]
     if registry:
-        mine_f, mine_i = s["ev_reg_f"][rec["sub"]], s["ev_reg_i"][rec["sub"]]
-
-    def lse(v):
-        mx = np.max(v, axis=2, keepdims=True)
-        mxf = np.where(np.isfinite(mx), mx, 0.0)
-        with np.errstate(divide="ignore"):
-            out_ = np.log(np.sum(np.exp(v - mxf), axis=2)) + mxf[:, :, 0]
-        return np.where(np.isfinite(mx[:, :, 0]), out_, -np.inf)
+        mine = np.c_[s["ev_reg_f"][rec["sub"]], s["ev_reg_i"][rec["sub"]]]
 
     def fn(rows, k0, k1):
         if registry:
-            hit = (E[None, k0:k1, :] == mine_f[rows][:, None, None]) | (E[None, k0:k1, :] == mine_i[rows][:, None, None])
+            hit = (E[None, k0:k1, :] == mine[rows, 0][:, None, None]) | (E[None, k0:k1, :] == mine[rows, 1][:, None, None])
             v = np.where(hit, logW[None, k0:k1, :], -np.inf)
         else:
             y = u[rows][:, None, None] - TT[None, k0:k1, :]
             v = pF(np.where(np.isfinite(y), y, -1e9)) + logW[None, k0:k1, :]
-        ty = TY[None, k0:k1, :]
-        return dict(trc=lse(np.where(ty == 0, v, -np.inf)), trt=lse(np.where(ty == 1, v, -np.inf)))     # replies (2) only in _joint
+        v = np.where(TY[None, k0:k1, :] == 1, v, -np.inf)
+        mx = np.max(v, axis=2, keepdims=True)
+        mxf = np.where(np.isfinite(mx), mx, 0.0)
+        with np.errstate(divide="ignore"):
+            o_ = np.log(np.sum(np.exp(v - mxf), axis=2)) + mxf[:, :, 0]
+        return dict(trt=np.where(np.isfinite(mx[:, :, 0]), o_, -np.inf))
 
-    per = [dict() for _ in range(n)]
-
-    def extra(nm, rows, a, b, W, is_t):
-        (col_c if nm == "trc" else col_t)(rows, a, b, W)
-        for i, r in enumerate(rows):
-            ok = np.isfinite(W[i])
-            per[r][nm] = (a + np.nonzero(ok)[0], W[i, ok])
-    AT.score_blocks(lo, hi, cand, fn, dict(sub=rec["sub"], dev=rec["dev"]), ("trc", "trt"), extra=extra)
+    AT.score_blocks(lo, hi, cand, fn, dict(sub=rec["sub"], dev=rec["dev"]), ("trt",),
+                    extra=lambda nm, rows, a, b, W, is_t: col(rows, a, b, W))
     floor = np.log(1e-6)
-    po = dens["o"]
     labs, scs = [], []
     for i in range(n):
-        lc, sc = col_c.get(i)
-        lt, st = col_t.get(i)
-        lab = np.union1d(lc, lt)
-        a = np.full(lab.size, floor)
-        b = np.full(lab.size, floor)
-        a[np.searchsorted(lab, lc)] = np.logaddexp(sc, floor)
-        b[np.searchsorted(lab, lt)] = np.logaddexp(st, floor)
-        score_ = a + b - 20.0
-        # triples of each device's packets
-        kc, vc = per[i].get("trc", (np.zeros(0, int), np.zeros(0)))
-        kt, vt = per[i].get("trt", (np.zeros(0, int), np.zeros(0)))
-        ks = np.union1d(kc, kt)
-        if ks.size >= 3:
-            Ec = np.full(ks.size, -np.inf)
-            Et = np.full(ks.size, -np.inf)
-            Ec[np.searchsorted(ks, kc)] = vc
-            Et[np.searchsorted(ks, kt)] = vt
-            dv = cand["dev"][ks]
-            for d in np.unique(dv):
-                j = np.nonzero(dv == d)[0]
-                if j.size < 3:
-                    continue
-                t = cand["t"][ks[j]]
-                best = []
-                for c in range(j.size):
-                    off = po(t - t[c])                          # every other packet as content after this credential
-                    x = Ec[j[c]] + off + Et[j]
-                    x[c] = -np.inf
-                    if np.isfinite(Ec[j[c]]) and np.isfinite(x).sum() >= 2:
-                        xs = np.sort(x[np.isfinite(x)])
-                        # sum over pairs {a, b} of exp(x_a + x_b - Ec): log of ((sum e^x)^2 - sum e^2x) / 2, minus Ec
-                        m_ = xs.max()
-                        e1 = np.exp(xs - m_).sum()
-                        e2 = np.exp(2 * (xs - m_)).sum()
-                        if e1 * e1 - e2 > 0:
-                            best.append(np.log((e1 * e1 - e2) / 2) + 2 * m_ - Ec[j[c]])
-                if best:
-                    pos = np.searchsorted(lab, d)
-                    score_[pos] = np.logaddexp.reduce(best)
-        if not registry:
-            band = np.arange(np.searchsorted(cand["t"], lo[i]), np.searchsorted(cand["t"], hi[i]))
-            score_ = _joint(score_, lab, band, cand, tr, dens, u[i])
+        lab0, st = col.get(i)
+        band = np.arange(np.searchsorted(cand["t"], lo[i]), np.searchsorted(cand["t"], hi[i]))
+        dv, cnt = np.unique(cand["dev"][band], return_counts=True)
+        lab = np.union1d(lab0, dv[cnt >= 3])                    # every device with a triple near the record
+        score_ = np.full(lab.size, floor - 20.0)
+        score_[np.searchsorted(lab, lab0)] = np.logaddexp(st, floor) - 20.0
+        if lab.size:
+            score_ = _joint(score_, lab, band, cand, tr, dens, u[i], fixed=mine[i] if registry else None)
         labs.append(lab)
         scs.append(score_)
     t = DS.table(labs, scs, rec, np.arange(n), np.zeros(n), base, rec["dev"], shuf)
     return t, tr
 
 
-SHORT = 60          # devices per record given the joint score of a transaction
-J_REPLY, J_FRAME = 8, 12   # end points per packet kept in the joint score
-J_FLOOR = -np.inf     # outside the range of a density seen on the model seeds
+def _group_prefix(A, key):
+    """For each column f (in the given order), the sum of A over earlier columns with the same key. A: (R, F)."""
+    o = np.argsort(key, kind="stable")
+    cs = np.cumsum(A[:, o], axis=1)
+    k = key[o]
+    start = np.r_[0, np.nonzero(k[1:] != k[:-1])[0] + 1]
+    base = np.zeros_like(cs)
+    first = np.zeros(k.size, np.int64)
+    first[start] = start
+    first = np.maximum.accumulate(first)
+    prev = np.where(first[None, :] > 0, cs[:, np.maximum(first - 1, 0)], 0.0)
+    out = np.empty_like(cs)
+    out[:, o] = cs - A[:, o] - prev
+    return out
 
 
-def _joint(score_, lab, ks, cand, tr, dens, u):
-    """The joint likelihood of the record under each of the SHORT best devices: over the device's triples of packets
-    near the record (any of the three as the credential packet), the reply its credential packet leads to, the
+def _joint(score_, lab, ks, cand, tr, dens, u, fixed=None):
+    """The joint likelihood of the record under every device with at least three packets near it: over the device's
+    triples of packets (any of the three as the credential packet), the reply its credential packet leads to, the
     submissions its content packets lead to (at two different nodes), the quorum timing of those submissions after
-    the reply, and the record's posting after the later submission. A value outside the range of a density seen on the
-    model seeds is floored at e^-30. Other devices rank below these."""
+    the reply, and the record's time after the later submission. Every end point a packet keeps is used. For one
+    credential packet and reply, the sum over pairs of submissions is taken in order of flood time with prefix sums,
+    so its cost is linear in the submissions. fixed: the record's two submissions, when they are known (the Registry
+    Node); the record-time term is then dropped. A device with no triple, or none the densities allow, ranks below
+    every device with one."""
     if ks.size < 3:
         return score_
     E, TY, ZZ, TS, TT, WW = tr._E, tr._TY, tr.ZZ, tr.TS, tr._TT, tr._WW
-    fl = J_FLOOR
-    pQ, po, pp = ((lambda x, f=dens[k]: np.maximum(f(x), fl)) for k in ("Q", "o", "post"))
-    order = np.argsort(-score_)
-    top = lab[order[:SHORT]]
+    pQ, po, pp = dens["Q"], dens["o"], dens["post"]
+    post_lo = pp.support[0]
     dv = cand["dev"][ks]
+    devs, cnt = np.unique(dv, return_counts=True)
+    reps, frs = {}, {}
+
+    def packet(k):
+        if k not in reps:
+            sel = (TY[k] == 2) & (E[k] >= 0)
+            kr = np.array([tr.ke_row.get(int(e), -1) for e in E[k][sel]], np.int64)
+            ok = kr >= 0
+            reps[k] = (kr[ok], np.log(WW[k][sel][ok]))
+            if fixed is None:
+                sel = (TY[k] == 1) & (u - TT[k] >= post_lo)        # a submission that reached every node before the record
+            else:
+                sel = (TY[k] == 1) & np.isin(E[k], fixed)
+            frs[k] = (ZZ[k][sel], TS[k][sel], TT[k][sel], np.log(WW[k][sel]))
+        return reps[k], frs[k]
     out = score_.copy()
     got = []
-    for d in top:
+    for d in devs[cnt >= 3]:
         j = ks[dv == d]
-        if j.size < 3:
-            continue
         t = cand["t"][j]
-        reps, frs = [], []
-        for k in j:
-            sel = TY[k] == 2
-            o2 = np.argsort(-WW[k][sel])[:J_REPLY]
-            reps.append((ZZ[k][sel][o2], TS[k][sel][o2], WW[k][sel][o2]))
-            sel = TY[k] == 1
-            o1 = np.argsort(-WW[k][sel])[:J_FRAME]
-            frs.append((ZZ[k][sel][o1], TS[k][sel][o1], TT[k][sel][o1], WW[k][sel][o1]))
+        F = [packet(k)[1] for k in j]
+        nf = np.array([f[0].size for f in F])
+        if (nf > 0).sum() < 2:
+            continue
+        z_all = np.concatenate([f[0] for f in F]).astype(np.int64)
+        ts_all = np.concatenate([f[1] for f in F])
+        r_all = np.concatenate([f[2] for f in F])
+        lw_all = np.concatenate([f[3] for f in F])
+        pk_all = np.repeat(np.arange(j.size), nf)
+        o = np.argsort(r_all, kind="stable")                      # in order of flood time
+        z_all, ts_all, r_all, lw_all, pk_all = z_all[o], ts_all[o], r_all[o], lw_all[o], pk_all[o]
+        lpp = pp(u - r_all) if fixed is None else np.zeros(r_all.size)
         tot = []
         for c in range(j.size):
-            cz, ct, cw = reps[c]
-            if cw.size == 0:
+            kr, lcw = packet(j[c])[0]
+            if kr.size == 0:
                 continue
-            for a in range(j.size):
-                for b in range(a + 1, j.size):
-                    if c in (a, b):
-                        continue
-                    lo_ = po(np.array([t[a] - t[c], t[b] - t[c]]))
-                    if not np.isfinite(lo_).all():
-                        continue
-                    za, ta_, ra, wa = frs[a]
-                    zb, tb_, rb, wb = frs[b]
-                    if wa.size == 0 or wb.size == 0:
-                        continue
-                    # (reply, frame a, frame b)
-                    kea = ct[:, None] + tr.via[cz][:, za]                    # (R, Fa)
-                    keb = ct[:, None] + tr.via[cz][:, zb]
-                    qa = pQ(ta_[None, :] - kea) + np.log(wa)[None, :]
-                    qb = pQ(tb_[None, :] - keb) + np.log(wb)[None, :]
-                    pr = pp(u - np.maximum(ra[:, None], rb[None, :]))        # (Fa, Fb)
-                    diff = za[:, None] != zb[None, :]
-                    x = np.log(cw)[:, None, None] + qa[:, :, None] + qb[:, None, :] + np.where(diff, pr, -np.inf)[None, :, :]
-                    m_ = np.max(x)
-                    if np.isfinite(m_):
-                        tot.append(lo_.sum() + m_ + np.log(np.exp(x - m_).sum()))
+            lo_ = po(t - t[c])                                     # (packets,)
+            # each credential packet spreads one unit of probability over the pairs that could be its content
+            # packets, so a device with more packets near the record gains only by having more transactions
+            e_ = np.exp(np.delete(lo_, c))
+            zc = 0.5 * (e_.sum() ** 2 - (e_ ** 2).sum())
+            if not zc > 0:
+                continue
+            lo_ = lo_ - 0.5 * np.log(zc)
+            keep = (pk_all != c) & np.isfinite(lo_[pk_all])
+            if keep.sum() < 2:
+                continue
+            z, pk = z_all[keep], pk_all[keep]
+            la = lo_[pk] + lw_all[keep] + pQ(ts_all[keep][None, :] - tr.ke[kr][:, z])     # (R, F)
+            m_ = np.max(la)
+            if not np.isfinite(m_):
+                continue
+            A = np.exp(la - m_)
+            earlier = np.cumsum(A, axis=1) - A
+            S_ = (earlier - _group_prefix(A, z) - _group_prefix(A, pk) + _group_prefix(A, z * (j.size + 1) + pk))
+            S_ = np.maximum(S_, 0.0)
+            lp = lpp[keep]
+            with np.errstate(divide="ignore"):
+                v = np.log(A) + np.log(S_) + lp[None, :] + 2 * m_     # (R, F): f the later submission
+            v = v + lcw[:, None]
+            mv = np.max(v)
+            if np.isfinite(mv):
+                tot.append(mv + np.log(np.exp(v - mv).sum()))
         if tot:
             got.append((d, np.logaddexp.reduce(tot)))
     if got:
         base = min(v for _, v in got) - 50.0
-        out = np.minimum(out, base) if np.isfinite(base) else out
+        out = np.minimum(out, base)
         for d, v in got:
             out[np.searchsorted(lab, d)] = v
     return out
