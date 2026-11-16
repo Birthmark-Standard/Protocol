@@ -15,6 +15,7 @@ C6 simulates two candidates on the same relay layer and compares them. Neither i
 | One-time certificates: device hold | None (natural variant); 693 s mean on the holds' 10-second lottery (lengthened-hold variant) | As decided. 693 s brings the mean end-to-end latency to the credential path's D (1,165 s and 1,175 s at 680 s and 690 s on development seeds) |
 | Issuers | 3, real devices and decoys each split 50/30/20, one issuing key each | As the validators |
 | Refills (main) | When the stock falls to 5, the device fetches 20, directly from its issuer | As decided |
+| Refills (random variant) | Each identity fetches 20 at the times of a Poisson process that does not depend on its captures, at 1.25 × its long-run capture rate / 20; a capture with no certificate waits for the next refill | As decided: the fair counterpart of the threshold rule, which leaks capture times |
 | Certificate expiry | Two weeks | As decided |
 | Stock at the window's start | Each identity's long-run state: uniform over the stocks 6 to 25 just before a capture | Agreed modeling choice |
 | Registry Nodes | Verify the certificate and the device signature, then drop them; the posted record carries neither | As decided |
@@ -244,11 +245,31 @@ Accuracy rises with K in every row.
 
 **Can fail.** Yes, if a shared stream is drawn in another order.
 
-## Not yet predicted
+## 15. Random refill schedule
 
-- The random refill schedule (variant of the refill rule): its schedule is proposed and waits for approval.
-- The batch sweep (1, 5, 20, 100): the threshold for batches other than 20 is not decided.
-- The destination dropping or delaying packets: C5's resubmission wait (2,400 s from capture) was set just past the credential path's longest natural delay (2,326 s). The one-time certificate candidate's longest delay is 1,283 s natural and about 3,300 s with the lengthened hold, so the rule cannot be carried over as it stands.
+Both variants (natural and lengthened hold) run with the random refill schedule as well as the threshold rule. Each identity's stock at the window starts from its long-run state: its refills and captures are simulated from two weeks and a day before the window. The issuer knows the schedule, so it gives refill times no weight.
+
+**Prediction.**
+- Every vantage that does not use refills (observer, first relay, destination, destination told each address's issuer, first relay with the destination, K records, edit chains) equals the threshold variant decision by decision: the captures, paths and holds are the same, and no device runs dry.
+- Issuer alone, W0, on its own devices' records: equal to chance among its identities within ±30% of it: 1/51, 1/31 and 1/21 at R = 1 (2.0%, 3.2%, 4.8% for shares 50%, 30%, 20%); 1/103, 1/62 and 1/41 at R = 100 (0.97%, 1.6%, 2.4%). Under W1 and W2 it is above chance, because volume still shows each identity's rate.
+- Issuer with the observer, and issuer with a first relay: equal to the observer, and to the first relay, decision by decision.
+- Issuer with the destination Registry Node: equal to the destination told each address's issuer on the same records, decision by decision.
+- Stock: about 1,260 certificates per W0 device (1,200 to 1,320). Revocation delay: two weeks both at the normal rate of use and for a device that keeps them, because the stock outlasts the expiry.
+- The issuer's withholding attack is not run under this schedule: it finds records from the refills the target's captures trigger, and here none do.
+
+**Basis.**
+- Refills are independent of captures, so a refill time says nothing about a record; only each identity's rate remains, which is the same for every identity at W0.
+- Stock: certificates arrive at 1.25 λ and are used oldest first, so each stays about two weeks, until it is used or expires. By Little's law the stock is 1.25 × 3 per hour × 336 hours = 1,260.
+
+**Fails if** a decision differs where equality is predicted, the issuer's rate lies outside its range at W0, or the stock lies outside its range.
+
+**Can fail.** Yes.
+
+## Not yet predicted (second C6 run)
+
+- The batch sweep (1, 5, 20, 100).
+- The destination dropping or delaying packets.
+- The issuer's withholding attack with windows of 6, 12 and 24 hours.
 
 ## What would favor each candidate
 
@@ -258,7 +279,11 @@ Stated before any result, at equal latency (the lengthened-hold variant), since 
 - **Favors the credential path:** the one-time certificate candidate's rate is above the credential path's on a shared vantage at equal latency; or the issuer with one other party (a destination Registry Node) names devices more often than any single party or pair of the credential path does outside the exact first-relay-with-destination link.
 - **Not settled by these rates:** the natural variant's lower latency, the revocation delay (item 13), and that every Registry Node learns each packet's issuer in the one-time certificate candidate while no destination learns the validator in the credential path. These are reported beside the rates, not folded into them.
 - **The tracer** enters the comparison only if it meets its entry conditions in both candidates.
+- **The issuer** is compared under both refill rules. A result that favors one candidate under the threshold rule and not under the random schedule is reported as depending on the refill rule.
 
 ## Changes before the run
 
 - C6 uses the evaluation seed set of C3 to C5, which no code had run on when it was defined; development, debugging and dry runs use model seeds only.
+- Logged assumptions, decided on the reasons given, before the run: both candidates keep the same capture rates (the same devices capture at the same times), not the same counts in flight; one developer's issuer serves all editing software and is not scored as a vantage; a device refused a refill asks again at each later capture, and a device with no certificate left gets its refill when the withholding window ends. Each follows the recommendation the specification's owner accepted.
+- Item 15, the random refill schedule, was added with its parameters, before its code.
+- The first C6 run is items 1 to 15. The batch sweep, the destination's drop and delay, and the issuer's 6, 12 and 24-hour windows are a second C6 run with its own predictions.
