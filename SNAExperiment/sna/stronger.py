@@ -26,6 +26,29 @@ from . import sim as S
 ROOT = Path(__file__).resolve().parent.parent
 C2_INFO = ROOT / "results" / "C2" / "run_info.json"
 RATE_SEED0 = EX.MODEL_SEED0 + 50_000            # model seeds for the discounting attacker's rate model
+EVAL_TAG = "sna-c3-c5-fresh"                   # the evaluation seed set of C3 to C5 (not C2's)
+DRY_SEED0 = EX.MODEL_SEED0 + 300_000             # model seeds of dry runs: DRY_SEED0 + 1000 R + run id
+SEED_SETS = ("evaluation", "model (dry run)")
+
+
+def eval_seed(R, run_id):
+    """The traffic seed of one full run of C3 to C5: SHA-256 of the tag, the cell and the run id."""
+    h = hashlib.sha256(f"{EVAL_TAG}|R={R:g}|run={run_id}".encode()).digest()
+    return int.from_bytes(h[:8], "little") >> 1
+
+
+def dry_seed(R, run_id):
+    """The traffic seed of one dry run: a model seed, disjoint from every model's own seeds."""
+    return DRY_SEED0 + 1000 * int(R) + int(run_id)
+
+
+def traffic(out, R, run_id):
+    """The traffic seed for a run written to out: the seed set its run_info.json names."""
+    key = ("seed_set", str(out))
+    if key not in _C:
+        p = Path(out) / "run_info.json"
+        _C[key] = json.loads(p.read_text()).get("seed_set", SEED_SETS[0]) if p.exists() else SEED_SETS[0]
+    return eval_seed(R, run_id) if _C[key] == SEED_SETS[0] else dry_seed(R, run_id)
 
 
 def c2_info():
@@ -117,7 +140,7 @@ def work_c3_kc(out, R, variant, run_id):
     manufacturer that keeps records) and the coalition vantages."""
     cfg = cell_config(R)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     m, ex = models(out), extra(out)
     res = []
@@ -149,7 +172,7 @@ def work_c3_conc(out, R, variant, run_id):
     f = float(variant[1:])
     cfg = cell_config(R, decoy_factor=f)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     t = time.time()
     hk = _Hooks()
@@ -164,7 +187,7 @@ def work_c3_vol(out, R, variant, run_id):
     v = float(variant[1:])
     cfg = cell_config(R, decoys=v)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     t = time.time()
     tab = AT.compute(run, models(out), _rng(R, run_id))
@@ -192,7 +215,7 @@ def work_c4_obs(out, R, variant, run_id):
     from . import krecord as KR
     cfg = c4_config(R, variant)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     m = models(out)
     t = time.time()
@@ -296,7 +319,7 @@ def work_c5(out, R, setting, run_id):
     target = 0 if R == 1 else int(np.random.default_rng([TARGET_SEED, int(R), run_id]).integers(0, cell_config(R).real_devices))
     cfg = c5_config(R, setting, target)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     t = time.time()
     pdf, n_model = c5_model(out, setting)
@@ -365,8 +388,9 @@ def git_commit(path=None):
         return "unknown"
 
 
-def run(out, jobs, runs, workers="auto", label=None):
-    """Run the given jobs' runs not yet on disk, then write the summary of each experiment present."""
+def run(out, jobs, runs, workers="auto", label=None, dry=False):
+    """Run the given jobs' runs not yet on disk, then write the summary of each experiment present. A dry run uses
+    model seeds (dry_seed) and is labelled as one; a full run uses the evaluation seed set (eval_seed)."""
     from . import runner as RN
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
@@ -380,10 +404,17 @@ def run(out, jobs, runs, workers="auto", label=None):
         info["jobs"][job] = dict(hash=h, cells=list(JOBS[job]["cells"]), variants=list(JOBS[job]["variants"]),
                                  runs=max(runs, (old or {}).get("runs", 0)))
     exp = {EXPERIMENT_OF[j[:2]] for j in jobs}
+    seed_set = SEED_SETS[1] if dry else SEED_SETS[0]
+    if info.get("seed_set", seed_set) != seed_set:
+        raise SystemExit(f"{out} holds runs on the {info['seed_set']} seeds. Use a new folder.")
+    info["seed_set"] = seed_set
+    if dry:
+        label = label if (label or "").startswith("dry") else "dry run" + (f": {label}" if label else "")
     info.setdefault("code_commit", git_commit())
     info.setdefault("predictions_commit", {e: git_commit(ROOT / f"PREDICTIONS_{e}.md") for e in ("C3", "C4", "C5")})
     info.setdefault("c2_config_hash", c2_info()["config_hash"])
-    info.setdefault("seeds", dict(traffic="sha256 of the volume and run id, as C2", models=EX.MODEL_SEED0, rates=RATE_SEED0,
+    info.setdefault("seeds", dict(traffic=(f"sha256 of '{EVAL_TAG}', the volume and the run id" if not dry else
+                                           f"{DRY_SEED0} + 1000 R + run id (model seeds)"), models=EX.MODEL_SEED0, rates=RATE_SEED0,
                                   operators=DC.OPS_SEED, coalitions=CO.COALITION_SEED))
     v = EX.versions()
     if "versions" not in info:
@@ -475,8 +506,9 @@ def main(argv=None):
     ap.add_argument("--out", required=True)
     ap.add_argument("--workers", default="auto")
     ap.add_argument("--label", default=None)
+    ap.add_argument("--dry", action="store_true", help="a dry run on model seeds, labelled as one")
     a = ap.parse_args(argv)
-    run(a.out, a.jobs, a.runs, a.workers, a.label)
+    run(a.out, a.jobs, a.runs, a.workers, a.label, a.dry)
 
 
 if __name__ == "__main__":

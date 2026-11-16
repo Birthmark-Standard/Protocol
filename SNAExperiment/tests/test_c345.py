@@ -402,3 +402,19 @@ def test_calibration_flag_ignores_sampling_noise():
     err2 = AN.reliability(conf2, bad)[1]
     assert AN.miscalibrated(err2, 0.0, 0.5, AN.calibration_null(conf2))
 
+
+
+# --------------------------------------------------------------------------- seed sets
+def test_evaluation_seeds_are_fresh_and_dry_runs_use_model_seeds(tmp_path):
+    ev = {ST.eval_seed(R, k) for R in (1, 100, 300) for k in range(100)}
+    c2 = {EX.traffic_seed(R, k) for R in (1, 100, 300) for k in range(100)}
+    assert len(ev) == 300 and not ev & c2
+    dry = {ST.dry_seed(R, k) for R in (1, 100, 300) for k in range(100)}
+    assert len(dry) == 300 and min(dry) >= EX.MODEL_SEED0 + 300_000 and max(dry) < EX.MODEL_SEED0 + 1_000_000
+    assert not dry & ev
+    # a folder's run_info.json names its seed set, and every worker reads it
+    (tmp_path / "run_info.json").write_text(json.dumps(dict(seed_set="model (dry run)")))
+    assert ST.traffic(tmp_path, 100, 3) == ST.dry_seed(100, 3)
+    other = tmp_path / "full"
+    other.mkdir()
+    assert ST.traffic(other, 100, 3) == ST.eval_seed(100, 3)
