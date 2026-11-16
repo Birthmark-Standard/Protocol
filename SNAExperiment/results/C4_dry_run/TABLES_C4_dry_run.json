@@ -1,0 +1,7464 @@
+[
+ {
+  "cell": "c4_obs__W0__R1",
+  "vantage": "observer",
+  "R": 1.0,
+  "T": 101.0,
+  "L": 101.0,
+  "runs": 1,
+  "n": 209,
+  "inv_L": 0.009900990099009901,
+  "inv_R": 1.0,
+  "dev_n_correct": 17,
+  "dev_accuracy": 0.08133971291866028,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.08133971291866028,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.011072030995023307,
+  "dev_baseline_random": 0.01107203122228384,
+  "dev_lift_random": 7.3464130433902435,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 90.0,
+  "sub_n_correct": 1,
+  "sub_accuracy": 0.004784688995215311,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.004784688995215311,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.005014616336548728,
+  "sub_baseline_random": 0.005014616996049881,
+  "sub_lift_random": 0.9541485677263871,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 596.0,
+  "sub_lift": 0.4832535885167464,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 3,
+  "auc": 0.43658088235294124,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 0.0,
+  "p_at_1_hi": 0.6576197724933469,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.2775327998628892,
+  "p_at_10": 0.0,
+  "p_at_10_lo": -1.3877787807814457e-17,
+  "p_at_10_hi": 0.154639018924847,
+  "p_at_25": 0.057692307692307696,
+  "p_at_25_lo": 0.019814172112270614,
+  "p_at_25_hi": 0.1564251136896076,
+  "top1_group": 2,
+  "claim": false,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 209,
+  "conf_mean": 0.04180119675895608,
+  "conf_p50": 0.040318796676387596,
+  "conf_p90": 0.05229884748838597,
+  "conf_p99": 0.06330314964853197,
+  "conf_max": 0.08002704611545754,
+  "reliability": [
+   {
+    "conf": 0.031362621472206434,
+    "hit": 0.09523809523809523,
+    "n": 21
+   },
+   {
+    "conf": 0.03429636786825079,
+    "hit": 0.14285714285714285,
+    "n": 21
+   },
+   {
+    "conf": 0.0361445595261259,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.03770379528779104,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.03944737607949362,
+    "hit": 0.19047619047619047,
+    "n": 21
+   },
+   {
+    "conf": 0.041311377722664785,
+    "hit": 0.09523809523809523,
+    "n": 21
+   },
+   {
+    "conf": 0.04322196442152816,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.04651507879616982,
+    "hit": 0.23809523809523808,
+    "n": 21
+   },
+   {
+    "conf": 0.0503202165447967,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.05848298052611238,
+    "hit": 0.0,
+    "n": 20
+   }
+  ],
+  "calibration_error": 0.07679288133543352,
+  "calibration_null": 0.057555401802518044,
+  "miscalibrated": true,
+  "entropy_bits": 5.971245853625549,
+  "entropy_bits_p50": 5.968023626177392,
+  "anonymity_set": 62.85088648483762,
+  "anonymity_set_p50": 62.597087408320334,
+  "min_entropy_bits": 4.604266416706685,
+  "top1": 0.08133971291866028,
+  "top5": 0.215311004784689,
+  "top10": 0.3444976076555024,
+  "devices": 1,
+  "device_rate_p50": 0.08133971291866028,
+  "device_rate_p90": 0.08133971291866028,
+  "device_rate_max": 0.08133971291866028,
+  "device_worst_records": 209,
+  "device_worst_entropy_bits": 5.971245853625549,
+  "shuffle_auc": 0.5969669117647058,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "W0",
+  "file": "c4_obs__W0__R1",
+  "decoys": 100.0,
+  "bound": 0.10499241459193476,
+  "real_in_flight": 1.0540837979435558,
+  "decoys_in_flight": 103.09233551012474,
+  "score_seconds": 0.18576622009277344,
+  "sim_seconds": 1.0908377170562744
+ },
+ {
+  "cell": "c4_obs__W0__R100",
+  "vantage": "observer",
+  "R": 100.0,
+  "T": 200.0,
+  "L": 200.0,
+  "runs": 1,
+  "n": 602,
+  "inv_L": 0.005,
+  "inv_R": 0.01,
+  "dev_n_correct": 7,
+  "dev_accuracy": 0.011627906976744186,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.011627906976744186,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.005534993245597446,
+  "dev_baseline_random": 0.005534993018954992,
+  "dev_lift_random": 2.100798765381162,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 180.0,
+  "sub_n_correct": 2,
+  "sub_accuracy": 0.0033222591362126247,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.0033222591362126247,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.0026377888463678897,
+  "sub_baseline_random": 0.002637788886204362,
+  "sub_lift_random": 1.259486384130867,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 1142.0,
+  "sub_lift": 0.6644518272425249,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 8,
+  "auc": 0.34693877551020413,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 2.7755575615628914e-17,
+  "p_at_1_hi": 0.3903342879021653,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.11351339317396876,
+  "p_at_10": 0.0,
+  "p_at_10_lo": 0.0,
+  "p_at_10_hi": 0.06017185214208986,
+  "p_at_25": 0.0,
+  "p_at_25_lo": 1.734723475976807e-18,
+  "p_at_25_hi": 0.0249702443680766,
+  "top1_group": 6,
+  "claim": true,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 602,
+  "conf_mean": 0.024442464225776492,
+  "conf_p50": 0.023517745856009107,
+  "conf_p90": 0.030553340622420593,
+  "conf_p99": 0.03671068213222579,
+  "conf_max": 0.03671068213222579,
+  "reliability": [
+   {
+    "conf": 0.01888660840602139,
+    "hit": 0.01639344262295082,
+    "n": 61
+   },
+   {
+    "conf": 0.020388123936122236,
+    "hit": 0.01639344262295082,
+    "n": 61
+   },
+   {
+    "conf": 0.021402622912645275,
+    "hit": 0.03333333333333333,
+    "n": 60
+   },
+   {
+    "conf": 0.022254696137984017,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.02284050675051649,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.023730307727796048,
+    "hit": 0.016666666666666666,
+    "n": 60
+   },
+   {
+    "conf": 0.02487071003049449,
+    "hit": 0.03333333333333333,
+    "n": 60
+   },
+   {
+    "conf": 0.027105039154565806,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.02964219360989814,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.033464003526877825,
+    "hit": 0.0,
+    "n": 60
+   }
+  ],
+  "calibration_error": 0.016879673605881516,
+  "calibration_null": 0.024680947841241686,
+  "miscalibrated": false,
+  "entropy_bits": 6.932138812315482,
+  "entropy_bits_p50": 6.942969884278137,
+  "anonymity_set": 122.20921158555392,
+  "anonymity_set_p50": 123.03883041717656,
+  "min_entropy_bits": 5.375483482284455,
+  "top1": 0.011627906976744186,
+  "top5": 0.10299003322259136,
+  "top10": 0.2026578073089701,
+  "devices": 8,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.027272727272727258,
+  "device_rate_max": 0.09090909090909091,
+  "device_worst_records": 11,
+  "device_worst_entropy_bits": 6.942969884278137,
+  "shuffle_auc": 0.587515006002401,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "W0",
+  "file": "c4_obs__W0__R100",
+  "decoys": 100.0,
+  "bound": 0.05327091365062463,
+  "real_in_flight": 102.03578809271482,
+  "decoys_in_flight": 101.33629475195896,
+  "score_seconds": 0.2592051029205322,
+  "sim_seconds": 0.11153793334960938
+ },
+ {
+  "cell": "c4_obs__W1__R1",
+  "vantage": "observer",
+  "R": 1.0,
+  "T": 101.0,
+  "L": 101.0,
+  "runs": 1,
+  "n": 182,
+  "inv_L": 0.009900990099009901,
+  "inv_R": 1.0,
+  "dev_n_correct": 0,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.0,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.013734159678998556,
+  "dev_baseline_random": 0.013734158128499985,
+  "dev_lift_random": 0.0,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 73.0,
+  "sub_n_correct": 2,
+  "sub_accuracy": 0.01098901098901099,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.01098901098901099,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.0051426252345093985,
+  "sub_baseline_random": 0.005142625421285629,
+  "sub_lift_random": 2.136848494280632,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 589.0,
+  "sub_lift": 1.10989010989011,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": Infinity,
+  "auc": NaN,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 0.0,
+  "p_at_1_hi": 0.6576197724933469,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.2991450484195441,
+  "p_at_10": 0.0,
+  "p_at_10_lo": 0.0,
+  "p_at_10_hi": 0.17587922364665765,
+  "p_at_25": 0.0,
+  "p_at_25_lo": 0.0,
+  "p_at_25_hi": 0.07707356308558039,
+  "top1_group": 2,
+  "claim": false,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 182,
+  "conf_mean": 0.06691915565459679,
+  "conf_p50": 0.06563590925214366,
+  "conf_p90": 0.08416304798730509,
+  "conf_p99": 0.09969834991177799,
+  "conf_max": 0.10315893982692904,
+  "reliability": [
+   {
+    "conf": 0.05018234918157447,
+    "hit": 0.0,
+    "n": 19
+   },
+   {
+    "conf": 0.0550265872670204,
+    "hit": 0.0,
+    "n": 19
+   },
+   {
+    "conf": 0.05884538285193256,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.06165365194579907,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.06476189438691028,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.06702179513720519,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.069210447219477,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.0734875762297851,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.07928912460482088,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.09130326854703177,
+    "hit": 0.0,
+    "n": 18
+   }
+  ],
+  "calibration_error": 0.06691915565459679,
+  "calibration_null": 0.07647937107180797,
+  "miscalibrated": false,
+  "entropy_bits": 5.491326121144648,
+  "entropy_bits_p50": 5.508728134644382,
+  "anonymity_set": 45.140649023720734,
+  "anonymity_set_p50": 45.529450258314085,
+  "min_entropy_bits": 3.9228225734061866,
+  "top1": 0.0,
+  "top5": 0.04395604395604396,
+  "top10": 0.14835164835164835,
+  "devices": 1,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.0,
+  "device_rate_max": 0.0,
+  "device_worst_records": 182,
+  "device_worst_entropy_bits": 5.491326121144648,
+  "shuffle_auc": NaN,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "W1",
+  "file": "c4_obs__W1__R1",
+  "decoys": 100.0,
+  "bound": 0.10499241459193476,
+  "real_in_flight": 0.9259739803994322,
+  "decoys_in_flight": 101.39955129878783,
+  "score_seconds": 0.21889042854309082,
+  "sim_seconds": 1.1592612266540527
+ },
+ {
+  "cell": "c4_obs__W1__R100",
+  "vantage": "observer",
+  "R": 100.0,
+  "T": 200.0,
+  "L": 200.0,
+  "runs": 1,
+  "n": 674,
+  "inv_L": 0.005,
+  "inv_R": 0.01,
+  "dev_n_correct": 24,
+  "dev_accuracy": 0.03560830860534125,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.03560830860534125,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.00678126692000876,
+  "dev_baseline_random": 0.006781267002224922,
+  "dev_lift_random": 5.250981715566396,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 149.0,
+  "sub_n_correct": 2,
+  "sub_accuracy": 0.002967359050445104,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.002967359050445104,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.0024009071565468075,
+  "sub_baseline_random": 0.002400906989350915,
+  "sub_lift_random": 1.2359324442653654,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 1280.0,
+  "sub_lift": 0.5934718100890208,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 3,
+  "auc": 0.48451923076923076,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 5.551115123125783e-17,
+  "p_at_1_hi": 0.35433043506668743,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.10151455415332376,
+  "p_at_10": 0.0,
+  "p_at_10_lo": 0.0,
+  "p_at_10_hi": 0.05422613939130178,
+  "p_at_25": 0.023809523809523808,
+  "p_at_25_lo": 0.009297119491395035,
+  "p_at_25_hi": 0.05961208846086025,
+  "top1_group": 7,
+  "claim": true,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 674,
+  "conf_mean": 0.0450231615284855,
+  "conf_p50": 0.04192491494570112,
+  "conf_p90": 0.06171944461428739,
+  "conf_p99": 0.07562024429226787,
+  "conf_max": 0.07562024429226787,
+  "reliability": [
+   {
+    "conf": 0.03226012036690068,
+    "hit": 0.04411764705882353,
+    "n": 68
+   },
+   {
+    "conf": 0.03533738359432118,
+    "hit": 0.014705882352941176,
+    "n": 68
+   },
+   {
+    "conf": 0.03761667468581597,
+    "hit": 0.04411764705882353,
+    "n": 68
+   },
+   {
+    "conf": 0.03906936287470825,
+    "hit": 0.014705882352941176,
+    "n": 68
+   },
+   {
+    "conf": 0.04084901446180596,
+    "hit": 0.04477611940298507,
+    "n": 67
+   },
+   {
+    "conf": 0.04304861539824413,
+    "hit": 0.07462686567164178,
+    "n": 67
+   },
+   {
+    "conf": 0.046342771657684655,
+    "hit": 0.04477611940298507,
+    "n": 67
+   },
+   {
+    "conf": 0.05040368650018889,
+    "hit": 0.029850746268656716,
+    "n": 67
+   },
+   {
+    "conf": 0.05536823137068509,
+    "hit": 0.04477611940298507,
+    "n": 67
+   },
+   {
+    "conf": 0.07047021862214486,
+    "hit": 0.0,
+    "n": 67
+   }
+  ],
+  "calibration_error": 0.020178166679203337,
+  "calibration_null": 0.028876436833345,
+  "miscalibrated": false,
+  "entropy_bits": 6.4731976628314,
+  "entropy_bits_p50": 6.475221101489918,
+  "anonymity_set": 88.93219459754359,
+  "anonymity_set_p50": 88.9683999550714,
+  "min_entropy_bits": 4.510625209747099,
+  "top1": 0.03560830860534125,
+  "top5": 0.142433234421365,
+  "top10": 0.2507418397626113,
+  "devices": 20,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.17127272727272744,
+  "device_rate_max": 0.3023255813953488,
+  "device_worst_records": 43,
+  "device_worst_entropy_bits": 6.471551455673702,
+  "shuffle_auc": 0.4651282051282051,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "W1",
+  "file": "c4_obs__W1__R100",
+  "decoys": 100.0,
+  "bound": 0.05327091365062463,
+  "real_in_flight": 111.46153186250139,
+  "decoys_in_flight": 108.76741741572184,
+  "score_seconds": 0.3501877784729004,
+  "sim_seconds": 0.12378168106079102
+ },
+ {
+  "cell": "c4_obs__W2__R1",
+  "vantage": "observer",
+  "R": 1.0,
+  "T": 101.0,
+  "L": 101.0,
+  "runs": 1,
+  "n": 186,
+  "inv_L": 0.009900990099009901,
+  "inv_R": 1.0,
+  "dev_n_correct": 22,
+  "dev_accuracy": 0.11827956989247312,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.11827956989247312,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.014092542196033142,
+  "dev_baseline_random": 0.014092543162405491,
+  "dev_lift_random": 8.393061255177026,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 71.5,
+  "sub_n_correct": 2,
+  "sub_accuracy": 0.010752688172043012,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.010752688172043012,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.005071565647789788,
+  "sub_baseline_random": 0.005071565508842468,
+  "sub_lift_random": 2.1201910650075253,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 590.0,
+  "sub_lift": 1.0860215053763442,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 3,
+  "auc": 0.504157427937916,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 0.0,
+  "p_at_1_hi": 0.6576197724933469,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.2991450484195441,
+  "p_at_10": 0.0,
+  "p_at_10_lo": 0.0,
+  "p_at_10_hi": 0.16817922405261626,
+  "p_at_25": 0.043478260869565216,
+  "p_at_25_lo": 0.012005445598556624,
+  "p_at_25_hi": 0.1453225902621907,
+  "top1_group": 2,
+  "claim": false,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 186,
+  "conf_mean": 0.09355652527022401,
+  "conf_p50": 0.08208562488353471,
+  "conf_p90": 0.14583443423681508,
+  "conf_p99": 0.22965311304140898,
+  "conf_max": 0.23821770119509114,
+  "reliability": [
+   {
+    "conf": 0.05225247432014061,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.05873383825137748,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.06419275344627512,
+    "hit": 0.15789473684210525,
+    "n": 19
+   },
+   {
+    "conf": 0.06929351167013449,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.07855319971173341,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.08853269592313572,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.09915917030388183,
+    "hit": 0.3888888888888889,
+    "n": 18
+   },
+   {
+    "conf": 0.11437137016956626,
+    "hit": 0.2222222222222222,
+    "n": 18
+   },
+   {
+    "conf": 0.13561805979103198,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.183179327909327,
+    "hit": 0.0,
+    "n": 18
+   }
+  ],
+  "calibration_error": 0.09376040162381943,
+  "calibration_null": 0.07998276994838763,
+  "miscalibrated": true,
+  "entropy_bits": 5.3914576550627125,
+  "entropy_bits_p50": 5.415741930837085,
+  "anonymity_set": 42.22230191420929,
+  "anonymity_set_p50": 42.68750480955783,
+  "min_entropy_bits": 3.527590254260333,
+  "top1": 0.11827956989247312,
+  "top5": 0.2849462365591398,
+  "top10": 0.3709677419354839,
+  "devices": 1,
+  "device_rate_p50": 0.11827956989247312,
+  "device_rate_p90": 0.11827956989247312,
+  "device_rate_max": 0.11827956989247312,
+  "device_worst_records": 186,
+  "device_worst_entropy_bits": 5.3914576550627125,
+  "shuffle_auc": 0.4611973392461197,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "W2",
+  "file": "c4_obs__W2__R1",
+  "decoys": 100.0,
+  "bound": 0.10499241459193476,
+  "real_in_flight": 0.9376828348169913,
+  "decoys_in_flight": 103.14357309158005,
+  "score_seconds": 0.2007732391357422,
+  "sim_seconds": 1.13753342628479
+ },
+ {
+  "cell": "c4_obs__W2__R100",
+  "vantage": "observer",
+  "R": 100.0,
+  "T": 200.0,
+  "L": 200.0,
+  "runs": 1,
+  "n": 619,
+  "inv_L": 0.005,
+  "inv_R": 0.01,
+  "dev_n_correct": 33,
+  "dev_accuracy": 0.05331179321486268,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.05331179321486268,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.006801148938987049,
+  "dev_baseline_random": 0.006801149342209101,
+  "dev_lift_random": 7.838645160269471,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 148.0,
+  "sub_n_correct": 5,
+  "sub_accuracy": 0.008077544426494346,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.008077544426494346,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.002536815184549171,
+  "sub_baseline_random": 0.0025368151254951954,
+  "sub_lift_random": 3.1841280656516737,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 1203.0,
+  "sub_lift": 1.615508885298869,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 2,
+  "auc": 0.4590702244285862,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 2.7755575615628914e-17,
+  "p_at_1_hi": 0.3903342879021653,
+  "p_at_5": 0.03225806451612903,
+  "p_at_5_lo": 0.005717221525416816,
+  "p_at_5_hi": 0.16194105164724906,
+  "p_at_10": 0.08064516129032258,
+  "p_at_10_lo": 0.03493834698599271,
+  "p_at_10_hi": 0.17528571348612612,
+  "p_at_25": 0.04516129032258064,
+  "p_at_25_lo": 0.022045753492620307,
+  "p_at_25_hi": 0.09027667764819537,
+  "top1_group": 6,
+  "claim": true,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 619,
+  "conf_mean": 0.06320216958440422,
+  "conf_p50": 0.05146790471528986,
+  "conf_p90": 0.1019571017745837,
+  "conf_p99": 0.1241906368507094,
+  "conf_max": 0.12614635480902928,
+  "reliability": [
+   {
+    "conf": 0.03321195104739803,
+    "hit": 0.06451612903225806,
+    "n": 62
+   },
+   {
+    "conf": 0.036948994635951256,
+    "hit": 0.06451612903225806,
+    "n": 62
+   },
+   {
+    "conf": 0.04183685558105,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.04550454271165026,
+    "hit": 0.04838709677419355,
+    "n": 62
+   },
+   {
+    "conf": 0.050391313334059475,
+    "hit": 0.16129032258064516,
+    "n": 62
+   },
+   {
+    "conf": 0.05660392557643048,
+    "hit": 0.016129032258064516,
+    "n": 62
+   },
+   {
+    "conf": 0.06966521238201824,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.08597742235149365,
+    "hit": 0.0,
+    "n": 62
+   },
+   {
+    "conf": 0.09557310778741915,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.11717896389316466,
+    "hit": 0.08196721311475409,
+    "n": 61
+   }
+  ],
+  "calibration_error": 0.04447673595855073,
+  "calibration_null": 0.03851727895725154,
+  "miscalibrated": true,
+  "entropy_bits": 6.391698760105659,
+  "entropy_bits_p50": 6.390688188937831,
+  "anonymity_set": 84.26677722470197,
+  "anonymity_set_p50": 83.90519244027125,
+  "min_entropy_bits": 4.105554620237768,
+  "top1": 0.05331179321486268,
+  "top5": 0.172859450726979,
+  "top10": 0.2972536348949919,
+  "devices": 20,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.31785714285714306,
+  "device_rate_max": 0.55,
+  "device_worst_records": 20,
+  "device_worst_entropy_bits": 6.328415610024459,
+  "shuffle_auc": 0.4369117799151929,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "W2",
+  "file": "c4_obs__W2__R100",
+  "decoys": 100.0,
+  "bound": 0.05327091365062463,
+  "real_in_flight": 108.15443272696672,
+  "decoys_in_flight": 102.77315684953248,
+  "score_seconds": 0.2801845073699951,
+  "sim_seconds": 0.11384463310241699
+ },
+ {
+  "cell": "c4_obs__Wmis__R1",
+  "vantage": "observer",
+  "R": 1.0,
+  "T": 101.0,
+  "L": 101.0,
+  "runs": 1,
+  "n": 186,
+  "inv_L": 0.009900990099009901,
+  "inv_R": 1.0,
+  "dev_n_correct": 48,
+  "dev_accuracy": 0.25806451612903225,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.25806451612903225,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.01110833367052418,
+  "dev_baseline_random": 0.011108333244919777,
+  "dev_lift_random": 23.231613650011536,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 90.0,
+  "sub_n_correct": 2,
+  "sub_accuracy": 0.010752688172043012,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.010752688172043012,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.005028452811842804,
+  "sub_baseline_random": 0.0050284527242183685,
+  "sub_lift_random": 2.1383691116119703,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 597.5,
+  "sub_lift": 1.0860215053763442,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 2,
+  "auc": 0.818161231884058,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 1.0,
+  "p_at_1_lo": 0.34238022750665303,
+  "p_at_1_hi": 1.0,
+  "p_at_5": 1.0,
+  "p_at_5_lo": 0.7008549515804559,
+  "p_at_5_hi": 1.0,
+  "p_at_10": 0.8947368421052632,
+  "p_at_10_lo": 0.6860591728889099,
+  "p_at_10_hi": 0.9706414397011299,
+  "p_at_25": 0.5652173913043478,
+  "p_at_25_lo": 0.4224743369429499,
+  "p_at_25_hi": 0.6979073722198005,
+  "top1_group": 2,
+  "claim": false,
+  "coverage_p50": 0.3817204301075269,
+  "count_p50": 71,
+  "decisions": 186,
+  "conf_mean": 0.04837874343988412,
+  "conf_p50": 0.04346849645609273,
+  "conf_p90": 0.06245126183933984,
+  "conf_p99": 0.11666630653668103,
+  "conf_max": 0.11781120717275206,
+  "reliability": [
+   {
+    "conf": 0.03247787484347866,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.036227869168074654,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.037995187558922026,
+    "hit": 0.0,
+    "n": 19
+   },
+   {
+    "conf": 0.03979887999605835,
+    "hit": 0.15789473684210525,
+    "n": 19
+   },
+   {
+    "conf": 0.04252939837000412,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.045007555072590605,
+    "hit": 0.21052631578947367,
+    "n": 19
+   },
+   {
+    "conf": 0.0475669793769917,
+    "hit": 0.3333333333333333,
+    "n": 18
+   },
+   {
+    "conf": 0.052103645495213555,
+    "hit": 0.3888888888888889,
+    "n": 18
+   },
+   {
+    "conf": 0.05876418827211004,
+    "hit": 0.3888888888888889,
+    "n": 18
+   },
+   {
+    "conf": 0.09444006155818502,
+    "hit": 0.8888888888888888,
+    "n": 18
+   }
+  ],
+  "calibration_error": 0.2174482303624763,
+  "calibration_null": 0.06368352877527522,
+  "miscalibrated": true,
+  "entropy_bits": 5.941921438305124,
+  "entropy_bits_p50": 5.945481516163502,
+  "anonymity_set": 61.65770024814644,
+  "anonymity_set_p50": 61.626609520407484,
+  "min_entropy_bits": 4.439386790860472,
+  "top1": 0.25806451612903225,
+  "top5": 0.3655913978494624,
+  "top10": 0.45161290322580644,
+  "devices": 1,
+  "device_rate_p50": 0.25806451612903225,
+  "device_rate_p90": 0.25806451612903225,
+  "device_rate_max": 0.25806451612903225,
+  "device_worst_records": 186,
+  "device_worst_entropy_bits": 5.941921438305124,
+  "shuffle_auc": 0.5524607487922705,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "Wmis",
+  "file": "c4_obs__Wmis__R1",
+  "decoys": 100.0,
+  "bound": 0.10499241459193476,
+  "real_in_flight": 0.9376828348169913,
+  "decoys_in_flight": 103.1866730253119,
+  "score_seconds": 0.2312016487121582,
+  "sim_seconds": 1.0809247493743896
+ },
+ {
+  "cell": "c4_obs__Wmis__R100",
+  "vantage": "observer",
+  "R": 100.0,
+  "T": 200.0,
+  "L": 200.0,
+  "runs": 1,
+  "n": 619,
+  "inv_L": 0.005,
+  "inv_R": 0.01,
+  "dev_n_correct": 56,
+  "dev_accuracy": 0.09046849757673667,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.09046849757673667,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.0060464260890562335,
+  "dev_baseline_random": 0.0060464260168373585,
+  "dev_lift_random": 14.962309345099031,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 165.0,
+  "sub_n_correct": 6,
+  "sub_accuracy": 0.009693053311793215,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.009693053311793215,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.0025785444180220847,
+  "sub_baseline_random": 0.00257854419760406,
+  "sub_lift_random": 3.7591182234620693,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 1179.0,
+  "sub_lift": 1.938610662358643,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": true,
+  "runs_needed": 0,
+  "auc": 0.5944874397361076,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.3333333333333333,
+  "p_at_1_lo": 0.09677141110578041,
+  "p_at_1_hi": 0.700006684861608,
+  "p_at_5": 0.22580645161290322,
+  "p_at_5_lo": 0.11395135561262493,
+  "p_at_5_hi": 0.3981241838334205,
+  "p_at_10": 0.16129032258064516,
+  "p_at_10_lo": 0.09004068870309086,
+  "p_at_10_hi": 0.2720633601397744,
+  "p_at_25": 0.14193548387096774,
+  "p_at_25_lo": 0.09563701423227208,
+  "p_at_25_hi": 0.20555298475092323,
+  "top1_group": 6,
+  "claim": false,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 619,
+  "conf_mean": 0.04323020638810237,
+  "conf_p50": 0.038623041521297245,
+  "conf_p90": 0.05468039736791477,
+  "conf_p99": 0.11241623921011708,
+  "conf_max": 0.11621146771220849,
+  "reliability": [
+   {
+    "conf": 0.029786348265444188,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.03138901422951724,
+    "hit": 0.0967741935483871,
+    "n": 62
+   },
+   {
+    "conf": 0.03315774555506441,
+    "hit": 0.04838709677419355,
+    "n": 62
+   },
+   {
+    "conf": 0.03561761160067256,
+    "hit": 0.08064516129032258,
+    "n": 62
+   },
+   {
+    "conf": 0.03766016910923743,
+    "hit": 0.06451612903225806,
+    "n": 62
+   },
+   {
+    "conf": 0.03986716213600752,
+    "hit": 0.12903225806451613,
+    "n": 62
+   },
+   {
+    "conf": 0.042385964514559706,
+    "hit": 0.08064516129032258,
+    "n": 62
+   },
+   {
+    "conf": 0.045666764175073385,
+    "hit": 0.11290322580645161,
+    "n": 62
+   },
+   {
+    "conf": 0.05135355571752912,
+    "hit": 0.11290322580645161,
+    "n": 62
+   },
+   {
+    "conf": 0.08610932730234146,
+    "hit": 0.14754098360655737,
+    "n": 61
+   }
+  ],
+  "calibration_error": 0.04723829118863429,
+  "calibration_null": 0.03186277552958308,
+  "miscalibrated": true,
+  "entropy_bits": 6.671463097188384,
+  "entropy_bits_p50": 6.666829036607983,
+  "anonymity_set": 102.03442274179984,
+  "anonymity_set_p50": 101.6051019574268,
+  "min_entropy_bits": 4.6062789775293425,
+  "top1": 0.09046849757673667,
+  "top5": 0.24878836833602586,
+  "top10": 0.3764135702746365,
+  "devices": 20,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.4300000000000002,
+  "device_rate_max": 0.5714285714285714,
+  "device_worst_records": 21,
+  "device_worst_entropy_bits": 6.663340376724882,
+  "shuffle_auc": 0.5395045673686881,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "Wmis",
+  "file": "c4_obs__Wmis__R100",
+  "decoys": 100.0,
+  "bound": 0.05327091365062463,
+  "real_in_flight": 108.15443272696672,
+  "decoys_in_flight": 101.46962808529229,
+  "score_seconds": 0.35150885581970215,
+  "sim_seconds": 0.14214849472045898
+ },
+ {
+  "cell": "c4_obs__chain100__R1",
+  "vantage": "observer",
+  "R": 1.0,
+  "T": 101.0,
+  "L": 101.0,
+  "runs": 1,
+  "n": 213,
+  "inv_L": 0.009900990099009901,
+  "inv_R": 1.0,
+  "dev_n_correct": 11,
+  "dev_accuracy": 0.051643192488262914,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.051643192488262914,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.011235637384786012,
+  "dev_baseline_random": 0.011235637590289116,
+  "dev_lift_random": 4.596374083609364,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 89.0,
+  "sub_n_correct": 2,
+  "sub_accuracy": 0.009389671361502348,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.009389671361502348,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.005007850248891283,
+  "sub_baseline_random": 0.005007850006222725,
+  "sub_lift_random": 1.8749904439696816,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 600.0,
+  "sub_lift": 0.9483568075117371,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 5,
+  "auc": 0.4990999099909991,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 0.0,
+  "p_at_1_hi": 0.6576197724933469,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.2588329669680317,
+  "p_at_10": 0.0,
+  "p_at_10_lo": -1.3877787807814457e-17,
+  "p_at_10_hi": 0.154639018924847,
+  "p_at_25": 0.0,
+  "p_at_25_lo": 0.0,
+  "p_at_25_hi": 0.06758198857654187,
+  "top1_group": 2,
+  "claim": false,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 213,
+  "conf_mean": 0.0412720669180609,
+  "conf_p50": 0.04055573309745425,
+  "conf_p90": 0.0498067630569401,
+  "conf_p99": 0.060587379982020816,
+  "conf_max": 0.06220351621792523,
+  "reliability": [
+   {
+    "conf": 0.032351974983328737,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.03523045920898668,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.03710110404078873,
+    "hit": 0.045454545454545456,
+    "n": 22
+   },
+   {
+    "conf": 0.03881870226717885,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.03991359621915476,
+    "hit": 0.14285714285714285,
+    "n": 21
+   },
+   {
+    "conf": 0.04136066699045691,
+    "hit": 0.19047619047619047,
+    "n": 21
+   },
+   {
+    "conf": 0.042623313942226834,
+    "hit": 0.09523809523809523,
+    "n": 21
+   },
+   {
+    "conf": 0.044752462050666554,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.047648424423519006,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.05383104422197239,
+    "hit": 0.0,
+    "n": 21
+   }
+  ],
+  "calibration_error": 0.05316628140917155,
+  "calibration_null": 0.054532168236082576,
+  "miscalibrated": false,
+  "entropy_bits": 5.958644309276072,
+  "entropy_bits_p50": 5.968023626177392,
+  "anonymity_set": 62.294237029822256,
+  "anonymity_set_p50": 62.597087408320334,
+  "min_entropy_bits": 4.613988926434608,
+  "top1": 0.051643192488262914,
+  "top5": 0.1596244131455399,
+  "top10": 0.27230046948356806,
+  "devices": 1,
+  "device_rate_p50": 0.051643192488262914,
+  "device_rate_p90": 0.051643192488262914,
+  "device_rate_max": 0.051643192488262914,
+  "device_worst_records": 213,
+  "device_worst_entropy_bits": 5.958644309276072,
+  "shuffle_auc": 0.48087308730873085,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "chain100",
+  "file": "c4_obs__chain100__R1",
+  "decoys": 100.0,
+  "bound": 0.10499241459193476,
+  "real_in_flight": 1.1138826418053047,
+  "decoys_in_flight": 103.33997879828074,
+  "score_seconds": 0.26253700256347656,
+  "sim_seconds": 1.3353819847106934
+ },
+ {
+  "cell": "c4_obs__chain100__R100",
+  "vantage": "observer",
+  "R": 100.0,
+  "T": 200.0,
+  "L": 200.0,
+  "runs": 1,
+  "n": 635,
+  "inv_L": 0.005,
+  "inv_R": 0.01,
+  "dev_n_correct": 11,
+  "dev_accuracy": 0.01732283464566929,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.01732283464566929,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.005540625704085733,
+  "dev_baseline_random": 0.005540625657886267,
+  "dev_lift_random": 3.126512341899435,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 180.0,
+  "sub_n_correct": 5,
+  "sub_accuracy": 0.007874015748031496,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.007874015748031496,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.0025425642849804145,
+  "sub_baseline_random": 0.0025425644125789404,
+  "sub_lift_random": 3.096879710985223,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 1174.0,
+  "sub_lift": 1.574803149606299,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 5,
+  "auc": 0.6739510489510491,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 2.7755575615628914e-17,
+  "p_at_1_hi": 0.3903342879021653,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.1071791982550706,
+  "p_at_10": 0.046875,
+  "p_at_10_lo": 0.016069016786292974,
+  "p_at_10_hi": 0.12899653740093686,
+  "p_at_25": 0.03773584905660377,
+  "p_at_25_lo": 0.017407430277391087,
+  "p_at_25_hi": 0.0798740540289935,
+  "top1_group": 6,
+  "claim": true,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 635,
+  "conf_mean": 0.022312342233532935,
+  "conf_p50": 0.022136069983019556,
+  "conf_p90": 0.02749503049258667,
+  "conf_p99": 0.028646203004163692,
+  "conf_max": 0.028646203004163692,
+  "reliability": [
+   {
+    "conf": 0.017090497276835058,
+    "hit": 0.0,
+    "n": 64
+   },
+   {
+    "conf": 0.018528110597280677,
+    "hit": 0.0,
+    "n": 64
+   },
+   {
+    "conf": 0.019594809002504265,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.02062370839062536,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.021610065532250075,
+    "hit": 0.03125,
+    "n": 64
+   },
+   {
+    "conf": 0.022697527385980396,
+    "hit": 0.0,
+    "n": 63
+   },
+   {
+    "conf": 0.023549157848419967,
+    "hit": 0.015873015873015872,
+    "n": 63
+   },
+   {
+    "conf": 0.024897964954475826,
+    "hit": 0.015873015873015872,
+    "n": 63
+   },
+   {
+    "conf": 0.026555855617824243,
+    "hit": 0.047619047619047616,
+    "n": 63
+   },
+   {
+    "conf": 0.02819976573497741,
+    "hit": 0.031746031746031744,
+    "n": 63
+   }
+  ],
+  "calibration_error": 0.01181581203104314,
+  "calibration_null": 0.023624406285508912,
+  "miscalibrated": false,
+  "entropy_bits": 6.966816596721965,
+  "entropy_bits_p50": 6.9711475217954995,
+  "anonymity_set": 125.24262249920362,
+  "anonymity_set_p50": 125.46555390232514,
+  "min_entropy_bits": 5.5027731126682715,
+  "top1": 0.01732283464566929,
+  "top5": 0.12125984251968504,
+  "top10": 0.1984251968503937,
+  "devices": 12,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.12250000000000001,
+  "device_rate_max": 0.2727272727272727,
+  "device_worst_records": 11,
+  "device_worst_entropy_bits": 6.95782718406002,
+  "shuffle_auc": 0.423513986013986,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "chain100",
+  "file": "c4_obs__chain100__R100",
+  "decoys": 100.0,
+  "bound": 0.05327091365062463,
+  "real_in_flight": 106.75315278452801,
+  "decoys_in_flight": 103.99767827608585,
+  "score_seconds": 0.49875760078430176,
+  "sim_seconds": 0.33481407165527344
+ },
+ {
+  "cell": "c4_obs__chain50__R1",
+  "vantage": "observer",
+  "R": 1.0,
+  "T": 101.0,
+  "L": 101.0,
+  "runs": 1,
+  "n": 213,
+  "inv_L": 0.009900990099009901,
+  "inv_R": 1.0,
+  "dev_n_correct": 5,
+  "dev_accuracy": 0.023474178403755867,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.023474178403755867,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.008725770515227962,
+  "dev_baseline_random": 0.008725769817829132,
+  "dev_lift_random": 2.6902126709371297,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 115.0,
+  "sub_n_correct": 3,
+  "sub_accuracy": 0.014084507042253521,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.014084507042253521,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.00499846127776193,
+  "sub_baseline_random": 0.004998461343348026,
+  "sub_lift_random": 2.817768561080038,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 600.0,
+  "sub_lift": 1.4225352112676057,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 10,
+  "auc": 0.32548076923076924,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 0.0,
+  "p_at_1_hi": 0.6576197724933469,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.2588329669680317,
+  "p_at_10": 0.0,
+  "p_at_10_lo": -1.3877787807814457e-17,
+  "p_at_10_hi": 0.154639018924847,
+  "p_at_25": 0.0,
+  "p_at_25_lo": 0.0,
+  "p_at_25_hi": 0.06758198857654187,
+  "top1_group": 2,
+  "claim": false,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 213,
+  "conf_mean": 0.03861240693042198,
+  "conf_p50": 0.03750792162429372,
+  "conf_p90": 0.047156095478565224,
+  "conf_p99": 0.05631306063112165,
+  "conf_max": 0.06147882330322674,
+  "reliability": [
+   {
+    "conf": 0.029233779294814553,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.032605643849569405,
+    "hit": 0.13636363636363635,
+    "n": 22
+   },
+   {
+    "conf": 0.03436569765332117,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.03566008263196996,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.03696291316684454,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.03861928454805031,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.04057293106472518,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.04258374926717731,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.04520281293364553,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.05125203679855724,
+    "hit": 0.0,
+    "n": 21
+   }
+  ],
+  "calibration_error": 0.0396658897867132,
+  "calibration_null": 0.046584505898049015,
+  "miscalibrated": false,
+  "entropy_bits": 6.203710382050318,
+  "entropy_bits_p50": 6.199080253819765,
+  "anonymity_set": 73.87020918684793,
+  "anonymity_set_p50": 73.46984133199463,
+  "min_entropy_bits": 4.713338249324464,
+  "top1": 0.023474178403755867,
+  "top5": 0.18309859154929578,
+  "top10": 0.2535211267605634,
+  "devices": 2,
+  "device_rate_p50": 0.014204545454545454,
+  "device_rate_p90": 0.025568181818181816,
+  "device_rate_max": 0.028409090909090908,
+  "device_worst_records": 176,
+  "device_worst_entropy_bits": 6.2058685028580385,
+  "shuffle_auc": 0.8004807692307692,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "chain50",
+  "file": "c4_obs__chain50__R1",
+  "decoys": 100.0,
+  "bound": 0.10499241459193476,
+  "real_in_flight": 1.1086915714396188,
+  "decoys_in_flight": 103.25803533223196,
+  "score_seconds": 0.31026124954223633,
+  "sim_seconds": 1.3317551612854004
+ },
+ {
+  "cell": "c4_obs__chain50__R100",
+  "vantage": "observer",
+  "R": 100.0,
+  "T": 200.0,
+  "L": 200.0,
+  "runs": 1,
+  "n": 642,
+  "inv_L": 0.005,
+  "inv_R": 0.01,
+  "dev_n_correct": 14,
+  "dev_accuracy": 0.021806853582554516,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_ci_adj_lo": NaN,
+  "dev_ci_adj_hi": NaN,
+  "dev_baseline": 0.021806853582554516,
+  "dev_baseline_lo": NaN,
+  "dev_baseline_hi": NaN,
+  "dev_contribution": 0.0,
+  "dev_contribution_lo": NaN,
+  "dev_contribution_hi": NaN,
+  "dev_random": 0.0043450130651649845,
+  "dev_baseline_random": 0.004345012828707695,
+  "dev_lift_random": 5.018823477744016,
+  "dev_lift_random_lo": NaN,
+  "dev_lift_random_hi": NaN,
+  "dev_signal_random": false,
+  "dev_candidates_median": 231.0,
+  "sub_n_correct": 5,
+  "sub_accuracy": 0.00778816199376947,
+  "sub_ci_lo": NaN,
+  "sub_ci_hi": NaN,
+  "sub_ci_adj_lo": NaN,
+  "sub_ci_adj_hi": NaN,
+  "sub_baseline": 0.00778816199376947,
+  "sub_baseline_lo": NaN,
+  "sub_baseline_hi": NaN,
+  "sub_contribution": 0.0,
+  "sub_contribution_lo": NaN,
+  "sub_contribution_hi": NaN,
+  "sub_random": 0.0025354706195568973,
+  "sub_baseline_random": 0.0025354705285280943,
+  "sub_lift_random": 3.071682997900619,
+  "sub_lift_random_lo": NaN,
+  "sub_lift_random_hi": NaN,
+  "sub_signal_random": false,
+  "sub_candidates_median": 1175.0,
+  "sub_lift": 1.557632398753894,
+  "sub_lift_lo": NaN,
+  "sub_lift_hi": NaN,
+  "sub_signal_L": false,
+  "stable": false,
+  "runs_needed": 4,
+  "auc": 0.600716560509554,
+  "auc_lo": NaN,
+  "auc_hi": NaN,
+  "auc_adj_lo": NaN,
+  "signal_auc": false,
+  "signal": false,
+  "p_at_1": 0.0,
+  "p_at_1_lo": 2.7755575615628914e-17,
+  "p_at_1_hi": 0.3903342879021653,
+  "p_at_5": 0.0,
+  "p_at_5_lo": 0.0,
+  "p_at_5_hi": 0.1071791982550706,
+  "p_at_10": 0.03125,
+  "p_at_10_lo": 0.008612138346171874,
+  "p_at_10_hi": 0.10697291770958313,
+  "p_at_25": 0.0375,
+  "p_at_25_lo": 0.017297923166500122,
+  "p_at_25_hi": 0.07938980736714218,
+  "top1_group": 6,
+  "claim": true,
+  "coverage_p50": 0.0,
+  "count_p50": 0,
+  "decisions": 642,
+  "conf_mean": 0.020126314664141845,
+  "conf_p50": 0.02003736997801541,
+  "conf_p90": 0.022749704447232618,
+  "conf_p99": 0.028147056350679354,
+  "conf_max": 0.028814544556403775,
+  "reliability": [
+   {
+    "conf": 0.015950121109742723,
+    "hit": 0.015384615384615385,
+    "n": 65
+   },
+   {
+    "conf": 0.01733234892600004,
+    "hit": 0.015384615384615385,
+    "n": 65
+   },
+   {
+    "conf": 0.018046441664740065,
+    "hit": 0.0,
+    "n": 64
+   },
+   {
+    "conf": 0.018952998224272787,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.019797672035364332,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.02065991461681288,
+    "hit": 0.046875,
+    "n": 64
+   },
+   {
+    "conf": 0.02111354345135115,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.021871939936186375,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.022507197970830964,
+    "hit": 0.046875,
+    "n": 64
+   },
+   {
+    "conf": 0.025139877445063078,
+    "hit": 0.03125,
+    "n": 64
+   }
+  ],
+  "calibration_error": 0.00962274032740277,
+  "calibration_null": 0.020938293347342294,
+  "miscalibrated": false,
+  "entropy_bits": 7.207470997571958,
+  "entropy_bits_p50": 7.224746259451762,
+  "anonymity_set": 148.01756673687393,
+  "anonymity_set_p50": 149.57717793613412,
+  "min_entropy_bits": 5.647413024095102,
+  "top1": 0.021806853582554516,
+  "top5": 0.09968847352024922,
+  "top10": 0.17289719626168223,
+  "devices": 1,
+  "device_rate_p50": 0.15384615384615385,
+  "device_rate_p90": 0.15384615384615385,
+  "device_rate_max": 0.15384615384615385,
+  "device_worst_records": 13,
+  "device_worst_entropy_bits": 7.170558494995296,
+  "shuffle_auc": 0.5308803457688808,
+  "shuffle_auc_lo": NaN,
+  "shuffle_auc_hi": NaN,
+  "job": "c4_obs",
+  "variant": "chain50",
+  "file": "c4_obs__chain50__R100",
+  "decoys": 100.0,
+  "bound": 0.05327091365062463,
+  "real_in_flight": 107.97046522401351,
+  "decoys_in_flight": 104.12972983975826,
+  "score_seconds": 0.504979133605957,
+  "sim_seconds": 0.3100931644439697
+ },
+ {
+  "file": "c4_obs__W0__R1",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 209,
+  "dev_accuracy": 0.1291866028708134,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.09786093502522909,
+  "dev_lift_random": 1.3201039090573616,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.10499241459193476
+ },
+ {
+  "file": "c4_obs__W0__R1",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 209,
+  "dev_accuracy": 0.08133971291866028,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011072030834245582,
+  "dev_lift_random": 7.346413150068015,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.971171249845382,
+  "anonymity_set": 62.84763023117521,
+  "min_entropy_bits": 4.604269833369604,
+  "top1": 0.08133971291866028,
+  "top5": 0.215311004784689,
+  "top10": 0.3444976076555024,
+  "reliability": [
+   {
+    "conf": 0.03136355180365419,
+    "hit": 0.09523809523809523,
+    "n": 21
+   },
+   {
+    "conf": 0.03429315104849911,
+    "hit": 0.14285714285714285,
+    "n": 21
+   },
+   {
+    "conf": 0.03614186517839072,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.03769808409478229,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.03944389442427589,
+    "hit": 0.19047619047619047,
+    "n": 21
+   },
+   {
+    "conf": 0.04131470294401588,
+    "hit": 0.09523809523809523,
+    "n": 21
+   },
+   {
+    "conf": 0.04321769226029047,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.04651968617192479,
+    "hit": 0.23809523809523808,
+    "n": 21
+   },
+   {
+    "conf": 0.05032273151412263,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.05849768833594522,
+    "hit": 0.0,
+    "n": 20
+   }
+  ],
+  "calibration_error": 0.07679419786840949,
+  "conf_mean": 0.041801800550038175,
+  "calibration_null": 0.05418240367036401,
+  "miscalibrated": true,
+  "auc": 0.435968137254902,
+  "devices": 1,
+  "device_rate_p50": 0.08133971291866028,
+  "device_rate_p90": 0.08133971291866028,
+  "device_rate_max": 0.08133971291866028,
+  "device_worst_records": 209
+ },
+ {
+  "file": "c4_obs__W0__R1",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 104,
+  "dev_accuracy": 0.07692307692307693,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011792292845418285,
+  "dev_lift_random": 6.523165420960879,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.344583954283719,
+  "anonymity_set": 40.88382489816744,
+  "min_entropy_bits": 3.5474466553764836,
+  "top1": 0.07692307692307693,
+  "top5": 0.3076923076923077,
+  "top10": 0.4807692307692308,
+  "reliability": [
+   {
+    "conf": 0.056616842083527,
+    "hit": 0.09090909090909091,
+    "n": 11
+   },
+   {
+    "conf": 0.06600101816878037,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.07145862066966871,
+    "hit": 0.09090909090909091,
+    "n": 11
+   },
+   {
+    "conf": 0.07516533701923432,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.07982667089710627,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.08491401579699043,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.09098575254933217,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.09981149696985173,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.11788822328073896,
+    "hit": 0.2,
+    "n": 10
+   },
+   {
+    "conf": 0.16484613297903855,
+    "hit": 0.0,
+    "n": 10
+   }
+  ],
+  "calibration_error": 0.048636534150319224,
+  "conf_mean": 0.08984983578926822,
+  "calibration_null": 0.12101902099444363,
+  "miscalibrated": false,
+  "auc": 0.5533854166666666,
+  "devices": 1,
+  "device_rate_p50": 0.07692307692307693,
+  "device_rate_p90": 0.07692307692307693,
+  "device_rate_max": 0.07692307692307693,
+  "device_worst_records": 104
+ },
+ {
+  "file": "c4_obs__W0__R1",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 69,
+  "dev_accuracy": 0.10144927536231885,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.012549073106285297,
+  "dev_lift_random": 8.084204666200185,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.744420068186592,
+  "anonymity_set": 27.1404169219182,
+  "min_entropy_bits": 2.859965936664057,
+  "top1": 0.10144927536231885,
+  "top5": 0.34782608695652173,
+  "top10": 0.5217391304347826,
+  "reliability": [
+   {
+    "conf": 0.07691840957263808,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.10014672936316614,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.11403506280748342,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.12842111497463118,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.13551849086935822,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.14449814116314205,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.156253846048822,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.16838233164072913,
+    "hit": 0.2857142857142857,
+    "n": 7
+   },
+   {
+    "conf": 0.19222660542501604,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.2411239781071576,
+    "hit": 0.16666666666666666,
+    "n": 6
+   }
+  ],
+  "calibration_error": 0.07832241344925332,
+  "conf_mean": 0.14437027524199786,
+  "calibration_null": 0.1666322902237358,
+  "miscalibrated": false,
+  "auc": 0.6336405529953917,
+  "devices": 1,
+  "device_rate_p50": 0.10144927536231885,
+  "device_rate_p90": 0.10144927536231885,
+  "device_rate_max": 0.10144927536231885,
+  "device_worst_records": 69
+ },
+ {
+  "file": "c4_obs__W0__R1",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 41,
+  "dev_accuracy": 0.14634146341463414,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.014143927923256017,
+  "dev_lift_random": 10.346592842431953,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.5022520700964184,
+  "anonymity_set": 11.97204644857809,
+  "min_entropy_bits": 1.8047212611184444,
+  "top1": 0.14634146341463414,
+  "top5": 0.5121951219512195,
+  "top10": 0.8536585365853658,
+  "reliability": [
+   {
+    "conf": 0.15759186748515278,
+    "hit": 0.0,
+    "n": 5
+   },
+   {
+    "conf": 0.19777130472915108,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.23425178825154905,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.2499038193684001,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.2737675755759741,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.2970741546151631,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.33327534084387694,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.3765359754450375,
+    "hit": 0.5,
+    "n": 4
+   },
+   {
+    "conf": 0.40995322809487283,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.584795104527192,
+    "hit": 0.0,
+    "n": 4
+   }
+  ],
+  "calibration_error": 0.18857902045635944,
+  "conf_mean": 0.30773835373733244,
+  "calibration_null": 0.29777953240840993,
+  "miscalibrated": false,
+  "auc": 0.6238095238095237,
+  "devices": 1,
+  "device_rate_p50": 0.14634146341463414,
+  "device_rate_p90": 0.14634146341463414,
+  "device_rate_max": 0.14634146341463414,
+  "device_worst_records": 41
+ },
+ {
+  "file": "c4_obs__W0__R1",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 20,
+  "dev_accuracy": 0.5,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.019828588471847066,
+  "dev_lift_random": 25.21611665449145,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 1.7574867982103417,
+  "anonymity_set": 3.8945597004640033,
+  "min_entropy_bits": 0.8704605584500023,
+  "top1": 0.5,
+  "top5": 0.95,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.2574268926740867,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.33766170568778286,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.3907094546828568,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.46661650193223353,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.5110489979058768,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.5926022126440271,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.7013923996831501,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.8430081999620995,
+    "hit": 1.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9113196641013449,
+    "hit": 1.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9331863747002684,
+    "hit": 1.0,
+    "n": 2
+   }
+  ],
+  "calibration_error": 0.18552920132161205,
+  "conf_mean": 0.5944972403973725,
+  "calibration_null": 0.3785002365224014,
+  "miscalibrated": false,
+  "auc": 0.8400000000000001,
+  "devices": 1,
+  "device_rate_p50": 0.5,
+  "device_rate_p90": 0.5,
+  "device_rate_max": 0.5,
+  "device_worst_records": 20
+ },
+ {
+  "file": "c4_obs__W0__R1",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 10,
+  "dev_accuracy": 0.8,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.03786178897591941,
+  "dev_lift_random": 21.129482299656008,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.16465216406278507,
+  "anonymity_set": 1.1365597907966398,
+  "min_entropy_bits": 0.048377723873560007,
+  "top1": 0.8,
+  "top5": 1.0,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.84505144094133,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8986991104225474,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9651888142803333,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9885021128898634,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9891736610717242,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.998703934441673,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9994813650841506,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9995897447162648,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999565473598894,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999868139094571,
+    "hit": 1.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.18031675576105216,
+  "conf_mean": 0.9684333545117232,
+  "calibration_null": 0.19376861846879068,
+  "miscalibrated": false,
+  "auc": 1.0,
+  "devices": 1,
+  "device_rate_p50": 0.8,
+  "device_rate_p90": 0.8,
+  "device_rate_max": 0.8,
+  "device_worst_records": 10
+ },
+ {
+  "file": "c4_obs__W0__R100",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 602,
+  "dev_accuracy": 0.059800664451827246,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.04971616870307923,
+  "dev_lift_random": 1.2028413695547586,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.05327091365062463
+ },
+ {
+  "file": "c4_obs__W0__R100",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 602,
+  "dev_accuracy": 0.011627906976744186,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.005534993181101387,
+  "dev_lift_random": 2.1007987898605496,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.932395683020292,
+  "anonymity_set": 122.23085400946319,
+  "min_entropy_bits": 5.375632308788048,
+  "top1": 0.011627906976744186,
+  "top5": 0.10299003322259136,
+  "top10": 0.2026578073089701,
+  "reliability": [
+   {
+    "conf": 0.01888481011104847,
+    "hit": 0.01639344262295082,
+    "n": 61
+   },
+   {
+    "conf": 0.020388752153551307,
+    "hit": 0.01639344262295082,
+    "n": 61
+   },
+   {
+    "conf": 0.02139958828837044,
+    "hit": 0.03333333333333333,
+    "n": 60
+   },
+   {
+    "conf": 0.02224710362100433,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.02283900482859414,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.02373777124097042,
+    "hit": 0.016666666666666666,
+    "n": 60
+   },
+   {
+    "conf": 0.024862424095443668,
+    "hit": 0.03333333333333333,
+    "n": 60
+   },
+   {
+    "conf": 0.027095745521310808,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.029645856461588124,
+    "hit": 0.0,
+    "n": 60
+   },
+   {
+    "conf": 0.03345797984489311,
+    "hit": 0.0,
+    "n": 60
+   }
+  ],
+  "calibration_error": 0.01687935921297906,
+  "conf_mean": 0.024439893242975227,
+  "calibration_null": 0.025074906562380553,
+  "miscalibrated": false,
+  "auc": 0.34693877551020413,
+  "devices": 8,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.027272727272727258,
+  "device_rate_max": 0.09090909090909091,
+  "device_worst_records": 11
+ },
+ {
+  "file": "c4_obs__W0__R100",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 274,
+  "dev_accuracy": 0.025547445255474453,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.005938103851310662,
+  "dev_lift_random": 4.302290073595733,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.241104434498515,
+  "anonymity_set": 76.02013863413212,
+  "min_entropy_bits": 4.169863183191996,
+  "top1": 0.025547445255474453,
+  "top5": 0.13503649635036497,
+  "top10": 0.24452554744525548,
+  "reliability": [
+   {
+    "conf": 0.034683642383041745,
+    "hit": 0.03571428571428571,
+    "n": 28
+   },
+   {
+    "conf": 0.04067097342052086,
+    "hit": 0.0,
+    "n": 28
+   },
+   {
+    "conf": 0.04408301307241048,
+    "hit": 0.03571428571428571,
+    "n": 28
+   },
+   {
+    "conf": 0.04747371105842912,
+    "hit": 0.0,
+    "n": 28
+   },
+   {
+    "conf": 0.05142191694780687,
+    "hit": 0.037037037037037035,
+    "n": 27
+   },
+   {
+    "conf": 0.05482108004406069,
+    "hit": 0.07407407407407407,
+    "n": 27
+   },
+   {
+    "conf": 0.057932186176015324,
+    "hit": 0.07407407407407407,
+    "n": 27
+   },
+   {
+    "conf": 0.06466882754327338,
+    "hit": 0.0,
+    "n": 27
+   },
+   {
+    "conf": 0.08050733257483593,
+    "hit": 0.0,
+    "n": 27
+   },
+   {
+    "conf": 0.11990149144130902,
+    "hit": 0.0,
+    "n": 27
+   }
+  ],
+  "calibration_error": 0.040994101118488877,
+  "conf_mean": 0.05935527027664378,
+  "calibration_null": 0.054989513369364786,
+  "miscalibrated": false,
+  "auc": 0.47405029427501333,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W0__R100",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 168,
+  "dev_accuracy": 0.023809523809523808,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.006332335687124678,
+  "dev_lift_random": 3.759990781590259,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.5467176428764065,
+  "anonymity_set": 47.65348968692144,
+  "min_entropy_bits": 3.3374302168035603,
+  "top1": 0.023809523809523808,
+  "top5": 0.16071428571428573,
+  "top10": 0.35714285714285715,
+  "reliability": [
+   {
+    "conf": 0.05816866403766122,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.06795172046791192,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.07469796203360421,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.0821769857425706,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.08818177056597888,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.09601345827178615,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.10464416729441536,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.12091325300933367,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.15458062289914232,
+    "hit": 0.0,
+    "n": 16
+   },
+   {
+    "conf": 0.249807728679065,
+    "hit": 0.0,
+    "n": 16
+   }
+  ],
+  "calibration_error": 0.08493568292956126,
+  "conf_mean": 0.10861267446099268,
+  "calibration_null": 0.10441030596912916,
+  "miscalibrated": false,
+  "auc": 0.4253048780487805,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W0__R100",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 72,
+  "dev_accuracy": 0.05555555555555555,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.007257244439507627,
+  "dev_lift_random": 7.655185934363368,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.327079150741797,
+  "anonymity_set": 21.04277809369576,
+  "min_entropy_bits": 2.3845574329931294,
+  "top1": 0.05555555555555555,
+  "top5": 0.3472222222222222,
+  "top10": 0.6666666666666666,
+  "reliability": [
+   {
+    "conf": 0.1055265452826612,
+    "hit": 0.125,
+    "n": 8
+   },
+   {
+    "conf": 0.13600598928945373,
+    "hit": 0.125,
+    "n": 8
+   },
+   {
+    "conf": 0.148852628793815,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.15800093005868282,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.17353198420394728,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.19802569216270785,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.21841435334721457,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.23863964371959878,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.2908405184259388,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.45353520340554715,
+    "hit": 0.0,
+    "n": 7
+   }
+  ],
+  "calibration_error": 0.15837114209550704,
+  "conf_mean": 0.20959926326943176,
+  "calibration_null": 0.18532284711392488,
+  "miscalibrated": false,
+  "auc": 0.36764705882352944,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W1__R1",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 182,
+  "dev_accuracy": 0.0989010989010989,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0969415323389909,
+  "dev_lift_random": 1.0202139012539606,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.10499241459193476
+ },
+ {
+  "file": "c4_obs__W1__R1",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 182,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.013734159606281505,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.491298167741494,
+  "anonymity_set": 45.139796501924245,
+  "min_entropy_bits": 3.92283167657992,
+  "top1": 0.0,
+  "top5": 0.04395604395604396,
+  "top10": 0.14835164835164835,
+  "reliability": [
+   {
+    "conf": 0.05017792908629991,
+    "hit": 0.0,
+    "n": 19
+   },
+   {
+    "conf": 0.05501638625065206,
+    "hit": 0.0,
+    "n": 19
+   },
+   {
+    "conf": 0.058848771388353795,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.061669040711103205,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.064740186258642,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.06700770601316977,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.06922340145216468,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.07350017324775161,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.07929396461132318,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.09130721729158764,
+    "hit": 0.0,
+    "n": 18
+   }
+  ],
+  "calibration_error": 0.06691934224690008,
+  "conf_mean": 0.06691934224690008,
+  "calibration_null": 0.07267285647774127,
+  "miscalibrated": false,
+  "devices": 1,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.0,
+  "device_rate_max": 0.0,
+  "device_worst_records": 182
+ },
+ {
+  "file": "c4_obs__W1__R1",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 91,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.015393991953555298,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.472606218356368,
+  "anonymity_set": 22.47270290980603,
+  "min_entropy_bits": 2.634333771370482,
+  "top1": 0.0,
+  "top5": 0.02197802197802198,
+  "top10": 0.14285714285714285,
+  "reliability": [
+   {
+    "conf": 0.10925358422024119,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.12244889639669473,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.13046348462792728,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.1382805606552145,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.148838922902771,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.15744420555171923,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.17110864867075357,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.1989130745239221,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.23522430895667026,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.27315358544606666,
+    "hit": 0.0,
+    "n": 9
+   }
+  ],
+  "calibration_error": 0.16786172562404464,
+  "conf_mean": 0.1678617256240447,
+  "calibration_null": 0.16301796346173714,
+  "miscalibrated": true,
+  "devices": 1,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.0,
+  "device_rate_max": 0.0,
+  "device_worst_records": 91
+ },
+ {
+  "file": "c4_obs__W1__R1",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 60,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.017243713195192873,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.54079088935602,
+  "anonymity_set": 11.949770343270172,
+  "min_entropy_bits": 1.9056774856590757,
+  "top1": 0.0,
+  "top5": 0.03333333333333333,
+  "top10": 0.18333333333333332,
+  "reliability": [
+   {
+    "conf": 0.15340872262160804,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.18094479049672788,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.2132426517420877,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.2329210432896337,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.25360736603913986,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.27373251264777404,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.2910807847345074,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.32419378561745454,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.40661206781098636,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.5051535981396286,
+    "hit": 0.0,
+    "n": 6
+   }
+  ],
+  "calibration_error": 0.2834897323139548,
+  "conf_mean": 0.2834897323139548,
+  "calibration_null": 0.24328252684848697,
+  "miscalibrated": true,
+  "devices": 1,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.0,
+  "device_rate_max": 0.0,
+  "device_worst_records": 60
+ },
+ {
+  "file": "c4_obs__W1__R1",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 36,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.020802635886148977,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 2.376111513957415,
+  "anonymity_set": 5.540786932842905,
+  "min_entropy_bits": 1.1804223970901113,
+  "top1": 0.0,
+  "top5": 0.027777777777777776,
+  "top10": 0.25,
+  "reliability": [
+   {
+    "conf": 0.2746924875473174,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.32667977726144626,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.3455112590307368,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.3799436640403398,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.4363303807372484,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.4818211258340378,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.5107177477157118,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.5959828220554191,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.6520596684583825,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.8265671887465017,
+    "hit": 0.0,
+    "n": 3
+   }
+  ],
+  "calibration_error": 0.4648860294092375,
+  "conf_mean": 0.4648860294092376,
+  "calibration_null": 0.3081026265520522,
+  "miscalibrated": true,
+  "devices": 1,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.0,
+  "device_rate_max": 0.0,
+  "device_worst_records": 36
+ },
+ {
+  "file": "c4_obs__W1__R1",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 18,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0284299671973125,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 1.2952123952762056,
+  "anonymity_set": 2.7723548917843686,
+  "min_entropy_bits": 0.6282862129967959,
+  "top1": 0.0,
+  "top5": 0.0,
+  "top10": 0.3888888888888889,
+  "reliability": [
+   {
+    "conf": 0.33740200250933494,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.436382625511577,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.498548165767894,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.5679249312494765,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.7286876531040346,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.7758495596578577,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9185082839956915,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.948996737645305,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9689318397576656,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9976432411014219,
+    "hit": 0.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.6883986110967462,
+  "conf_mean": 0.6883986110967462,
+  "calibration_null": 0.34262256453766265,
+  "miscalibrated": true,
+  "devices": 1,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.0,
+  "device_rate_max": 0.0,
+  "device_worst_records": 18
+ },
+ {
+  "file": "c4_obs__W1__R1",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 9,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.040894991910317584,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.6788869852763492,
+  "anonymity_set": 1.6533548310979462,
+  "min_entropy_bits": 0.3225492119207327,
+  "top1": 0.0,
+  "top5": 0.0,
+  "top10": 0.4444444444444444,
+  "reliability": [
+   {
+    "conf": 0.5321862813793222,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.7012379236547384,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.742286291205027,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.7648049961389591,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8155128378152907,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8251213507687657,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9653480783584207,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9725911648064898,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9988792673635376,
+    "hit": 0.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.8131075768322835,
+  "conf_mean": 0.8131075768322835,
+  "calibration_null": 0.45660571666345745,
+  "miscalibrated": true,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W1__R100",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 674,
+  "dev_accuracy": 0.05341246290801187,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.045665983679025364,
+  "dev_lift_random": 1.1696334690485273,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.05327091365062463
+ },
+ {
+  "file": "c4_obs__W1__R100",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 674,
+  "dev_accuracy": 0.03560830860534125,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.006781266912901973,
+  "dev_lift_random": 5.250981721069439,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.473336071599104,
+  "anonymity_set": 88.94171580837089,
+  "min_entropy_bits": 4.510499198313361,
+  "top1": 0.03560830860534125,
+  "top5": 0.142433234421365,
+  "top10": 0.2507418397626113,
+  "reliability": [
+   {
+    "conf": 0.032260604966938965,
+    "hit": 0.04411764705882353,
+    "n": 68
+   },
+   {
+    "conf": 0.035342777777281356,
+    "hit": 0.014705882352941176,
+    "n": 68
+   },
+   {
+    "conf": 0.03763727607115678,
+    "hit": 0.04411764705882353,
+    "n": 68
+   },
+   {
+    "conf": 0.03908119466299413,
+    "hit": 0.014705882352941176,
+    "n": 68
+   },
+   {
+    "conf": 0.04084314029814743,
+    "hit": 0.04477611940298507,
+    "n": 67
+   },
+   {
+    "conf": 0.043057784306575,
+    "hit": 0.07462686567164178,
+    "n": 67
+   },
+   {
+    "conf": 0.046337153457707156,
+    "hit": 0.04477611940298507,
+    "n": 67
+   },
+   {
+    "conf": 0.050400465832167916,
+    "hit": 0.04477611940298507,
+    "n": 67
+   },
+   {
+    "conf": 0.055369803476716634,
+    "hit": 0.029850746268656716,
+    "n": 67
+   },
+   {
+    "conf": 0.07046611866873802,
+    "hit": 0.0,
+    "n": 67
+   }
+  ],
+  "calibration_error": 0.02017631979673429,
+  "conf_mean": 0.0450262244231643,
+  "calibration_null": 0.03391077539894655,
+  "miscalibrated": false,
+  "auc": 0.4859294871794872,
+  "devices": 20,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.17127272727272744,
+  "device_rate_max": 0.3023255813953488,
+  "device_worst_records": 43
+ },
+ {
+  "file": "c4_obs__W1__R100",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 314,
+  "dev_accuracy": 0.03821656050955414,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0073677300211754115,
+  "dev_lift_random": 5.187019665448769,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.231338546592152,
+  "anonymity_set": 38.05278087227515,
+  "min_entropy_bits": 2.8401611123187176,
+  "top1": 0.03821656050955414,
+  "top5": 0.14012738853503184,
+  "top10": 0.2802547770700637,
+  "reliability": [
+   {
+    "conf": 0.08386556641243557,
+    "hit": 0.03125,
+    "n": 32
+   },
+   {
+    "conf": 0.0949426957910189,
+    "hit": 0.03125,
+    "n": 32
+   },
+   {
+    "conf": 0.10364186858965892,
+    "hit": 0.09375,
+    "n": 32
+   },
+   {
+    "conf": 0.11236480811857104,
+    "hit": 0.0,
+    "n": 32
+   },
+   {
+    "conf": 0.12473607477440565,
+    "hit": 0.06451612903225806,
+    "n": 31
+   },
+   {
+    "conf": 0.13830186730388905,
+    "hit": 0.03225806451612903,
+    "n": 31
+   },
+   {
+    "conf": 0.1584001861896257,
+    "hit": 0.03225806451612903,
+    "n": 31
+   },
+   {
+    "conf": 0.17956908631400598,
+    "hit": 0.0967741935483871,
+    "n": 31
+   },
+   {
+    "conf": 0.21966759306157863,
+    "hit": 0.0,
+    "n": 31
+   },
+   {
+    "conf": 0.29884029176349164,
+    "hit": 0.0,
+    "n": 31
+   }
+  ],
+  "calibration_error": 0.11254473288786879,
+  "conf_mean": 0.1507612933974229,
+  "calibration_null": 0.07911526979368892,
+  "miscalibrated": true,
+  "auc": 0.43750000000000006,
+  "devices": 5,
+  "device_rate_p50": 0.16666666666666666,
+  "device_rate_p90": 0.3090909090909091,
+  "device_rate_max": 0.3333333333333333,
+  "device_worst_records": 21
+ },
+ {
+  "file": "c4_obs__W1__R100",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 195,
+  "dev_accuracy": 0.03076923076923077,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.00787083154945676,
+  "dev_lift_random": 3.9092731912620398,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.870726973642783,
+  "anonymity_set": 15.525673795054539,
+  "min_entropy_bits": 1.8551577810244715,
+  "top1": 0.03076923076923077,
+  "top5": 0.1641025641025641,
+  "top10": 0.28205128205128205,
+  "reliability": [
+   {
+    "conf": 0.1427392173634204,
+    "hit": 0.0,
+    "n": 20
+   },
+   {
+    "conf": 0.16862525512165996,
+    "hit": 0.05,
+    "n": 20
+   },
+   {
+    "conf": 0.1970859669720528,
+    "hit": 0.05,
+    "n": 20
+   },
+   {
+    "conf": 0.21600931021592876,
+    "hit": 0.0,
+    "n": 20
+   },
+   {
+    "conf": 0.24257821298163398,
+    "hit": 0.0,
+    "n": 20
+   },
+   {
+    "conf": 0.2860757882420935,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.3385047648303821,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.40133112081309325,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.49719746727203495,
+    "hit": 0.0,
+    "n": 19
+   },
+   {
+    "conf": 0.6064132559181179,
+    "hit": 0.0,
+    "n": 19
+   }
+  ],
+  "calibration_error": 0.2759060758847827,
+  "conf_mean": 0.3066753066540135,
+  "calibration_null": 0.13697339331374736,
+  "miscalibrated": true,
+  "auc": 0.49647266313932975,
+  "devices": 2,
+  "device_rate_p50": 0.14285714285714285,
+  "device_rate_p90": 0.2571428571428571,
+  "device_rate_max": 0.2857142857142857,
+  "device_worst_records": 14
+ },
+ {
+  "file": "c4_obs__W1__R100",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 95,
+  "dev_accuracy": 0.042105263157894736,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.008715015490589272,
+  "dev_lift_random": 4.831346909636733,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 2.0990108644085606,
+  "anonymity_set": 4.934118070968193,
+  "min_entropy_bits": 0.9936272382102956,
+  "top1": 0.042105263157894736,
+  "top5": 0.2,
+  "top10": 0.3684210526315789,
+  "reliability": [
+   {
+    "conf": 0.21962316653837935,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.2963567039431739,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.3813655792715419,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.4444270180854158,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.49316924530473144,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.5795868188701876,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.6711290889331614,
+    "hit": 0.2222222222222222,
+    "n": 9
+   },
+   {
+    "conf": 0.7714096085645974,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.8516099329412015,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.9114792652853941,
+    "hit": 0.0,
+    "n": 9
+   }
+  ],
+  "calibration_error": 0.5096457848714032,
+  "conf_mean": 0.5517510480292978,
+  "calibration_null": 0.17500574283977932,
+  "miscalibrated": true,
+  "auc": 0.4065934065934066,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W1__R100",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 28,
+  "dev_accuracy": 0.03571428571428571,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.010332629036315764,
+  "dev_lift_random": 3.4564567825634542,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.8058400947838199,
+  "anonymity_set": 1.9781280619798722,
+  "min_entropy_bits": 0.38993311430063676,
+  "top1": 0.03571428571428571,
+  "top5": 0.32142857142857145,
+  "top10": 0.6428571428571429,
+  "reliability": [
+   {
+    "conf": 0.34780612318624304,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.5445481741765313,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.7236806486002303,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.8221852906051984,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.8925553941611124,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.9023820784085613,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.9552933122249763,
+    "hit": 0.3333333333333333,
+    "n": 3
+   },
+   {
+    "conf": 0.9790522099118276,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.9877185189375373,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9950568829622275,
+    "hit": 0.0,
+    "n": 2
+   }
+  ],
+  "calibration_error": 0.766716446343699,
+  "conf_mean": 0.8024307320579848,
+  "calibration_null": 0.23470070268105328,
+  "miscalibrated": true,
+  "auc": 0.7407407407407407,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W1__R100",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 6,
+  "dev_accuracy": 0.16666666666666666,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011947917724957626,
+  "dev_lift_random": 13.949432068696117,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.38509595619437587,
+  "anonymity_set": 1.365584408126501,
+  "min_entropy_bits": 0.172470362749065,
+  "top1": 0.16666666666666666,
+  "top5": 0.6666666666666666,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.6190321303055236,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8415261859049152,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9636395612956382,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9795282220433014,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.993011308015899,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.999587669512262,
+    "hit": 0.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.7395447721651561,
+  "conf_mean": 0.8993875128462565,
+  "calibration_null": 0.37464110136834144,
+  "miscalibrated": true,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W2__R1",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 186,
+  "dev_accuracy": 0.11290322580645161,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.09676067900126623,
+  "dev_lift_random": 1.1668296147960489,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.10499241459193476
+ },
+ {
+  "file": "c4_obs__W2__R1",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 186,
+  "dev_accuracy": 0.11827956989247312,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.014092542126118532,
+  "dev_lift_random": 8.393061296815901,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.3915322520713795,
+  "anonymity_set": 42.22466572829863,
+  "min_entropy_bits": 3.5276054019271847,
+  "top1": 0.11827956989247312,
+  "top5": 0.2849462365591398,
+  "top10": 0.3709677419354839,
+  "reliability": [
+   {
+    "conf": 0.05225094727639082,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.05872733038789153,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.06418870067355971,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.06930923248547526,
+    "hit": 0.15789473684210525,
+    "n": 19
+   },
+   {
+    "conf": 0.07855307185444681,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.08853916628957462,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.09914243544600759,
+    "hit": 0.3888888888888889,
+    "n": 18
+   },
+   {
+    "conf": 0.11435258283692283,
+    "hit": 0.2222222222222222,
+    "n": 18
+   },
+   {
+    "conf": 0.13562741513838672,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.18318793736876596,
+    "hit": 0.0,
+    "n": 18
+   }
+  ],
+  "calibration_error": 0.09376588067021721,
+  "conf_mean": 0.0935558451860265,
+  "calibration_null": 0.08459182064594553,
+  "miscalibrated": true,
+  "auc": 0.5041574279379157,
+  "devices": 1,
+  "device_rate_p50": 0.11827956989247312,
+  "device_rate_p90": 0.11827956989247312,
+  "device_rate_max": 0.11827956989247312,
+  "device_worst_records": 186
+ },
+ {
+  "file": "c4_obs__W2__R1",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 93,
+  "dev_accuracy": 0.11827956989247312,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.015641554508051127,
+  "dev_lift_random": 7.561880747312644,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.107916025751684,
+  "anonymity_set": 18.635076986503783,
+  "min_entropy_bits": 2.1792093679397073,
+  "top1": 0.11827956989247312,
+  "top5": 0.24731182795698925,
+  "top10": 0.3870967741935484,
+  "reliability": [
+   {
+    "conf": 0.10592592436138748,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.12703943267012088,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.14336710935345348,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.16791222121679888,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.18973148997047473,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.22092452215441905,
+    "hit": 0.2222222222222222,
+    "n": 9
+   },
+   {
+    "conf": 0.28133322156988616,
+    "hit": 0.2222222222222222,
+    "n": 9
+   },
+   {
+    "conf": 0.34320525341808594,
+    "hit": 0.3333333333333333,
+    "n": 9
+   },
+   {
+    "conf": 0.4367614925675874,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.6012333818513693,
+    "hit": 0.0,
+    "n": 9
+   }
+  ],
+  "calibration_error": 0.13931825279363083,
+  "conf_mean": 0.2573466549310453,
+  "calibration_null": 0.18571404332992586,
+  "miscalibrated": false,
+  "auc": 0.557649667405765,
+  "devices": 1,
+  "device_rate_p50": 0.11827956989247312,
+  "device_rate_p90": 0.11827956989247312,
+  "device_rate_max": 0.11827956989247312,
+  "device_worst_records": 93
+ },
+ {
+  "file": "c4_obs__W2__R1",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 62,
+  "dev_accuracy": 0.11290322580645161,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.01715793216764413,
+  "dev_lift_random": 6.580235001707306,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.117921780235658,
+  "anonymity_set": 9.922641039193861,
+  "min_entropy_bits": 1.5597126518996265,
+  "top1": 0.11290322580645161,
+  "top5": 0.25806451612903225,
+  "top10": 0.45161290322580644,
+  "reliability": [
+   {
+    "conf": 0.16641049402108135,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.20337134423368292,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.2234070071942519,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.25862439312092733,
+    "hit": 0.16666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.308322241664914,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.35645772261799397,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.4363628995502768,
+    "hit": 0.16666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.5189183674355264,
+    "hit": 0.3333333333333333,
+    "n": 6
+   },
+   {
+    "conf": 0.6284615757874668,
+    "hit": 0.3333333333333333,
+    "n": 6
+   },
+   {
+    "conf": 0.8269671244595772,
+    "hit": 0.0,
+    "n": 6
+   }
+  ],
+  "calibration_error": 0.27312259449627346,
+  "conf_mean": 0.3860258203027251,
+  "calibration_null": 0.23126740737922263,
+  "miscalibrated": true,
+  "auc": 0.6337662337662338,
+  "devices": 1,
+  "device_rate_p50": 0.11290322580645161,
+  "device_rate_p90": 0.11290322580645161,
+  "device_rate_max": 0.11290322580645161,
+  "device_worst_records": 62
+ },
+ {
+  "file": "c4_obs__W2__R1",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 37,
+  "dev_accuracy": 0.10810810810810811,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.02014538927264908,
+  "dev_lift_random": 5.366394595059225,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 2.034628018899197,
+  "anonymity_set": 4.720276646913487,
+  "min_entropy_bits": 1.0529778844395714,
+  "top1": 0.10810810810810811,
+  "top5": 0.24324324324324326,
+  "top10": 0.4864864864864865,
+  "reliability": [
+   {
+    "conf": 0.27323451034937074,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.3168959576845636,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.36488977700841874,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.41336777858968166,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.4516201171010308,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.4824074309258938,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.5906474475802982,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.7189582264560451,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.8979255012285896,
+    "hit": 0.6666666666666666,
+    "n": 3
+   },
+   {
+    "conf": 0.9796870607355789,
+    "hit": 0.0,
+    "n": 3
+   }
+  ],
+  "calibration_error": 0.4151882281680451,
+  "conf_mean": 0.5232963362761532,
+  "calibration_null": 0.28230447193300123,
+  "miscalibrated": true,
+  "auc": 0.5833333333333333,
+  "devices": 1,
+  "device_rate_p50": 0.10810810810810811,
+  "device_rate_p90": 0.10810810810810811,
+  "device_rate_max": 0.10810810810810811,
+  "device_worst_records": 37
+ },
+ {
+  "file": "c4_obs__W2__R1",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 18,
+  "dev_accuracy": 0.1111111111111111,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.026026396208402715,
+  "dev_lift_random": 4.269170046494508,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 1.1832118854927391,
+  "anonymity_set": 2.558711097703102,
+  "min_entropy_bits": 0.6077419940239788,
+  "top1": 0.1111111111111111,
+  "top5": 0.2777777777777778,
+  "top10": 0.6666666666666666,
+  "reliability": [
+   {
+    "conf": 0.35850064969197204,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.4460397145217143,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.4954600386962834,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.5664990091660502,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.7331962764422031,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.8571594122743236,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.8687477205858389,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.9324221542619182,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9988755974601986,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9998296286369449,
+    "hit": 0.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.584153065409875,
+  "conf_mean": 0.6952641765209862,
+  "calibration_null": 0.3781211842293974,
+  "miscalibrated": true,
+  "auc": 0.6875,
+  "devices": 1,
+  "device_rate_p50": 0.1111111111111111,
+  "device_rate_p90": 0.1111111111111111,
+  "device_rate_max": 0.1111111111111111,
+  "device_worst_records": 18
+ },
+ {
+  "file": "c4_obs__W2__R1",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 9,
+  "dev_accuracy": 0.1111111111111111,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.03484531840374752,
+  "dev_lift_random": 3.1886955321711565,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.475379282994244,
+  "anonymity_set": 1.4629409674795708,
+  "min_entropy_bits": 0.18048148066630515,
+  "top1": 0.1111111111111111,
+  "top5": 0.2222222222222222,
+  "top10": 0.8888888888888888,
+  "reliability": [
+   {
+    "conf": 0.6920038919353908,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.7033034015796834,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8189307818036582,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8599514607391567,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9658363886634719,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9836255332945977,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9970028552846343,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9991634514740457,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999729627287411,
+    "hit": 0.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.820214351544007,
+  "conf_mean": 0.8910878586114865,
+  "calibration_null": 0.2770294798669383,
+  "miscalibrated": true,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W2__R100",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 619,
+  "dev_accuracy": 0.04038772213247173,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.04829825461537603,
+  "dev_lift_random": 0.836214940976647,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.05327091365062463
+ },
+ {
+  "file": "c4_obs__W2__R100",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 619,
+  "dev_accuracy": 0.05331179321486268,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.006801148933663239,
+  "dev_lift_random": 7.8386451664054135,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.3913075034686,
+  "anonymity_set": 84.2433317580402,
+  "min_entropy_bits": 4.105554391534023,
+  "top1": 0.05331179321486268,
+  "top5": 0.172859450726979,
+  "top10": 0.2972536348949919,
+  "reliability": [
+   {
+    "conf": 0.033205416571023535,
+    "hit": 0.06451612903225806,
+    "n": 62
+   },
+   {
+    "conf": 0.03695509704247076,
+    "hit": 0.06451612903225806,
+    "n": 62
+   },
+   {
+    "conf": 0.04184164695756317,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.045513244530232054,
+    "hit": 0.04838709677419355,
+    "n": 62
+   },
+   {
+    "conf": 0.050391184942767016,
+    "hit": 0.16129032258064516,
+    "n": 62
+   },
+   {
+    "conf": 0.05660213667487094,
+    "hit": 0.016129032258064516,
+    "n": 62
+   },
+   {
+    "conf": 0.06966241831366589,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.08598113774560857,
+    "hit": 0.0,
+    "n": 62
+   },
+   {
+    "conf": 0.09554802517156209,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.11718318914661895,
+    "hit": 0.08196721311475409,
+    "n": 61
+   }
+  ],
+  "calibration_error": 0.04447421758982867,
+  "conf_mean": 0.0632012821176561,
+  "calibration_null": 0.03913322199628962,
+  "miscalibrated": true,
+  "auc": 0.45907022442858614,
+  "devices": 20,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.31785714285714306,
+  "device_rate_max": 0.55,
+  "device_worst_records": 20
+ },
+ {
+  "file": "c4_obs__W2__R100",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 285,
+  "dev_accuracy": 0.05964912280701754,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.007347887822624936,
+  "dev_lift_random": 8.117859750573693,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.894177774103166,
+  "anonymity_set": 32.05305670031697,
+  "min_entropy_bits": 2.365171087996066,
+  "top1": 0.05964912280701754,
+  "top5": 0.18596491228070175,
+  "top10": 0.3192982456140351,
+  "reliability": [
+   {
+    "conf": 0.08741255409514502,
+    "hit": 0.13793103448275862,
+    "n": 29
+   },
+   {
+    "conf": 0.10706607774126244,
+    "hit": 0.034482758620689655,
+    "n": 29
+   },
+   {
+    "conf": 0.12173031123576102,
+    "hit": 0.034482758620689655,
+    "n": 29
+   },
+   {
+    "conf": 0.1425661971134175,
+    "hit": 0.034482758620689655,
+    "n": 29
+   },
+   {
+    "conf": 0.1615075494778032,
+    "hit": 0.06896551724137931,
+    "n": 29
+   },
+   {
+    "conf": 0.1853102887859722,
+    "hit": 0.14285714285714285,
+    "n": 28
+   },
+   {
+    "conf": 0.24051507476729883,
+    "hit": 0.0,
+    "n": 28
+   },
+   {
+    "conf": 0.32348559712839714,
+    "hit": 0.03571428571428571,
+    "n": 28
+   },
+   {
+    "conf": 0.4132485692708306,
+    "hit": 0.03571428571428571,
+    "n": 28
+   },
+   {
+    "conf": 0.5389360900423373,
+    "hit": 0.07142857142857142,
+    "n": 28
+   }
+  ],
+  "calibration_error": 0.180912797272194,
+  "conf_mean": 0.23028096617576732,
+  "calibration_null": 0.10024804260110852,
+  "miscalibrated": true,
+  "auc": 0.4447980684811238,
+  "devices": 7,
+  "device_rate_p50": 0.06666666666666667,
+  "device_rate_p90": 0.5,
+  "device_rate_max": 0.5,
+  "device_worst_records": 10
+ },
+ {
+  "file": "c4_obs__W2__R100",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 171,
+  "dev_accuracy": 0.06432748538011696,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.007866300476809092,
+  "dev_lift_random": 8.177603381635752,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.4590055874931753,
+  "anonymity_set": 13.419438893173023,
+  "min_entropy_bits": 1.5418032552483576,
+  "top1": 0.06432748538011696,
+  "top5": 0.2222222222222222,
+  "top10": 0.3508771929824561,
+  "reliability": [
+   {
+    "conf": 0.15076257499888648,
+    "hit": 0.05555555555555555,
+    "n": 18
+   },
+   {
+    "conf": 0.18029168165112588,
+    "hit": 0.11764705882352941,
+    "n": 17
+   },
+   {
+    "conf": 0.2161992272470402,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.24887056521794632,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.2991850928133231,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.35480573416746564,
+    "hit": 0.23529411764705882,
+    "n": 17
+   },
+   {
+    "conf": 0.4341496040410791,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.5899536143754831,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.7230388707483236,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.8526833798263591,
+    "hit": 0.11764705882352941,
+    "n": 17
+   }
+  ],
+  "calibration_error": 0.33917981544724235,
+  "conf_mean": 0.40350730082735925,
+  "calibration_null": 0.13590725110451293,
+  "miscalibrated": true,
+  "auc": 0.5076704545454546,
+  "devices": 2,
+  "device_rate_p50": 0.16666666666666666,
+  "device_rate_p90": 0.3,
+  "device_rate_max": 0.3333333333333333,
+  "device_worst_records": 12
+ },
+ {
+  "file": "c4_obs__W2__R100",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 86,
+  "dev_accuracy": 0.06976744186046512,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.008760366017575344,
+  "dev_lift_random": 7.96398708918044,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 1.9014867689110246,
+  "anonymity_set": 4.70339578315512,
+  "min_entropy_bits": 0.7944605811617185,
+  "top1": 0.06976744186046512,
+  "top5": 0.27906976744186046,
+  "top10": 0.37209302325581395,
+  "reliability": [
+   {
+    "conf": 0.2746211708447788,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.34895190300007295,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.4434434523148265,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.4971604575401369,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.5644498692653035,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.6347488859775932,
+    "hit": 0.2222222222222222,
+    "n": 9
+   },
+   {
+    "conf": 0.775097569229704,
+    "hit": 0.0,
+    "n": 8
+   },
+   {
+    "conf": 0.8912149449525355,
+    "hit": 0.125,
+    "n": 8
+   },
+   {
+    "conf": 0.968595302441126,
+    "hit": 0.0,
+    "n": 8
+   },
+   {
+    "conf": 0.9906313070989542,
+    "hit": 0.125,
+    "n": 8
+   }
+  ],
+  "calibration_error": 0.5566824958170111,
+  "conf_mean": 0.6264499376774764,
+  "calibration_null": 0.17237813000440141,
+  "miscalibrated": true,
+  "auc": 0.6041666666666666,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W2__R100",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 29,
+  "dev_accuracy": 0.13793103448275862,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.010620109641194718,
+  "dev_lift_random": 12.987722268679136,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.8835167646521843,
+  "anonymity_set": 2.02030402460938,
+  "min_entropy_bits": 0.36129571091741874,
+  "top1": 0.13793103448275862,
+  "top5": 0.41379310344827586,
+  "top10": 0.5862068965517241,
+  "reliability": [
+   {
+    "conf": 0.501448969680669,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.5928478368556593,
+    "hit": 0.3333333333333333,
+    "n": 3
+   },
+   {
+    "conf": 0.7034056700634793,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.7306021337188423,
+    "hit": 0.3333333333333333,
+    "n": 3
+   },
+   {
+    "conf": 0.7627052603676306,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.8247984309948913,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.9386456472786501,
+    "hit": 0.3333333333333333,
+    "n": 3
+   },
+   {
+    "conf": 0.9947666420685047,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.998868014026128,
+    "hit": 0.0,
+    "n": 3
+   },
+   {
+    "conf": 0.9999198947597205,
+    "hit": 0.5,
+    "n": 2
+   }
+  ],
+  "calibration_error": 0.6601415725752692,
+  "conf_mean": 0.7980726070580275,
+  "calibration_null": 0.2498440003469202,
+  "miscalibrated": true,
+  "auc": 0.52,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__W2__R100",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 7,
+  "dev_accuracy": 0.14285714285714285,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.013637382684816552,
+  "dev_lift_random": 10.475407646673702,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.3275306453318727,
+  "anonymity_set": 1.2824040859709573,
+  "min_entropy_bits": 0.09801152358602787,
+  "top1": 0.14285714285714285,
+  "top5": 0.8571428571428571,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.8248220999236109,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8812715180467059,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.885047887520649,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.981819794951818,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9878044906821024,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.996594915629903,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9995646765101851,
+    "hit": 0.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.8266899440319537,
+  "conf_mean": 0.9367036261807107,
+  "calibration_null": 0.29376548664084046,
+  "miscalibrated": true,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__Wmis__R1",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 186,
+  "dev_accuracy": 0.11290322580645161,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.09297550085026365,
+  "dev_lift_random": 1.214333074562098,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.10499241459193476
+ },
+ {
+  "file": "c4_obs__Wmis__R1",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 186,
+  "dev_accuracy": 0.25806451612903225,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011108333527829646,
+  "dev_lift_random": 23.23161394843832,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.942058865063107,
+  "anonymity_set": 61.66375673956276,
+  "min_entropy_bits": 4.439355263087418,
+  "top1": 0.25806451612903225,
+  "top5": 0.3655913978494624,
+  "top10": 0.45161290322580644,
+  "reliability": [
+   {
+    "conf": 0.03248083627076577,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.03623328658309164,
+    "hit": 0.05263157894736842,
+    "n": 19
+   },
+   {
+    "conf": 0.037993816609773794,
+    "hit": 0.0,
+    "n": 19
+   },
+   {
+    "conf": 0.039801119923060506,
+    "hit": 0.15789473684210525,
+    "n": 19
+   },
+   {
+    "conf": 0.042521769104891194,
+    "hit": 0.10526315789473684,
+    "n": 19
+   },
+   {
+    "conf": 0.04500188085422215,
+    "hit": 0.21052631578947367,
+    "n": 19
+   },
+   {
+    "conf": 0.047561931042964196,
+    "hit": 0.3333333333333333,
+    "n": 18
+   },
+   {
+    "conf": 0.05211155842157023,
+    "hit": 0.3888888888888889,
+    "n": 18
+   },
+   {
+    "conf": 0.05877219979898729,
+    "hit": 0.3888888888888889,
+    "n": 18
+   },
+   {
+    "conf": 0.09444612981187535,
+    "hit": 0.8888888888888888,
+    "n": 18
+   }
+  ],
+  "calibration_error": 0.21744672478625782,
+  "conf_mean": 0.04837996892971744,
+  "calibration_null": 0.05815610224706861,
+  "miscalibrated": true,
+  "auc": 0.8180857487922705,
+  "devices": 1,
+  "device_rate_p50": 0.25806451612903225,
+  "device_rate_p90": 0.25806451612903225,
+  "device_rate_max": 0.25806451612903225,
+  "device_worst_records": 186
+ },
+ {
+  "file": "c4_obs__Wmis__R1",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 93,
+  "dev_accuracy": 0.25806451612903225,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.01178432016077601,
+  "dev_lift_random": 21.89897360290646,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.202197703645642,
+  "anonymity_set": 37.80521164798834,
+  "min_entropy_bits": 3.2589477247458576,
+  "top1": 0.25806451612903225,
+  "top5": 0.3870967741935484,
+  "top10": 0.4731182795698925,
+  "reliability": [
+   {
+    "conf": 0.0562608615060336,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.07254650796502304,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.07729330013725687,
+    "hit": 0.2,
+    "n": 10
+   },
+   {
+    "conf": 0.08534439575508536,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.09089479029879485,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.10029144315087304,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.1132801326275423,
+    "hit": 0.3333333333333333,
+    "n": 9
+   },
+   {
+    "conf": 0.12571084268990662,
+    "hit": 0.3333333333333333,
+    "n": 9
+   },
+   {
+    "conf": 0.15600123551691422,
+    "hit": 0.4444444444444444,
+    "n": 9
+   },
+   {
+    "conf": 0.34724759358273843,
+    "hit": 1.0,
+    "n": 9
+   }
+  ],
+  "calibration_error": 0.16501297624453015,
+  "conf_mean": 0.12075204944817022,
+  "calibration_null": 0.13556380021089198,
+  "miscalibrated": true,
+  "auc": 0.8580917874396136,
+  "devices": 1,
+  "device_rate_p50": 0.25806451612903225,
+  "device_rate_p90": 0.25806451612903225,
+  "device_rate_max": 0.25806451612903225,
+  "device_worst_records": 93
+ },
+ {
+  "file": "c4_obs__Wmis__R1",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 62,
+  "dev_accuracy": 0.3225806451612903,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.012506237220271095,
+  "dev_lift_random": 25.793581193104686,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.417031094318297,
+  "anonymity_set": 23.36070325327484,
+  "min_entropy_bits": 2.4704543245206474,
+  "top1": 0.3225806451612903,
+  "top5": 0.43548387096774194,
+  "top10": 0.5161290322580645,
+  "reliability": [
+   {
+    "conf": 0.09801069781323016,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.11996805093530742,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.1300415830554188,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.14048867676164553,
+    "hit": 0.16666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.15444588743624565,
+    "hit": 0.16666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.16524131064109496,
+    "hit": 0.6666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.18787522891596023,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.21753353912759252,
+    "hit": 0.6666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.3165222418256831,
+    "hit": 0.6666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.6436560969132454,
+    "hit": 1.0,
+    "n": 6
+   }
+  ],
+  "calibration_error": 0.2194520257554031,
+  "conf_mean": 0.21388191337582385,
+  "calibration_null": 0.20166356109149117,
+  "miscalibrated": true,
+  "auc": 0.8892857142857145,
+  "devices": 1,
+  "device_rate_p50": 0.3225806451612903,
+  "device_rate_p90": 0.3225806451612903,
+  "device_rate_max": 0.3225806451612903,
+  "device_worst_records": 62
+ },
+ {
+  "file": "c4_obs__Wmis__R1",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 37,
+  "dev_accuracy": 0.32432432432432434,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.014286846037460353,
+  "dev_lift_random": 22.700904277538964,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.0257233657312192,
+  "anonymity_set": 9.888337715777165,
+  "min_entropy_bits": 1.503961101025109,
+  "top1": 0.32432432432432434,
+  "top5": 0.6216216216216216,
+  "top10": 0.8378378378378378,
+  "reliability": [
+   {
+    "conf": 0.15782333518605532,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.20084043360003614,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.23399482503867475,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.2662457515697356,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.3228287758170049,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.3956943999848793,
+    "hit": 0.5,
+    "n": 4
+   },
+   {
+    "conf": 0.49020862734644766,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.605480933997128,
+    "hit": 0.3333333333333333,
+    "n": 3
+   },
+   {
+    "conf": 0.7532827542827284,
+    "hit": 1.0,
+    "n": 3
+   },
+   {
+    "conf": 0.960706316776826,
+    "hit": 1.0,
+    "n": 3
+   }
+  ],
+  "calibration_error": 0.1562017563001357,
+  "conf_mean": 0.4115933678200373,
+  "calibration_null": 0.29147868031607344,
+  "miscalibrated": false,
+  "auc": 0.8866666666666667,
+  "devices": 1,
+  "device_rate_p50": 0.32432432432432434,
+  "device_rate_p90": 0.32432432432432434,
+  "device_rate_max": 0.32432432432432434,
+  "device_worst_records": 37
+ },
+ {
+  "file": "c4_obs__Wmis__R1",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 18,
+  "dev_accuracy": 0.6111111111111112,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0203840213912628,
+  "dev_lift_random": 29.979909232878438,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 1.2657766234676648,
+  "anonymity_set": 2.916709169323406,
+  "min_entropy_bits": 0.6387767455103893,
+  "top1": 0.6111111111111112,
+  "top5": 0.9444444444444444,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.26594842566554644,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.40962061445427234,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.4848154967078978,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.6096558970212567,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.7452953128485498,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.8182440585035349,
+    "hit": 1.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9774122669860179,
+    "hit": 1.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9912817525270861,
+    "hit": 1.0,
+    "n": 2
+   },
+   {
+    "conf": 0.9980673661390306,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9998004919399878,
+    "hit": 1.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.1399814162472866,
+  "conf_mean": 0.700134194861519,
+  "calibration_null": 0.28654524060479086,
+  "miscalibrated": false,
+  "auc": 0.948051948051948,
+  "devices": 1,
+  "device_rate_p50": 0.6111111111111112,
+  "device_rate_p90": 0.6111111111111112,
+  "device_rate_max": 0.6111111111111112,
+  "device_worst_records": 18
+ },
+ {
+  "file": "c4_obs__Wmis__R1",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 9,
+  "dev_accuracy": 1.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.041840403814600836,
+  "dev_lift_random": 23.90034294198267,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.17659475652409665,
+  "anonymity_set": 1.2072986981845721,
+  "min_entropy_bits": 0.10858563997300012,
+  "top1": 1.0,
+  "top5": 1.0,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.5134297878079924,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9951814733539289,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9969263745544327,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9983059588348943,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9989223978024108,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999374512930069,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999943125035274,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999999518493842,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999999989339927,
+    "hit": 1.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.05525581034071441,
+  "conf_mean": 0.9447441896592854,
+  "calibration_null": 0.058240207631379395,
+  "miscalibrated": false,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__Wmis__R100",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 619,
+  "dev_accuracy": 0.046849757673667204,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.04905843846851268,
+  "dev_lift_random": 0.9549785752707338,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.05327091365062463
+ },
+ {
+  "file": "c4_obs__Wmis__R100",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 619,
+  "dev_accuracy": 0.09046849757673667,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.006046426145097392,
+  "dev_lift_random": 14.962309206421219,
+  "dev_contribution": NaN,
+  "stable": true,
+  "bound": null,
+  "entropy_bits": 6.671007396992426,
+  "anonymity_set": 102.00147387913117,
+  "min_entropy_bits": 4.606366956341373,
+  "top1": 0.09046849757673667,
+  "top5": 0.24878836833602586,
+  "top10": 0.3764135702746365,
+  "reliability": [
+   {
+    "conf": 0.0297816741714899,
+    "hit": 0.03225806451612903,
+    "n": 62
+   },
+   {
+    "conf": 0.031392451633715755,
+    "hit": 0.0967741935483871,
+    "n": 62
+   },
+   {
+    "conf": 0.033152236835433745,
+    "hit": 0.04838709677419355,
+    "n": 62
+   },
+   {
+    "conf": 0.035625147546377946,
+    "hit": 0.06451612903225806,
+    "n": 62
+   },
+   {
+    "conf": 0.037675288781496175,
+    "hit": 0.06451612903225806,
+    "n": 62
+   },
+   {
+    "conf": 0.039855350749746776,
+    "hit": 0.16129032258064516,
+    "n": 62
+   },
+   {
+    "conf": 0.04238517948830952,
+    "hit": 0.08064516129032258,
+    "n": 62
+   },
+   {
+    "conf": 0.04566625101182263,
+    "hit": 0.0967741935483871,
+    "n": 62
+   },
+   {
+    "conf": 0.05133106649643232,
+    "hit": 0.11290322580645161,
+    "n": 62
+   },
+   {
+    "conf": 0.08608893911266949,
+    "hit": 0.14754098360655737,
+    "n": 61
+   }
+  ],
+  "calibration_error": 0.047242272403567084,
+  "conf_mean": 0.04322622517316958,
+  "calibration_null": 0.031291827521151554,
+  "miscalibrated": true,
+  "auc": 0.5947253235219486,
+  "devices": 20,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.4300000000000002,
+  "device_rate_max": 0.5714285714285714,
+  "device_worst_records": 21
+ },
+ {
+  "file": "c4_obs__Wmis__R100",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 285,
+  "dev_accuracy": 0.09473684210526316,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.006439137545247491,
+  "dev_lift_random": 14.712660110077195,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.470619790115015,
+  "anonymity_set": 45.6773609895524,
+  "min_entropy_bits": 2.884022217825663,
+  "top1": 0.09473684210526316,
+  "top5": 0.2982456140350877,
+  "top10": 0.4105263157894737,
+  "reliability": [
+   {
+    "conf": 0.08227526688992184,
+    "hit": 0.06896551724137931,
+    "n": 29
+   },
+   {
+    "conf": 0.09444863670320777,
+    "hit": 0.0,
+    "n": 29
+   },
+   {
+    "conf": 0.10283167547223543,
+    "hit": 0.10344827586206896,
+    "n": 29
+   },
+   {
+    "conf": 0.11006707891402248,
+    "hit": 0.13793103448275862,
+    "n": 29
+   },
+   {
+    "conf": 0.12024822285672486,
+    "hit": 0.13793103448275862,
+    "n": 29
+   },
+   {
+    "conf": 0.13615593587715966,
+    "hit": 0.07142857142857142,
+    "n": 28
+   },
+   {
+    "conf": 0.14805515662440527,
+    "hit": 0.07142857142857142,
+    "n": 28
+   },
+   {
+    "conf": 0.16347900314262342,
+    "hit": 0.03571428571428571,
+    "n": 28
+   },
+   {
+    "conf": 0.1844460696220671,
+    "hit": 0.10714285714285714,
+    "n": 28
+   },
+   {
+    "conf": 0.36508259734868914,
+    "hit": 0.21428571428571427,
+    "n": 28
+   }
+  ],
+  "calibration_error": 0.06451177620130776,
+  "conf_mean": 0.14985396806128318,
+  "calibration_null": 0.08628516881143479,
+  "miscalibrated": false,
+  "auc": 0.588931955211025,
+  "devices": 7,
+  "device_rate_p50": 0.2,
+  "device_rate_p90": 0.6,
+  "device_rate_max": 0.6,
+  "device_worst_records": 10
+ },
+ {
+  "file": "c4_obs__Wmis__R100",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 171,
+  "dev_accuracy": 0.1111111111111111,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.006827279281378246,
+  "dev_lift_random": 16.27458121043508,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.0452391394225415,
+  "anonymity_set": 18.041295407778545,
+  "min_entropy_bits": 1.8936489144154132,
+  "top1": 0.1111111111111111,
+  "top5": 0.2982456140350877,
+  "top10": 0.4678362573099415,
+  "reliability": [
+   {
+    "conf": 0.15053099275054097,
+    "hit": 0.16666666666666666,
+    "n": 18
+   },
+   {
+    "conf": 0.18266194367892938,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.20032517251524554,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.21902953980914291,
+    "hit": 0.17647058823529413,
+    "n": 17
+   },
+   {
+    "conf": 0.2401757724144014,
+    "hit": 0.11764705882352941,
+    "n": 17
+   },
+   {
+    "conf": 0.26960235983374714,
+    "hit": 0.11764705882352941,
+    "n": 17
+   },
+   {
+    "conf": 0.29991122742032067,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.33997944660117385,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.4090869661173536,
+    "hit": 0.17647058823529413,
+    "n": 17
+   },
+   {
+    "conf": 0.6603886044262155,
+    "hit": 0.17647058823529413,
+    "n": 17
+   }
+  ],
+  "calibration_error": 0.18859754203725893,
+  "conf_mean": 0.29631166916602775,
+  "calibration_null": 0.1263685340932955,
+  "miscalibrated": true,
+  "auc": 0.5495152354570638,
+  "devices": 2,
+  "device_rate_p50": 0.30833333333333335,
+  "device_rate_p90": 0.395,
+  "device_rate_max": 0.4166666666666667,
+  "device_worst_records": 12
+ },
+ {
+  "file": "c4_obs__Wmis__R100",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 86,
+  "dev_accuracy": 0.11627906976744186,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0074784492125797,
+  "dev_lift_random": 15.548553779284308,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 2.149616287272665,
+  "anonymity_set": 4.831866431539059,
+  "min_entropy_bits": 0.9201519178882038,
+  "top1": 0.11627906976744186,
+  "top5": 0.36046511627906974,
+  "top10": 0.6511627906976745,
+  "reliability": [
+   {
+    "conf": 0.3031739842579975,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.36991806402717003,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.4157277944236672,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.46552940238033513,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.512862091302444,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.6014773228748501,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.650388745953183,
+    "hit": 0.0,
+    "n": 8
+   },
+   {
+    "conf": 0.6941291645861519,
+    "hit": 0.25,
+    "n": 8
+   },
+   {
+    "conf": 0.7521489082647366,
+    "hit": 0.25,
+    "n": 8
+   },
+   {
+    "conf": 0.8774163811573351,
+    "hit": 0.25,
+    "n": 8
+   }
+  ],
+  "calibration_error": 0.4396612038731329,
+  "conf_mean": 0.5559402736405747,
+  "calibration_null": 0.19841122827113705,
+  "miscalibrated": true,
+  "auc": 0.6171052631578948,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 213,
+  "dev_accuracy": 0.07511737089201878,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.09183950800834767,
+  "dev_lift_random": 0.8179200054642176,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.10499241459193476
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 213,
+  "dev_accuracy": 0.051643192488262914,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011235637248703769,
+  "dev_lift_random": 4.596374139279094,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.958711810098155,
+  "anonymity_set": 62.29743677117906,
+  "min_entropy_bits": 4.614012330088283,
+  "top1": 0.051643192488262914,
+  "top5": 0.1596244131455399,
+  "top10": 0.27230046948356806,
+  "reliability": [
+   {
+    "conf": 0.03235265988881865,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.03523657404586567,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.03710413541707139,
+    "hit": 0.045454545454545456,
+    "n": 22
+   },
+   {
+    "conf": 0.038818160896026195,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.03991410844554772,
+    "hit": 0.14285714285714285,
+    "n": 21
+   },
+   {
+    "conf": 0.04135313905246724,
+    "hit": 0.19047619047619047,
+    "n": 21
+   },
+   {
+    "conf": 0.04263197643509503,
+    "hit": 0.09523809523809523,
+    "n": 21
+   },
+   {
+    "conf": 0.044746871185697965,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.04763473966012451,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.053828420584448505,
+    "hit": 0.0,
+    "n": 21
+   }
+  ],
+  "calibration_error": 0.053164402563433404,
+  "conf_mean": 0.04127103224031069,
+  "calibration_null": 0.056062032288568944,
+  "miscalibrated": false,
+  "auc": 0.5004500450045005,
+  "devices": 1,
+  "device_rate_p50": 0.051643192488262914,
+  "device_rate_p90": 0.051643192488262914,
+  "device_rate_max": 0.051643192488262914,
+  "device_worst_records": 213
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 106,
+  "dev_accuracy": 0.03773584905660377,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011948293267211505,
+  "dev_lift_random": 3.1582627085458683,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.327638180854224,
+  "anonymity_set": 40.38529616199391,
+  "min_entropy_bits": 3.5790253488034773,
+  "top1": 0.03773584905660377,
+  "top5": 0.18867924528301888,
+  "top10": 0.3113207547169811,
+  "reliability": [
+   {
+    "conf": 0.05854687382076023,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.06457020433556505,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.0684606078854935,
+    "hit": 0.09090909090909091,
+    "n": 11
+   },
+   {
+    "conf": 0.07285579792938796,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.07820464851450716,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.08387939765834619,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.09152412341916959,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.09916452850579341,
+    "hit": 0.2,
+    "n": 10
+   },
+   {
+    "conf": 0.11127043047770113,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.1515620422440998,
+    "hit": 0.0,
+    "n": 10
+   }
+  ],
+  "calibration_error": 0.07459431760445456,
+  "conf_mean": 0.08704626488728585,
+  "calibration_null": 0.11058408910285598,
+  "miscalibrated": false,
+  "auc": 0.5955882352941176,
+  "devices": 1,
+  "device_rate_p50": 0.03773584905660377,
+  "device_rate_p90": 0.03773584905660377,
+  "device_rate_max": 0.03773584905660377,
+  "device_worst_records": 106
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 71,
+  "dev_accuracy": 0.056338028169014086,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.012718768768431369,
+  "dev_lift_random": 4.429519019863616,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.690638629983219,
+  "anonymity_set": 26.20594216309931,
+  "min_entropy_bits": 2.8054176706364102,
+  "top1": 0.056338028169014086,
+  "top5": 0.19718309859154928,
+  "top10": 0.39436619718309857,
+  "reliability": [
+   {
+    "conf": 0.09125410267583123,
+    "hit": 0.0,
+    "n": 8
+   },
+   {
+    "conf": 0.10330533553788898,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.11410623622172825,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.12193993004845648,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.13285827932740127,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.1440933589451045,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.15742395230974365,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.17440457931282713,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.19774283399746487,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.2876271159636312,
+    "hit": 0.0,
+    "n": 7
+   }
+  ],
+  "calibration_error": 0.107040590629439,
+  "conf_mean": 0.15161329821206163,
+  "calibration_null": 0.1669881911422049,
+  "miscalibrated": false,
+  "auc": 0.46641791044776115,
+  "devices": 1,
+  "device_rate_p50": 0.056338028169014086,
+  "device_rate_p90": 0.056338028169014086,
+  "device_rate_max": 0.056338028169014086,
+  "device_worst_records": 71
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 42,
+  "dev_accuracy": 0.09523809523809523,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.014492753255440496,
+  "dev_lift_random": 6.571428738175984,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.575419600279141,
+  "anonymity_set": 12.421529999999196,
+  "min_entropy_bits": 1.8725003145569317,
+  "top1": 0.09523809523809523,
+  "top5": 0.35714285714285715,
+  "top10": 0.5952380952380952,
+  "reliability": [
+   {
+    "conf": 0.15609500630583023,
+    "hit": 0.2,
+    "n": 5
+   },
+   {
+    "conf": 0.18868602885022012,
+    "hit": 0.0,
+    "n": 5
+   },
+   {
+    "conf": 0.21205031445086528,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.23382653067415776,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.2756546913903984,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.3109678036188076,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.3250313767070765,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.36520621093954725,
+    "hit": 0.5,
+    "n": 4
+   },
+   {
+    "conf": 0.41465867114797483,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.4792243279614965,
+    "hit": 0.0,
+    "n": 4
+   }
+  ],
+  "calibration_error": 0.23113774125635397,
+  "conf_mean": 0.29024725912717975,
+  "calibration_null": 0.2908185077773434,
+  "miscalibrated": false,
+  "auc": 0.513157894736842,
+  "devices": 1,
+  "device_rate_p50": 0.09523809523809523,
+  "device_rate_p90": 0.09523809523809523,
+  "device_rate_max": 0.09523809523809523,
+  "device_worst_records": 42
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 21,
+  "dev_accuracy": 0.23809523809523808,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.019592984661856855,
+  "dev_lift_random": 12.152065762535715,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 1.9738757923824541,
+  "anonymity_set": 4.265358188219096,
+  "min_entropy_bits": 0.9078732441178874,
+  "top1": 0.23809523809523808,
+  "top5": 0.8095238095238095,
+  "top10": 0.9523809523809523,
+  "reliability": [
+   {
+    "conf": 0.2915035577904079,
+    "hit": 0.3333333333333333,
+    "n": 3
+   },
+   {
+    "conf": 0.3788281840308132,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.45732144897277793,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.4909273042294643,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.5254241320158595,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.630127895667894,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.6944689542638813,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.7100337245356689,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.7671354759907891,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.8130174000274082,
+    "hit": 0.5,
+    "n": 2
+   }
+  ],
+  "calibration_error": 0.3443225033431799,
+  "conf_mean": 0.562337129182873,
+  "calibration_null": 0.39708466841485834,
+  "miscalibrated": false,
+  "auc": 0.6,
+  "devices": 1,
+  "device_rate_p50": 0.23809523809523808,
+  "device_rate_p90": 0.23809523809523808,
+  "device_rate_max": 0.23809523809523808,
+  "device_worst_records": 21
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 10,
+  "dev_accuracy": 0.8,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.03589066263961223,
+  "dev_lift_random": 22.28992002830972,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.5794080075341411,
+  "anonymity_set": 1.6196362076839914,
+  "min_entropy_bits": 0.2533830660905453,
+  "top1": 0.8,
+  "top5": 1.0,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.5313994885334369,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.543057495906027,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8180120096431497,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8716775169251814,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9442883445235412,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9597604181057924,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9662591875353893,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.976892656567439,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.983398212298987,
+    "hit": 0.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9975189117173482,
+    "hit": 1.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.24606471746537362,
+  "conf_mean": 0.8592264241756291,
+  "calibration_null": 0.3824914910778025,
+  "miscalibrated": false,
+  "auc": 0.5,
+  "devices": 1,
+  "device_rate_p50": 0.8,
+  "device_rate_p90": 0.8,
+  "device_rate_max": 0.8,
+  "device_worst_records": 10
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "edit chain, 1 records",
+  "runs": 1,
+  "n": 100,
+  "dev_accuracy": 0.06,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011259661619419816,
+  "dev_lift_random": 5.328756940307737,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "edit chain, 2 records",
+  "runs": 1,
+  "n": 24,
+  "dev_accuracy": 0.041666666666666664,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.012979916411667259,
+  "dev_lift_random": 3.2100874416428247,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "edit chain, 3 records",
+  "runs": 1,
+  "n": 19,
+  "dev_accuracy": 0.15789473684210525,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.014621794945522217,
+  "dev_lift_random": 10.798587822520313,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain100__R1",
+  "vantage": "edit chain, 4 records",
+  "runs": 1,
+  "n": 2,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.015579710144927535,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 635,
+  "dev_accuracy": 0.048818897637795275,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.047202158739843215,
+  "dev_lift_random": 1.0342513762318115,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.05327091365062463
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 635,
+  "dev_accuracy": 0.01732283464566929,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.005540625658989642,
+  "dev_lift_random": 3.1265123673466486,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.9669278284688065,
+  "anonymity_set": 125.25143284054302,
+  "min_entropy_bits": 5.502847829443718,
+  "top1": 0.01732283464566929,
+  "top5": 0.12125984251968504,
+  "top10": 0.1984251968503937,
+  "reliability": [
+   {
+    "conf": 0.017080824706698073,
+    "hit": 0.0,
+    "n": 64
+   },
+   {
+    "conf": 0.018535522920823028,
+    "hit": 0.0,
+    "n": 64
+   },
+   {
+    "conf": 0.019591950208706924,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.020626396365292742,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.02160303330542273,
+    "hit": 0.03125,
+    "n": 64
+   },
+   {
+    "conf": 0.02269300998540466,
+    "hit": 0.0,
+    "n": 63
+   },
+   {
+    "conf": 0.023544573329399257,
+    "hit": 0.015873015873015872,
+    "n": 63
+   },
+   {
+    "conf": 0.024895751460988418,
+    "hit": 0.047619047619047616,
+    "n": 63
+   },
+   {
+    "conf": 0.026564211430775933,
+    "hit": 0.031746031746031744,
+    "n": 63
+   },
+   {
+    "conf": 0.028205232362372146,
+    "hit": 0.015873015873015872,
+    "n": 63
+   }
+  ],
+  "calibration_error": 0.012470466177686948,
+  "conf_mean": 0.02231163718155532,
+  "calibration_null": 0.023507107176452054,
+  "miscalibrated": false,
+  "auc": 0.6706002331002332,
+  "devices": 12,
+  "device_rate_p50": 0.0,
+  "device_rate_p90": 0.12250000000000001,
+  "device_rate_max": 0.2727272727272727,
+  "device_worst_records": 11
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 291,
+  "dev_accuracy": 0.03436426116838488,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.005930794709967916,
+  "dev_lift_random": 5.7942085081159025,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.322628821680074,
+  "anonymity_set": 80.34887718989368,
+  "min_entropy_bits": 4.281765847875811,
+  "top1": 0.03436426116838488,
+  "top5": 0.140893470790378,
+  "top10": 0.2542955326460481,
+  "reliability": [
+   {
+    "conf": 0.034293470582771504,
+    "hit": 0.06666666666666667,
+    "n": 30
+   },
+   {
+    "conf": 0.038996253424880604,
+    "hit": 0.034482758620689655,
+    "n": 29
+   },
+   {
+    "conf": 0.04290480328964854,
+    "hit": 0.0,
+    "n": 29
+   },
+   {
+    "conf": 0.046777156229531436,
+    "hit": 0.0,
+    "n": 29
+   },
+   {
+    "conf": 0.050042641614361186,
+    "hit": 0.0,
+    "n": 29
+   },
+   {
+    "conf": 0.05339619814772668,
+    "hit": 0.06896551724137931,
+    "n": 29
+   },
+   {
+    "conf": 0.05657369930953832,
+    "hit": 0.034482758620689655,
+    "n": 29
+   },
+   {
+    "conf": 0.06032329621241644,
+    "hit": 0.0,
+    "n": 29
+   },
+   {
+    "conf": 0.06763585815879546,
+    "hit": 0.034482758620689655,
+    "n": 29
+   },
+   {
+    "conf": 0.0795763457685059,
+    "hit": 0.10344827586206896,
+    "n": 29
+   }
+  ],
+  "calibration_error": 0.03315927714048831,
+  "conf_mean": 0.05298751006869374,
+  "calibration_null": 0.053753603744681494,
+  "miscalibrated": false,
+  "auc": 0.5777580071174377,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 175,
+  "dev_accuracy": 0.03428571428571429,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.00632533224503671,
+  "dev_lift_random": 5.420381563769589,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.655272369382688,
+  "anonymity_set": 50.82195742693817,
+  "min_entropy_bits": 3.3765451872030305,
+  "top1": 0.03428571428571429,
+  "top5": 0.12,
+  "top10": 0.3028571428571429,
+  "reliability": [
+   {
+    "conf": 0.05896132532007346,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.06965067004796567,
+    "hit": 0.05555555555555555,
+    "n": 18
+   },
+   {
+    "conf": 0.0777141514055507,
+    "hit": 0.05555555555555555,
+    "n": 18
+   },
+   {
+    "conf": 0.08684732422477495,
+    "hit": 0.0,
+    "n": 18
+   },
+   {
+    "conf": 0.09356025216120481,
+    "hit": 0.05555555555555555,
+    "n": 18
+   },
+   {
+    "conf": 0.10160872218852848,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.11129096133253837,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.11819893149327214,
+    "hit": 0.058823529411764705,
+    "n": 17
+   },
+   {
+    "conf": 0.13191366474204583,
+    "hit": 0.0,
+    "n": 17
+   },
+   {
+    "conf": 0.16236702975521455,
+    "hit": 0.11764705882352941,
+    "n": 17
+   }
+  ],
+  "calibration_error": 0.06624374444896824,
+  "conf_mean": 0.10052945873468253,
+  "calibration_null": 0.09331189718716615,
+  "miscalibrated": false,
+  "auc": 0.6000986193293886,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 90,
+  "dev_accuracy": 0.05555555555555555,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.007132697456383753,
+  "dev_lift_random": 7.788856305104237,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.384457243629656,
+  "anonymity_set": 21.810460244866974,
+  "min_entropy_bits": 2.192382338958282,
+  "top1": 0.05555555555555555,
+  "top5": 0.26666666666666666,
+  "top10": 0.5111111111111111,
+  "reliability": [
+   {
+    "conf": 0.11177633456657994,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.13975891666793147,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.16144160198761537,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.1798680921455753,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.2068377585557655,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.23127362392640474,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.26035664915542495,
+    "hit": 0.0,
+    "n": 9
+   },
+   {
+    "conf": 0.2934741068183648,
+    "hit": 0.2222222222222222,
+    "n": 9
+   },
+   {
+    "conf": 0.35872106756321087,
+    "hit": 0.1111111111111111,
+    "n": 9
+   },
+   {
+    "conf": 0.42966008704310377,
+    "hit": 0.1111111111111111,
+    "n": 9
+   }
+  ],
+  "calibration_error": 0.18176126828744213,
+  "conf_mean": 0.23731682384299768,
+  "calibration_null": 0.17270830525347158,
+  "miscalibrated": true,
+  "auc": 0.7105882352941177,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "edit chain, 1 records",
+  "runs": 1,
+  "n": 425,
+  "dev_accuracy": 0.009411764705882352,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0055622343149144505,
+  "dev_lift_random": 1.6920834637702797,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "edit chain, 2 records",
+  "runs": 1,
+  "n": 83,
+  "dev_accuracy": 0.060240963855421686,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.006568087488723458,
+  "dev_lift_random": 9.171766356469444,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "edit chain, 3 records",
+  "runs": 1,
+  "n": 12,
+  "dev_accuracy": 0.08333333333333333,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.007701710261232603,
+  "dev_lift_random": 10.820107548423463,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain100__R100",
+  "vantage": "edit chain, 4 records",
+  "runs": 1,
+  "n": 2,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.011036992116434201,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 213,
+  "dev_accuracy": 0.07511737089201878,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0921973354379712,
+  "dev_lift_random": 0.814745573016657,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.10499241459193476
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 213,
+  "dev_accuracy": 0.023474178403755867,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.008725770453370786,
+  "dev_lift_random": 2.690212690008105,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.203614563070294,
+  "anonymity_set": 73.86540060005856,
+  "min_entropy_bits": 4.713390796706157,
+  "top1": 0.023474178403755867,
+  "top5": 0.18309859154929578,
+  "top10": 0.2535211267605634,
+  "reliability": [
+   {
+    "conf": 0.029231511325761694,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.03260360244748615,
+    "hit": 0.13636363636363635,
+    "n": 22
+   },
+   {
+    "conf": 0.03436442880398211,
+    "hit": 0.0,
+    "n": 22
+   },
+   {
+    "conf": 0.035657431565848476,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.03695197277007167,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.03862158324815963,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.04057100719243951,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.042581694571714956,
+    "hit": 0.047619047619047616,
+    "n": 21
+   },
+   {
+    "conf": 0.045209852496021,
+    "hit": 0.0,
+    "n": 21
+   },
+   {
+    "conf": 0.05125551525871623,
+    "hit": 0.0,
+    "n": 21
+   }
+  ],
+  "calibration_error": 0.039667829107122216,
+  "conf_mean": 0.038611362140194644,
+  "calibration_null": 0.050529714469230894,
+  "miscalibrated": false,
+  "auc": 0.3235576923076923,
+  "devices": 2,
+  "device_rate_p50": 0.014204545454545454,
+  "device_rate_p90": 0.025568181818181816,
+  "device_rate_max": 0.028409090909090908,
+  "device_worst_records": 176
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 106,
+  "dev_accuracy": 0.02830188679245283,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.010466074735749273,
+  "dev_lift_random": 2.7041548533741366,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.332636014867218,
+  "anonymity_set": 40.78154198569266,
+  "min_entropy_bits": 3.475857861067046,
+  "top1": 0.02830188679245283,
+  "top5": 0.19811320754716982,
+  "top10": 0.3490566037735849,
+  "reliability": [
+   {
+    "conf": 0.05576312162837318,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.06536731893593219,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.07179607513640376,
+    "hit": 0.09090909090909091,
+    "n": 11
+   },
+   {
+    "conf": 0.07896513648513306,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.08298409496476816,
+    "hit": 0.09090909090909091,
+    "n": 11
+   },
+   {
+    "conf": 0.09127572094737658,
+    "hit": 0.0,
+    "n": 11
+   },
+   {
+    "conf": 0.1001780083288684,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.11402586845905718,
+    "hit": 0.0,
+    "n": 10
+   },
+   {
+    "conf": 0.13129371018698593,
+    "hit": 0.1,
+    "n": 10
+   },
+   {
+    "conf": 0.16773706285731393,
+    "hit": 0.0,
+    "n": 10
+   }
+  ],
+  "calibration_error": 0.07202687646390876,
+  "conf_mean": 0.09471710044717084,
+  "calibration_null": 0.11292032099254316,
+  "miscalibrated": false,
+  "auc": 0.5501618122977346,
+  "devices": 2,
+  "device_rate_p50": 0.017045454545454544,
+  "device_rate_p90": 0.03068181818181818,
+  "device_rate_max": 0.03409090909090909,
+  "device_worst_records": 88
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 70,
+  "dev_accuracy": 0.04285714285714286,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.012381466461123305,
+  "dev_lift_random": 3.461394737990887,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.548988053112955,
+  "anonymity_set": 23.990588581661992,
+  "min_entropy_bits": 2.6909757936610212,
+  "top1": 0.04285714285714286,
+  "top5": 0.2857142857142857,
+  "top10": 0.5285714285714286,
+  "reliability": [
+   {
+    "conf": 0.09417180273166167,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.10791739610259381,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.11717087734019148,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.12340153333250492,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.13315064968641255,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.14495023354231762,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.16941923583214052,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.20210518870946134,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.2552870467686626,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.32724845936451985,
+    "hit": 0.0,
+    "n": 7
+   }
+  ],
+  "calibration_error": 0.13045752002297745,
+  "conf_mean": 0.16748224234104667,
+  "calibration_null": 0.16842878283618987,
+  "miscalibrated": false,
+  "auc": 0.4975124378109453,
+  "devices": 2,
+  "device_rate_p50": 0.02586206896551724,
+  "device_rate_p90": 0.04655172413793104,
+  "device_rate_max": 0.05172413793103448,
+  "device_worst_records": 58
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 42,
+  "dev_accuracy": 0.11904761904761904,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.016463049782968156,
+  "dev_lift_random": 7.23120081740746,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 3.244297956159196,
+  "anonymity_set": 10.003443729063852,
+  "min_entropy_bits": 1.7490169739997667,
+  "top1": 0.11904761904761904,
+  "top5": 0.47619047619047616,
+  "top10": 0.8809523809523809,
+  "reliability": [
+   {
+    "conf": 0.17841079769511428,
+    "hit": 0.2,
+    "n": 5
+   },
+   {
+    "conf": 0.20500791286648345,
+    "hit": 0.2,
+    "n": 5
+   },
+   {
+    "conf": 0.23320629876703408,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.24679255890610885,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.26727856642139863,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.30331292398730647,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.3383503069041783,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.40572138000902036,
+    "hit": 0.0,
+    "n": 4
+   },
+   {
+    "conf": 0.4864035580683207,
+    "hit": 0.25,
+    "n": 4
+   },
+   {
+    "conf": 0.6041657925284533,
+    "hit": 0.0,
+    "n": 4
+   }
+  ],
+  "calibration_error": 0.20652169329105066,
+  "conf_mean": 0.3204290260756017,
+  "calibration_null": 0.2827051891124237,
+  "miscalibrated": false,
+  "auc": 0.4594594594594595,
+  "devices": 1,
+  "device_rate_p50": 0.11428571428571428,
+  "device_rate_p90": 0.11428571428571428,
+  "device_rate_max": 0.11428571428571428,
+  "device_worst_records": 35
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "K records, K = 10",
+  "runs": 1,
+  "n": 20,
+  "dev_accuracy": 0.55,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.028652100188695916,
+  "dev_lift_random": 19.19580053042642,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 1.5430937755397536,
+  "anonymity_set": 3.1357160877983676,
+  "min_entropy_bits": 0.7288236479512171,
+  "top1": 0.55,
+  "top5": 1.0,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.38321313692820924,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.4443674467716915,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.49956760600350714,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.5340601328428326,
+    "hit": 0.0,
+    "n": 2
+   },
+   {
+    "conf": 0.5830272981959352,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.6118767672220424,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.6646653539798035,
+    "hit": 1.0,
+    "n": 2
+   },
+   {
+    "conf": 0.7356345917479022,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.8351888447611652,
+    "hit": 0.5,
+    "n": 2
+   },
+   {
+    "conf": 0.9722657202911321,
+    "hit": 1.0,
+    "n": 2
+   }
+  ],
+  "calibration_error": 0.1835708370795534,
+  "conf_mean": 0.6263866898744221,
+  "calibration_null": 0.39307383440829813,
+  "miscalibrated": false,
+  "auc": 0.6666666666666666,
+  "devices": 1,
+  "device_rate_p50": 0.5294117647058824,
+  "device_rate_p90": 0.5294117647058824,
+  "device_rate_max": 0.5294117647058824,
+  "device_worst_records": 17
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "K records, K = 20",
+  "runs": 1,
+  "n": 9,
+  "dev_accuracy": 1.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.06641883612898107,
+  "dev_lift_random": 15.055969936872499,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 0.13825812123294917,
+  "anonymity_set": 1.1141772446630924,
+  "min_entropy_bits": 0.04590637087381233,
+  "top1": 1.0,
+  "top5": 1.0,
+  "top10": 1.0,
+  "reliability": [
+   {
+    "conf": 0.8519094880217086,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.8982659388784426,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9908154172495135,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9915661226365128,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9990955427255775,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9998415453823296,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.999953205568981,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999952894180909,
+    "hit": 1.0,
+    "n": 1
+   },
+   {
+    "conf": 0.9999967620934298,
+    "hit": 1.0,
+    "n": 1
+   }
+  ],
+  "calibration_error": 0.029840076447268174,
+  "conf_mean": 0.9701599235527318,
+  "calibration_null": 0.13907699258871545,
+  "miscalibrated": false,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "edit chain, 1 records",
+  "runs": 1,
+  "n": 100,
+  "dev_accuracy": 0.03,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.008712763814425527,
+  "dev_lift_random": 3.443224290130495,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "edit chain, 2 records",
+  "runs": 1,
+  "n": 24,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.010558738296253459,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "edit chain, 3 records",
+  "runs": 1,
+  "n": 19,
+  "dev_accuracy": 0.10526315789473684,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.013727449580511997,
+  "dev_lift_random": 7.668078274654337,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R1",
+  "vantage": "edit chain, 4 records",
+  "runs": 1,
+  "n": 2,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.017711598746081504,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "ceiling",
+  "runs": 1,
+  "n": 642,
+  "dev_accuracy": 0.0529595015576324,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.04702365020757693,
+  "dev_lift_random": 1.1262311905573639,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": 0.05327091365062463
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "K records, K = 1",
+  "runs": 1,
+  "n": 642,
+  "dev_accuracy": 0.021806853582554516,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.004345013016358822,
+  "dev_lift_random": 5.018823534118879,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 7.207311144074195,
+  "anonymity_set": 148.0020200589705,
+  "min_entropy_bits": 5.647290390244053,
+  "top1": 0.021806853582554516,
+  "top5": 0.09968847352024922,
+  "top10": 0.17289719626168223,
+  "reliability": [
+   {
+    "conf": 0.0159498442337564,
+    "hit": 0.015384615384615385,
+    "n": 65
+   },
+   {
+    "conf": 0.017341779980224632,
+    "hit": 0.015384615384615385,
+    "n": 65
+   },
+   {
+    "conf": 0.018051162316085556,
+    "hit": 0.0,
+    "n": 64
+   },
+   {
+    "conf": 0.01895488646553441,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.019795321954045878,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.020657549326943456,
+    "hit": 0.046875,
+    "n": 64
+   },
+   {
+    "conf": 0.021116046502228702,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.02187605443238256,
+    "hit": 0.015625,
+    "n": 64
+   },
+   {
+    "conf": 0.022498661821271207,
+    "hit": 0.046875,
+    "n": 64
+   },
+   {
+    "conf": 0.025145399136913348,
+    "hit": 0.03125,
+    "n": 64
+   }
+  ],
+  "calibration_error": 0.009625287698688955,
+  "conf_mean": 0.0201277894377799,
+  "calibration_null": 0.023614743526343514,
+  "miscalibrated": false,
+  "auc": 0.6023657870791628,
+  "devices": 1,
+  "device_rate_p50": 0.15384615384615385,
+  "device_rate_p90": 0.15384615384615385,
+  "device_rate_max": 0.15384615384615385,
+  "device_worst_records": 13
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "K records, K = 2",
+  "runs": 1,
+  "n": 269,
+  "dev_accuracy": 0.02973977695167286,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.005160850733948234,
+  "dev_lift_random": 5.762572584408168,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 6.343448324740563,
+  "anonymity_set": 81.97376182838735,
+  "min_entropy_bits": 4.182471790503952,
+  "top1": 0.02973977695167286,
+  "top5": 0.137546468401487,
+  "top10": 0.24535315985130113,
+  "reliability": [
+   {
+    "conf": 0.03715850348567034,
+    "hit": 0.0,
+    "n": 27
+   },
+   {
+    "conf": 0.04215298866443705,
+    "hit": 0.037037037037037035,
+    "n": 27
+   },
+   {
+    "conf": 0.04576688661077287,
+    "hit": 0.0,
+    "n": 27
+   },
+   {
+    "conf": 0.04899703288800747,
+    "hit": 0.0,
+    "n": 27
+   },
+   {
+    "conf": 0.05256690725329508,
+    "hit": 0.037037037037037035,
+    "n": 27
+   },
+   {
+    "conf": 0.05697599799067428,
+    "hit": 0.037037037037037035,
+    "n": 27
+   },
+   {
+    "conf": 0.060267693163872205,
+    "hit": 0.037037037037037035,
+    "n": 27
+   },
+   {
+    "conf": 0.06579381007804047,
+    "hit": 0.07407407407407407,
+    "n": 27
+   },
+   {
+    "conf": 0.07219254748763054,
+    "hit": 0.037037037037037035,
+    "n": 27
+   },
+   {
+    "conf": 0.08756998738488216,
+    "hit": 0.038461538461538464,
+    "n": 26
+   }
+  ],
+  "calibration_error": 0.028752817299619173,
+  "conf_mean": 0.05683038512197676,
+  "calibration_null": 0.05827152512382994,
+  "miscalibrated": false,
+  "auc": 0.6458333333333333,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "K records, K = 3",
+  "runs": 1,
+  "n": 159,
+  "dev_accuracy": 0.050314465408805034,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.005948050999188934,
+  "dev_lift_random": 8.458983525135515,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 5.5268519221431065,
+  "anonymity_set": 46.733840985155354,
+  "min_entropy_bits": 3.185055679161315,
+  "top1": 0.050314465408805034,
+  "top5": 0.1949685534591195,
+  "top10": 0.3584905660377358,
+  "reliability": [
+   {
+    "conf": 0.06370448056261364,
+    "hit": 0.0625,
+    "n": 16
+   },
+   {
+    "conf": 0.07883508662863753,
+    "hit": 0.0625,
+    "n": 16
+   },
+   {
+    "conf": 0.08822464060886169,
+    "hit": 0.0,
+    "n": 16
+   },
+   {
+    "conf": 0.0944257615457224,
+    "hit": 0.0,
+    "n": 16
+   },
+   {
+    "conf": 0.10340891981664638,
+    "hit": 0.0625,
+    "n": 16
+   },
+   {
+    "conf": 0.11283774072039401,
+    "hit": 0.0625,
+    "n": 16
+   },
+   {
+    "conf": 0.1256463333290169,
+    "hit": 0.125,
+    "n": 16
+   },
+   {
+    "conf": 0.14048274072274375,
+    "hit": 0.0,
+    "n": 16
+   },
+   {
+    "conf": 0.1605261747008695,
+    "hit": 0.0625,
+    "n": 16
+   },
+   {
+    "conf": 0.19801514951545984,
+    "hit": 0.06666666666666667,
+    "n": 15
+   }
+  ],
+  "calibration_error": 0.06578425975408798,
+  "conf_mean": 0.11609872516289302,
+  "calibration_null": 0.1005590391878078,
+  "miscalibrated": false,
+  "auc": 0.5480132450331126,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "K records, K = 5",
+  "runs": 1,
+  "n": 63,
+  "dev_accuracy": 0.1111111111111111,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.007571675536863697,
+  "dev_lift_random": 14.674573754534524,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null,
+  "entropy_bits": 4.039757766106314,
+  "anonymity_set": 17.876114462689724,
+  "min_entropy_bits": 1.9892085756069784,
+  "top1": 0.1111111111111111,
+  "top5": 0.4603174603174603,
+  "top10": 0.7777777777777778,
+  "reliability": [
+   {
+    "conf": 0.1147332194516771,
+    "hit": 0.2857142857142857,
+    "n": 7
+   },
+   {
+    "conf": 0.15379618067095133,
+    "hit": 0.0,
+    "n": 7
+   },
+   {
+    "conf": 0.179342154691775,
+    "hit": 0.14285714285714285,
+    "n": 7
+   },
+   {
+    "conf": 0.21939019159309683,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.2310752423160587,
+    "hit": 0.16666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.2540259187019199,
+    "hit": 0.16666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.31126040734092003,
+    "hit": 0.16666666666666666,
+    "n": 6
+   },
+   {
+    "conf": 0.3867750844456876,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.4910715551097495,
+    "hit": 0.0,
+    "n": 6
+   },
+   {
+    "conf": 0.5687837849258459,
+    "hit": 0.16666666666666666,
+    "n": 6
+   }
+  ],
+  "calibration_error": 0.21116077647582562,
+  "conf_mean": 0.28427609508413487,
+  "calibration_null": 0.23929141088598993,
+  "miscalibrated": false,
+  "auc": 0.4362244897959184,
+  "devices": 0
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "edit chain, 1 records",
+  "runs": 1,
+  "n": 427,
+  "dev_accuracy": 0.01405152224824356,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0042923774771510955,
+  "dev_lift_random": 3.2735989141313198,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "edit chain, 2 records",
+  "runs": 1,
+  "n": 81,
+  "dev_accuracy": 0.07407407407407407,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0058488902086343475,
+  "dev_lift_random": 12.664637466561295,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "edit chain, 3 records",
+  "runs": 1,
+  "n": 15,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0074800229629716115,
+  "dev_lift_random": 0.0,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ },
+ {
+  "file": "c4_obs__chain50__R100",
+  "vantage": "edit chain, 4 records",
+  "runs": 1,
+  "n": 2,
+  "dev_accuracy": 0.0,
+  "dev_ci_lo": NaN,
+  "dev_ci_hi": NaN,
+  "dev_random": 0.0,
+  "dev_lift_random": NaN,
+  "dev_contribution": NaN,
+  "stable": false,
+  "bound": null
+ }
+]

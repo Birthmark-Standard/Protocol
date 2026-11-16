@@ -12,39 +12,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | observer | 2 | 413 | 6.78% [5.39%, 8.13%] | 1.11% | ×6.13 | +0.00 | 0.440 | no | 10.50% |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | observer | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | 10.50% |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | observer | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | 10.50% |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | observer | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | 10.50% |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | observer | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | 10.50% |
 | R1 | W1 | credential path | 1186 s | observer | 2 | 388 | 0.00% [0.00%, 0.00%] | 1.37% | ×0.00 | +0.00 | — | no | 10.50% |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | observer | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | 10.50% |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | observer | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | 10.50% |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | observer | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | 10.50% |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | observer | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | 10.50% |
 | R1 | W2 | credential path | 1195 s | observer | 2 | 366 | 8.20% [4.44%, 11.83%] | 1.40% | ×5.86 | +0.00 | 0.347 | no | 10.50% |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | observer | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | 10.50% |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | observer | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | 10.50% |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | observer | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | 10.50% |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | observer | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | 10.50% |
 | R1 | Wmis | credential path | 1195 s | observer | 2 | 366 | 20.77% [15.56%, 25.81%] | 1.11% | ×18.70 | +0.00 | 0.879 | yes | 10.50% |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | observer | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | 10.50% |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | observer | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | 10.50% |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | observer | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | 10.50% |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | observer | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | 10.50% |
 | R1 | chain100 | credential path | 1213 s | observer | 2 | 420 | 7.14% [5.16%, 9.18%] | 1.12% | ×6.36 | +0.00 | 0.478 | no | 10.50% |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | observer | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | +0.00 | 0.490 | no | 10.50% |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | observer | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | +0.00 | 0.519 | no | 10.50% |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | observer | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | +0.00 | 0.490 | no | 10.50% |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | observer | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | +0.00 | 0.519 | no | 10.50% |
 | R1 | chain50 | credential path | 1208 s | observer | 2 | 421 | 4.51% [2.35%, 6.73%] | 0.88% | ×5.11 | +0.00 | 0.420 | no | 10.50% |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | observer | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | +0.00 | 0.499 | no | 10.50% |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | observer | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | +0.00 | 0.465 | no | 10.50% |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | observer | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | +0.00 | 0.499 | no | 10.50% |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | observer | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | +0.00 | 0.465 | no | 10.50% |
 | R100 | W0 | credential path | 1208 s | observer | 2 | 1,216 | 1.73% [1.16%, 2.28%] | 0.55% | ×3.12 | +0.00 | 0.427 | no | 5.33% |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | observer | 2 | 1,216 | 3.04% [2.33%, 3.75%] | 0.74% | ×4.13 | +0.00 | 0.498 | no | 5.33% |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | observer | 2 | 1,216 | 2.88% [2.33%, 3.42%] | 0.75% | ×3.84 | +0.00 | 0.542 | no | 5.33% |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | observer | 2 | 1,216 | 3.04% [2.33%, 3.75%] | 0.74% | ×4.13 | +0.00 | 0.498 | no | 5.33% |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | observer | 2 | 1,216 | 2.88% [2.33%, 3.42%] | 0.75% | ×3.84 | +0.00 | 0.542 | no | 5.33% |
 | R100 | W1 | credential path | 1197 s | observer | 2 | 1,312 | 6.94% [3.56%, 10.50%] | 0.70% | ×9.94 | +0.00 | 0.635 | yes | 5.33% |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | observer | 2 | 1,312 | 7.16% [4.01%, 10.50%] | 0.94% | ×7.61 | +0.00 | 0.613 | yes | 5.33% |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | observer | 2 | 1,312 | 6.10% [4.45%, 7.84%] | 0.94% | ×6.51 | +0.00 | 0.639 | yes | 5.33% |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | observer | 2 | 1,312 | 7.16% [4.01%, 10.50%] | 0.94% | ×7.61 | +0.00 | 0.613 | yes | 5.33% |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | observer | 2 | 1,312 | 6.10% [4.45%, 7.84%] | 0.94% | ×6.51 | +0.00 | 0.639 | yes | 5.33% |
 | R100 | W2 | credential path | 1210 s | observer | 2 | 1,221 | 7.13% [5.33%, 8.97%] | 0.70% | ×10.13 | +0.00 | 0.554 | yes | 5.33% |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | observer | 2 | 1,221 | 6.63% [4.68%, 8.64%] | 0.96% | ×6.94 | +0.00 | 0.590 | yes | 5.33% |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | observer | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.586 | yes | 5.33% |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | observer | 2 | 1,221 | 6.63% [4.68%, 8.64%] | 0.96% | ×6.94 | +0.00 | 0.590 | yes | 5.33% |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | observer | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.586 | yes | 5.33% |
 | R100 | Wmis | credential path | 1210 s | observer | 2 | 1,221 | 9.83% [9.05%, 10.63%] | 0.62% | ×15.94 | +0.00 | 0.597 | yes | 5.33% |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | observer | 2 | 1,221 | 9.58% [7.75%, 11.46%] | 0.83% | ×11.59 | +0.00 | 0.613 | yes | 5.33% |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | observer | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.605 | yes | 5.33% |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | observer | 2 | 1,221 | 9.58% [7.75%, 11.46%] | 0.83% | ×11.59 | +0.00 | 0.613 | yes | 5.33% |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | observer | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.605 | yes | 5.33% |
 | R100 | chain100 | credential path | 1189 s | observer | 2 | 1,234 | 1.78% [1.73%, 1.84%] | 0.56% | ×3.18 | +0.00 | 0.535 | no | 5.33% |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | observer | 2 | 1,224 | 2.45% [2.38%, 2.53%] | 0.75% | ×3.27 | +0.00 | 0.608 | no | 5.33% |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | observer | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.644 | no | 5.33% |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | observer | 2 | 1,224 | 2.45% [2.38%, 2.53%] | 0.75% | ×3.27 | +0.00 | 0.608 | no | 5.33% |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | observer | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.644 | no | 5.33% |
 | R100 | chain50 | credential path | 1201 s | observer | 2 | 1,242 | 2.17% [2.17%, 2.18%] | 0.44% | ×4.94 | +0.00 | 0.506 | no | 5.33% |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | observer | 2 | 1,223 | 2.37% [2.06%, 2.70%] | 0.64% | ×3.69 | +0.00 | 0.562 | no | 5.33% |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | observer | 2 | 1,246 | 3.13% [2.65%, 3.64%] | 0.64% | ×4.86 | +0.00 | 0.526 | no | 5.33% |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | observer | 2 | 1,223 | 2.37% [2.06%, 2.70%] | 0.64% | ×3.69 | +0.00 | 0.562 | no | 5.33% |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | observer | 2 | 1,246 | 3.13% [2.65%, 3.64%] | 0.64% | ×4.86 | +0.00 | 0.526 | no | 5.33% |
 
 ## first relay
 
@@ -53,39 +77,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | first_hop | 2 | 8,260 | 6.59% [5.17%, 7.97%] | 1.11% | ×5.95 | -0.19 | 0.438 | yes | 10.50% |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | first_hop | 2 | 8,260 | 6.13% [4.51%, 7.70%] | 1.46% | ×4.19 | +0.07 | 0.661 | yes | 10.50% |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | first_hop | 2 | 8,260 | 2.93% [1.76%, 4.07%] | 1.46% | ×2.00 | +0.27 | 0.438 | yes | 10.50% |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | first_hop | 2 | 8,260 | 6.13% [4.51%, 7.70%] | 1.46% | ×4.19 | +0.07 | 0.661 | yes | 10.50% |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | first_hop | 2 | 8,260 | 2.93% [1.76%, 4.07%] | 1.46% | ×2.00 | +0.27 | 0.438 | yes | 10.50% |
 | R1 | W1 | credential path | 1186 s | first_hop | 2 | 7,760 | 0.00% [0.00%, 0.00%] | 1.37% | ×0.00 | +0.00 | — | no | 10.50% |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | first_hop | 2 | 7,760 | 0.71% [0.03%, 1.31%] | 1.84% | ×0.39 | -0.06 | 0.044 | yes | 10.50% |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | first_hop | 2 | 7,760 | 0.67% [0.00%, 1.26%] | 1.83% | ×0.37 | +0.15 | 0.134 | yes | 10.50% |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | first_hop | 2 | 7,760 | 0.71% [0.03%, 1.31%] | 1.84% | ×0.39 | -0.06 | 0.044 | yes | 10.50% |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | first_hop | 2 | 7,760 | 0.67% [0.00%, 1.26%] | 1.83% | ×0.37 | +0.15 | 0.134 | yes | 10.50% |
 | R1 | W2 | credential path | 1195 s | first_hop | 2 | 7,320 | 8.33% [4.28%, 12.26%] | 1.40% | ×5.96 | +0.14 | 0.341 | yes | 10.50% |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | first_hop | 2 | 7,320 | 7.98% [6.44%, 9.46%] | 1.86% | ×4.28 | +0.05 | 0.503 | yes | 10.50% |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | first_hop | 2 | 7,320 | 5.67% [4.76%, 6.61%] | 1.87% | ×3.03 | -0.07 | 0.376 | yes | 10.50% |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | first_hop | 2 | 7,320 | 7.98% [6.44%, 9.46%] | 1.86% | ×4.28 | +0.05 | 0.503 | yes | 10.50% |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | first_hop | 2 | 7,320 | 5.67% [4.76%, 6.61%] | 1.87% | ×3.03 | -0.07 | 0.376 | yes | 10.50% |
 | R1 | Wmis | credential path | 1195 s | first_hop | 2 | 7,320 | 20.92% [15.92%, 25.75%] | 1.11% | ×18.83 | +0.15 | 0.878 | yes | 10.50% |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | first_hop | 2 | 7,320 | 20.15% [16.69%, 23.49%] | 1.47% | ×13.75 | -0.34 | 0.713 | yes | 10.50% |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | first_hop | 2 | 7,320 | 16.12% [14.83%, 17.37%] | 1.48% | ×10.92 | +0.00 | 0.677 | yes | 10.50% |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | first_hop | 2 | 7,320 | 20.15% [16.69%, 23.49%] | 1.47% | ×13.75 | -0.34 | 0.713 | yes | 10.50% |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | first_hop | 2 | 7,320 | 16.12% [14.83%, 17.37%] | 1.48% | ×10.92 | +0.00 | 0.677 | yes | 10.50% |
 | R1 | chain100 | credential path | 1213 s | first_hop | 2 | 8,400 | 7.37% [5.68%, 9.11%] | 1.12% | ×6.56 | +0.23 | 0.484 | yes | 10.50% |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | first_hop | 2 | 8,420 | 4.70% [1.50%, 7.98%] | 1.48% | ×3.19 | -0.05 | 0.496 | yes | 10.50% |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | first_hop | 2 | 8,400 | 5.39% [3.29%, 7.56%] | 1.48% | ×3.65 | -0.08 | 0.533 | yes | 10.50% |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | first_hop | 2 | 8,420 | 4.70% [1.50%, 7.98%] | 1.48% | ×3.19 | -0.05 | 0.496 | yes | 10.50% |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | first_hop | 2 | 8,400 | 5.39% [3.29%, 7.56%] | 1.48% | ×3.65 | -0.08 | 0.533 | yes | 10.50% |
 | R1 | chain50 | credential path | 1208 s | first_hop | 2 | 8,420 | 4.50% [2.44%, 6.61%] | 0.88% | ×5.10 | -0.01 | 0.423 | yes | 10.50% |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | first_hop | 2 | 8,420 | 4.57% [3.17%, 6.01%] | 1.27% | ×3.61 | +0.06 | 0.506 | yes | 10.50% |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | first_hop | 2 | 8,420 | 6.22% [3.22%, 9.30%] | 1.27% | ×4.90 | -0.19 | 0.464 | yes | 10.50% |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | first_hop | 2 | 8,420 | 4.57% [3.17%, 6.01%] | 1.27% | ×3.61 | +0.06 | 0.506 | yes | 10.50% |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | first_hop | 2 | 8,420 | 6.22% [3.22%, 9.30%] | 1.27% | ×4.90 | -0.19 | 0.464 | yes | 10.50% |
 | R100 | W0 | credential path | 1208 s | first_hop | 2 | 24,320 | 1.74% [1.21%, 2.26%] | 0.55% | ×3.15 | +0.02 | 0.440 | yes | 5.33% |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | first_hop | 2 | 24,320 | 3.10% [2.40%, 3.79%] | 0.74% | ×4.21 | +0.06 | 0.495 | yes | 5.33% |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | first_hop | 2 | 24,320 | 2.92% [2.45%, 3.39%] | 0.75% | ×3.90 | +0.05 | 0.534 | yes | 5.33% |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | first_hop | 2 | 24,320 | 3.10% [2.40%, 3.79%] | 0.74% | ×4.21 | +0.06 | 0.495 | yes | 5.33% |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | first_hop | 2 | 24,320 | 2.92% [2.45%, 3.39%] | 0.75% | ×3.90 | +0.05 | 0.534 | yes | 5.33% |
 | R100 | W1 | credential path | 1197 s | first_hop | 2 | 26,240 | 6.93% [3.61%, 10.44%] | 0.70% | ×9.93 | -0.00 | 0.633 | yes | 5.33% |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | first_hop | 2 | 26,240 | 7.22% [4.09%, 10.53%] | 0.94% | ×7.68 | +0.06 | 0.612 | yes | 5.33% |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | first_hop | 2 | 26,240 | 6.19% [4.58%, 7.90%] | 0.94% | ×6.62 | +0.10 | 0.631 | yes | 5.33% |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | first_hop | 2 | 26,240 | 7.22% [4.09%, 10.53%] | 0.94% | ×7.68 | +0.06 | 0.612 | yes | 5.33% |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | first_hop | 2 | 26,240 | 6.19% [4.58%, 7.90%] | 0.94% | ×6.62 | +0.10 | 0.631 | yes | 5.33% |
 | R100 | W2 | credential path | 1210 s | first_hop | 2 | 24,420 | 7.08% [5.25%, 8.97%] | 0.70% | ×10.07 | -0.04 | 0.556 | yes | 5.33% |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | first_hop | 2 | 24,420 | 6.61% [4.70%, 8.57%] | 0.96% | ×6.92 | -0.02 | 0.591 | yes | 5.33% |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | first_hop | 2 | 24,420 | 5.86% [3.31%, 8.48%] | 0.94% | ×6.24 | +0.05 | 0.582 | yes | 5.33% |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | first_hop | 2 | 24,420 | 6.61% [4.70%, 8.57%] | 0.96% | ×6.92 | -0.02 | 0.591 | yes | 5.33% |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | first_hop | 2 | 24,420 | 5.86% [3.31%, 8.48%] | 0.94% | ×6.24 | +0.05 | 0.582 | yes | 5.33% |
 | R100 | Wmis | credential path | 1210 s | first_hop | 2 | 24,420 | 9.81% [9.01%, 10.63%] | 0.62% | ×15.91 | -0.02 | 0.597 | yes | 5.33% |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | first_hop | 2 | 24,420 | 9.56% [7.91%, 11.25%] | 0.83% | ×11.56 | -0.02 | 0.612 | yes | 5.33% |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | first_hop | 2 | 24,420 | 9.28% [7.30%, 11.30%] | 0.83% | ×11.16 | +0.10 | 0.601 | yes | 5.33% |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | first_hop | 2 | 24,420 | 9.56% [7.91%, 11.25%] | 0.83% | ×11.56 | -0.02 | 0.612 | yes | 5.33% |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | first_hop | 2 | 24,420 | 9.28% [7.30%, 11.30%] | 0.83% | ×11.16 | +0.10 | 0.601 | yes | 5.33% |
 | R100 | chain100 | credential path | 1189 s | first_hop | 2 | 24,680 | 1.82% [1.75%, 1.89%] | 0.56% | ×3.24 | +0.03 | 0.532 | yes | 5.33% |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | first_hop | 2 | 24,480 | 2.59% [2.40%, 2.79%] | 0.75% | ×3.45 | +0.14 | 0.601 | yes | 5.33% |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | first_hop | 2 | 24,860 | 3.15% [3.14%, 3.16%] | 0.74% | ×4.24 | +0.01 | 0.637 | yes | 5.33% |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | first_hop | 2 | 24,480 | 2.59% [2.40%, 2.79%] | 0.75% | ×3.45 | +0.14 | 0.601 | yes | 5.33% |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | first_hop | 2 | 24,860 | 3.15% [3.14%, 3.16%] | 0.74% | ×4.24 | +0.01 | 0.637 | yes | 5.33% |
 | R100 | chain50 | credential path | 1201 s | first_hop | 2 | 24,840 | 2.16% [2.12%, 2.20%] | 0.44% | ×4.91 | -0.02 | 0.499 | yes | 5.33% |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | first_hop | 2 | 24,460 | 2.34% [1.97%, 2.74%] | 0.64% | ×3.64 | -0.03 | 0.573 | yes | 5.33% |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | first_hop | 2 | 24,920 | 3.04% [2.70%, 3.39%] | 0.64% | ×4.72 | -0.09 | 0.530 | yes | 5.33% |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | first_hop | 2 | 24,460 | 2.34% [1.97%, 2.74%] | 0.64% | ×3.64 | -0.03 | 0.573 | yes | 5.33% |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | first_hop | 2 | 24,920 | 3.04% [2.70%, 3.39%] | 0.64% | ×4.72 | -0.09 | 0.530 | yes | 5.33% |
 
 ## destination
 
@@ -94,39 +142,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | content_server | 2 | 826 | 6.42% [5.39%, 7.42%] | 1.13% | ×5.67 | -0.36 | 0.476 | yes | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | destination | 2 | 413 | 7.02% [4.90%, 9.09%] | 1.62% | ×4.34 | +0.97 | 0.444 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | destination | 2 | 413 | 4.12% [1.96%, 6.22%] | 1.61% | ×2.55 | +1.45 | 0.390 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | destination | 2 | 413 | 7.02% [4.90%, 9.09%] | 1.62% | ×4.34 | +0.97 | 0.444 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | destination | 2 | 413 | 4.12% [1.96%, 6.22%] | 1.61% | ×2.55 | +1.45 | 0.390 | no | not applicable |
 | R1 | W1 | credential path | 1186 s | content_server | 2 | 776 | 0.39% [0.00%, 0.73%] | 1.41% | ×0.27 | +0.39 | 0.448 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | destination | 2 | 388 | 1.80% [1.10%, 2.43%] | 2.02% | ×0.89 | +1.03 | 0.358 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | destination | 2 | 388 | 1.29% [0.00%, 2.43%] | 2.00% | ×0.65 | +0.77 | 0.085 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | destination | 2 | 388 | 1.80% [1.10%, 2.43%] | 2.02% | ×0.89 | +1.03 | 0.358 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | destination | 2 | 388 | 1.29% [0.00%, 2.43%] | 2.00% | ×0.65 | +0.77 | 0.085 | no | not applicable |
 | R1 | W2 | credential path | 1195 s | content_server | 2 | 732 | 9.02% [5.56%, 12.37%] | 1.43% | ×6.28 | +0.82 | 0.419 | yes | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | destination | 2 | 366 | 7.38% [4.44%, 10.22%] | 2.05% | ×3.60 | -0.55 | 0.472 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | destination | 2 | 366 | 4.92% [4.44%, 5.38%] | 2.05% | ×2.39 | -0.82 | 0.447 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | destination | 2 | 366 | 7.38% [4.44%, 10.22%] | 2.05% | ×3.60 | -0.55 | 0.472 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | destination | 2 | 366 | 4.92% [4.44%, 5.38%] | 2.05% | ×2.39 | -0.82 | 0.447 | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | content_server | 2 | 732 | 20.49% [15.28%, 25.54%] | 1.13% | ×18.09 | -0.27 | 0.723 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | destination | 2 | 366 | 17.76% [15.56%, 19.89%] | 1.62% | ×10.94 | -2.73 | 0.719 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | destination | 2 | 366 | 13.11% [12.22%, 13.98%] | 1.63% | ×8.05 | -3.01 | 0.647 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | destination | 2 | 366 | 17.76% [15.56%, 19.89%] | 1.62% | ×10.94 | -2.73 | 0.719 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | destination | 2 | 366 | 13.11% [12.22%, 13.98%] | 1.63% | ×8.05 | -3.01 | 0.647 | no | not applicable |
 | R1 | chain100 | credential path | 1213 s | content_server | 2 | 840 | 7.14% [3.76%, 10.63%] | 1.15% | ×6.24 | +0.00 | 0.425 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | destination | 2 | 421 | 4.75% [2.35%, 7.21%] | 1.62% | ×2.93 | +0.00 | 0.356 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | destination | 2 | 420 | 5.71% [2.82%, 8.70%] | 1.63% | ×3.50 | +0.24 | 0.683 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | destination | 2 | 421 | 4.75% [2.35%, 7.21%] | 1.62% | ×2.93 | +0.00 | 0.356 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | destination | 2 | 420 | 5.71% [2.82%, 8.70%] | 1.63% | ×3.50 | +0.24 | 0.683 | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | content_server | 2 | 842 | 5.11% [3.99%, 6.25%] | 0.91% | ×5.61 | +0.59 | 0.483 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | destination | 2 | 421 | 4.04% [2.82%, 5.29%] | 1.43% | ×2.83 | -0.48 | 0.419 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | destination | 2 | 421 | 4.28% [1.88%, 6.73%] | 1.44% | ×2.97 | -2.14 | 0.674 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | destination | 2 | 421 | 4.04% [2.82%, 5.29%] | 1.43% | ×2.83 | -0.48 | 0.419 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | destination | 2 | 421 | 4.28% [1.88%, 6.73%] | 1.44% | ×2.97 | -2.14 | 0.674 | no | not applicable |
 | R100 | W0 | credential path | 1208 s | content_server | 2 | 2,432 | 2.59% [1.99%, 3.18%] | 0.57% | ×4.58 | +0.86 | 0.472 | yes | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | destination | 2 | 1,216 | 2.30% [1.33%, 3.26%] | 0.82% | ×2.82 | -0.74 | 0.544 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | destination | 2 | 1,216 | 2.80% [2.44%, 3.16%] | 0.83% | ×3.38 | -0.08 | 0.500 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | destination | 2 | 1,216 | 2.30% [1.33%, 3.26%] | 0.82% | ×2.82 | -0.74 | 0.544 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | destination | 2 | 1,216 | 2.80% [2.44%, 3.16%] | 0.83% | ×3.38 | -0.08 | 0.500 | no | not applicable |
 | R100 | W1 | credential path | 1197 s | content_server | 2 | 2,624 | 7.05% [4.53%, 9.72%] | 0.72% | ×9.84 | +0.11 | 0.576 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | destination | 2 | 1,312 | 7.24% [4.60%, 10.03%] | 1.03% | ×7.02 | +0.08 | 0.626 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | destination | 2 | 1,312 | 6.33% [5.34%, 7.37%] | 1.02% | ×6.17 | +0.23 | 0.582 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | destination | 2 | 1,312 | 7.24% [4.60%, 10.03%] | 1.03% | ×7.02 | +0.08 | 0.626 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | destination | 2 | 1,312 | 6.33% [5.34%, 7.37%] | 1.02% | ×6.17 | +0.23 | 0.582 | yes | not applicable |
 | R100 | W2 | credential path | 1210 s | content_server | 2 | 2,442 | 6.84% [4.85%, 8.89%] | 0.72% | ×9.47 | -0.29 | 0.594 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | destination | 2 | 1,221 | 5.90% [5.17%, 6.64%] | 1.05% | ×5.60 | -0.74 | 0.622 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | destination | 2 | 1,221 | 5.81% [3.07%, 8.64%] | 1.03% | ×5.65 | +0.00 | 0.440 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | destination | 2 | 1,221 | 5.90% [5.17%, 6.64%] | 1.05% | ×5.60 | -0.74 | 0.622 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | destination | 2 | 1,221 | 5.81% [3.07%, 8.64%] | 1.03% | ×5.65 | +0.00 | 0.440 | yes | not applicable |
 | R100 | Wmis | credential path | 1210 s | content_server | 2 | 2,442 | 9.17% [8.00%, 10.38%] | 0.63% | ×14.53 | -0.66 | 0.651 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | destination | 2 | 1,221 | 8.60% [7.75%, 9.47%] | 0.92% | ×9.40 | -0.98 | 0.633 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | destination | 2 | 1,221 | 8.85% [6.79%, 10.96%] | 0.92% | ×9.64 | -0.33 | 0.590 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | destination | 2 | 1,221 | 8.60% [7.75%, 9.47%] | 0.92% | ×9.40 | -0.98 | 0.633 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | destination | 2 | 1,221 | 8.85% [6.79%, 10.96%] | 0.92% | ×9.64 | -0.33 | 0.590 | yes | not applicable |
 | R100 | chain100 | credential path | 1189 s | content_server | 2 | 2,468 | 3.08% [3.07%, 3.09%] | 0.57% | ×5.39 | +1.30 | 0.536 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | destination | 2 | 1,224 | 3.59% [3.33%, 3.87%] | 0.83% | ×4.34 | +1.14 | 0.517 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | destination | 2 | 1,243 | 3.22% [2.33%, 4.05%] | 0.82% | ×3.92 | +0.08 | 0.502 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | destination | 2 | 1,224 | 3.59% [3.33%, 3.87%] | 0.83% | ×4.34 | +1.14 | 0.517 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | destination | 2 | 1,243 | 3.22% [2.33%, 4.05%] | 0.82% | ×3.92 | +0.08 | 0.502 | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | content_server | 2 | 2,484 | 2.98% [2.65%, 3.33%] | 0.45% | ×6.56 | +0.81 | 0.550 | yes | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | destination | 2 | 1,223 | 3.43% [3.38%, 3.49%] | 0.73% | ×4.74 | +1.06 | 0.480 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | destination | 2 | 1,246 | 3.53% [3.15%, 3.89%] | 0.73% | ×4.84 | +0.40 | 0.500 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | destination | 2 | 1,223 | 3.43% [3.38%, 3.49%] | 0.73% | ×4.74 | +1.06 | 0.480 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | destination | 2 | 1,246 | 3.53% [3.15%, 3.89%] | 0.73% | ×4.84 | +0.40 | 0.500 | no | not applicable |
 
 ## first relay with the destination on its path
 
@@ -135,39 +207,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | first_relay_with_destination | 2 | 826 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.22 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | first_relay_with_destination | 2 | 413 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.95 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | first_relay_with_destination | 2 | 413 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.34 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | first_relay_with_destination | 2 | 413 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.95 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | first_relay_with_destination | 2 | 413 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.34 | — | no | not applicable |
 | R1 | W1 | credential path | 1186 s | first_relay_with_destination | 2 | 776 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +100.00 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | first_relay_with_destination | 2 | 388 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +99.23 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | first_relay_with_destination | 2 | 388 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +99.48 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | first_relay_with_destination | 2 | 388 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +99.23 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | first_relay_with_destination | 2 | 388 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +99.48 | — | no | not applicable |
 | R1 | W2 | credential path | 1195 s | first_relay_with_destination | 2 | 732 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +91.80 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +92.08 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +94.26 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +92.08 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +94.26 | — | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | first_relay_with_destination | 2 | 732 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +79.23 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +79.51 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +83.88 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +79.51 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | first_relay_with_destination | 2 | 366 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +83.88 | — | no | not applicable |
 | R1 | chain100 | credential path | 1213 s | first_relay_with_destination | 2 | 840 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +92.86 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | first_relay_with_destination | 2 | 421 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +95.25 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | first_relay_with_destination | 2 | 420 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +94.52 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | first_relay_with_destination | 2 | 421 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +95.25 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | first_relay_with_destination | 2 | 420 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +94.52 | — | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | first_relay_with_destination | 2 | 842 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +95.49 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | first_relay_with_destination | 2 | 421 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +95.49 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | first_relay_with_destination | 2 | 421 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.59 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | first_relay_with_destination | 2 | 421 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +95.49 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | first_relay_with_destination | 2 | 421 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.59 | — | no | not applicable |
 | R100 | W0 | credential path | 1208 s | first_relay_with_destination | 2 | 2,432 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +98.27 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | first_relay_with_destination | 2 | 1,216 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +96.96 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | first_relay_with_destination | 2 | 1,216 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.12 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | first_relay_with_destination | 2 | 1,216 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +96.96 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | first_relay_with_destination | 2 | 1,216 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.12 | — | no | not applicable |
 | R100 | W1 | credential path | 1197 s | first_relay_with_destination | 2 | 2,624 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.06 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | first_relay_with_destination | 2 | 1,312 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +92.84 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | first_relay_with_destination | 2 | 1,312 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.90 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | first_relay_with_destination | 2 | 1,312 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +92.84 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | first_relay_with_destination | 2 | 1,312 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.90 | — | no | not applicable |
 | R100 | W2 | credential path | 1210 s | first_relay_with_destination | 2 | 2,442 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +92.87 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.37 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +94.19 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +93.37 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +94.19 | — | no | not applicable |
 | R100 | Wmis | credential path | 1210 s | first_relay_with_destination | 2 | 2,442 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +90.17 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +90.42 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +90.83 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +90.42 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | first_relay_with_destination | 2 | 1,221 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +90.83 | — | no | not applicable |
 | R100 | chain100 | credential path | 1189 s | first_relay_with_destination | 2 | 2,468 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +98.22 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | first_relay_with_destination | 2 | 1,224 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.55 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | first_relay_with_destination | 2 | 1,243 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +96.86 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | first_relay_with_destination | 2 | 1,224 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.55 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | first_relay_with_destination | 2 | 1,243 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +96.86 | — | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | first_relay_with_destination | 2 | 2,484 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.83 | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | first_relay_with_destination | 2 | 1,223 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.63 | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | first_relay_with_destination | 2 | 1,246 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +96.87 | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | first_relay_with_destination | 2 | 1,223 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +97.63 | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | first_relay_with_destination | 2 | 1,246 | 100.00% [100.00%, 100.00%] | 100.00% | ×1.00 | +96.87 | — | no | not applicable |
 
 ## destination_keyed
 
@@ -175,28 +271,52 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | destination_keyed | 2 | 413 | 14.29% [9.31%, 19.14%] | 5.25% | ×2.72 | +8.23 | 0.488 | yes | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | destination_keyed | 2 | 413 | 15.50% [12.75%, 18.18%] | 5.29% | ×2.93 | +12.83 | 0.461 | yes | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | destination_keyed | 2 | 413 | 14.29% [9.31%, 19.14%] | 5.25% | ×2.72 | +8.23 | 0.488 | yes | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | destination_keyed | 2 | 413 | 15.50% [12.75%, 18.18%] | 5.29% | ×2.93 | +12.83 | 0.461 | yes | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | destination_keyed | 2 | 388 | 6.96% [6.04%, 7.77%] | 6.95% | ×1.00 | +6.19 | 0.495 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | destination_keyed | 2 | 388 | 5.93% [5.49%, 6.31%] | 6.90% | ×0.86 | +5.41 | 0.461 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | destination_keyed | 2 | 388 | 6.96% [6.04%, 7.77%] | 6.95% | ×1.00 | +6.19 | 0.495 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | destination_keyed | 2 | 388 | 5.93% [5.49%, 6.31%] | 6.90% | ×0.86 | +5.41 | 0.461 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | destination_keyed | 2 | 366 | 19.67% [18.28%, 21.11%] | 6.73% | ×2.92 | +11.75 | 0.633 | yes | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | destination_keyed | 2 | 366 | 15.85% [9.14%, 22.78%] | 6.83% | ×2.32 | +10.11 | 0.617 | yes | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | destination_keyed | 2 | 366 | 19.67% [18.28%, 21.11%] | 6.73% | ×2.92 | +11.75 | 0.633 | yes | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | destination_keyed | 2 | 366 | 15.85% [9.14%, 22.78%] | 6.83% | ×2.32 | +10.11 | 0.617 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | destination_keyed | 2 | 366 | 25.14% [22.22%, 27.96%] | 5.27% | ×4.77 | +4.64 | 0.744 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | destination_keyed | 2 | 366 | 26.23% [23.33%, 29.03%] | 5.32% | ×4.93 | +10.11 | 0.636 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | destination_keyed | 2 | 366 | 25.14% [22.22%, 27.96%] | 5.27% | ×4.77 | +4.64 | 0.744 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | destination_keyed | 2 | 366 | 26.23% [23.33%, 29.03%] | 5.32% | ×4.93 | +10.11 | 0.636 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | destination_keyed | 2 | 421 | 1.43% [0.47%, 2.40%] | 0.52% | ×2.73 | -3.33 | 0.785 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | destination_keyed | 2 | 420 | 2.14% [1.41%, 2.90%] | 0.53% | ×4.06 | -3.33 | 0.888 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | destination_keyed | 2 | 421 | 1.43% [0.47%, 2.40%] | 0.52% | ×2.73 | -3.33 | 0.785 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | destination_keyed | 2 | 420 | 2.14% [1.41%, 2.90%] | 0.53% | ×4.06 | -3.33 | 0.888 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | destination_keyed | 2 | 421 | 0.95% [0.47%, 1.44%] | 0.46% | ×2.07 | -3.56 | 0.784 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | destination_keyed | 2 | 421 | 0.95% [0.47%, 1.44%] | 0.46% | ×2.05 | -5.46 | 0.914 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | destination_keyed | 2 | 421 | 0.95% [0.47%, 1.44%] | 0.46% | ×2.07 | -3.56 | 0.784 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | destination_keyed | 2 | 421 | 0.95% [0.47%, 1.44%] | 0.46% | ×2.05 | -5.46 | 0.914 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | destination_keyed | 2 | 1,216 | 7.32% [6.15%, 8.47%] | 2.37% | ×3.09 | +4.28 | 0.597 | yes | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | destination_keyed | 2 | 1,216 | 7.24% [6.51%, 7.97%] | 2.41% | ×3.00 | +4.36 | 0.587 | yes | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | destination_keyed | 2 | 1,216 | 7.32% [6.15%, 8.47%] | 2.37% | ×3.09 | +4.28 | 0.597 | yes | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | destination_keyed | 2 | 1,216 | 7.24% [6.51%, 7.97%] | 2.41% | ×3.00 | +4.36 | 0.587 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | destination_keyed | 2 | 1,312 | 13.87% [11.72%, 16.14%] | 3.05% | ×4.55 | +6.71 | 0.666 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | destination_keyed | 2 | 1,312 | 12.04% [10.68%, 13.48%] | 3.03% | ×3.98 | +5.95 | 0.695 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | destination_keyed | 2 | 1,312 | 13.87% [11.72%, 16.14%] | 3.05% | ×4.55 | +6.71 | 0.666 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | destination_keyed | 2 | 1,312 | 12.04% [10.68%, 13.48%] | 3.03% | ×3.98 | +5.95 | 0.695 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | destination_keyed | 2 | 1,221 | 11.71% [11.63%, 11.79%] | 3.08% | ×3.81 | +5.08 | 0.603 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | destination_keyed | 2 | 1,221 | 13.35% [12.60%, 14.12%] | 3.01% | ×4.43 | +7.53 | 0.526 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | destination_keyed | 2 | 1,221 | 11.71% [11.63%, 11.79%] | 3.08% | ×3.81 | +5.08 | 0.603 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | destination_keyed | 2 | 1,221 | 13.35% [12.60%, 14.12%] | 3.01% | ×4.43 | +7.53 | 0.526 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | destination_keyed | 2 | 1,221 | 16.38% [16.16%, 16.61%] | 2.64% | ×6.21 | +6.80 | 0.655 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | destination_keyed | 2 | 1,221 | 15.23% [14.22%, 16.28%] | 2.64% | ×5.77 | +6.06 | 0.647 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | destination_keyed | 2 | 1,221 | 16.38% [16.16%, 16.61%] | 2.64% | ×6.21 | +6.80 | 0.655 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | destination_keyed | 2 | 1,221 | 15.23% [14.22%, 16.28%] | 2.64% | ×5.77 | +6.06 | 0.647 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | destination_keyed | 2 | 1,224 | 2.37% [2.22%, 2.53%] | 1.10% | ×2.16 | -0.08 | 0.604 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | destination_keyed | 2 | 1,243 | 1.61% [1.40%, 1.83%] | 1.15% | ×1.40 | -1.53 | 0.664 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | destination_keyed | 2 | 1,224 | 2.37% [2.22%, 2.53%] | 1.10% | ×2.16 | -0.08 | 0.604 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | destination_keyed | 2 | 1,243 | 1.61% [1.40%, 1.83%] | 1.15% | ×1.40 | -1.53 | 0.664 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | destination_keyed | 2 | 1,223 | 3.76% [3.17%, 4.39%] | 2.32% | ×1.62 | +1.39 | 0.638 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | destination_keyed | 2 | 1,246 | 4.57% [3.58%, 5.63%] | 2.06% | ×2.22 | +1.44 | 0.600 | yes | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | destination_keyed | 2 | 1,223 | 3.76% [3.17%, 4.39%] | 2.32% | ×1.62 | +1.39 | 0.638 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | destination_keyed | 2 | 1,246 | 4.57% [3.58%, 5.63%] | 2.06% | ×2.22 | +1.44 | 0.600 | yes | not applicable |
 
 ## issuer_0
 
@@ -204,64 +324,124 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_0 [share 50%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_0 [share 50%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_0 [share 50%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_0 [share 50%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_0 [share 50%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_0 [share 50%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_0 [share 50%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_0 [share 50%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_0 [share 50%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_0 [share 50%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0 [share 50%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_0 [share 50%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_0 [share 50%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_0 [share 50%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0 [share 50%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_0 [share 50%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0 [share 50%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0 [share 50%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_0 [share 50%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_0 [share 50%, all records] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_0 [share 50%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_0 [share 50%, all records] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_0 [share 50%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_0 [share 50%, other issuers' devices] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_0 [share 50%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_0 [share 50%, other issuers' devices] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_0 [share 50%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_0 [share 50%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_0 [share 50%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_0 [share 50%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_0 [share 50%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_0 [share 50%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_0 [share 50%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_0 [share 50%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0 [share 50%, all records] | 2 | 1,216 | 2.06% [1.83%, 2.28%] | 0.62% | ×3.30 | -0.99 | 0.600 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0 [share 50%, all records] | 2 | 1,216 | 1.48% [1.16%, 1.79%] | 0.62% | ×2.37 | -1.40 | 0.404 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0 [share 50%, all records] | 2 | 1,216 | 0.41% [0.00%, 0.81%] | 0.51% | ×0.81 | -2.63 | 0.749 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0 [share 50%, all records] | 2 | 1,216 | 0.41% [0.00%, 0.81%] | 0.51% | ×0.81 | -2.47 | 0.749 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0 [share 50%, its own devices] | 2 | 663 | 3.77% [3.18%, 4.42%] | 1.14% | ×3.30 | +1.21 | 0.611 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0 [share 50%, its own devices] | 2 | 663 | 2.71% [2.02%, 3.47%] | 1.14% | ×2.37 | +0.15 | 0.384 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0 [share 50%, its own devices] | 2 | 663 | 0.75% [0.00%, 1.58%] | 0.93% | ×0.81 | -1.81 | 0.763 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0 [share 50%, its own devices] | 2 | 663 | 0.75% [0.00%, 1.58%] | 0.93% | ×0.81 | -1.81 | 0.763 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0 [share 50%, other issuers' devices] | 2 | 553 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.62 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0 [share 50%, other issuers' devices] | 2 | 553 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.25 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0 [share 50%, other issuers' devices] | 2 | 553 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.62 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0 [share 50%, other issuers' devices] | 2 | 553 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.25 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0 [share 50%, all records] | 2 | 1,312 | 5.49% [0.15%, 11.13%] | 0.99% | ×5.54 | -1.68 | 0.310 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0 [share 50%, all records] | 2 | 1,312 | 5.64% [0.00%, 11.60%] | 0.99% | ×5.70 | -0.46 | 0.220 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0 [share 50%, all records] | 2 | 1,312 | 0.00% [0.00%, 0.00%] | 0.81% | ×0.00 | -7.16 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0 [share 50%, all records] | 2 | 1,312 | 0.00% [0.00%, 0.00%] | 0.81% | ×0.00 | -6.10 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0 [share 50%, its own devices] | 2 | 689 | 10.45% [0.27%, 22.12%] | 1.88% | ×5.54 | +0.29 | 0.305 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0 [share 50%, its own devices] | 2 | 689 | 10.74% [0.00%, 23.05%] | 1.88% | ×5.70 | +3.05 | 0.195 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0 [share 50%, its own devices] | 2 | 689 | 0.00% [0.00%, 0.00%] | 1.53% | ×0.00 | -10.16 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0 [share 50%, its own devices] | 2 | 689 | 0.00% [0.00%, 0.00%] | 1.53% | ×0.00 | -7.69 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0 [share 50%, other issuers' devices] | 2 | 623 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.85 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0 [share 50%, other issuers' devices] | 2 | 623 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.33 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0 [share 50%, other issuers' devices] | 2 | 623 | 0.00% [0.00%, 0.00%] | 0.02% | ×0.00 | -3.85 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0 [share 50%, other issuers' devices] | 2 | 623 | 0.00% [0.00%, 0.00%] | 0.02% | ×0.00 | -4.33 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 4.50% [0.00%, 9.14%] | 1.06% | ×4.25 | -2.13 | 0.770 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 4.50% [0.00%, 9.14%] | 1.06% | ×4.25 | -1.31 | 0.794 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 0.00% [0.00%, 0.00%] | 0.95% | ×0.00 | -6.63 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 0.00% [0.00%, 0.00%] | 0.95% | ×0.00 | -5.81 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 7.81% [0.00%, 15.62%] | 1.84% | ×4.25 | -0.14 | 0.780 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 7.81% [0.00%, 15.62%] | 1.84% | ×4.25 | -0.57 | 0.802 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 0.00% [0.00%, 0.00%] | 1.64% | ×0.00 | -7.95 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 0.00% [0.00%, 0.00%] | 1.64% | ×0.00 | -8.38 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.84 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.32 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×0.00 | -4.84 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×0.00 | -2.32 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 7.13% [5.17%, 9.14%] | 0.94% | ×7.56 | -2.46 | 0.573 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 7.37% [5.65%, 9.14%] | 0.94% | ×7.82 | -1.80 | 0.568 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 5.65% [2.26%, 9.14%] | 0.82% | ×6.88 | -3.93 | 0.339 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0 [share 50%, all records] | 2 | 1,221 | 5.65% [2.26%, 9.14%] | 0.82% | ×6.88 | -3.52 | 0.339 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 12.36% [9.09%, 15.62%] | 1.63% | ×7.56 | +0.57 | 0.574 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 12.78% [9.94%, 15.62%] | 1.63% | ×7.82 | +1.56 | 0.570 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 9.80% [3.98%, 15.62%] | 1.42% | ×6.88 | -1.99 | 0.335 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0 [share 50%, its own devices] | 2 | 704 | 9.80% [3.98%, 15.62%] | 1.42% | ×6.88 | -1.42 | 0.335 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.58 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.38 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.58 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0 [share 50%, other issuers' devices] | 2 | 517 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.38 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0 [share 50%, all records] | 2 | 1,224 | 1.55% [0.84%, 2.22%] | 0.61% | ×2.53 | -0.90 | 0.522 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0 [share 50%, all records] | 2 | 1,243 | 1.29% [0.50%, 2.02%] | 0.62% | ×2.09 | -1.85 | 0.392 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0 [share 50%, all records] | 2 | 1,224 | 0.33% [0.00%, 0.63%] | 0.51% | ×0.65 | -2.12 | 0.257 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0 [share 50%, all records] | 2 | 1,243 | 0.48% [0.00%, 0.93%] | 0.51% | ×0.94 | -2.65 | 0.257 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 3.43% [2.45%, 4.20%] | 1.13% | ×3.04 | +0.00 | 0.595 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 2.36% [1.47%, 3.05%] | 1.13% | ×2.09 | -0.43 | 0.456 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 0.21% [0.00%, 0.38%] | 0.93% | ×0.23 | -3.22 | 0.281 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 0.21% [0.00%, 0.38%] | 0.93% | ×0.23 | -2.58 | 0.281 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0 [share 50%, other issuers' devices] | 2 | 758 | 0.40% [0.00%, 0.82%] | 0.30% | ×1.32 | -1.45 | 0.143 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0 [share 50%, other issuers' devices] | 2 | 777 | 0.64% [0.00%, 1.32%] | 0.31% | ×2.08 | -2.70 | 0.326 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0 [share 50%, other issuers' devices] | 2 | 758 | 0.40% [0.00%, 0.82%] | 0.25% | ×1.61 | -1.45 | 0.758 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0 [share 50%, other issuers' devices] | 2 | 777 | 0.64% [0.00%, 1.32%] | 0.27% | ×2.42 | -2.70 | 0.757 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0 [share 50%, all records] | 2 | 1,223 | 1.55% [1.01%, 2.06%] | 0.49% | ×3.15 | -0.82 | 0.537 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0 [share 50%, all records] | 2 | 1,246 | 1.12% [0.66%, 1.56%] | 0.49% | ×2.27 | -2.01 | 0.459 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0 [share 50%, all records] | 2 | 1,223 | 0.41% [0.16%, 0.68%] | 0.42% | ×0.98 | -1.96 | 0.659 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0 [share 50%, all records] | 2 | 1,246 | 0.56% [0.47%, 0.66%] | 0.42% | ×1.35 | -2.57 | 0.544 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 3.43% [2.45%, 4.20%] | 1.13% | ×3.04 | -0.86 | 0.595 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 2.36% [1.47%, 3.05%] | 1.13% | ×2.09 | -0.64 | 0.456 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 0.64% [0.38%, 0.98%] | 0.93% | ×0.69 | -3.65 | 0.615 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0 [share 50%, its own devices] | 2 | 466 | 0.64% [0.38%, 0.98%] | 0.93% | ×0.69 | -2.36 | 0.615 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0 [share 50%, other issuers' devices] | 2 | 757 | 0.40% [0.26%, 0.54%] | 0.10% | ×3.88 | -0.79 | 0.355 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0 [share 50%, other issuers' devices] | 2 | 780 | 0.38% [0.25%, 0.53%] | 0.12% | ×3.29 | -2.82 | 0.597 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0 [share 50%, other issuers' devices] | 2 | 757 | 0.26% [0.00%, 0.52%] | 0.10% | ×2.63 | -0.92 | 0.256 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0 [share 50%, other issuers' devices] | 2 | 780 | 0.51% [0.50%, 0.53%] | 0.11% | ×4.65 | -2.69 | 0.494 | no | not applicable |
 
 ## issuer_0_with_observer
 
@@ -269,64 +449,124 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_0_with_observer [share 50%, all records] | 2 | 413 | 3.15% [2.94%, 3.35%] | 1.46% | ×2.15 | -2.91 | 0.350 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_0_with_observer [share 50%, all records] | 2 | 413 | 2.66% [0.49%, 4.78%] | 1.46% | ×1.82 | +0.00 | 0.336 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_0_with_observer [share 50%, all records] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_0_with_observer [share 50%, all records] | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 413 | 3.15% [2.94%, 3.35%] | 1.46% | ×2.15 | -2.91 | 0.350 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 413 | 2.66% [0.49%, 4.78%] | 1.46% | ×1.82 | +0.00 | 0.336 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_observer [share 50%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.018 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_0_with_observer [share 50%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.140 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_observer [share 50%, all records] | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_0_with_observer [share 50%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.018 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.140 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 6.56% [4.44%, 8.60%] | 1.86% | ×3.52 | -1.37 | 0.444 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 4.92% [4.84%, 5.00%] | 1.87% | ×2.63 | -0.82 | 0.390 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 6.56% [4.44%, 8.60%] | 1.86% | ×3.52 | -1.37 | 0.444 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 4.92% [4.84%, 5.00%] | 1.87% | ×2.63 | -0.82 | 0.390 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 13.66% [11.67%, 15.59%] | 1.47% | ×9.32 | -6.83 | 0.607 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 13.66% [11.67%, 15.59%] | 1.48% | ×9.26 | -2.46 | 0.701 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_observer [share 50%, all records] | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 13.66% [11.67%, 15.59%] | 1.47% | ×9.32 | -6.83 | 0.607 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 13.66% [11.67%, 15.59%] | 1.48% | ×9.26 | -2.46 | 0.701 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_0_with_observer [share 50%, all records] | 2 | 421 | 3.56% [0.47%, 6.73%] | 1.48% | ×2.42 | -1.19 | 0.193 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_0_with_observer [share 50%, all records] | 2 | 420 | 3.57% [1.88%, 5.31%] | 1.48% | ×2.42 | -1.90 | 0.518 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_0_with_observer [share 50%, all records] | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | +0.00 | 0.490 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_0_with_observer [share 50%, all records] | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | +0.00 | 0.519 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 421 | 3.56% [0.47%, 6.73%] | 1.48% | ×2.42 | -1.19 | 0.193 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 420 | 3.57% [1.88%, 5.31%] | 1.48% | ×2.42 | -1.90 | 0.518 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | +0.00 | 0.490 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | +0.00 | 0.519 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_0_with_observer [share 50%, all records] | 2 | 421 | 2.38% [0.47%, 4.33%] | 1.27% | ×1.88 | -2.14 | 0.238 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_0_with_observer [share 50%, all records] | 2 | 421 | 3.09% [0.94%, 5.29%] | 1.27% | ×2.43 | -3.33 | 0.462 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_0_with_observer [share 50%, all records] | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | +0.00 | 0.499 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_0_with_observer [share 50%, all records] | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | +0.00 | 0.465 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 421 | 2.38% [0.47%, 4.33%] | 1.27% | ×1.88 | -2.14 | 0.238 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 421 | 3.09% [0.94%, 5.29%] | 1.27% | ×2.43 | -3.33 | 0.462 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | +0.00 | 0.499 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | +0.00 | 0.465 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,216 | 2.55% [1.83%, 3.26%] | 0.74% | ×3.46 | -0.49 | 0.528 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,216 | 2.96% [2.93%, 2.99%] | 0.75% | ×3.95 | +0.08 | 0.543 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,216 | 3.04% [2.33%, 3.75%] | 0.74% | ×4.13 | +0.00 | 0.498 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,216 | 2.88% [2.33%, 3.42%] | 0.75% | ×3.84 | +0.00 | 0.542 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 663 | 3.92% [2.60%, 5.36%] | 0.74% | ×5.32 | +1.36 | 0.576 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 663 | 3.47% [3.47%, 3.47%] | 0.75% | ×4.63 | +0.90 | 0.507 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 663 | 2.56% [1.73%, 3.47%] | 0.74% | ×3.48 | +0.00 | 0.598 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 663 | 2.56% [2.02%, 3.15%] | 0.75% | ×3.42 | +0.00 | 0.506 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 553 | 0.90% [0.78%, 1.01%] | 0.74% | ×1.23 | -2.71 | 0.297 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 553 | 2.35% [2.34%, 2.36%] | 0.75% | ×3.14 | -0.90 | 0.614 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 553 | 3.62% [3.12%, 4.04%] | 0.74% | ×4.92 | +0.00 | 0.418 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 553 | 3.25% [2.73%, 3.70%] | 0.75% | ×4.35 | +0.00 | 0.581 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,312 | 7.39% [5.19%, 9.72%] | 0.94% | ×7.86 | +0.23 | 0.578 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,312 | 6.55% [5.79%, 7.37%] | 0.94% | ×7.00 | +0.46 | 0.586 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,312 | 7.16% [4.01%, 10.50%] | 0.94% | ×7.61 | +0.00 | 0.613 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,312 | 6.10% [4.45%, 7.84%] | 0.94% | ×6.51 | +0.00 | 0.639 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 689 | 10.45% [4.35%, 17.45%] | 0.94% | ×11.10 | +0.29 | 0.669 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 689 | 8.27% [3.26%, 14.02%] | 0.93% | ×8.87 | +0.58 | 0.673 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 689 | 10.16% [2.45%, 19.00%] | 0.94% | ×10.79 | +0.00 | 0.686 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 689 | 7.69% [1.36%, 14.95%] | 0.93% | ×8.24 | +0.00 | 0.731 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 623 | 4.01% [1.89%, 6.21%] | 0.94% | ×4.27 | +0.16 | 0.304 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 623 | 4.65% [0.63%, 8.82%] | 0.94% | ×4.95 | +0.32 | 0.291 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 623 | 3.85% [1.89%, 5.88%] | 0.94% | ×4.10 | +0.00 | 0.386 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 623 | 4.33% [0.63%, 8.17%] | 0.94% | ×4.61 | +0.00 | 0.447 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 6.39% [4.36%, 8.47%] | 0.96% | ×6.68 | -0.25 | 0.593 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 6.14% [3.39%, 8.97%] | 0.94% | ×6.54 | +0.33 | 0.591 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 6.63% [4.68%, 8.64%] | 0.96% | ×6.94 | +0.00 | 0.590 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.586 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 8.95% [3.69%, 14.20%] | 0.96% | ×9.35 | +0.99 | 0.564 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 8.95% [3.69%, 14.20%] | 0.94% | ×9.53 | +0.57 | 0.602 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 7.95% [1.42%, 14.49%] | 0.96% | ×8.31 | +0.00 | 0.586 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 8.38% [3.41%, 13.35%] | 0.94% | ×8.92 | +0.00 | 0.588 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 2.90% [0.40%, 5.24%] | 0.95% | ×3.04 | -1.93 | 0.451 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 2.32% [1.60%, 3.00%] | 0.94% | ×2.47 | +0.00 | 0.494 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 4.84% [0.40%, 8.99%] | 0.95% | ×5.07 | +0.00 | 0.369 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 2.32% [1.60%, 3.00%] | 0.94% | ×2.47 | +0.00 | 0.516 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 8.52% [7.11%, 9.97%] | 0.83% | ×10.30 | -1.06 | 0.609 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 9.34% [7.27%, 11.46%] | 0.83% | ×11.24 | +0.16 | 0.604 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 9.58% [7.75%, 11.46%] | 0.83% | ×11.59 | +0.00 | 0.613 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.605 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 11.08% [6.53%, 15.62%] | 0.83% | ×13.42 | -0.71 | 0.487 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 11.65% [5.68%, 17.61%] | 0.83% | ×14.02 | +0.43 | 0.481 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 11.79% [5.68%, 17.90%] | 0.83% | ×14.28 | +0.00 | 0.607 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 704 | 11.22% [5.11%, 17.33%] | 0.83% | ×13.50 | +0.00 | 0.462 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 5.03% [2.00%, 7.87%] | 0.83% | ×6.07 | -1.55 | 0.591 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 6.19% [2.80%, 9.36%] | 0.83% | ×7.45 | -0.19 | 0.502 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 6.58% [2.40%, 10.49%] | 0.83% | ×7.94 | +0.00 | 0.489 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 517 | 6.38% [2.80%, 9.74%] | 0.83% | ×7.68 | +0.00 | 0.523 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,224 | 3.27% [3.17%, 3.37%] | 0.75% | ×4.36 | +0.82 | 0.464 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,243 | 3.38% [3.16%, 3.58%] | 0.74% | ×4.55 | +0.24 | 0.568 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,224 | 2.45% [2.38%, 2.53%] | 0.75% | ×3.27 | +0.00 | 0.608 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.644 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 6.01% [4.20%, 8.33%] | 0.75% | ×8.04 | +2.58 | 0.504 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 3.86% [1.47%, 5.73%] | 0.74% | ×5.21 | +1.07 | 0.606 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 3.43% [1.91%, 5.39%] | 0.75% | ×4.60 | +0.00 | 0.641 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 2.79% [1.47%, 3.82%] | 0.74% | ×3.77 | +0.00 | 0.631 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 758 | 1.58% [0.77%, 2.45%] | 0.75% | ×2.11 | -0.26 | 0.381 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 777 | 3.09% [2.11%, 4.03%] | 0.74% | ×4.16 | -0.26 | 0.539 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 758 | 1.85% [1.03%, 2.72%] | 0.75% | ×2.46 | +0.00 | 0.583 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 777 | 3.35% [2.63%, 4.03%] | 0.74% | ×4.50 | +0.00 | 0.651 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,223 | 2.86% [2.69%, 3.04%] | 0.64% | ×4.45 | +0.49 | 0.462 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,246 | 2.97% [2.80%, 3.15%] | 0.64% | ×4.61 | -0.16 | 0.480 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,223 | 2.37% [2.06%, 2.70%] | 0.64% | ×3.69 | +0.00 | 0.562 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0_with_observer [share 50%, all records] | 2 | 1,246 | 3.13% [2.65%, 3.64%] | 0.64% | ×4.86 | +0.00 | 0.526 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 5.58% [3.82%, 7.84%] | 0.64% | ×8.70 | +1.29 | 0.550 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 3.65% [2.45%, 4.58%] | 0.64% | ×5.69 | +0.64 | 0.536 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 4.29% [2.67%, 6.37%] | 0.64% | ×6.69 | +0.00 | 0.648 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0_with_observer [share 50%, its own devices] | 2 | 466 | 3.00% [2.45%, 3.44%] | 0.64% | ×4.68 | +0.00 | 0.466 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 757 | 1.19% [0.52%, 1.90%] | 0.64% | ×1.85 | +0.00 | 0.418 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 780 | 2.56% [1.58%, 3.50%] | 0.64% | ×3.98 | -0.64 | 0.429 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 757 | 1.19% [0.77%, 1.63%] | 0.64% | ×1.85 | +0.00 | 0.551 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0_with_observer [share 50%, other issuers' devices] | 2 | 780 | 3.21% [2.11%, 4.25%] | 0.64% | ×4.97 | +0.00 | 0.561 | no | not applicable |
 
 ## issuer_0_with_first_relay
 
@@ -334,64 +574,124 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 413 | 3.15% [2.94%, 3.35%] | 1.46% | ×2.15 | -2.91 | 0.349 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.395 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.653 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.453 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 413 | 3.15% [2.94%, 3.35%] | 1.46% | ×2.15 | -2.91 | 0.349 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.395 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.653 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.453 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 388 | 0.26% [0.00%, 0.49%] | 1.84% | ×0.14 | -0.52 | 0.003 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.061 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.029 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.078 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 388 | 0.26% [0.00%, 0.49%] | 1.84% | ×0.14 | -0.52 | 0.003 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.061 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.029 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.078 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 6.83% [4.44%, 9.14%] | 1.86% | ×3.66 | -1.09 | 0.432 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 4.64% [4.30%, 5.00%] | 1.87% | ×2.48 | -1.09 | 0.438 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 8.20% [6.67%, 9.68%] | 1.86% | ×4.40 | +0.27 | 0.496 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 5.19% [4.30%, 6.11%] | 1.87% | ×2.78 | -0.55 | 0.428 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 6.83% [4.44%, 9.14%] | 1.86% | ×3.66 | -1.09 | 0.432 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 4.64% [4.30%, 5.00%] | 1.87% | ×2.48 | -1.09 | 0.438 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 8.20% [6.67%, 9.68%] | 1.86% | ×4.40 | +0.27 | 0.496 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 5.19% [4.30%, 6.11%] | 1.87% | ×2.78 | -0.55 | 0.428 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 13.93% [12.22%, 15.59%] | 1.47% | ×9.51 | -6.56 | 0.605 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 13.39% [11.67%, 15.05%] | 1.48% | ×9.07 | -2.73 | 0.630 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 366 | 16.12% [14.44%, 17.74%] | 1.48% | ×10.92 | +0.00 | 0.665 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 13.93% [12.22%, 15.59%] | 1.47% | ×9.51 | -6.56 | 0.605 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 13.39% [11.67%, 15.05%] | 1.48% | ×9.07 | -2.73 | 0.630 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 366 | 16.12% [14.44%, 17.74%] | 1.48% | ×10.92 | +0.00 | 0.665 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 421 | 3.80% [0.94%, 6.73%] | 1.48% | ×2.58 | -0.95 | 0.212 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 420 | 3.57% [1.41%, 5.80%] | 1.48% | ×2.42 | -1.90 | 0.545 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 421 | 4.75% [1.88%, 7.69%] | 1.48% | ×3.22 | +0.00 | 0.497 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 420 | 5.24% [2.82%, 7.73%] | 1.48% | ×3.54 | -0.24 | 0.560 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 421 | 3.80% [0.94%, 6.73%] | 1.48% | ×2.58 | -0.95 | 0.212 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 420 | 3.57% [1.41%, 5.80%] | 1.48% | ×2.42 | -1.90 | 0.545 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 421 | 4.75% [1.88%, 7.69%] | 1.48% | ×3.22 | +0.00 | 0.497 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 420 | 5.24% [2.82%, 7.73%] | 1.48% | ×3.54 | -0.24 | 0.560 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 421 | 2.38% [0.47%, 4.33%] | 1.27% | ×1.88 | -2.14 | 0.239 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 421 | 3.09% [0.94%, 5.29%] | 1.27% | ×2.43 | -3.33 | 0.459 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 421 | 4.75% [3.29%, 6.25%] | 1.27% | ×3.75 | +0.24 | 0.469 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 421 | 6.41% [3.76%, 9.13%] | 1.27% | ×5.05 | +0.00 | 0.434 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 421 | 2.38% [0.47%, 4.33%] | 1.27% | ×1.88 | -2.14 | 0.239 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 421 | 3.09% [0.94%, 5.29%] | 1.27% | ×2.43 | -3.33 | 0.459 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 421 | 4.75% [3.29%, 6.25%] | 1.27% | ×3.75 | +0.24 | 0.469 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 421 | 6.41% [3.76%, 9.13%] | 1.27% | ×5.05 | +0.00 | 0.434 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,216 | 2.55% [1.83%, 3.26%] | 0.74% | ×3.46 | -0.49 | 0.530 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,216 | 3.04% [2.99%, 3.09%] | 0.75% | ×4.06 | +0.16 | 0.519 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,216 | 3.29% [2.82%, 3.75%] | 0.74% | ×4.47 | +0.25 | 0.497 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,216 | 2.96% [2.82%, 3.09%] | 0.75% | ×3.95 | +0.08 | 0.515 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 663 | 3.77% [2.60%, 5.05%] | 0.74% | ×5.12 | +1.21 | 0.588 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 663 | 3.17% [2.89%, 3.47%] | 0.75% | ×4.23 | +0.60 | 0.497 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 663 | 2.87% [2.60%, 3.15%] | 0.74% | ×3.89 | +0.30 | 0.578 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 663 | 2.87% [2.60%, 3.15%] | 0.75% | ×3.82 | +0.30 | 0.413 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 553 | 1.08% [0.78%, 1.35%] | 0.74% | ×1.48 | -2.53 | 0.304 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 553 | 2.89% [2.69%, 3.12%] | 0.75% | ×3.87 | -0.36 | 0.551 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 553 | 3.80% [3.12%, 4.38%] | 0.74% | ×5.17 | +0.18 | 0.428 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 553 | 3.07% [3.03%, 3.12%] | 0.75% | ×4.11 | -0.18 | 0.627 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,312 | 7.39% [5.04%, 9.87%] | 0.94% | ×7.86 | +0.23 | 0.583 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,312 | 6.25% [5.19%, 7.37%] | 0.94% | ×6.68 | +0.15 | 0.598 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,312 | 7.39% [3.86%, 11.13%] | 0.94% | ×7.86 | +0.23 | 0.628 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,312 | 6.17% [4.45%, 7.99%] | 0.94% | ×6.60 | +0.08 | 0.638 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 689 | 10.45% [4.08%, 17.76%] | 0.94% | ×11.10 | +0.29 | 0.682 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 689 | 7.84% [2.72%, 13.71%] | 0.93% | ×8.40 | +0.15 | 0.675 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 689 | 10.60% [2.17%, 20.25%] | 0.94% | ×11.26 | +0.44 | 0.708 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 689 | 7.69% [1.36%, 14.95%] | 0.93% | ×8.24 | +0.00 | 0.732 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 623 | 4.01% [1.89%, 6.21%] | 0.94% | ×4.27 | +0.16 | 0.288 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 623 | 4.49% [0.95%, 8.17%] | 0.94% | ×4.78 | +0.16 | 0.329 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 623 | 3.85% [1.89%, 5.88%] | 0.94% | ×4.10 | +0.00 | 0.371 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 623 | 4.49% [0.95%, 8.17%] | 0.94% | ×4.78 | +0.16 | 0.334 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 6.06% [4.04%, 8.14%] | 0.96% | ×6.34 | -0.57 | 0.612 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 6.06% [3.23%, 8.97%] | 0.94% | ×6.45 | +0.25 | 0.595 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 6.47% [4.68%, 8.31%] | 0.96% | ×6.77 | -0.16 | 0.597 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.585 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 8.66% [3.69%, 13.64%] | 0.96% | ×9.05 | +0.71 | 0.580 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 8.81% [3.41%, 14.20%] | 0.94% | ×9.38 | +0.43 | 0.607 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 7.67% [1.42%, 13.92%] | 0.96% | ×8.01 | -0.28 | 0.596 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 8.38% [3.41%, 13.35%] | 0.94% | ×8.92 | +0.00 | 0.586 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 2.51% [0.40%, 4.49%] | 0.95% | ×2.64 | -2.32 | 0.493 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 2.32% [1.60%, 3.00%] | 0.94% | ×2.47 | +0.00 | 0.495 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 4.84% [0.40%, 8.99%] | 0.95% | ×5.07 | +0.00 | 0.370 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 2.32% [1.60%, 3.00%] | 0.94% | ×2.47 | +0.00 | 0.521 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 8.44% [7.11%, 9.80%] | 0.83% | ×10.20 | -1.15 | 0.613 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 9.42% [7.43%, 11.46%] | 0.83% | ×11.33 | +0.25 | 0.590 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 9.66% [8.24%, 11.13%] | 0.83% | ×11.69 | +0.08 | 0.616 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.596 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 10.94% [6.53%, 15.34%] | 0.83% | ×13.24 | -0.85 | 0.498 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 11.79% [5.97%, 17.61%] | 0.83% | ×14.19 | +0.57 | 0.471 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 11.36% [5.40%, 17.33%] | 0.83% | ×13.76 | -0.43 | 0.625 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 704 | 11.22% [5.11%, 17.33%] | 0.83% | ×13.50 | +0.00 | 0.458 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 5.03% [2.00%, 7.87%] | 0.83% | ×6.07 | -1.55 | 0.588 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 6.19% [2.80%, 9.36%] | 0.83% | ×7.45 | -0.19 | 0.491 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 7.35% [2.40%, 11.99%] | 0.83% | ×8.88 | +0.77 | 0.462 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 517 | 6.38% [2.80%, 9.74%] | 0.83% | ×7.68 | +0.00 | 0.513 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,224 | 3.10% [2.86%, 3.37%] | 0.75% | ×4.14 | +0.65 | 0.478 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,243 | 3.06% [3.00%, 3.12%] | 0.74% | ×4.12 | -0.08 | 0.585 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,224 | 2.53% [2.53%, 2.54%] | 0.75% | ×3.38 | +0.08 | 0.597 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.615 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 5.36% [3.05%, 8.33%] | 0.75% | ×7.18 | +1.93 | 0.552 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 3.43% [1.47%, 4.96%] | 0.74% | ×4.63 | +0.64 | 0.649 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 3.43% [1.91%, 5.39%] | 0.75% | ×4.60 | +0.00 | 0.641 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 3.00% [1.47%, 4.20%] | 0.74% | ×4.05 | +0.21 | 0.607 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 758 | 1.72% [0.77%, 2.72%] | 0.75% | ×2.28 | -0.13 | 0.345 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 777 | 2.83% [1.84%, 3.78%] | 0.74% | ×3.81 | -0.51 | 0.541 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 758 | 1.98% [1.03%, 2.99%] | 0.75% | ×2.63 | +0.13 | 0.560 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 777 | 3.22% [2.37%, 4.03%] | 0.74% | ×4.33 | -0.13 | 0.619 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,223 | 2.62% [2.22%, 3.04%] | 0.64% | ×4.07 | +0.25 | 0.484 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,246 | 2.81% [2.49%, 3.15%] | 0.64% | ×4.36 | -0.32 | 0.505 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,223 | 2.29% [1.74%, 2.87%] | 0.64% | ×3.56 | -0.08 | 0.588 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0_with_first_relay [share 50%, all records] | 2 | 1,246 | 3.13% [2.80%, 3.48%] | 0.64% | ×4.86 | +0.00 | 0.518 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 5.36% [3.44%, 7.84%] | 0.64% | ×8.36 | +1.07 | 0.557 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 3.00% [1.96%, 3.82%] | 0.64% | ×4.68 | +0.00 | 0.610 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 4.29% [2.29%, 6.86%] | 0.64% | ×6.69 | +0.00 | 0.690 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0_with_first_relay [share 50%, its own devices] | 2 | 466 | 3.22% [2.45%, 3.82%] | 0.64% | ×5.02 | +0.21 | 0.412 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 757 | 0.92% [0.52%, 1.36%] | 0.64% | ×1.44 | -0.26 | 0.397 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 780 | 2.69% [1.58%, 3.75%] | 0.64% | ×4.17 | -0.51 | 0.431 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 757 | 1.06% [0.77%, 1.36%] | 0.64% | ×1.64 | -0.13 | 0.494 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0_with_first_relay [share 50%, other issuers' devices] | 2 | 780 | 3.08% [2.11%, 4.00%] | 0.64% | ×4.77 | -0.13 | 0.589 | no | not applicable |
 
 ## issuer_1
 
@@ -399,68 +699,132 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_1 [share 30%, all records] | 2 | 413 | 6.54% [6.22%, 6.86%] | 3.23% | ×2.02 | +0.48 | 0.622 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_1 [share 30%, all records] | 2 | 413 | 8.23% [4.41%, 11.96%] | 3.23% | ×2.55 | +5.57 | 0.402 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_1 [share 30%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -6.05 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_1 [share 30%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -2.66 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_1 [share 30%, its own devices] | 2 | 413 | 6.54% [6.22%, 6.86%] | 3.23% | ×2.02 | +0.48 | 0.622 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_1 [share 30%, its own devices] | 2 | 413 | 8.23% [4.41%, 11.96%] | 3.23% | ×2.55 | +5.57 | 0.402 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_1 [share 30%, its own devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -6.05 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_1 [share 30%, its own devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -2.66 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_1 [share 30%, all records] | 2 | 388 | 0.52% [0.00%, 1.10%] | 3.22% | ×0.16 | -0.26 | 0.143 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_1 [share 30%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 3.22% | ×0.00 | -0.52 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1 [share 30%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 3.22% | ×0.00 | -0.77 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_1 [share 30%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 3.22% | ×0.00 | -0.52 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_1 [share 30%, its own devices] | 2 | 388 | 0.52% [0.00%, 1.10%] | 3.22% | ×0.16 | -0.26 | 0.143 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_1 [share 30%, its own devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 3.22% | ×0.00 | -0.52 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1 [share 30%, its own devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 3.22% | ×0.00 | -0.77 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_1 [share 30%, its own devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 3.22% | ×0.00 | -0.52 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_1 [share 30%, all records] | 2 | 366 | 0.82% [0.00%, 1.67%] | 3.23% | ×0.25 | -7.10 | 0.354 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1 [share 30%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.74 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1 [share 30%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -7.92 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1 [share 30%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.74 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 0.82% [0.00%, 1.67%] | 3.23% | ×0.25 | -7.10 | 0.354 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.74 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -7.92 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.74 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_1 [share 30%, all records] | 2 | 366 | 7.65% [6.11%, 9.14%] | 3.23% | ×2.37 | -12.84 | 0.546 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1 [share 30%, all records] | 2 | 366 | 5.74% [4.44%, 6.99%] | 3.23% | ×1.78 | -10.38 | 0.398 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1 [share 30%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -20.49 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1 [share 30%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -16.12 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 7.65% [6.11%, 9.14%] | 3.23% | ×2.37 | -12.84 | 0.546 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 5.74% [4.44%, 6.99%] | 3.23% | ×1.78 | -10.38 | 0.398 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -20.49 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1 [share 30%, its own devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -16.12 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1 [share 30%, all records] | 2 | 421 | 4.04% [3.85%, 4.23%] | 3.23% | ×1.25 | -0.71 | 0.657 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1 [share 30%, all records] | 2 | 420 | 5.48% [1.45%, 9.39%] | 3.23% | ×1.70 | +0.00 | 0.307 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1 [share 30%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -4.75 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1 [share 30%, all records] | 2 | 420 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.48 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 4.56% [3.52%, 5.59%] | 3.23% | ×1.41 | +0.00 | 0.630 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 6.32% [0.70%, 11.89%] | 3.23% | ×1.96 | +0.35 | 0.276 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -4.56 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.96 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1 [share 30%, other issuers' devices] | 2 | 136 | 2.94% [1.43%, 4.55%] | 3.23% | ×0.91 | -2.21 | 0.731 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1 [share 30%, other issuers' devices] | 2 | 135 | 3.70% [3.08%, 4.29%] | 3.23% | ×1.15 | -0.74 | 0.421 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1 [share 30%, other issuers' devices] | 2 | 136 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.15 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1 [share 30%, other issuers' devices] | 2 | 135 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -4.44 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1 [share 30%, all records] | 2 | 421 | 3.09% [2.40%, 3.76%] | 2.65% | ×1.17 | -1.43 | 0.617 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1 [share 30%, all records] | 2 | 421 | 4.99% [0.96%, 8.92%] | 2.63% | ×1.90 | -1.43 | 0.318 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1 [share 30%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 2.65% | ×0.00 | -4.51 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1 [share 30%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 2.63% | ×0.00 | -6.41 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 4.56% [3.52%, 5.59%] | 3.23% | ×1.41 | -0.70 | 0.630 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 6.32% [0.70%, 11.89%] | 3.23% | ×1.96 | -1.05 | 0.276 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -5.26 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1 [share 30%, its own devices] | 2 | 285 | 0.00% [0.00%, 0.00%] | 3.23% | ×0.00 | -7.37 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1 [share 30%, other issuers' devices] | 2 | 136 | 0.00% [0.00%, 0.00%] | 1.42% | ×0.00 | -2.94 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1 [share 30%, other issuers' devices] | 2 | 136 | 2.21% [1.52%, 2.86%] | 1.38% | ×1.60 | -2.21 | 0.561 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1 [share 30%, other issuers' devices] | 2 | 136 | 0.00% [0.00%, 0.00%] | 1.42% | ×0.00 | -2.94 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1 [share 30%, other issuers' devices] | 2 | 136 | 0.00% [0.00%, 0.00%] | 1.38% | ×0.00 | -4.41 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1 [share 30%, all records] | 2 | 1,216 | 1.15% [0.66%, 1.63%] | 0.51% | ×2.28 | -1.89 | 0.652 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1 [share 30%, all records] | 2 | 1,216 | 1.15% [0.66%, 1.63%] | 0.51% | ×2.28 | -1.73 | 0.720 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1 [share 30%, all records] | 2 | 1,216 | 0.25% [0.00%, 0.49%] | 0.40% | ×0.61 | -2.80 | 0.252 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1 [share 30%, all records] | 2 | 1,216 | 0.25% [0.00%, 0.49%] | 0.40% | ×0.61 | -2.63 | 0.252 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1 [share 30%, its own devices] | 2 | 323 | 4.33% [2.70%, 5.71%] | 1.90% | ×2.28 | -0.62 | 0.656 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1 [share 30%, its own devices] | 2 | 323 | 4.33% [2.70%, 5.71%] | 1.90% | ×2.28 | -0.93 | 0.705 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1 [share 30%, its own devices] | 2 | 323 | 0.93% [0.00%, 1.71%] | 1.51% | ×0.61 | -4.02 | 0.269 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1 [share 30%, its own devices] | 2 | 323 | 0.93% [0.00%, 1.71%] | 1.51% | ×0.61 | -4.33 | 0.269 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1 [share 30%, other issuers' devices] | 2 | 893 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.35 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1 [share 30%, other issuers' devices] | 2 | 893 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.02 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1 [share 30%, other issuers' devices] | 2 | 893 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.35 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1 [share 30%, other issuers' devices] | 2 | 893 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.02 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1 [share 30%, all records] | 2 | 1,312 | 0.30% [0.15%, 0.47%] | 0.68% | ×0.45 | -6.86 | 0.605 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1 [share 30%, all records] | 2 | 1,312 | 0.00% [0.00%, 0.00%] | 0.68% | ×0.00 | -6.10 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1 [share 30%, all records] | 2 | 1,312 | 0.00% [0.00%, 0.00%] | 0.52% | ×0.00 | -7.16 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1 [share 30%, all records] | 2 | 1,312 | 0.00% [0.00%, 0.00%] | 0.52% | ×0.00 | -6.10 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1 [share 30%, its own devices] | 2 | 306 | 1.31% [0.65%, 1.99%] | 2.90% | ×0.45 | +0.65 | 0.620 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1 [share 30%, its own devices] | 2 | 306 | 0.00% [0.00%, 0.00%] | 2.90% | ×0.00 | +0.00 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1 [share 30%, its own devices] | 2 | 306 | 0.00% [0.00%, 0.00%] | 2.23% | ×0.00 | -0.65 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1 [share 30%, its own devices] | 2 | 306 | 0.00% [0.00%, 0.00%] | 2.23% | ×0.00 | +0.00 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,006 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -9.15 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,006 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.95 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,006 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -9.15 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,006 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.95 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 1.56% [0.00%, 3.07%] | 0.52% | ×3.02 | -5.08 | 0.351 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 1.64% [0.00%, 3.23%] | 0.52% | ×3.18 | -4.18 | 0.339 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 0.00% [0.00%, 0.00%] | 0.37% | ×0.00 | -6.63 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 0.00% [0.00%, 0.00%] | 0.37% | ×0.00 | -5.81 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 8.02% [0.00%, 14.18%] | 2.66% | ×3.02 | +2.11 | 0.376 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 8.44% [0.00%, 14.93%] | 2.66% | ×3.18 | +6.33 | 0.363 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 0.00% [0.00%, 0.00%] | 1.91% | ×0.00 | -5.91 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 0.00% [0.00%, 0.00%] | 1.91% | ×0.00 | -2.11 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.81 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.71 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.81 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.71 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 2.54% [1.83%, 3.23%] | 0.56% | ×4.50 | -7.04 | 0.621 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 2.62% [1.99%, 3.23%] | 0.56% | ×4.64 | -6.55 | 0.627 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 0.00% [0.00%, 0.00%] | 0.32% | ×0.00 | -9.58 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1 [share 30%, all records] | 2 | 1,221 | 0.00% [0.00%, 0.00%] | 0.32% | ×0.00 | -9.17 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 13.08% [10.68%, 14.93%] | 2.91% | ×4.50 | +6.75 | 0.604 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 13.50% [11.65%, 14.93%] | 2.91% | ×4.64 | +8.86 | 0.612 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 0.00% [0.00%, 0.00%] | 1.67% | ×0.00 | -6.33 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1 [share 30%, its own devices] | 2 | 237 | 0.00% [0.00%, 0.00%] | 1.67% | ×0.00 | -4.64 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -10.37 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -10.26 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -10.37 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1 [share 30%, other issuers' devices] | 2 | 984 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -10.26 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1 [share 30%, all records] | 2 | 1,224 | 0.74% [0.67%, 0.79%] | 0.48% | ×1.52 | -1.72 | 0.632 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1 [share 30%, all records] | 2 | 1,243 | 1.29% [1.00%, 1.56%] | 0.48% | ×2.67 | -1.85 | 0.497 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1 [share 30%, all records] | 2 | 1,224 | 0.00% [0.00%, 0.00%] | 0.45% | ×0.00 | -2.45 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1 [share 30%, all records] | 2 | 1,243 | 0.00% [0.00%, 0.00%] | 0.45% | ×0.00 | -3.14 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 4.46% [3.92%, 5.00%] | 1.97% | ×2.26 | +1.98 | 0.653 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 5.94% [4.90%, 7.00%] | 1.97% | ×3.01 | +3.47 | 0.497 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 0.00% [0.00%, 0.00%] | 1.82% | ×0.00 | -2.48 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 0.00% [0.00%, 0.00%] | 1.82% | ×0.00 | -2.48 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,022 | 0.00% [0.00%, 0.00%] | 0.19% | ×0.00 | -2.45 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,041 | 0.38% [0.20%, 0.55%] | 0.19% | ×2.00 | -2.88 | 0.453 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,022 | 0.00% [0.00%, 0.00%] | 0.17% | ×0.00 | -2.45 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,041 | 0.00% [0.00%, 0.00%] | 0.18% | ×0.00 | -3.27 | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1 [share 30%, all records] | 2 | 1,223 | 0.82% [0.79%, 0.84%] | 0.39% | ×2.12 | -1.55 | 0.605 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1 [share 30%, all records] | 2 | 1,246 | 1.12% [0.83%, 1.40%] | 0.40% | ×2.79 | -2.01 | 0.471 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1 [share 30%, all records] | 2 | 1,223 | 0.49% [0.00%, 1.01%] | 0.36% | ×1.35 | -1.88 | 0.241 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1 [share 30%, all records] | 2 | 1,246 | 0.56% [0.00%, 1.16%] | 0.36% | ×1.54 | -2.57 | 0.241 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 4.46% [3.92%, 5.00%] | 1.97% | ×2.26 | +1.98 | 0.653 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 5.94% [4.90%, 7.00%] | 1.97% | ×3.01 | -0.50 | 0.497 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 1.98% [0.00%, 3.92%] | 1.82% | ×1.09 | -0.50 | 0.247 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1 [share 30%, its own devices] | 2 | 202 | 1.98% [0.00%, 3.92%] | 1.82% | ×1.09 | -4.46 | 0.247 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,021 | 0.10% [0.00%, 0.20%] | 0.07% | ×1.36 | -2.25 | 0.076 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,044 | 0.19% [0.00%, 0.37%] | 0.10% | ×1.94 | -2.30 | 0.256 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,021 | 0.20% [0.00%, 0.41%] | 0.07% | ×2.66 | -2.15 | 0.239 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1 [share 30%, other issuers' devices] | 2 | 1,044 | 0.29% [0.00%, 0.60%] | 0.08% | ×3.51 | -2.20 | 0.240 | no | not applicable |
 
 ## issuer_1_with_observer
 
@@ -468,68 +832,132 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_1_with_observer [share 30%, all records] | 2 | 413 | 8.96% [6.86%, 11.00%] | 1.46% | ×6.13 | +2.91 | 0.634 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_1_with_observer [share 30%, all records] | 2 | 413 | 6.05% [2.45%, 9.57%] | 1.46% | ×4.14 | +3.39 | 0.686 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_1_with_observer [share 30%, all records] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_1_with_observer [share 30%, all records] | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 413 | 8.96% [6.86%, 11.00%] | 1.46% | ×6.13 | +2.91 | 0.634 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 413 | 6.05% [2.45%, 9.57%] | 1.46% | ×4.14 | +3.39 | 0.686 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_observer [share 30%, all records] | 2 | 388 | 2.06% [1.65%, 2.43%] | 1.84% | ×1.12 | +1.29 | 0.498 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_1_with_observer [share 30%, all records] | 2 | 388 | 1.03% [0.00%, 1.94%] | 1.83% | ×0.56 | +0.52 | 0.145 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_observer [share 30%, all records] | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_1_with_observer [share 30%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 388 | 2.06% [1.65%, 2.43%] | 1.84% | ×1.12 | +1.29 | 0.498 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 388 | 1.03% [0.00%, 1.94%] | 1.83% | ×0.56 | +0.52 | 0.145 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 11.75% [7.22%, 16.13%] | 1.86% | ×6.30 | +3.83 | 0.513 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 9.29% [9.14%, 9.44%] | 1.87% | ×4.97 | +3.55 | 0.569 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 11.75% [7.22%, 16.13%] | 1.86% | ×6.30 | +3.83 | 0.513 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 9.29% [9.14%, 9.44%] | 1.87% | ×4.97 | +3.55 | 0.569 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 17.21% [13.33%, 20.97%] | 1.47% | ×11.74 | -3.28 | 0.673 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 17.21% [16.11%, 18.28%] | 1.48% | ×11.66 | +1.09 | 0.799 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_observer [share 30%, all records] | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 17.21% [13.33%, 20.97%] | 1.47% | ×11.74 | -3.28 | 0.673 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 17.21% [16.11%, 18.28%] | 1.48% | ×11.66 | +1.09 | 0.799 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1_with_observer [share 30%, all records] | 2 | 421 | 6.41% [4.23%, 8.65%] | 1.48% | ×4.35 | +1.66 | 0.533 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1_with_observer [share 30%, all records] | 2 | 420 | 6.67% [5.63%, 7.73%] | 1.48% | ×4.51 | +1.19 | 0.542 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1_with_observer [share 30%, all records] | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | +0.00 | 0.490 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1_with_observer [share 30%, all records] | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | +0.00 | 0.519 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 7.02% [4.90%, 9.15%] | 1.48% | ×4.76 | +2.46 | 0.570 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 7.72% [6.99%, 8.45%] | 1.47% | ×5.25 | +1.75 | 0.560 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 4.56% [0.70%, 8.45%] | 1.48% | ×3.09 | +0.00 | 0.570 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 5.96% [2.80%, 9.15%] | 1.47% | ×4.06 | +0.00 | 0.533 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 136 | 5.15% [2.86%, 7.58%] | 1.47% | ×3.49 | +0.00 | 0.385 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 135 | 4.44% [2.86%, 6.15%] | 1.49% | ×2.97 | +0.00 | 0.566 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 136 | 5.15% [2.86%, 7.58%] | 1.47% | ×3.49 | +0.00 | 0.325 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 135 | 4.44% [4.29%, 4.62%] | 1.49% | ×2.97 | +0.00 | 0.490 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1_with_observer [share 30%, all records] | 2 | 421 | 4.75% [4.23%, 5.29%] | 1.27% | ×3.75 | +0.24 | 0.585 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1_with_observer [share 30%, all records] | 2 | 421 | 7.84% [6.57%, 9.13%] | 1.27% | ×6.17 | +1.43 | 0.481 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1_with_observer [share 30%, all records] | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | +0.00 | 0.499 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1_with_observer [share 30%, all records] | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | +0.00 | 0.465 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 5.96% [5.63%, 6.29%] | 1.27% | ×4.71 | +0.70 | 0.626 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 9.47% [8.39%, 10.56%] | 1.27% | ×7.46 | +2.11 | 0.424 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 5.26% [4.20%, 6.34%] | 1.27% | ×4.16 | +0.00 | 0.509 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 285 | 7.37% [3.50%, 11.27%] | 1.27% | ×5.80 | +0.00 | 0.353 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 136 | 2.21% [0.00%, 4.55%] | 1.27% | ×1.74 | -0.74 | 0.312 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 136 | 4.41% [2.86%, 6.06%] | 1.27% | ×3.47 | +0.00 | 0.755 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 136 | 2.94% [1.43%, 4.55%] | 1.27% | ×2.32 | +0.00 | 0.411 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 136 | 4.41% [2.86%, 6.06%] | 1.27% | ×3.47 | +0.00 | 0.496 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,216 | 3.12% [2.16%, 4.07%] | 0.74% | ×4.25 | +0.08 | 0.519 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,216 | 2.55% [2.44%, 2.66%] | 0.75% | ×3.40 | -0.33 | 0.575 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,216 | 3.04% [2.33%, 3.75%] | 0.74% | ×4.13 | +0.00 | 0.498 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,216 | 2.88% [2.33%, 3.42%] | 0.75% | ×3.84 | +0.00 | 0.542 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 323 | 5.88% [5.41%, 6.29%] | 0.74% | ×8.00 | +0.93 | 0.546 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 323 | 4.33% [3.43%, 5.41%] | 0.75% | ×5.80 | -0.93 | 0.652 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 323 | 4.95% [4.73%, 5.14%] | 0.74% | ×6.74 | +0.00 | 0.408 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 323 | 5.26% [4.05%, 6.29%] | 0.75% | ×7.04 | +0.00 | 0.576 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 893 | 2.13% [1.10%, 3.19%] | 0.74% | ×2.89 | -0.22 | 0.491 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 893 | 1.90% [1.76%, 2.05%] | 0.75% | ×2.54 | -0.11 | 0.516 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 893 | 2.35% [1.54%, 3.19%] | 0.74% | ×3.19 | +0.00 | 0.565 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 893 | 2.02% [1.76%, 2.28%] | 0.75% | ×2.69 | +0.00 | 0.517 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,312 | 7.16% [4.90%, 9.56%] | 0.94% | ×7.61 | +0.00 | 0.611 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,312 | 6.33% [4.75%, 7.99%] | 0.94% | ×6.76 | +0.23 | 0.620 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,312 | 7.16% [4.01%, 10.50%] | 0.94% | ×7.61 | +0.00 | 0.613 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,312 | 6.10% [4.45%, 7.84%] | 0.94% | ×6.51 | +0.00 | 0.639 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 306 | 2.29% [0.00%, 4.52%] | 0.94% | ×2.43 | +1.63 | 0.387 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 306 | 0.65% [0.00%, 1.29%] | 0.94% | ×0.70 | +0.65 | 0.197 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 306 | 0.65% [0.00%, 1.29%] | 0.94% | ×0.69 | +0.00 | 0.245 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 306 | 0.00% [0.00%, 0.00%] | 0.94% | ×0.00 | +0.00 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,006 | 8.65% [5.01%, 12.53%] | 0.94% | ×9.19 | -0.50 | 0.604 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,006 | 8.05% [5.78%, 10.47%] | 0.94% | ×8.61 | +0.10 | 0.631 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,006 | 9.15% [4.82%, 13.76%] | 0.94% | ×9.72 | +0.00 | 0.618 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,006 | 7.95% [5.78%, 10.27%] | 0.94% | ×8.50 | +0.00 | 0.641 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 6.22% [4.20%, 8.31%] | 0.96% | ×6.51 | -0.41 | 0.592 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.577 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 6.63% [4.68%, 8.64%] | 0.96% | ×6.94 | +0.00 | 0.590 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.586 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 5.91% [0.00%, 10.45%] | 0.95% | ×6.23 | +0.00 | 0.416 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 2.11% [0.00%, 3.73%] | 0.93% | ×2.26 | +0.00 | 0.516 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 5.91% [0.00%, 10.45%] | 0.95% | ×6.23 | +0.00 | 0.415 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 2.11% [0.00%, 3.73%] | 0.93% | ×2.26 | +0.00 | 0.518 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 6.30% [2.47%, 10.02%] | 0.96% | ×6.58 | -0.51 | 0.543 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 6.71% [3.09%, 10.22%] | 0.94% | ×7.13 | +0.00 | 0.550 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 6.81% [3.09%, 10.42%] | 0.96% | ×7.11 | +0.00 | 0.546 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 6.71% [3.09%, 10.22%] | 0.94% | ×7.13 | +0.00 | 0.559 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 9.25% [7.92%, 10.63%] | 0.83% | ×11.19 | -0.33 | 0.610 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 9.50% [7.75%, 11.30%] | 0.83% | ×11.43 | +0.33 | 0.584 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 9.58% [7.75%, 11.46%] | 0.83% | ×11.59 | +0.00 | 0.613 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.605 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 8.44% [0.97%, 14.18%] | 0.83% | ×10.22 | +2.11 | 0.551 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 5.06% [0.00%, 8.96%] | 0.83% | ×6.11 | +0.42 | 0.503 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 6.33% [0.97%, 10.45%] | 0.83% | ×7.67 | +0.00 | 0.633 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 237 | 4.64% [0.00%, 8.21%] | 0.83% | ×5.60 | +0.00 | 0.526 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 9.45% [6.19%, 12.63%] | 0.83% | ×11.43 | -0.91 | 0.579 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 10.57% [7.42%, 13.63%] | 0.83% | ×12.71 | +0.30 | 0.475 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 10.37% [7.01%, 13.63%] | 0.83% | ×12.53 | +0.00 | 0.576 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 984 | 10.26% [6.80%, 13.63%] | 0.83% | ×12.34 | +0.00 | 0.480 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,224 | 1.72% [1.59%, 1.85%] | 0.75% | ×2.29 | -0.74 | 0.552 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,243 | 3.62% [3.00%, 4.21%] | 0.74% | ×4.88 | +0.48 | 0.585 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,224 | 2.45% [2.38%, 2.53%] | 0.75% | ×3.27 | +0.00 | 0.608 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.644 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 4.95% [3.92%, 6.00%] | 0.75% | ×6.61 | +2.48 | 0.601 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 5.94% [2.94%, 9.00%] | 0.74% | ×8.02 | +3.47 | 0.608 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 2.48% [0.98%, 4.00%] | 0.75% | ×3.30 | +0.00 | 0.736 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 2.48% [0.98%, 4.00%] | 0.74% | ×3.34 | +0.00 | 0.701 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,022 | 1.08% [0.75%, 1.42%] | 0.75% | ×1.43 | -1.37 | 0.496 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,041 | 3.17% [3.01%, 3.32%] | 0.74% | ×4.27 | -0.10 | 0.577 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,022 | 2.45% [2.08%, 2.85%] | 0.75% | ×3.26 | +0.00 | 0.582 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,041 | 3.27% [2.95%, 3.61%] | 0.74% | ×4.40 | +0.00 | 0.635 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,223 | 2.29% [1.90%, 2.70%] | 0.64% | ×3.56 | -0.08 | 0.480 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,246 | 2.81% [2.65%, 2.96%] | 0.64% | ×4.36 | -0.32 | 0.489 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,223 | 2.37% [2.06%, 2.70%] | 0.64% | ×3.69 | +0.00 | 0.562 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1_with_observer [share 30%, all records] | 2 | 1,246 | 3.13% [2.65%, 3.64%] | 0.64% | ×4.86 | +0.00 | 0.526 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 5.45% [3.92%, 7.00%] | 0.64% | ×8.50 | +2.97 | 0.585 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 6.93% [6.00%, 7.84%] | 0.64% | ×10.76 | +0.50 | 0.599 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 2.48% [0.00%, 5.00%] | 0.64% | ×3.86 | +0.00 | 0.490 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1_with_observer [share 30%, its own devices] | 2 | 202 | 6.44% [6.00%, 6.86%] | 0.64% | ×9.99 | +0.00 | 0.597 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,021 | 1.67% [0.94%, 2.45%] | 0.64% | ×2.59 | -0.69 | 0.405 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,044 | 2.01% [1.59%, 2.40%] | 0.64% | ×3.13 | -0.48 | 0.423 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,021 | 2.35% [1.51%, 3.27%] | 0.64% | ×3.65 | +0.00 | 0.577 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1_with_observer [share 30%, other issuers' devices] | 2 | 1,044 | 2.49% [2.03%, 2.99%] | 0.64% | ×3.87 | +0.00 | 0.463 | no | not applicable |
 
 ## issuer_1_with_first_relay
 
@@ -537,68 +965,132 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 413 | 8.96% [6.86%, 11.00%] | 1.46% | ×6.13 | +2.91 | 0.631 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 413 | 5.81% [2.94%, 8.61%] | 1.46% | ×3.97 | +3.15 | 0.517 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.653 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.453 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 413 | 8.96% [6.86%, 11.00%] | 1.46% | ×6.13 | +2.91 | 0.631 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 413 | 5.81% [2.94%, 8.61%] | 1.46% | ×3.97 | +3.15 | 0.517 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.653 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.453 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 388 | 2.06% [1.65%, 2.43%] | 1.84% | ×1.12 | +1.29 | 0.491 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 388 | 1.03% [0.00%, 1.94%] | 1.83% | ×0.56 | +0.52 | 0.125 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.029 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.078 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 388 | 2.06% [1.65%, 2.43%] | 1.84% | ×1.12 | +1.29 | 0.491 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 388 | 1.03% [0.00%, 1.94%] | 1.83% | ×0.56 | +0.52 | 0.125 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.029 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.078 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 12.02% [7.22%, 16.67%] | 1.86% | ×6.45 | +4.10 | 0.512 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 8.47% [8.06%, 8.89%] | 1.87% | ×4.53 | +2.73 | 0.592 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 8.20% [6.67%, 9.68%] | 1.86% | ×4.40 | +0.27 | 0.496 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 5.19% [4.30%, 6.11%] | 1.87% | ×2.78 | -0.55 | 0.428 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 12.02% [7.22%, 16.67%] | 1.86% | ×6.45 | +4.10 | 0.512 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 8.47% [8.06%, 8.89%] | 1.87% | ×4.53 | +2.73 | 0.592 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 8.20% [6.67%, 9.68%] | 1.86% | ×4.40 | +0.27 | 0.496 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 5.19% [4.30%, 6.11%] | 1.87% | ×2.78 | -0.55 | 0.428 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 16.67% [12.22%, 20.97%] | 1.47% | ×11.37 | -3.83 | 0.676 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 16.94% [15.56%, 18.28%] | 1.48% | ×11.48 | +0.82 | 0.790 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 366 | 16.12% [14.44%, 17.74%] | 1.48% | ×10.92 | +0.00 | 0.665 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 16.67% [12.22%, 20.97%] | 1.47% | ×11.37 | -3.83 | 0.676 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 16.94% [15.56%, 18.28%] | 1.48% | ×11.48 | +0.82 | 0.790 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 366 | 16.12% [14.44%, 17.74%] | 1.48% | ×10.92 | +0.00 | 0.665 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 421 | 5.94% [4.69%, 7.21%] | 1.48% | ×4.03 | +1.19 | 0.580 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 420 | 6.67% [5.16%, 8.21%] | 1.48% | ×4.51 | +1.19 | 0.554 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 421 | 4.75% [1.88%, 7.69%] | 1.48% | ×3.22 | +0.00 | 0.497 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 420 | 5.24% [2.82%, 7.73%] | 1.48% | ×3.54 | -0.24 | 0.560 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 6.32% [4.90%, 7.75%] | 1.48% | ×4.28 | +1.75 | 0.637 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 7.72% [6.29%, 9.15%] | 1.47% | ×5.25 | +1.75 | 0.580 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 4.21% [0.70%, 7.75%] | 1.48% | ×2.85 | -0.35 | 0.597 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 5.96% [2.80%, 9.15%] | 1.47% | ×4.06 | +0.00 | 0.570 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 136 | 5.15% [4.29%, 6.06%] | 1.47% | ×3.49 | +0.00 | 0.455 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 135 | 4.44% [2.86%, 6.15%] | 1.49% | ×2.97 | +0.00 | 0.578 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 136 | 5.88% [4.29%, 7.58%] | 1.47% | ×3.99 | +0.74 | 0.340 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 135 | 3.70% [2.86%, 4.62%] | 1.49% | ×2.48 | -0.74 | 0.547 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 421 | 5.46% [5.16%, 5.77%] | 1.27% | ×4.31 | +0.95 | 0.532 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 421 | 8.08% [6.57%, 9.62%] | 1.27% | ×6.36 | +1.66 | 0.483 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 421 | 4.75% [3.29%, 6.25%] | 1.27% | ×3.75 | +0.24 | 0.469 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 421 | 6.41% [3.76%, 9.13%] | 1.27% | ×5.05 | +0.00 | 0.434 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 6.67% [6.34%, 6.99%] | 1.27% | ×5.26 | +1.40 | 0.586 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 9.82% [8.39%, 11.27%] | 1.27% | ×7.74 | +2.46 | 0.416 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 5.61% [4.20%, 7.04%] | 1.27% | ×4.43 | +0.35 | 0.469 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 285 | 7.72% [4.20%, 11.27%] | 1.27% | ×6.08 | +0.35 | 0.357 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 136 | 2.94% [1.43%, 4.55%] | 1.27% | ×2.32 | +0.00 | 0.240 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 136 | 4.41% [2.86%, 6.06%] | 1.27% | ×3.47 | +0.00 | 0.756 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 136 | 2.94% [1.43%, 4.55%] | 1.27% | ×2.32 | +0.00 | 0.409 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 136 | 3.68% [2.86%, 4.55%] | 1.27% | ×2.89 | -0.74 | 0.418 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,216 | 3.29% [2.66%, 3.91%] | 0.74% | ×4.47 | +0.25 | 0.519 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,216 | 2.80% [2.44%, 3.16%] | 0.75% | ×3.73 | -0.08 | 0.505 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,216 | 3.29% [2.82%, 3.75%] | 0.74% | ×4.47 | +0.25 | 0.497 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,216 | 2.96% [2.82%, 3.09%] | 0.75% | ×3.95 | +0.08 | 0.515 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 323 | 5.57% [5.41%, 5.71%] | 0.74% | ×7.58 | +0.62 | 0.581 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 323 | 4.64% [3.43%, 6.08%] | 0.75% | ×6.22 | -0.62 | 0.636 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 323 | 5.26% [4.73%, 5.71%] | 0.74% | ×7.16 | +0.31 | 0.428 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 323 | 4.95% [4.73%, 5.14%] | 0.75% | ×6.63 | -0.31 | 0.628 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 893 | 2.46% [1.76%, 3.19%] | 0.74% | ×3.35 | +0.11 | 0.471 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 893 | 2.13% [2.05%, 2.20%] | 0.75% | ×2.84 | +0.11 | 0.409 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 893 | 2.58% [2.20%, 2.96%] | 0.74% | ×3.50 | +0.22 | 0.550 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 893 | 2.24% [2.20%, 2.28%] | 0.75% | ×2.99 | +0.22 | 0.429 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,312 | 7.47% [4.90%, 10.19%] | 0.94% | ×7.94 | +0.30 | 0.622 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,312 | 6.40% [4.75%, 8.15%] | 0.94% | ×6.84 | +0.30 | 0.620 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,312 | 7.39% [3.86%, 11.13%] | 0.94% | ×7.86 | +0.23 | 0.628 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,312 | 6.17% [4.45%, 7.99%] | 0.94% | ×6.60 | +0.08 | 0.638 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 306 | 2.29% [0.00%, 4.52%] | 0.94% | ×2.43 | +1.63 | 0.382 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 306 | 0.98% [0.66%, 1.29%] | 0.94% | ×1.04 | +0.98 | 0.328 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 306 | 0.65% [0.00%, 1.29%] | 0.94% | ×0.69 | +0.00 | 0.222 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 306 | 0.33% [0.00%, 0.66%] | 0.94% | ×0.35 | +0.33 | 0.566 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,006 | 9.05% [5.01%, 13.35%] | 0.94% | ×9.61 | -0.10 | 0.617 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,006 | 8.05% [5.78%, 10.47%] | 0.94% | ×8.61 | +0.10 | 0.636 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,006 | 9.44% [4.62%, 14.58%] | 0.94% | ×10.04 | +0.30 | 0.635 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,006 | 7.95% [5.78%, 10.27%] | 0.94% | ×8.50 | +0.00 | 0.645 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 6.14% [4.36%, 7.97%] | 0.96% | ×6.43 | -0.49 | 0.602 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.578 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 6.47% [4.68%, 8.31%] | 0.96% | ×6.77 | -0.16 | 0.597 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.585 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 5.91% [0.00%, 10.45%] | 0.95% | ×6.23 | +0.00 | 0.413 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 2.11% [0.00%, 3.73%] | 0.93% | ×2.26 | +0.00 | 0.518 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 5.91% [0.00%, 10.45%] | 0.95% | ×6.23 | +0.00 | 0.417 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 2.11% [0.00%, 3.73%] | 0.93% | ×2.26 | +0.00 | 0.521 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 6.20% [2.68%, 9.62%] | 0.96% | ×6.47 | -0.61 | 0.555 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 6.71% [3.09%, 10.22%] | 0.94% | ×7.13 | +0.00 | 0.550 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 6.61% [3.09%, 10.02%] | 0.96% | ×6.90 | -0.20 | 0.553 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 6.71% [3.09%, 10.22%] | 0.94% | ×7.13 | +0.00 | 0.557 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 8.93% [7.92%, 9.97%] | 0.83% | ×10.80 | -0.66 | 0.613 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 9.42% [7.59%, 11.30%] | 0.83% | ×11.33 | +0.25 | 0.578 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 9.66% [8.24%, 11.13%] | 0.83% | ×11.69 | +0.08 | 0.616 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.596 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 8.44% [0.97%, 14.18%] | 0.83% | ×10.22 | +2.11 | 0.560 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 3.80% [0.00%, 6.72%] | 0.83% | ×4.58 | -0.84 | 0.594 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 7.59% [0.97%, 12.69%] | 0.83% | ×9.20 | +1.27 | 0.580 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 237 | 3.80% [0.00%, 6.72%] | 0.83% | ×4.58 | -0.84 | 0.570 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 9.04% [6.19%, 11.82%] | 0.83% | ×10.94 | -1.32 | 0.594 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 10.77% [7.84%, 13.63%] | 0.83% | ×12.96 | +0.51 | 0.471 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 10.16% [7.01%, 13.23%] | 0.83% | ×12.29 | -0.20 | 0.584 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 984 | 10.47% [7.22%, 13.63%] | 0.83% | ×12.59 | +0.20 | 0.478 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,224 | 1.88% [1.85%, 1.90%] | 0.75% | ×2.51 | -0.57 | 0.526 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,243 | 3.54% [2.83%, 4.21%] | 0.74% | ×4.77 | +0.40 | 0.571 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,224 | 2.53% [2.53%, 2.54%] | 0.75% | ×3.38 | +0.08 | 0.597 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.615 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 5.94% [3.92%, 8.00%] | 0.75% | ×7.93 | +3.47 | 0.536 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 6.44% [3.92%, 9.00%] | 0.74% | ×8.69 | +3.96 | 0.588 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 2.97% [0.98%, 5.00%] | 0.75% | ×3.97 | +0.50 | 0.641 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 2.48% [0.98%, 4.00%] | 0.74% | ×3.34 | +0.00 | 0.716 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,022 | 1.08% [0.75%, 1.42%] | 0.75% | ×1.43 | -1.37 | 0.504 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,041 | 2.98% [2.61%, 3.32%] | 0.74% | ×4.01 | -0.29 | 0.562 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,022 | 2.45% [2.08%, 2.85%] | 0.75% | ×3.26 | +0.00 | 0.586 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,041 | 3.27% [2.95%, 3.61%] | 0.74% | ×4.40 | +0.00 | 0.600 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,223 | 2.29% [1.74%, 2.87%] | 0.64% | ×3.56 | -0.08 | 0.490 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,246 | 2.89% [2.81%, 2.96%] | 0.64% | ×4.49 | -0.24 | 0.502 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,223 | 2.29% [1.74%, 2.87%] | 0.64% | ×3.56 | -0.08 | 0.588 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1_with_first_relay [share 30%, all records] | 2 | 1,246 | 3.13% [2.80%, 3.48%] | 0.64% | ×4.86 | +0.00 | 0.518 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 4.95% [3.92%, 6.00%] | 0.64% | ×7.73 | +2.48 | 0.641 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 6.44% [5.00%, 7.84%] | 0.64% | ×9.99 | +0.00 | 0.633 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 1.49% [0.00%, 3.00%] | 0.64% | ×2.32 | -0.99 | 0.586 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1_with_first_relay [share 30%, its own devices] | 2 | 202 | 6.44% [6.00%, 6.86%] | 0.64% | ×9.99 | +0.00 | 0.639 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,021 | 1.76% [0.94%, 2.65%] | 0.64% | ×2.74 | -0.59 | 0.306 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,044 | 2.20% [1.79%, 2.58%] | 0.64% | ×3.42 | -0.29 | 0.434 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,021 | 2.45% [1.51%, 3.47%] | 0.64% | ×3.80 | +0.10 | 0.588 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1_with_first_relay [share 30%, other issuers' devices] | 2 | 1,044 | 2.49% [2.21%, 2.79%] | 0.64% | ×3.87 | +0.00 | 0.462 | no | not applicable |
 
 ## issuer_1_with_destination
 
@@ -606,28 +1098,52 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_1_with_destination | 2 | 413 | 14.53% [11.76%, 17.22%] | 5.25% | ×2.77 | +8.47 | 0.525 | yes | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_1_with_destination | 2 | 413 | 15.74% [12.75%, 18.66%] | 5.29% | ×2.97 | +13.08 | 0.514 | yes | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_1_with_destination | 2 | 413 | 14.29% [9.31%, 19.14%] | 5.25% | ×2.72 | +8.23 | 0.488 | yes | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_1_with_destination | 2 | 413 | 15.50% [12.75%, 18.18%] | 5.29% | ×2.93 | +12.83 | 0.461 | yes | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_destination | 2 | 388 | 7.47% [6.31%, 8.79%] | 6.95% | ×1.08 | +6.70 | 0.545 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_1_with_destination | 2 | 388 | 7.47% [7.28%, 7.69%] | 6.90% | ×1.08 | +6.96 | 0.472 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_destination | 2 | 388 | 6.96% [6.04%, 7.77%] | 6.95% | ×1.00 | +6.19 | 0.495 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_1_with_destination | 2 | 388 | 5.93% [5.49%, 6.31%] | 6.90% | ×0.86 | +5.41 | 0.461 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_1_with_destination | 2 | 366 | 20.49% [19.35%, 21.67%] | 6.73% | ×3.05 | +12.57 | 0.639 | yes | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_destination | 2 | 366 | 19.13% [13.44%, 25.00%] | 6.83% | ×2.80 | +13.39 | 0.608 | yes | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_destination | 2 | 366 | 19.67% [18.28%, 21.11%] | 6.73% | ×2.92 | +11.75 | 0.633 | yes | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_destination | 2 | 366 | 15.85% [9.14%, 22.78%] | 6.83% | ×2.32 | +10.11 | 0.617 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_1_with_destination | 2 | 366 | 21.31% [17.78%, 24.73%] | 5.27% | ×4.04 | +0.82 | 0.610 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_1_with_destination | 2 | 366 | 21.86% [17.78%, 25.81%] | 5.32% | ×4.11 | +5.74 | 0.690 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_1_with_destination | 2 | 366 | 25.14% [22.22%, 27.96%] | 5.27% | ×4.77 | +4.64 | 0.744 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_1_with_destination | 2 | 366 | 26.23% [23.33%, 29.03%] | 5.32% | ×4.93 | +10.11 | 0.636 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.56 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.96 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.56 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.96 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.26 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.37 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.26 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_1_with_destination | 2 | 285 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.37 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_1_with_destination | 2 | 323 | 8.67% [6.86%, 10.81%] | 2.87% | ×3.02 | +3.72 | 0.631 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_1_with_destination | 2 | 323 | 8.67% [6.29%, 11.49%] | 2.92% | ×2.97 | +3.41 | 0.644 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_1_with_destination | 2 | 323 | 9.91% [9.14%, 10.81%] | 2.87% | ×3.45 | +4.95 | 0.518 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_1_with_destination | 2 | 323 | 9.29% [8.57%, 10.14%] | 2.92% | ×3.18 | +4.02 | 0.617 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_1_with_destination | 2 | 306 | 12.09% [8.61%, 15.48%] | 3.57% | ×3.39 | +11.44 | 0.545 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_1_with_destination | 2 | 306 | 8.82% [5.30%, 12.26%] | 3.53% | ×2.50 | +8.82 | 0.491 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_1_with_destination | 2 | 306 | 13.07% [9.27%, 16.77%] | 3.57% | ×3.67 | +12.42 | 0.498 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_1_with_destination | 2 | 306 | 7.84% [5.96%, 9.68%] | 3.53% | ×2.22 | +7.84 | 0.492 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_1_with_destination | 2 | 237 | 11.39% [4.85%, 16.42%] | 3.97% | ×2.87 | +5.49 | 0.634 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_destination | 2 | 237 | 12.24% [3.88%, 18.66%] | 3.80% | ×3.22 | +10.13 | 0.550 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_destination | 2 | 237 | 11.81% [5.83%, 16.42%] | 3.97% | ×2.98 | +5.91 | 0.635 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_destination | 2 | 237 | 12.24% [5.83%, 17.16%] | 3.80% | ×3.22 | +10.13 | 0.545 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_1_with_destination | 2 | 237 | 17.30% [10.68%, 22.39%] | 3.29% | ×5.26 | +10.97 | 0.600 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_1_with_destination | 2 | 237 | 13.50% [4.85%, 20.15%] | 3.30% | ×4.09 | +8.86 | 0.723 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_1_with_destination | 2 | 237 | 16.03% [8.74%, 21.64%] | 3.29% | ×4.88 | +9.70 | 0.699 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_1_with_destination | 2 | 237 | 13.92% [7.77%, 18.66%] | 3.30% | ×4.22 | +9.28 | 0.711 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_1_with_destination | 2 | 202 | 0.99% [0.00%, 1.96%] | 0.99% | ×1.00 | -1.49 | 0.897 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_1_with_destination | 2 | 202 | 0.50% [0.00%, 0.98%] | 0.50% | ×1.00 | -1.98 | 0.716 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_1_with_destination | 2 | 202 | 0.99% [0.00%, 1.96%] | 0.99% | ×1.00 | -1.49 | 0.897 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_1_with_destination | 2 | 202 | 0.50% [0.00%, 0.98%] | 0.50% | ×1.00 | -1.98 | 0.716 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_1_with_destination | 2 | 202 | 1.49% [1.00%, 1.96%] | 1.77% | ×0.84 | -0.99 | 0.260 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_1_with_destination | 2 | 202 | 1.98% [0.00%, 3.92%] | 1.27% | ×1.56 | -4.46 | 0.453 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_1_with_destination | 2 | 202 | 1.49% [1.00%, 1.96%] | 1.77% | ×0.84 | -0.99 | 0.278 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_1_with_destination | 2 | 202 | 1.98% [0.00%, 3.92%] | 1.27% | ×1.56 | -4.46 | 0.479 | no | not applicable |
 
 ## issuer_2
 
@@ -635,64 +1151,124 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_2 [share 20%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_2 [share 20%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_2 [share 20%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_2 [share 20%, all records] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_2 [share 20%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_2 [share 20%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_2 [share 20%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.05 | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_2 [share 20%, other issuers' devices] | 2 | 413 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -2.66 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_2 [share 20%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_2 [share 20%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2 [share 20%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_2 [share 20%, all records] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_2 [share 20%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_2 [share 20%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2 [share 20%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.77 | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_2 [share 20%, other issuers' devices] | 2 | 388 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -0.52 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.92 | — | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.74 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2 [share 20%, all records] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -20.49 | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2 [share 20%, other issuers' devices] | 2 | 366 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -16.12 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_2 [share 20%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_2 [share 20%, all records] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_2 [share 20%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_2 [share 20%, all records] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_2 [share 20%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_2 [share 20%, other issuers' devices] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_2 [share 20%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.75 | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_2 [share 20%, other issuers' devices] | 2 | 420 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.48 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_2 [share 20%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_2 [share 20%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_2 [share 20%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_2 [share 20%, all records] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_2 [share 20%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_2 [share 20%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_2 [share 20%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.51 | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_2 [share 20%, other issuers' devices] | 2 | 421 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.41 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2 [share 20%, all records] | 2 | 1,216 | 0.90% [0.66%, 1.14%] | 0.50% | ×1.83 | -2.14 | 0.563 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2 [share 20%, all records] | 2 | 1,216 | 0.82% [0.49%, 1.16%] | 0.50% | ×1.66 | -2.06 | 0.558 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2 [share 20%, all records] | 2 | 1,216 | 0.41% [0.00%, 0.81%] | 0.37% | ×1.10 | -2.63 | 0.251 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2 [share 20%, all records] | 2 | 1,216 | 0.41% [0.00%, 0.81%] | 0.37% | ×1.10 | -2.47 | 0.251 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2 [share 20%, its own devices] | 2 | 230 | 4.78% [3.70%, 5.74%] | 2.62% | ×1.83 | +3.04 | 0.530 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2 [share 20%, its own devices] | 2 | 230 | 4.35% [2.46%, 6.48%] | 2.62% | ×1.66 | +3.91 | 0.544 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2 [share 20%, its own devices] | 2 | 230 | 2.17% [0.00%, 4.10%] | 1.98% | ×1.10 | +0.43 | 0.260 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2 [share 20%, its own devices] | 2 | 230 | 2.17% [0.00%, 4.10%] | 1.98% | ×1.10 | +1.74 | 0.260 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2 [share 20%, other issuers' devices] | 2 | 986 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.35 | — | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2 [share 20%, other issuers' devices] | 2 | 986 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.45 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2 [share 20%, other issuers' devices] | 2 | 986 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.35 | — | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2 [share 20%, other issuers' devices] | 2 | 986 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -3.45 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2 [share 20%, all records] | 2 | 1,312 | 5.72% [5.02%, 6.38%] | 0.96% | ×5.98 | -1.45 | 0.502 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2 [share 20%, all records] | 2 | 1,312 | 5.72% [5.02%, 6.38%] | 0.96% | ×5.98 | -0.38 | 0.446 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2 [share 20%, all records] | 2 | 1,312 | 2.44% [0.00%, 5.02%] | 0.92% | ×2.66 | -4.73 | 0.763 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2 [share 20%, all records] | 2 | 1,312 | 2.44% [0.00%, 5.02%] | 0.92% | ×2.66 | -3.66 | 0.763 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2 [share 20%, its own devices] | 2 | 317 | 23.66% [19.28%, 28.48%] | 3.95% | ×5.98 | +16.72 | 0.479 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2 [share 20%, its own devices] | 2 | 317 | 23.66% [19.28%, 28.48%] | 3.95% | ×5.98 | +15.14 | 0.426 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2 [share 20%, its own devices] | 2 | 317 | 10.09% [0.00%, 19.28%] | 3.79% | ×2.66 | +3.15 | 0.765 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2 [share 20%, its own devices] | 2 | 317 | 10.09% [0.00%, 19.28%] | 3.79% | ×2.66 | +1.58 | 0.765 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2 [share 20%, other issuers' devices] | 2 | 995 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.24 | — | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2 [share 20%, other issuers' devices] | 2 | 995 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.33 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2 [share 20%, other issuers' devices] | 2 | 995 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.24 | — | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2 [share 20%, other issuers' devices] | 2 | 995 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -5.33 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 3.85% [1.83%, 5.82%] | 1.05% | ×3.68 | -2.78 | 0.622 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 3.77% [1.66%, 5.82%] | 1.05% | ×3.60 | -2.05 | 0.628 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 2.95% [0.00%, 5.82%] | 0.65% | ×4.52 | -3.69 | 0.246 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 2.95% [0.00%, 5.82%] | 0.65% | ×4.52 | -2.87 | 0.246 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 16.79% [7.48%, 27.07%] | 4.56% | ×3.68 | +12.86 | 0.674 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 16.43% [6.80%, 27.07%] | 4.56% | ×3.60 | +13.93 | 0.675 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 12.86% [0.00%, 27.07%] | 2.84% | ×4.52 | +8.93 | 0.199 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 12.86% [0.00%, 27.07%] | 2.84% | ×4.52 | +10.36 | 0.199 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.44 | — | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.80 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -7.44 | — | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -6.80 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 4.59% [3.32%, 5.82%] | 0.80% | ×5.71 | -5.00 | 0.569 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 4.75% [3.65%, 5.82%] | 0.80% | ×5.91 | -4.42 | 0.555 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 2.95% [0.00%, 5.82%] | 0.67% | ×4.41 | -6.63 | 0.246 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2 [share 20%, all records] | 2 | 1,221 | 2.95% [0.00%, 5.82%] | 0.67% | ×4.41 | -6.22 | 0.246 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 20.00% [13.61%, 27.07%] | 3.50% | ×5.71 | +13.21 | 0.626 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 20.71% [14.97%, 27.07%] | 3.50% | ×5.91 | +12.86 | 0.596 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 12.86% [0.00%, 27.07%] | 2.91% | ×4.41 | +6.07 | 0.199 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2 [share 20%, its own devices] | 2 | 280 | 12.86% [0.00%, 27.07%] | 2.91% | ×4.41 | +5.00 | 0.199 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -10.41 | — | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -9.56 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -10.41 | — | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2 [share 20%, other issuers' devices] | 2 | 941 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -9.56 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2 [share 20%, all records] | 2 | 1,224 | 1.06% [1.01%, 1.11%] | 0.50% | ×2.11 | -1.39 | 0.747 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2 [share 20%, all records] | 2 | 1,243 | 1.13% [0.78%, 1.50%] | 0.48% | ×2.33 | -2.01 | 0.516 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2 [share 20%, all records] | 2 | 1,224 | 0.00% [0.00%, 0.00%] | 0.30% | ×0.00 | -2.45 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2 [share 20%, all records] | 2 | 1,243 | 0.00% [0.00%, 0.00%] | 0.28% | ×0.00 | -3.14 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 6.55% [4.17%, 9.72%] | 2.32% | ×2.82 | +6.55 | 0.817 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 5.95% [5.21%, 6.94%] | 2.32% | ×2.57 | +1.19 | 0.582 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 0.00% [0.00%, 0.00%] | 1.43% | ×0.00 | +0.00 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 0.00% [0.00%, 0.00%] | 1.43% | ×0.00 | -4.76 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,056 | 0.19% [0.00%, 0.40%] | 0.22% | ×0.88 | -2.65 | 0.279 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,075 | 0.37% [0.00%, 0.79%] | 0.20% | ×1.90 | -2.51 | 0.292 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,056 | 0.00% [0.00%, 0.00%] | 0.12% | ×0.00 | -2.84 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,075 | 0.00% [0.00%, 0.00%] | 0.10% | ×0.00 | -2.88 | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2 [share 20%, all records] | 2 | 1,223 | 1.06% [0.84%, 1.27%] | 0.40% | ×2.64 | -1.31 | 0.766 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2 [share 20%, all records] | 2 | 1,246 | 0.88% [0.83%, 0.93%] | 0.37% | ×2.37 | -2.25 | 0.538 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2 [share 20%, all records] | 2 | 1,223 | 0.00% [0.00%, 0.00%] | 0.25% | ×0.00 | -2.37 | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2 [share 20%, all records] | 2 | 1,246 | 0.00% [0.00%, 0.00%] | 0.22% | ×0.00 | -3.13 | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 6.55% [4.17%, 9.72%] | 2.32% | ×2.82 | +5.95 | 0.817 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 5.95% [5.21%, 6.94%] | 2.32% | ×2.57 | +1.79 | 0.582 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 0.00% [0.00%, 0.00%] | 1.43% | ×0.00 | -0.60 | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2 [share 20%, its own devices] | 2 | 168 | 0.00% [0.00%, 0.00%] | 1.43% | ×0.00 | -4.17 | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,055 | 0.19% [0.18%, 0.20%] | 0.10% | ×1.95 | -2.46 | 0.715 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,078 | 0.09% [0.00%, 0.18%] | 0.07% | ×1.33 | -2.88 | 0.258 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,055 | 0.00% [0.00%, 0.00%] | 0.06% | ×0.00 | -2.65 | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2 [share 20%, other issuers' devices] | 2 | 1,078 | 0.00% [0.00%, 0.00%] | 0.03% | ×0.00 | -2.97 | — | no | not applicable |
 
 ## issuer_2_with_observer
 
@@ -700,64 +1276,124 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_2_with_observer [share 20%, all records] | 2 | 413 | 5.08% [3.43%, 6.70%] | 1.46% | ×3.48 | -0.97 | 0.513 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_2_with_observer [share 20%, all records] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.352 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_2_with_observer [share 20%, all records] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_2_with_observer [share 20%, all records] | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 413 | 5.08% [3.43%, 6.70%] | 1.46% | ×3.48 | -0.97 | 0.513 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.352 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.671 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | +0.00 | 0.643 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_observer [share 20%, all records] | 2 | 388 | 0.77% [0.55%, 0.97%] | 1.84% | ×0.42 | +0.00 | 0.204 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_2_with_observer [share 20%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.133 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_observer [share 20%, all records] | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_2_with_observer [share 20%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 388 | 0.77% [0.55%, 0.97%] | 1.84% | ×0.42 | +0.00 | 0.204 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.133 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | +0.00 | 0.033 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.137 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 6.01% [2.78%, 9.14%] | 1.86% | ×3.22 | -1.91 | 0.533 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 5.46% [4.30%, 6.67%] | 1.87% | ×2.92 | -0.27 | 0.357 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 6.01% [2.78%, 9.14%] | 1.86% | ×3.22 | -1.91 | 0.533 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 5.46% [4.30%, 6.67%] | 1.87% | ×2.92 | -0.27 | 0.357 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | +0.00 | 0.511 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | +0.00 | 0.365 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 18.03% [14.44%, 21.51%] | 1.47% | ×12.30 | -2.46 | 0.601 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 15.57% [15.00%, 16.13%] | 1.48% | ×10.55 | -0.55 | 0.643 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_observer [share 20%, all records] | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 18.03% [14.44%, 21.51%] | 1.47% | ×12.30 | -2.46 | 0.601 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 15.57% [15.00%, 16.13%] | 1.48% | ×10.55 | -0.55 | 0.643 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | +0.00 | 0.682 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_2_with_observer [share 20%, all records] | 2 | 421 | 3.09% [0.47%, 5.77%] | 1.48% | ×2.09 | -1.66 | 0.411 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_2_with_observer [share 20%, all records] | 2 | 420 | 4.76% [2.82%, 6.76%] | 1.48% | ×3.22 | -0.71 | 0.432 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_2_with_observer [share 20%, all records] | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | +0.00 | 0.490 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_2_with_observer [share 20%, all records] | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | +0.00 | 0.519 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 421 | 3.09% [0.47%, 5.77%] | 1.48% | ×2.09 | -1.66 | 0.411 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 420 | 4.76% [2.82%, 6.76%] | 1.48% | ×3.22 | -0.71 | 0.432 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | +0.00 | 0.490 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | +0.00 | 0.519 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_2_with_observer [share 20%, all records] | 2 | 421 | 3.80% [2.35%, 5.29%] | 1.27% | ×3.00 | -0.71 | 0.317 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_2_with_observer [share 20%, all records] | 2 | 421 | 5.23% [3.29%, 7.21%] | 1.27% | ×4.11 | -1.19 | 0.374 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_2_with_observer [share 20%, all records] | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | +0.00 | 0.499 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_2_with_observer [share 20%, all records] | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | +0.00 | 0.465 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 421 | 3.80% [2.35%, 5.29%] | 1.27% | ×3.00 | -0.71 | 0.317 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 421 | 5.23% [3.29%, 7.21%] | 1.27% | ×4.11 | -1.19 | 0.374 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | +0.00 | 0.499 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | +0.00 | 0.465 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,216 | 2.96% [1.99%, 3.91%] | 0.74% | ×4.02 | -0.08 | 0.479 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,216 | 2.63% [2.49%, 2.77%] | 0.75% | ×3.51 | -0.25 | 0.557 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,216 | 3.04% [2.33%, 3.75%] | 0.74% | ×4.13 | +0.00 | 0.498 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,216 | 2.88% [2.33%, 3.42%] | 0.75% | ×3.84 | +0.00 | 0.542 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 230 | 3.48% [2.78%, 4.10%] | 0.73% | ×4.74 | +1.74 | 0.468 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 230 | 1.30% [0.82%, 1.85%] | 0.75% | ×1.74 | +0.87 | 0.403 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 230 | 1.74% [0.93%, 2.46%] | 0.73% | ×2.37 | +0.00 | 0.520 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 230 | 0.43% [0.00%, 0.93%] | 0.75% | ×0.58 | +0.00 | 0.714 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 986 | 2.84% [1.82%, 3.86%] | 0.74% | ×3.86 | -0.51 | 0.461 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 986 | 2.94% [2.63%, 3.25%] | 0.75% | ×3.93 | -0.51 | 0.575 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 986 | 3.35% [2.63%, 4.07%] | 0.74% | ×4.55 | +0.00 | 0.505 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 986 | 3.45% [2.63%, 4.27%] | 0.75% | ×4.61 | +0.00 | 0.537 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,312 | 6.71% [3.56%, 10.03%] | 0.94% | ×7.13 | -0.46 | 0.611 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,312 | 6.25% [4.60%, 7.99%] | 0.94% | ×6.68 | +0.15 | 0.628 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,312 | 7.16% [4.01%, 10.50%] | 0.94% | ×7.61 | +0.00 | 0.613 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,312 | 6.10% [4.45%, 7.84%] | 0.94% | ×6.51 | +0.00 | 0.639 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 317 | 6.62% [3.61%, 9.93%] | 0.94% | ×7.05 | -0.32 | 0.466 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 317 | 8.83% [1.20%, 17.22%] | 0.94% | ×9.39 | +0.32 | 0.315 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 317 | 6.94% [3.61%, 10.60%] | 0.94% | ×7.38 | +0.00 | 0.388 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 317 | 8.52% [1.20%, 16.56%] | 0.94% | ×9.06 | +0.00 | 0.314 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 995 | 6.73% [1.72%, 12.29%] | 0.94% | ×7.15 | -0.50 | 0.656 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 995 | 5.43% [0.96%, 10.38%] | 0.93% | ×5.81 | +0.10 | 0.714 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 995 | 7.24% [2.10%, 12.92%] | 0.94% | ×7.69 | +0.00 | 0.679 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 995 | 5.33% [0.96%, 10.17%] | 0.93% | ×5.70 | +0.00 | 0.728 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 6.47% [4.85%, 8.14%] | 0.96% | ×6.77 | -0.16 | 0.556 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 5.90% [3.23%, 8.64%] | 0.94% | ×6.28 | +0.08 | 0.577 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 6.63% [4.68%, 8.64%] | 0.96% | ×6.94 | +0.00 | 0.590 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.586 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 5.36% [3.40%, 7.52%] | 0.96% | ×5.59 | +1.43 | 0.333 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 3.21% [2.26%, 4.08%] | 0.95% | ×3.40 | +0.71 | 0.258 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 3.93% [0.68%, 7.52%] | 0.96% | ×4.10 | +0.00 | 0.336 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 2.50% [2.26%, 2.72%] | 0.95% | ×2.64 | +0.00 | 0.339 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 6.80% [4.12%, 9.67%] | 0.95% | ×7.12 | -0.64 | 0.608 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 6.70% [3.50%, 10.11%] | 0.94% | ×7.14 | -0.11 | 0.621 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 7.44% [3.91%, 11.21%] | 0.95% | ×7.79 | +0.00 | 0.630 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 6.80% [3.50%, 10.33%] | 0.94% | ×7.25 | +0.00 | 0.615 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 9.25% [7.59%, 10.96%] | 0.83% | ×11.19 | -0.33 | 0.611 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 8.60% [5.98%, 11.30%] | 0.83% | ×10.35 | -0.57 | 0.630 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 9.58% [7.75%, 11.46%] | 0.83% | ×11.59 | +0.00 | 0.613 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.605 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 6.07% [3.40%, 9.02%] | 0.83% | ×7.32 | -0.71 | 0.430 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 7.86% [4.76%, 11.28%] | 0.83% | ×9.43 | +0.00 | 0.360 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 6.79% [3.40%, 10.53%] | 0.83% | ×8.18 | +0.00 | 0.369 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 280 | 7.86% [4.76%, 11.28%] | 0.83% | ×9.43 | +0.00 | 0.356 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 10.20% [7.20%, 13.41%] | 0.83% | ×12.36 | -0.21 | 0.630 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 8.82% [4.53%, 13.41%] | 0.83% | ×10.62 | -0.74 | 0.684 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 10.41% [7.00%, 14.07%] | 0.83% | ×12.61 | +0.00 | 0.524 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 941 | 9.56% [5.97%, 13.41%] | 0.83% | ×11.52 | +0.00 | 0.653 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,224 | 3.02% [3.02%, 3.03%] | 0.75% | ×4.03 | +0.57 | 0.590 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,243 | 2.90% [2.83%, 2.96%] | 0.74% | ×3.90 | -0.24 | 0.649 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,224 | 2.45% [2.38%, 2.53%] | 0.75% | ×3.27 | +0.00 | 0.608 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.644 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 7.74% [5.21%, 11.11%] | 0.75% | ×10.26 | +7.74 | 0.815 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 4.76% [4.17%, 5.21%] | 0.75% | ×6.38 | +0.00 | 0.561 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 0.00% [0.00%, 0.00%] | 0.75% | ×0.00 | +0.00 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 4.76% [2.78%, 6.25%] | 0.75% | ×6.38 | +0.00 | 0.451 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,056 | 2.27% [1.97%, 2.61%] | 0.75% | ×3.03 | -0.57 | 0.471 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,075 | 2.60% [2.38%, 2.81%] | 0.74% | ×3.51 | -0.28 | 0.638 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,056 | 2.84% [2.69%, 3.01%] | 0.75% | ×3.79 | +0.00 | 0.609 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,075 | 2.88% [2.57%, 3.16%] | 0.74% | ×3.89 | +0.00 | 0.657 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,223 | 2.94% [2.87%, 3.01%] | 0.64% | ×4.58 | +0.57 | 0.582 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,246 | 2.73% [2.34%, 3.15%] | 0.64% | ×4.24 | -0.40 | 0.517 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,223 | 2.37% [2.06%, 2.70%] | 0.64% | ×3.69 | +0.00 | 0.562 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2_with_observer [share 20%, all records] | 2 | 1,246 | 3.13% [2.65%, 3.64%] | 0.64% | ×4.86 | +0.00 | 0.526 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 7.74% [5.21%, 11.11%] | 0.65% | ×11.94 | +7.14 | 0.846 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 4.17% [4.17%, 4.17%] | 0.65% | ×6.46 | +0.00 | 0.541 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 0.60% [0.00%, 1.39%] | 0.65% | ×0.92 | +0.00 | 0.060 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2_with_observer [share 20%, its own devices] | 2 | 168 | 4.17% [2.78%, 5.21%] | 0.65% | ×6.46 | +0.00 | 0.442 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,055 | 2.18% [1.97%, 2.42%] | 0.64% | ×3.39 | -0.47 | 0.439 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,078 | 2.50% [2.11%, 2.95%] | 0.64% | ×3.89 | -0.46 | 0.491 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,055 | 2.65% [2.15%, 3.23%] | 0.64% | ×4.13 | +0.00 | 0.581 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2_with_observer [share 20%, other issuers' devices] | 2 | 1,078 | 2.97% [2.63%, 3.35%] | 0.64% | ×4.61 | +0.00 | 0.523 | no | not applicable |
 
 ## issuer_2_with_first_relay
 
@@ -765,64 +1401,124 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 413 | 5.57% [3.43%, 7.66%] | 1.46% | ×3.81 | -0.48 | 0.487 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.411 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.653 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.453 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 413 | 5.57% [3.43%, 7.66%] | 1.46% | ×3.81 | -0.48 | 0.487 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.411 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | +0.00 | 0.653 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 413 | 2.91% [1.47%, 4.31%] | 1.46% | ×1.99 | +0.24 | 0.453 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 388 | 0.77% [0.55%, 0.97%] | 1.84% | ×0.42 | +0.00 | 0.209 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.076 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.029 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.078 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 388 | 0.77% [0.55%, 0.97%] | 1.84% | ×0.42 | +0.00 | 0.209 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.076 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.84% | ×0.28 | -0.26 | 0.029 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | +0.00 | 0.078 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 6.56% [3.33%, 9.68%] | 1.86% | ×3.52 | -1.37 | 0.489 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 4.92% [3.76%, 6.11%] | 1.87% | ×2.63 | -0.82 | 0.422 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 8.20% [6.67%, 9.68%] | 1.86% | ×4.40 | +0.27 | 0.496 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 5.19% [4.30%, 6.11%] | 1.87% | ×2.78 | -0.55 | 0.428 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 6.56% [3.33%, 9.68%] | 1.86% | ×3.52 | -1.37 | 0.489 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 4.92% [3.76%, 6.11%] | 1.87% | ×2.63 | -0.82 | 0.422 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 8.20% [6.67%, 9.68%] | 1.86% | ×4.40 | +0.27 | 0.496 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 5.19% [4.30%, 6.11%] | 1.87% | ×2.78 | -0.55 | 0.428 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 18.03% [14.44%, 21.51%] | 1.47% | ×12.30 | -2.46 | 0.606 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 15.30% [13.89%, 16.67%] | 1.48% | ×10.37 | -0.82 | 0.626 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 366 | 16.12% [14.44%, 17.74%] | 1.48% | ×10.92 | +0.00 | 0.665 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 18.03% [14.44%, 21.51%] | 1.47% | ×12.30 | -2.46 | 0.606 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 15.30% [13.89%, 16.67%] | 1.48% | ×10.37 | -0.82 | 0.626 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | +0.00 | 0.715 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 366 | 16.12% [14.44%, 17.74%] | 1.48% | ×10.92 | +0.00 | 0.665 | yes | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 421 | 3.09% [0.94%, 5.29%] | 1.48% | ×2.09 | -1.66 | 0.361 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 420 | 4.76% [2.82%, 6.76%] | 1.48% | ×3.22 | -0.71 | 0.469 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 421 | 4.75% [1.88%, 7.69%] | 1.48% | ×3.22 | +0.00 | 0.497 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 420 | 5.24% [2.82%, 7.73%] | 1.48% | ×3.54 | -0.24 | 0.560 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 421 | 3.09% [0.94%, 5.29%] | 1.48% | ×2.09 | -1.66 | 0.361 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 420 | 4.76% [2.82%, 6.76%] | 1.48% | ×3.22 | -0.71 | 0.469 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 421 | 4.75% [1.88%, 7.69%] | 1.48% | ×3.22 | +0.00 | 0.497 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 420 | 5.24% [2.82%, 7.73%] | 1.48% | ×3.54 | -0.24 | 0.560 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 421 | 4.04% [2.35%, 5.77%] | 1.27% | ×3.19 | -0.48 | 0.286 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 421 | 5.23% [3.76%, 6.73%] | 1.27% | ×4.11 | -1.19 | 0.347 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 421 | 4.75% [3.29%, 6.25%] | 1.27% | ×3.75 | +0.24 | 0.469 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 421 | 6.41% [3.76%, 9.13%] | 1.27% | ×5.05 | +0.00 | 0.434 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 421 | 4.04% [2.35%, 5.77%] | 1.27% | ×3.19 | -0.48 | 0.286 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 421 | 5.23% [3.76%, 6.73%] | 1.27% | ×4.11 | -1.19 | 0.347 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 421 | 4.75% [3.29%, 6.25%] | 1.27% | ×3.75 | +0.24 | 0.469 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 421 | 6.41% [3.76%, 9.13%] | 1.27% | ×5.05 | +0.00 | 0.434 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,216 | 3.37% [2.66%, 4.07%] | 0.74% | ×4.58 | +0.33 | 0.458 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,216 | 2.71% [2.61%, 2.82%] | 0.75% | ×3.62 | -0.16 | 0.541 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,216 | 3.29% [2.82%, 3.75%] | 0.74% | ×4.47 | +0.25 | 0.497 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,216 | 2.96% [2.82%, 3.09%] | 0.75% | ×3.95 | +0.08 | 0.515 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 230 | 3.91% [3.70%, 4.10%] | 0.73% | ×5.33 | +2.17 | 0.498 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 230 | 1.74% [1.64%, 1.85%] | 0.75% | ×2.32 | +1.30 | 0.379 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 230 | 1.74% [0.93%, 2.46%] | 0.73% | ×2.37 | +0.00 | 0.524 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 230 | 0.43% [0.00%, 0.93%] | 0.75% | ×0.58 | +0.00 | 0.694 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 986 | 3.25% [2.43%, 4.07%] | 0.74% | ×4.41 | -0.10 | 0.440 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 986 | 2.94% [2.85%, 3.04%] | 0.75% | ×3.93 | -0.51 | 0.565 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 986 | 3.65% [3.24%, 4.07%] | 0.74% | ×4.96 | +0.30 | 0.505 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 986 | 3.55% [3.24%, 3.86%] | 0.75% | ×4.74 | +0.10 | 0.509 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,312 | 6.94% [3.41%, 10.66%] | 0.94% | ×7.37 | -0.23 | 0.625 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,312 | 6.33% [4.75%, 7.99%] | 0.94% | ×6.76 | +0.23 | 0.626 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,312 | 7.39% [3.86%, 11.13%] | 0.94% | ×7.86 | +0.23 | 0.628 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,312 | 6.17% [4.45%, 7.99%] | 0.94% | ×6.60 | +0.08 | 0.638 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 317 | 6.94% [4.22%, 9.93%] | 0.94% | ×7.38 | +0.00 | 0.445 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 317 | 9.15% [1.20%, 17.88%] | 0.94% | ×9.73 | +0.63 | 0.306 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 317 | 6.94% [3.61%, 10.60%] | 0.94% | ×7.38 | +0.00 | 0.379 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 317 | 8.52% [1.20%, 16.56%] | 0.94% | ×9.06 | +0.00 | 0.320 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 995 | 6.93% [1.53%, 12.92%] | 0.94% | ×7.37 | -0.30 | 0.682 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 995 | 5.43% [0.96%, 10.38%] | 0.93% | ×5.81 | +0.10 | 0.717 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 995 | 7.54% [1.91%, 13.77%] | 0.94% | ×8.01 | +0.30 | 0.698 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 995 | 5.43% [0.96%, 10.38%] | 0.93% | ×5.81 | +0.10 | 0.719 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 6.31% [4.85%, 7.81%] | 0.96% | ×6.60 | -0.33 | 0.563 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 5.98% [3.39%, 8.64%] | 0.94% | ×6.36 | +0.16 | 0.571 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 6.47% [4.68%, 8.31%] | 0.96% | ×6.77 | -0.16 | 0.597 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | +0.00 | 0.585 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 5.36% [3.40%, 7.52%] | 0.96% | ×5.59 | +1.43 | 0.340 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 3.21% [2.26%, 4.08%] | 0.95% | ×3.40 | +0.71 | 0.263 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 3.93% [0.68%, 7.52%] | 0.96% | ×4.10 | +0.00 | 0.326 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 2.50% [2.26%, 2.72%] | 0.95% | ×2.64 | +0.00 | 0.334 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 6.59% [4.12%, 9.23%] | 0.95% | ×6.90 | -0.85 | 0.617 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 6.80% [3.70%, 10.11%] | 0.94% | ×7.25 | +0.00 | 0.613 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 7.23% [3.91%, 10.77%] | 0.95% | ×7.57 | -0.21 | 0.640 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 6.80% [3.50%, 10.33%] | 0.94% | ×7.25 | +0.00 | 0.613 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 9.09% [7.59%, 10.63%] | 0.83% | ×11.00 | -0.49 | 0.619 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 8.85% [6.62%, 11.13%] | 0.83% | ×10.64 | -0.33 | 0.611 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 9.66% [8.24%, 11.13%] | 0.83% | ×11.69 | +0.08 | 0.616 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | +0.00 | 0.596 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 6.43% [3.40%, 9.77%] | 0.83% | ×7.75 | -0.36 | 0.412 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 7.86% [4.76%, 11.28%] | 0.83% | ×9.43 | +0.00 | 0.373 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 7.14% [3.40%, 11.28%] | 0.83% | ×8.61 | +0.36 | 0.354 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 280 | 8.57% [4.76%, 12.78%] | 0.83% | ×10.29 | +0.71 | 0.337 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 9.88% [7.00%, 12.97%] | 0.83% | ×11.97 | -0.53 | 0.647 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 9.14% [5.35%, 13.19%] | 0.83% | ×11.00 | -0.43 | 0.655 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 10.41% [7.41%, 13.63%] | 0.83% | ×12.61 | +0.00 | 0.548 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 941 | 9.35% [5.56%, 13.41%] | 0.83% | ×11.26 | -0.21 | 0.651 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,224 | 2.94% [2.86%, 3.02%] | 0.75% | ×3.92 | +0.49 | 0.581 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.617 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,224 | 2.53% [2.53%, 2.54%] | 0.75% | ×3.38 | +0.08 | 0.597 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | +0.00 | 0.615 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 7.14% [4.17%, 11.11%] | 0.75% | ×9.47 | +7.14 | 0.808 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 5.95% [4.17%, 7.29%] | 0.75% | ×7.98 | +1.19 | 0.477 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 0.00% [0.00%, 0.00%] | 0.75% | ×0.00 | +0.00 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 4.76% [1.39%, 7.29%] | 0.75% | ×6.38 | +0.00 | 0.354 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,056 | 2.27% [1.97%, 2.61%] | 0.75% | ×3.03 | -0.57 | 0.466 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,075 | 2.70% [2.38%, 2.98%] | 0.74% | ×3.64 | -0.19 | 0.619 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,056 | 2.94% [2.87%, 3.01%] | 0.75% | ×3.92 | +0.09 | 0.596 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,075 | 2.88% [2.38%, 3.33%] | 0.74% | ×3.89 | +0.00 | 0.641 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,223 | 2.70% [2.54%, 2.87%] | 0.64% | ×4.19 | +0.33 | 0.621 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,246 | 2.73% [2.65%, 2.81%] | 0.64% | ×4.24 | -0.40 | 0.529 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,223 | 2.29% [1.74%, 2.87%] | 0.64% | ×3.56 | -0.08 | 0.588 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2_with_first_relay [share 20%, all records] | 2 | 1,246 | 3.13% [2.80%, 3.48%] | 0.64% | ×4.86 | +0.00 | 0.518 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 7.14% [4.17%, 11.11%] | 0.65% | ×11.02 | +6.55 | 0.846 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 4.17% [4.17%, 4.17%] | 0.65% | ×6.46 | +0.00 | 0.530 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 1.19% [0.00%, 2.78%] | 0.65% | ×1.84 | +0.60 | 0.045 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2_with_first_relay [share 20%, its own devices] | 2 | 168 | 4.17% [2.78%, 5.21%] | 0.65% | ×6.46 | +0.00 | 0.432 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,055 | 1.99% [1.43%, 2.62%] | 0.64% | ×3.10 | -0.66 | 0.497 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,078 | 2.50% [2.46%, 2.56%] | 0.64% | ×3.89 | -0.46 | 0.508 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,055 | 2.46% [1.61%, 3.43%] | 0.64% | ×3.84 | -0.19 | 0.630 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2_with_first_relay [share 20%, other issuers' devices] | 2 | 1,078 | 2.97% [2.81%, 3.15%] | 0.64% | ×4.61 | +0.00 | 0.516 | no | not applicable |
 
 ## issuer_0_with_destination
 
@@ -830,16 +1526,28 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_0_with_destination | 2 | 663 | 5.43% [4.05%, 6.94%] | 1.64% | ×3.31 | +2.87 | 0.524 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_0_with_destination | 2 | 663 | 6.79% [6.07%, 7.57%] | 1.65% | ×4.12 | +4.22 | 0.499 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_0_with_destination | 2 | 663 | 5.28% [3.47%, 7.26%] | 1.64% | ×3.22 | +2.71 | 0.616 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_0_with_destination | 2 | 663 | 5.88% [5.05%, 6.65%] | 1.65% | ×3.57 | +3.32 | 0.544 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_0_with_destination | 2 | 689 | 12.34% [6.25%, 19.31%] | 2.16% | ×5.72 | +2.18 | 0.543 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_0_with_destination | 2 | 689 | 10.45% [6.52%, 14.95%] | 2.15% | ×4.86 | +2.76 | 0.557 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_0_with_destination | 2 | 689 | 11.90% [4.62%, 20.25%] | 2.16% | ×5.52 | +1.74 | 0.552 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_0_with_destination | 2 | 689 | 8.71% [3.80%, 14.33%] | 2.15% | ×4.05 | +1.02 | 0.564 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_0_with_destination | 2 | 704 | 9.94% [5.68%, 14.20%] | 2.11% | ×4.71 | +1.99 | 0.484 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_destination | 2 | 704 | 12.64% [7.10%, 18.18%] | 2.09% | ×6.06 | +4.26 | 0.464 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_destination | 2 | 704 | 10.51% [5.97%, 15.06%] | 2.11% | ×4.98 | +2.56 | 0.561 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_destination | 2 | 704 | 12.07% [7.10%, 17.05%] | 2.09% | ×5.79 | +3.69 | 0.459 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_0_with_destination | 2 | 704 | 12.36% [9.38%, 15.34%] | 1.83% | ×6.76 | +0.57 | 0.609 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_0_with_destination | 2 | 704 | 14.06% [9.94%, 18.18%] | 1.84% | ×7.65 | +2.84 | 0.630 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_0_with_destination | 2 | 704 | 13.64% [10.51%, 16.76%] | 1.83% | ×7.46 | +1.85 | 0.615 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_0_with_destination | 2 | 704 | 13.64% [9.66%, 17.61%] | 1.84% | ×7.42 | +2.41 | 0.635 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_0_with_destination | 2 | 466 | 2.36% [2.29%, 2.45%] | 1.75% | ×1.35 | -1.07 | 0.586 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_0_with_destination | 2 | 466 | 2.15% [1.53%, 2.94%] | 2.11% | ×1.02 | -0.64 | 0.746 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_0_with_destination | 2 | 466 | 2.36% [2.29%, 2.45%] | 1.75% | ×1.35 | -1.07 | 0.573 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_0_with_destination | 2 | 466 | 2.15% [1.53%, 2.94%] | 2.11% | ×1.02 | -0.64 | 0.738 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_0_with_destination | 2 | 466 | 4.51% [4.20%, 4.90%] | 2.28% | ×1.97 | +0.21 | 0.594 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_0_with_destination | 2 | 466 | 6.01% [4.96%, 7.35%] | 2.65% | ×2.27 | +3.00 | 0.616 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_0_with_destination | 2 | 466 | 4.29% [4.20%, 4.41%] | 2.28% | ×1.88 | +0.00 | 0.642 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_0_with_destination | 2 | 466 | 6.22% [5.34%, 7.35%] | 2.65% | ×2.35 | +3.22 | 0.574 | no | not applicable |
 
 ## issuer_2_with_destination
 
@@ -847,16 +1555,28 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | issuer_2_with_destination | 2 | 230 | 8.70% [8.20%, 9.26%] | 3.76% | ×2.31 | +6.96 | 0.446 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | issuer_2_with_destination | 2 | 230 | 8.70% [8.20%, 9.26%] | 3.91% | ×2.22 | +8.26 | 0.578 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | issuer_2_with_destination | 2 | 230 | 9.57% [8.33%, 10.66%] | 3.76% | ×2.55 | +7.83 | 0.394 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | issuer_2_with_destination | 2 | 230 | 8.26% [7.38%, 9.26%] | 3.91% | ×2.11 | +7.83 | 0.596 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | issuer_2_with_destination | 2 | 317 | 17.35% [10.24%, 25.17%] | 4.48% | ×3.87 | +10.41 | 0.613 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | issuer_2_with_destination | 2 | 317 | 24.29% [19.88%, 29.14%] | 4.46% | ×5.45 | +15.77 | 0.616 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | issuer_2_with_destination | 2 | 317 | 18.93% [14.46%, 23.84%] | 4.48% | ×4.22 | +11.99 | 0.644 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | issuer_2_with_destination | 2 | 317 | 23.34% [18.67%, 28.48%] | 4.46% | ×5.24 | +14.83 | 0.656 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | issuer_2_with_destination | 2 | 280 | 14.64% [8.16%, 21.80%] | 4.75% | ×3.08 | +10.71 | 0.496 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_destination | 2 | 280 | 16.43% [11.56%, 21.80%] | 4.67% | ×3.52 | +13.93 | 0.525 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_destination | 2 | 280 | 14.64% [7.48%, 22.56%] | 4.75% | ×3.08 | +10.71 | 0.554 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_destination | 2 | 280 | 17.50% [12.93%, 22.56%] | 4.67% | ×3.75 | +15.00 | 0.509 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | issuer_2_with_destination | 2 | 280 | 23.93% [23.81%, 24.06%] | 4.13% | ×5.79 | +17.14 | 0.578 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | issuer_2_with_destination | 2 | 280 | 18.21% [16.33%, 20.30%] | 4.11% | ×4.43 | +10.36 | 0.705 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | issuer_2_with_destination | 2 | 280 | 23.57% [21.77%, 25.56%] | 4.13% | ×5.71 | +16.79 | 0.657 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | issuer_2_with_destination | 2 | 280 | 20.36% [19.05%, 21.80%] | 4.11% | ×4.95 | +12.50 | 0.645 | yes | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | issuer_2_with_destination | 2 | 168 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | +0.00 | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | issuer_2_with_destination | 2 | 168 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.76 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | issuer_2_with_destination | 2 | 168 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | +0.00 | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | issuer_2_with_destination | 2 | 168 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | -4.76 | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | issuer_2_with_destination | 2 | 168 | 11.31% [11.11%, 11.46%] | 6.56% | ×1.72 | +10.71 | 0.495 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | issuer_2_with_destination | 2 | 168 | 9.52% [6.94%, 11.46%] | 4.35% | ×2.19 | +5.36 | 0.500 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | issuer_2_with_destination | 2 | 168 | 10.71% [9.72%, 11.46%] | 6.56% | ×1.63 | +10.12 | 0.494 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | issuer_2_with_destination | 2 | 168 | 8.93% [6.94%, 10.42%] | 4.35% | ×2.05 | +4.76 | 0.459 | no | not applicable |
 
 ## ceiling
 
@@ -865,39 +1585,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | ceiling | 2 | 413 | 13.56% [12.92%, 14.22%] | 9.57% | ×1.42 | — | — | yes | 10.50% |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | ceiling | 2 | 413 | 10.90% [8.61%, 13.24%] | 9.63% | ×1.13 | — | — | no | 10.50% |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | ceiling | 2 | 413 | 12.83% [11.96%, 13.73%] | 9.36% | ×1.37 | — | — | yes | 10.50% |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | ceiling | 2 | 413 | 10.90% [8.61%, 13.24%] | 9.63% | ×1.13 | — | — | no | 10.50% |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | ceiling | 2 | 413 | 12.83% [11.96%, 13.73%] | 9.36% | ×1.37 | — | — | yes | 10.50% |
 | R1 | W1 | credential path | 1186 s | ceiling | 2 | 388 | 11.34% [9.89%, 12.62%] | 9.66% | ×1.17 | — | — | no | 10.50% |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | ceiling | 2 | 388 | 11.08% [10.44%, 11.65%] | 9.83% | ×1.13 | — | — | no | 10.50% |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | ceiling | 2 | 388 | 13.14% [12.64%, 13.59%] | 9.86% | ×1.33 | — | — | yes | 10.50% |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | ceiling | 2 | 388 | 11.08% [10.44%, 11.65%] | 9.83% | ×1.13 | — | — | no | 10.50% |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | ceiling | 2 | 388 | 13.14% [12.64%, 13.59%] | 9.86% | ×1.33 | — | — | yes | 10.50% |
 | R1 | W2 | credential path | 1195 s | ceiling | 2 | 366 | 12.02% [11.29%, 12.78%] | 9.81% | ×1.22 | — | — | no | 10.50% |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | ceiling | 2 | 366 | 12.84% [11.83%, 13.89%] | 9.68% | ×1.33 | — | — | no | 10.50% |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | ceiling | 2 | 366 | 12.84% [12.37%, 13.33%] | 9.62% | ×1.34 | — | — | no | 10.50% |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | ceiling | 2 | 366 | 12.84% [11.83%, 13.89%] | 9.68% | ×1.33 | — | — | no | 10.50% |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | ceiling | 2 | 366 | 12.84% [12.37%, 13.33%] | 9.62% | ×1.34 | — | — | no | 10.50% |
 | R1 | Wmis | credential path | 1195 s | ceiling | 2 | 366 | 11.75% [11.29%, 12.22%] | 9.26% | ×1.27 | — | — | no | 10.50% |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | ceiling | 2 | 366 | 13.11% [12.90%, 13.33%] | 9.36% | ×1.40 | — | — | no | 10.50% |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | ceiling | 2 | 366 | 12.02% [10.22%, 13.89%] | 9.43% | ×1.28 | — | — | no | 10.50% |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | ceiling | 2 | 366 | 13.11% [12.90%, 13.33%] | 9.36% | ×1.40 | — | — | no | 10.50% |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | ceiling | 2 | 366 | 12.02% [10.22%, 13.89%] | 9.43% | ×1.28 | — | — | no | 10.50% |
 | R1 | chain100 | credential path | 1213 s | ceiling | 2 | 420 | 8.33% [7.51%, 9.18%] | 9.51% | ×0.88 | — | — | no | 10.50% |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | ceiling | 2 | 421 | 10.69% [9.13%, 12.21%] | 9.59% | ×1.11 | — | — | no | 10.50% |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | ceiling | 2 | 420 | 11.19% [9.66%, 12.68%] | 9.42% | ×1.19 | — | — | no | 10.50% |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | ceiling | 2 | 421 | 10.69% [9.13%, 12.21%] | 9.59% | ×1.11 | — | — | no | 10.50% |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | ceiling | 2 | 420 | 11.19% [9.66%, 12.68%] | 9.42% | ×1.19 | — | — | no | 10.50% |
 | R1 | chain50 | credential path | 1208 s | ceiling | 2 | 421 | 9.03% [7.51%, 10.58%] | 9.50% | ×0.95 | — | — | no | 10.50% |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | ceiling | 2 | 421 | 11.16% [10.80%, 11.54%] | 9.83% | ×1.14 | — | — | no | 10.50% |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | ceiling | 2 | 421 | 9.74% [9.13%, 10.33%] | 9.55% | ×1.02 | — | — | no | 10.50% |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | ceiling | 2 | 421 | 11.16% [10.80%, 11.54%] | 9.83% | ×1.14 | — | — | no | 10.50% |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | ceiling | 2 | 421 | 9.74% [9.13%, 10.33%] | 9.55% | ×1.02 | — | — | no | 10.50% |
 | R100 | W0 | credential path | 1208 s | ceiling | 2 | 1,216 | 6.25% [5.98%, 6.51%] | 4.89% | ×1.28 | — | — | yes | 5.33% |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | ceiling | 2 | 1,216 | 6.50% [5.05%, 7.97%] | 4.89% | ×1.33 | — | — | yes | 5.33% |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | ceiling | 2 | 1,216 | 5.59% [5.37%, 5.81%] | 4.96% | ×1.13 | — | — | yes | 5.33% |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | ceiling | 2 | 1,216 | 6.50% [5.05%, 7.97%] | 4.89% | ×1.33 | — | — | yes | 5.33% |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | ceiling | 2 | 1,216 | 5.59% [5.37%, 5.81%] | 4.96% | ×1.13 | — | — | yes | 5.33% |
 | R100 | W1 | credential path | 1197 s | ceiling | 2 | 1,312 | 5.41% [5.34%, 5.49%] | 4.74% | ×1.14 | — | — | yes | 5.33% |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | ceiling | 2 | 1,312 | 6.17% [4.45%, 7.99%] | 4.75% | ×1.30 | — | — | yes | 5.33% |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | ceiling | 2 | 1,312 | 7.24% [6.68%, 7.84%] | 4.77% | ×1.52 | — | — | yes | 5.33% |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | ceiling | 2 | 1,312 | 6.17% [4.45%, 7.99%] | 4.75% | ×1.30 | — | — | yes | 5.33% |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | ceiling | 2 | 1,312 | 7.24% [6.68%, 7.84%] | 4.77% | ×1.52 | — | — | yes | 5.33% |
 | R100 | W2 | credential path | 1210 s | ceiling | 2 | 1,221 | 5.90% [4.04%, 7.81%] | 4.94% | ×1.19 | — | — | yes | 5.33% |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | ceiling | 2 | 1,221 | 6.63% [6.48%, 6.79%] | 4.91% | ×1.35 | — | — | yes | 5.33% |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | ceiling | 2 | 1,221 | 6.14% [6.14%, 6.15%] | 4.91% | ×1.25 | — | — | yes | 5.33% |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | ceiling | 2 | 1,221 | 6.63% [6.48%, 6.79%] | 4.91% | ×1.35 | — | — | yes | 5.33% |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | ceiling | 2 | 1,221 | 6.14% [6.14%, 6.15%] | 4.91% | ×1.25 | — | — | yes | 5.33% |
 | R100 | Wmis | credential path | 1210 s | ceiling | 2 | 1,221 | 5.98% [4.68%, 7.31%] | 4.91% | ×1.22 | — | — | yes | 5.33% |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | ceiling | 2 | 1,221 | 6.06% [5.32%, 6.79%] | 4.90% | ×1.24 | — | — | yes | 5.33% |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | ceiling | 2 | 1,221 | 6.06% [5.65%, 6.48%] | 4.92% | ×1.23 | — | — | yes | 5.33% |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | ceiling | 2 | 1,221 | 6.06% [5.32%, 6.79%] | 4.90% | ×1.24 | — | — | yes | 5.33% |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | ceiling | 2 | 1,221 | 6.06% [5.65%, 6.48%] | 4.92% | ×1.23 | — | — | yes | 5.33% |
 | R100 | chain100 | credential path | 1189 s | ceiling | 2 | 1,234 | 5.02% [4.88%, 5.18%] | 4.90% | ×1.03 | — | — | yes | 5.33% |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | ceiling | 2 | 1,224 | 4.66% [4.29%, 5.05%] | 4.89% | ×0.95 | — | — | yes | 5.33% |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | ceiling | 2 | 1,243 | 6.68% [6.66%, 6.70%] | 4.91% | ×1.36 | — | — | yes | 5.33% |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | ceiling | 2 | 1,224 | 4.66% [4.29%, 5.05%] | 4.89% | ×0.95 | — | — | yes | 5.33% |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | ceiling | 2 | 1,243 | 6.68% [6.66%, 6.70%] | 4.91% | ×1.36 | — | — | yes | 5.33% |
 | R100 | chain50 | credential path | 1201 s | ceiling | 2 | 1,242 | 5.64% [5.30%, 6.00%] | 4.88% | ×1.15 | — | — | yes | 5.33% |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | ceiling | 2 | 1,223 | 4.74% [4.73%, 4.75%] | 4.92% | ×0.96 | — | — | yes | 5.33% |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | ceiling | 2 | 1,246 | 5.06% [4.80%, 5.30%] | 4.93% | ×1.03 | — | — | yes | 5.33% |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | ceiling | 2 | 1,223 | 4.74% [4.73%, 4.75%] | 4.92% | ×0.96 | — | — | yes | 5.33% |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | ceiling | 2 | 1,246 | 5.06% [4.80%, 5.30%] | 4.93% | ×1.03 | — | — | yes | 5.33% |
 
 ## K records, K = 1
 
@@ -906,39 +1650,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | K records, K = 1 | 2 | 413 | 6.78% [5.39%, 8.13%] | 1.11% | ×6.13 | — | 0.440 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | K records, K = 1 | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | — | 0.671 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | K records, K = 1 | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | — | 0.643 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | K records, K = 1 | 2 | 413 | 6.05% [4.41%, 7.66%] | 1.46% | ×4.14 | — | 0.671 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | K records, K = 1 | 2 | 413 | 2.66% [1.47%, 3.83%] | 1.46% | ×1.82 | — | 0.643 | no | not applicable |
 | R1 | W1 | credential path | 1186 s | K records, K = 1 | 2 | 388 | 0.00% [0.00%, 0.00%] | 1.37% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | K records, K = 1 | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | — | 0.035 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | K records, K = 1 | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | — | 0.140 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 1 | 2 | 388 | 0.77% [0.00%, 1.46%] | 1.84% | ×0.42 | — | 0.035 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | K records, K = 1 | 2 | 388 | 0.52% [0.00%, 0.97%] | 1.83% | ×0.28 | — | 0.140 | no | not applicable |
 | R1 | W2 | credential path | 1195 s | K records, K = 1 | 2 | 366 | 8.20% [4.44%, 11.83%] | 1.40% | ×5.86 | — | 0.347 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | K records, K = 1 | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | — | 0.511 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 1 | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | — | 0.366 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 1 | 2 | 366 | 7.92% [6.67%, 9.14%] | 1.86% | ×4.25 | — | 0.511 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 1 | 2 | 366 | 5.74% [4.84%, 6.67%] | 1.87% | ×3.07 | — | 0.366 | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | K records, K = 1 | 2 | 366 | 20.77% [15.56%, 25.81%] | 1.11% | ×18.70 | — | 0.879 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | K records, K = 1 | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | — | 0.714 | yes | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 1 | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | — | 0.682 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 1 | 2 | 366 | 20.49% [17.22%, 23.66%] | 1.47% | ×13.98 | — | 0.714 | yes | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 1 | 2 | 366 | 16.12% [15.00%, 17.20%] | 1.48% | ×10.92 | — | 0.682 | yes | not applicable |
 | R1 | chain100 | credential path | 1213 s | K records, K = 1 | 2 | 420 | 7.14% [5.16%, 9.18%] | 1.12% | ×6.36 | — | 0.478 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | K records, K = 1 | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | — | 0.489 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | K records, K = 1 | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | — | 0.519 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | K records, K = 1 | 2 | 421 | 4.75% [1.41%, 8.17%] | 1.48% | ×3.22 | — | 0.489 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | K records, K = 1 | 2 | 420 | 5.48% [3.29%, 7.73%] | 1.48% | ×3.71 | — | 0.519 | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | K records, K = 1 | 2 | 421 | 4.51% [2.35%, 6.73%] | 0.88% | ×5.11 | — | 0.419 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | K records, K = 1 | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | — | 0.499 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | K records, K = 1 | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | — | 0.465 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | K records, K = 1 | 2 | 421 | 4.51% [3.29%, 5.77%] | 1.27% | ×3.56 | — | 0.499 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | K records, K = 1 | 2 | 421 | 6.41% [3.29%, 9.62%] | 1.27% | ×5.05 | — | 0.465 | no | not applicable |
 | R100 | W0 | credential path | 1208 s | K records, K = 1 | 2 | 1,216 | 1.73% [1.16%, 2.28%] | 0.55% | ×3.12 | — | 0.426 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | K records, K = 1 | 2 | 1,216 | 3.04% [2.33%, 3.75%] | 0.74% | ×4.13 | — | 0.498 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | K records, K = 1 | 2 | 1,216 | 2.88% [2.33%, 3.42%] | 0.75% | ×3.84 | — | 0.542 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | K records, K = 1 | 2 | 1,216 | 3.04% [2.33%, 3.75%] | 0.74% | ×4.13 | — | 0.498 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | K records, K = 1 | 2 | 1,216 | 2.88% [2.33%, 3.42%] | 0.75% | ×3.84 | — | 0.542 | no | not applicable |
 | R100 | W1 | credential path | 1197 s | K records, K = 1 | 2 | 1,312 | 6.94% [3.56%, 10.50%] | 0.70% | ×9.94 | — | 0.635 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | K records, K = 1 | 2 | 1,312 | 7.16% [4.01%, 10.50%] | 0.94% | ×7.61 | — | 0.614 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | K records, K = 1 | 2 | 1,312 | 6.10% [4.45%, 7.84%] | 0.94% | ×6.51 | — | 0.640 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | K records, K = 1 | 2 | 1,312 | 7.16% [4.01%, 10.50%] | 0.94% | ×7.61 | — | 0.614 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | K records, K = 1 | 2 | 1,312 | 6.10% [4.45%, 7.84%] | 0.94% | ×6.51 | — | 0.640 | yes | not applicable |
 | R100 | W2 | credential path | 1210 s | K records, K = 1 | 2 | 1,221 | 7.13% [5.33%, 8.97%] | 0.70% | ×10.13 | — | 0.554 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | K records, K = 1 | 2 | 1,221 | 6.63% [4.68%, 8.64%] | 0.96% | ×6.94 | — | 0.590 | yes | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 1 | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | — | 0.586 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 1 | 2 | 1,221 | 6.63% [4.68%, 8.64%] | 0.96% | ×6.94 | — | 0.590 | yes | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 1 | 2 | 1,221 | 5.81% [3.23%, 8.47%] | 0.94% | ×6.19 | — | 0.586 | yes | not applicable |
 | R100 | Wmis | credential path | 1210 s | K records, K = 1 | 2 | 1,221 | 9.83% [9.05%, 10.63%] | 0.62% | ×15.94 | — | 0.597 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | K records, K = 1 | 2 | 1,221 | 9.58% [7.75%, 11.46%] | 0.83% | ×11.59 | — | 0.613 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 1 | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | — | 0.605 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 1 | 2 | 1,221 | 9.58% [7.75%, 11.46%] | 0.83% | ×11.59 | — | 0.613 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 1 | 2 | 1,221 | 9.17% [7.11%, 11.30%] | 0.83% | ×11.04 | — | 0.605 | yes | not applicable |
 | R100 | chain100 | credential path | 1189 s | K records, K = 1 | 2 | 1,234 | 1.78% [1.73%, 1.84%] | 0.56% | ×3.18 | — | 0.534 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | K records, K = 1 | 2 | 1,224 | 2.45% [2.38%, 2.53%] | 0.75% | ×3.27 | — | 0.608 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | K records, K = 1 | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | — | 0.644 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | K records, K = 1 | 2 | 1,224 | 2.45% [2.38%, 2.53%] | 0.75% | ×3.27 | — | 0.608 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | K records, K = 1 | 2 | 1,243 | 3.14% [3.12%, 3.16%] | 0.74% | ×4.23 | — | 0.644 | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | K records, K = 1 | 2 | 1,242 | 2.17% [2.17%, 2.18%] | 0.44% | ×4.94 | — | 0.506 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | K records, K = 1 | 2 | 1,223 | 2.37% [2.06%, 2.70%] | 0.64% | ×3.69 | — | 0.562 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | K records, K = 1 | 2 | 1,246 | 3.13% [2.65%, 3.64%] | 0.64% | ×4.86 | — | 0.527 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 1 | 2 | 1,223 | 2.37% [2.06%, 2.70%] | 0.64% | ×3.69 | — | 0.562 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | K records, K = 1 | 2 | 1,246 | 3.13% [2.65%, 3.64%] | 0.64% | ×4.86 | — | 0.527 | no | not applicable |
 
 ## K records, K = 2
 
@@ -947,39 +1715,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | K records, K = 2 | 2 | 206 | 5.34% [2.94%, 7.69%] | 1.18% | ×4.53 | — | 0.449 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | K records, K = 2 | 2 | 206 | 8.25% [4.90%, 11.54%] | 1.91% | ×4.31 | — | 0.617 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | K records, K = 2 | 2 | 206 | 9.22% [6.86%, 11.54%] | 1.88% | ×4.90 | — | 0.520 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | K records, K = 2 | 2 | 206 | 8.25% [4.90%, 11.54%] | 1.91% | ×4.31 | — | 0.617 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | K records, K = 2 | 2 | 206 | 9.22% [6.86%, 11.54%] | 1.88% | ×4.90 | — | 0.520 | no | not applicable |
 | R1 | W1 | credential path | 1186 s | K records, K = 2 | 2 | 194 | 0.00% [0.00%, 0.00%] | 1.53% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | K records, K = 2 | 2 | 194 | 1.03% [0.00%, 1.94%] | 2.41% | ×0.43 | — | 0.185 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | K records, K = 2 | 2 | 194 | 1.03% [0.00%, 1.94%] | 2.39% | ×0.43 | — | 0.174 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 2 | 2 | 194 | 1.03% [0.00%, 1.94%] | 2.41% | ×0.43 | — | 0.185 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | K records, K = 2 | 2 | 194 | 1.03% [0.00%, 1.94%] | 2.39% | ×0.43 | — | 0.174 | no | not applicable |
 | R1 | W2 | credential path | 1195 s | K records, K = 2 | 2 | 183 | 8.20% [4.44%, 11.83%] | 1.55% | ×5.28 | — | 0.362 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | K records, K = 2 | 2 | 183 | 8.74% [7.78%, 9.68%] | 2.41% | ×3.63 | — | 0.460 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 2 | 2 | 183 | 5.46% [4.30%, 6.67%] | 2.40% | ×2.28 | — | 0.341 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 2 | 2 | 183 | 8.74% [7.78%, 9.68%] | 2.41% | ×3.63 | — | 0.460 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 2 | 2 | 183 | 5.46% [4.30%, 6.67%] | 2.40% | ×2.28 | — | 0.341 | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | K records, K = 2 | 2 | 183 | 21.86% [17.78%, 25.81%] | 1.18% | ×18.57 | — | 0.859 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | K records, K = 2 | 2 | 183 | 21.31% [18.89%, 23.66%] | 1.87% | ×11.41 | — | 0.792 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 2 | 2 | 183 | 19.13% [17.78%, 20.43%] | 1.88% | ×10.18 | — | 0.711 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 2 | 2 | 183 | 21.31% [18.89%, 23.66%] | 1.87% | ×11.41 | — | 0.792 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 2 | 2 | 183 | 19.13% [17.78%, 20.43%] | 1.88% | ×10.18 | — | 0.711 | no | not applicable |
 | R1 | chain100 | credential path | 1213 s | K records, K = 2 | 2 | 209 | 6.70% [3.77%, 9.71%] | 1.19% | ×5.61 | — | 0.527 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | K records, K = 2 | 2 | 210 | 9.05% [6.60%, 11.54%] | 1.89% | ×4.80 | — | 0.475 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | K records, K = 2 | 2 | 209 | 7.66% [5.66%, 9.71%] | 1.89% | ×4.06 | — | 0.510 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | K records, K = 2 | 2 | 210 | 9.05% [6.60%, 11.54%] | 1.89% | ×4.80 | — | 0.475 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | K records, K = 2 | 2 | 209 | 7.66% [5.66%, 9.71%] | 1.89% | ×4.06 | — | 0.510 | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | K records, K = 2 | 2 | 209 | 4.31% [2.83%, 5.83%] | 1.06% | ×4.07 | — | 0.606 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | K records, K = 2 | 2 | 209 | 7.66% [4.72%, 10.68%] | 2.04% | ×3.75 | — | 0.605 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | K records, K = 2 | 2 | 210 | 10.48% [5.66%, 15.38%] | 2.01% | ×5.22 | — | 0.522 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | K records, K = 2 | 2 | 209 | 7.66% [4.72%, 10.68%] | 2.04% | ×3.75 | — | 0.605 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | K records, K = 2 | 2 | 210 | 10.48% [5.66%, 15.38%] | 2.01% | ×5.22 | — | 0.522 | no | not applicable |
 | R100 | W0 | credential path | 1208 s | K records, K = 2 | 2 | 559 | 2.68% [2.55%, 2.81%] | 0.59% | ×4.55 | — | 0.537 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | K records, K = 2 | 2 | 559 | 3.40% [2.19%, 4.56%] | 0.94% | ×3.61 | — | 0.576 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | K records, K = 2 | 2 | 559 | 3.76% [3.51%, 4.01%] | 1.00% | ×3.77 | — | 0.642 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | K records, K = 2 | 2 | 559 | 3.40% [2.19%, 4.56%] | 0.94% | ×3.61 | — | 0.576 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | K records, K = 2 | 2 | 559 | 3.76% [3.51%, 4.01%] | 1.00% | ×3.77 | — | 0.642 | no | not applicable |
 | R100 | W1 | credential path | 1197 s | K records, K = 2 | 2 | 605 | 7.44% [3.82%, 11.34%] | 0.76% | ×9.82 | — | 0.563 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | K records, K = 2 | 2 | 605 | 8.43% [4.78%, 12.37%] | 1.16% | ×7.25 | — | 0.489 | yes | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | K records, K = 2 | 2 | 605 | 6.78% [4.46%, 9.28%] | 1.15% | ×5.88 | — | 0.581 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | K records, K = 2 | 2 | 605 | 8.43% [4.78%, 12.37%] | 1.16% | ×7.25 | — | 0.489 | yes | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | K records, K = 2 | 2 | 605 | 6.78% [4.46%, 9.28%] | 1.15% | ×5.88 | — | 0.581 | no | not applicable |
 | R100 | W2 | credential path | 1210 s | K records, K = 2 | 2 | 559 | 7.51% [5.96%, 9.12%] | 0.76% | ×9.83 | — | 0.539 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | K records, K = 2 | 2 | 559 | 7.16% [5.61%, 8.76%] | 1.19% | ×5.99 | — | 0.547 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 2 | 2 | 559 | 6.44% [3.51%, 9.49%] | 1.16% | ×5.53 | — | 0.533 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 2 | 2 | 559 | 7.16% [5.61%, 8.76%] | 1.19% | ×5.99 | — | 0.547 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 2 | 2 | 559 | 6.44% [3.51%, 9.49%] | 1.16% | ×5.53 | — | 0.533 | no | not applicable |
 | R100 | Wmis | credential path | 1210 s | K records, K = 2 | 2 | 559 | 10.38% [9.47%, 11.31%] | 0.66% | ×15.79 | — | 0.576 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | K records, K = 2 | 2 | 559 | 10.02% [8.07%, 12.04%] | 1.02% | ×9.80 | — | 0.583 | yes | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 2 | 2 | 559 | 11.27% [10.18%, 12.41%] | 1.03% | ×10.92 | — | 0.466 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 2 | 2 | 559 | 10.02% [8.07%, 12.04%] | 1.02% | ×9.80 | — | 0.583 | yes | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 2 | 2 | 559 | 11.27% [10.18%, 12.41%] | 1.03% | ×10.92 | — | 0.466 | yes | not applicable |
 | R100 | chain100 | credential path | 1189 s | K records, K = 2 | 2 | 564 | 3.19% [2.93%, 3.44%] | 0.60% | ×5.32 | — | 0.529 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | K records, K = 2 | 2 | 556 | 4.32% [3.82%, 4.85%] | 0.96% | ×4.48 | — | 0.605 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | K records, K = 2 | 2 | 573 | 4.19% [3.94%, 4.42%] | 0.97% | ×4.33 | — | 0.618 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | K records, K = 2 | 2 | 556 | 4.32% [3.82%, 4.85%] | 0.96% | ×4.48 | — | 0.605 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | K records, K = 2 | 2 | 573 | 4.19% [3.94%, 4.42%] | 0.97% | ×4.33 | — | 0.618 | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | K records, K = 2 | 2 | 520 | 3.27% [2.97%, 3.59%] | 0.52% | ×6.23 | — | 0.564 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | K records, K = 2 | 2 | 522 | 2.87% [2.60%, 3.16%] | 1.02% | ×2.81 | — | 0.447 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | K records, K = 2 | 2 | 535 | 5.98% [5.79%, 6.16%] | 1.04% | ×5.76 | — | 0.472 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 2 | 2 | 522 | 2.87% [2.60%, 3.16%] | 1.02% | ×2.81 | — | 0.447 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | K records, K = 2 | 2 | 535 | 5.98% [5.79%, 6.16%] | 1.04% | ×5.76 | — | 0.472 | no | not applicable |
 
 ## K records, K = 3
 
@@ -988,39 +1780,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | K records, K = 3 | 2 | 137 | 8.76% [7.35%, 10.14%] | 1.25% | ×7.00 | — | 0.499 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | K records, K = 3 | 2 | 137 | 13.87% [8.82%, 18.84%] | 2.45% | ×5.67 | — | 0.622 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | K records, K = 3 | 2 | 137 | 11.68% [8.82%, 14.49%] | 2.54% | ×4.60 | — | 0.538 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | K records, K = 3 | 2 | 137 | 13.87% [8.82%, 18.84%] | 2.45% | ×5.67 | — | 0.622 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | K records, K = 3 | 2 | 137 | 11.68% [8.82%, 14.49%] | 2.54% | ×4.60 | — | 0.538 | no | not applicable |
 | R1 | W1 | credential path | 1186 s | K records, K = 3 | 2 | 128 | 0.00% [0.00%, 0.00%] | 1.70% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | K records, K = 3 | 2 | 128 | 1.56% [1.47%, 1.67%] | 3.07% | ×0.51 | — | 0.381 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | K records, K = 3 | 2 | 128 | 1.56% [0.00%, 2.94%] | 3.03% | ×0.52 | — | 0.079 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 3 | 2 | 128 | 1.56% [1.47%, 1.67%] | 3.07% | ×0.51 | — | 0.381 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | K records, K = 3 | 2 | 128 | 1.56% [0.00%, 2.94%] | 3.03% | ×0.52 | — | 0.079 | no | not applicable |
 | R1 | W2 | credential path | 1195 s | K records, K = 3 | 2 | 122 | 8.20% [5.00%, 11.29%] | 1.71% | ×4.79 | — | 0.421 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | K records, K = 3 | 2 | 122 | 9.02% [6.67%, 11.29%] | 3.01% | ×2.99 | — | 0.487 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 3 | 2 | 122 | 3.28% [1.61%, 5.00%] | 3.00% | ×1.09 | — | 0.534 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 3 | 2 | 122 | 9.02% [6.67%, 11.29%] | 3.01% | ×2.99 | — | 0.487 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 3 | 2 | 122 | 3.28% [1.61%, 5.00%] | 3.00% | ×1.09 | — | 0.534 | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | K records, K = 3 | 2 | 122 | 24.59% [16.67%, 32.26%] | 1.25% | ×19.67 | — | 0.937 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | K records, K = 3 | 2 | 122 | 28.69% [25.00%, 32.26%] | 2.41% | ×11.88 | — | 0.749 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 3 | 2 | 122 | 22.95% [22.58%, 23.33%] | 2.46% | ×9.32 | — | 0.705 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 3 | 2 | 122 | 28.69% [25.00%, 32.26%] | 2.41% | ×11.88 | — | 0.749 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 3 | 2 | 122 | 22.95% [22.58%, 23.33%] | 2.46% | ×9.32 | — | 0.705 | no | not applicable |
 | R1 | chain100 | credential path | 1213 s | K records, K = 3 | 2 | 140 | 10.00% [5.63%, 14.49%] | 1.27% | ×7.89 | — | 0.499 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | K records, K = 3 | 2 | 140 | 10.00% [9.86%, 10.14%] | 2.40% | ×4.17 | — | 0.687 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | K records, K = 3 | 2 | 140 | 9.29% [8.70%, 9.86%] | 2.39% | ×3.88 | — | 0.402 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | K records, K = 3 | 2 | 140 | 10.00% [9.86%, 10.14%] | 2.40% | ×4.17 | — | 0.687 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | K records, K = 3 | 2 | 140 | 9.29% [8.70%, 9.86%] | 2.39% | ×3.88 | — | 0.402 | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | K records, K = 3 | 2 | 139 | 6.47% [4.29%, 8.70%] | 1.25% | ×5.17 | — | 0.505 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | K records, K = 3 | 2 | 138 | 13.04% [10.00%, 16.18%] | 3.13% | ×4.17 | — | 0.444 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | K records, K = 3 | 2 | 138 | 17.39% [14.29%, 20.59%] | 3.20% | ×5.44 | — | 0.597 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | K records, K = 3 | 2 | 138 | 13.04% [10.00%, 16.18%] | 3.13% | ×4.17 | — | 0.444 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | K records, K = 3 | 2 | 138 | 17.39% [14.29%, 20.59%] | 3.20% | ×5.44 | — | 0.597 | no | not applicable |
 | R100 | W0 | credential path | 1208 s | K records, K = 3 | 2 | 335 | 2.99% [2.38%, 3.59%] | 0.63% | ×4.74 | — | 0.514 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | K records, K = 3 | 2 | 335 | 8.06% [7.78%, 8.33%] | 1.22% | ×6.60 | — | 0.443 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | K records, K = 3 | 2 | 335 | 8.66% [6.55%, 10.78%] | 1.31% | ×6.61 | — | 0.446 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | K records, K = 3 | 2 | 335 | 8.06% [7.78%, 8.33%] | 1.22% | ×6.60 | — | 0.443 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | K records, K = 3 | 2 | 335 | 8.66% [6.55%, 10.78%] | 1.31% | ×6.61 | — | 0.446 | no | not applicable |
 | R100 | W1 | credential path | 1197 s | K records, K = 3 | 2 | 382 | 7.07% [3.08%, 11.23%] | 0.82% | ×8.66 | — | 0.571 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | K records, K = 3 | 2 | 382 | 8.12% [4.10%, 12.30%] | 1.38% | ×5.87 | — | 0.518 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | K records, K = 3 | 2 | 382 | 7.33% [5.64%, 9.09%] | 1.39% | ×5.29 | — | 0.544 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | K records, K = 3 | 2 | 382 | 8.12% [4.10%, 12.30%] | 1.38% | ×5.87 | — | 0.518 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | K records, K = 3 | 2 | 382 | 7.33% [5.64%, 9.09%] | 1.39% | ×5.29 | — | 0.544 | no | not applicable |
 | R100 | W2 | credential path | 1210 s | K records, K = 3 | 2 | 340 | 8.82% [6.43%, 11.24%] | 0.82% | ×10.74 | — | 0.549 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | K records, K = 3 | 2 | 340 | 7.06% [4.68%, 9.47%] | 1.43% | ×4.95 | — | 0.641 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 3 | 2 | 340 | 7.94% [4.68%, 11.24%] | 1.40% | ×5.65 | — | 0.492 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 3 | 2 | 340 | 7.06% [4.68%, 9.47%] | 1.43% | ×4.95 | — | 0.641 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 3 | 2 | 340 | 7.94% [4.68%, 11.24%] | 1.40% | ×5.65 | — | 0.492 | no | not applicable |
 | R100 | Wmis | credential path | 1210 s | K records, K = 3 | 2 | 340 | 11.76% [11.11%, 12.43%] | 0.69% | ×16.93 | — | 0.550 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | K records, K = 3 | 2 | 340 | 10.88% [8.19%, 13.61%] | 1.22% | ×8.91 | — | 0.547 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 3 | 2 | 340 | 12.65% [11.70%, 13.61%] | 1.27% | ×10.00 | — | 0.456 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 3 | 2 | 340 | 10.88% [8.19%, 13.61%] | 1.22% | ×8.91 | — | 0.547 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 3 | 2 | 340 | 12.65% [11.70%, 13.61%] | 1.27% | ×10.00 | — | 0.456 | no | not applicable |
 | R100 | chain100 | credential path | 1189 s | K records, K = 3 | 2 | 337 | 2.97% [2.47%, 3.43%] | 0.64% | ×4.62 | — | 0.585 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | K records, K = 3 | 2 | 340 | 6.47% [5.08%, 7.98%] | 1.21% | ×5.33 | — | 0.571 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | K records, K = 3 | 2 | 345 | 6.67% [6.63%, 6.70%] | 1.24% | ×5.40 | — | 0.467 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | K records, K = 3 | 2 | 340 | 6.47% [5.08%, 7.98%] | 1.21% | ×5.33 | — | 0.571 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | K records, K = 3 | 2 | 345 | 6.67% [6.63%, 6.70%] | 1.24% | ×5.40 | — | 0.467 | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | K records, K = 3 | 2 | 298 | 4.70% [4.32%, 5.03%] | 0.61% | ×7.74 | — | 0.554 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | K records, K = 3 | 2 | 290 | 8.28% [6.62%, 10.07%] | 1.48% | ×5.61 | — | 0.464 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | K records, K = 3 | 2 | 295 | 7.80% [7.69%, 7.89%] | 1.52% | ×5.11 | — | 0.462 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 3 | 2 | 290 | 8.28% [6.62%, 10.07%] | 1.48% | ×5.61 | — | 0.464 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | K records, K = 3 | 2 | 295 | 7.80% [7.69%, 7.89%] | 1.52% | ×5.11 | — | 0.462 | no | not applicable |
 
 ## K records, K = 5
 
@@ -1029,39 +1845,63 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | K records, K = 5 | 2 | 81 | 9.88% [5.00%, 14.63%] | 1.42% | ×6.94 | — | 0.507 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | K records, K = 5 | 2 | 81 | 25.93% [15.00%, 36.59%] | 4.02% | ×6.45 | — | 0.611 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | K records, K = 5 | 2 | 81 | 23.46% [15.00%, 31.71%] | 4.35% | ×5.40 | — | 0.595 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | K records, K = 5 | 2 | 81 | 25.93% [15.00%, 36.59%] | 4.02% | ×6.45 | — | 0.611 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | K records, K = 5 | 2 | 81 | 23.46% [15.00%, 31.71%] | 4.35% | ×5.40 | — | 0.595 | no | not applicable |
 | R1 | W1 | credential path | 1186 s | K records, K = 5 | 2 | 77 | 0.00% [0.00%, 0.00%] | 2.05% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | K records, K = 5 | 2 | 77 | 1.30% [0.00%, 2.78%] | 4.36% | ×0.30 | — | 0.513 | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | K records, K = 5 | 2 | 77 | 1.30% [0.00%, 2.44%] | 4.27% | ×0.30 | — | 0.197 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 5 | 2 | 77 | 1.30% [0.00%, 2.78%] | 4.36% | ×0.30 | — | 0.513 | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | K records, K = 5 | 2 | 77 | 1.30% [0.00%, 2.44%] | 4.27% | ×0.30 | — | 0.197 | no | not applicable |
 | R1 | W2 | credential path | 1195 s | K records, K = 5 | 2 | 73 | 6.85% [2.78%, 10.81%] | 2.05% | ×3.34 | — | 0.435 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | K records, K = 5 | 2 | 73 | 8.22% [8.11%, 8.33%] | 4.17% | ×1.97 | — | 0.669 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 5 | 2 | 73 | 5.48% [5.41%, 5.56%] | 4.25% | ×1.29 | — | 0.438 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 5 | 2 | 73 | 8.22% [8.11%, 8.33%] | 4.17% | ×1.97 | — | 0.669 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 5 | 2 | 73 | 5.48% [5.41%, 5.56%] | 4.25% | ×1.29 | — | 0.438 | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | K records, K = 5 | 2 | 73 | 24.66% [16.67%, 32.43%] | 1.42% | ×17.32 | — | 0.905 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | K records, K = 5 | 2 | 73 | 38.36% [37.84%, 38.89%] | 4.21% | ×9.11 | — | 0.763 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 5 | 2 | 73 | 36.99% [30.56%, 43.24%] | 4.28% | ×8.64 | — | 0.759 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 5 | 2 | 73 | 38.36% [37.84%, 38.89%] | 4.21% | ×9.11 | — | 0.763 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 5 | 2 | 73 | 36.99% [30.56%, 43.24%] | 4.28% | ×8.64 | — | 0.759 | no | not applicable |
 | R1 | chain100 | credential path | 1213 s | K records, K = 5 | 2 | 83 | 18.07% [9.52%, 26.83%] | 1.44% | ×12.53 | — | 0.525 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | K records, K = 5 | 2 | 83 | 24.10% [19.05%, 29.27%] | 3.99% | ×6.03 | — | 0.583 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | K records, K = 5 | 2 | 83 | 21.69% [21.43%, 21.95%] | 4.03% | ×5.38 | — | 0.588 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | K records, K = 5 | 2 | 83 | 24.10% [19.05%, 29.27%] | 3.99% | ×6.03 | — | 0.583 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | K records, K = 5 | 2 | 83 | 21.69% [21.43%, 21.95%] | 4.03% | ×5.38 | — | 0.588 | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | K records, K = 5 | 2 | 83 | 16.87% [11.90%, 21.95%] | 1.69% | ×9.99 | — | 0.477 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | K records, K = 5 | 2 | 83 | 20.48% [19.05%, 21.95%] | 6.82% | ×3.00 | — | 0.604 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | K records, K = 5 | 2 | 83 | 32.53% [31.71%, 33.33%] | 6.87% | ×4.73 | — | 0.577 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | K records, K = 5 | 2 | 83 | 20.48% [19.05%, 21.95%] | 6.82% | ×3.00 | — | 0.604 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | K records, K = 5 | 2 | 83 | 32.53% [31.71%, 33.33%] | 6.87% | ×4.73 | — | 0.577 | no | not applicable |
 | R100 | W0 | credential path | 1208 s | K records, K = 5 | 2 | 155 | 3.87% [2.41%, 5.56%] | 0.71% | ×5.44 | — | 0.550 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, natural | 517 s | K records, K = 5 | 2 | 155 | 18.71% [13.89%, 22.89%] | 1.99% | ×9.41 | — | 0.577 | no | not applicable |
 | R100 | W0 | blind-issued one-time certificates, lengthened hold | 1203 s | K records, K = 5 | 2 | 155 | 31.61% [28.92%, 34.72%] | 2.29% | ×13.82 | — | 0.586 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, natural, random refills | 517 s | K records, K = 5 | 2 | 155 | 18.71% [13.89%, 22.89%] | 1.99% | ×9.41 | — | 0.577 | no | not applicable |
+| R100 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1203 s | K records, K = 5 | 2 | 155 | 31.61% [28.92%, 34.72%] | 2.29% | ×13.82 | — | 0.586 | no | not applicable |
 | R100 | W1 | credential path | 1197 s | K records, K = 5 | 2 | 185 | 8.65% [4.21%, 13.33%] | 0.92% | ×9.38 | — | 0.552 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | K records, K = 5 | 2 | 185 | 9.19% [4.21%, 14.44%] | 1.81% | ×5.07 | — | 0.620 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | K records, K = 5 | 2 | 185 | 8.65% [6.32%, 11.11%] | 1.79% | ×4.83 | — | 0.627 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | K records, K = 5 | 2 | 185 | 9.19% [4.21%, 14.44%] | 1.81% | ×5.07 | — | 0.620 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | K records, K = 5 | 2 | 185 | 8.65% [6.32%, 11.11%] | 1.79% | ×4.83 | — | 0.627 | no | not applicable |
 | R100 | W2 | credential path | 1210 s | K records, K = 5 | 2 | 175 | 9.71% [6.98%, 12.36%] | 0.93% | ×10.47 | — | 0.555 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | K records, K = 5 | 2 | 175 | 10.29% [8.14%, 12.36%] | 1.94% | ×5.31 | — | 0.558 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 5 | 2 | 175 | 9.14% [4.65%, 13.48%] | 1.87% | ×4.90 | — | 0.520 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 5 | 2 | 175 | 10.29% [8.14%, 12.36%] | 1.94% | ×5.31 | — | 0.558 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 5 | 2 | 175 | 9.14% [4.65%, 13.48%] | 1.87% | ×4.90 | — | 0.520 | no | not applicable |
 | R100 | Wmis | credential path | 1210 s | K records, K = 5 | 2 | 175 | 12.57% [11.63%, 13.48%] | 0.76% | ×16.45 | — | 0.549 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, natural | 521 s | K records, K = 5 | 2 | 175 | 12.57% [11.63%, 13.48%] | 1.71% | ×7.35 | — | 0.583 | no | not applicable |
 | R100 | Wmis | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 5 | 2 | 175 | 12.00% [9.30%, 14.61%] | 1.77% | ×6.78 | — | 0.564 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 5 | 2 | 175 | 12.57% [11.63%, 13.48%] | 1.71% | ×7.35 | — | 0.583 | no | not applicable |
+| R100 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 5 | 2 | 175 | 12.00% [9.30%, 14.61%] | 1.77% | ×6.78 | — | 0.564 | no | not applicable |
 | R100 | chain100 | credential path | 1189 s | K records, K = 5 | 2 | 166 | 6.63% [5.56%, 7.89%] | 0.73% | ×9.12 | — | 0.682 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | K records, K = 5 | 2 | 162 | 15.43% [12.50%, 18.92%] | 1.91% | ×8.09 | — | 0.584 | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | K records, K = 5 | 2 | 162 | 15.43% [14.61%, 16.44%] | 1.92% | ×8.05 | — | 0.578 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | K records, K = 5 | 2 | 162 | 15.43% [12.50%, 18.92%] | 1.91% | ×8.09 | — | 0.584 | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | K records, K = 5 | 2 | 162 | 15.43% [14.61%, 16.44%] | 1.92% | ×8.05 | — | 0.578 | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | K records, K = 5 | 2 | 121 | 13.22% [11.11%, 15.52%] | 0.77% | ×17.22 | — | 0.541 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | K records, K = 5 | 2 | 120 | 24.17% [18.18%, 31.48%] | 2.87% | ×8.42 | — | 0.497 | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | K records, K = 5 | 2 | 120 | 31.67% [26.47%, 38.46%] | 3.05% | ×10.39 | — | 0.570 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 5 | 2 | 120 | 24.17% [18.18%, 31.48%] | 2.87% | ×8.42 | — | 0.497 | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | K records, K = 5 | 2 | 120 | 31.67% [26.47%, 38.46%] | 3.05% | ×10.39 | — | 0.570 | no | not applicable |
 
 ## K records, K = 10
 
@@ -1070,27 +1910,43 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | K records, K = 10 | 2 | 40 | 52.50% [50.00%, 55.00%] | 2.00% | ×26.23 | — | 0.702 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | K records, K = 10 | 2 | 40 | 85.00% [85.00%, 85.00%] | 14.67% | ×5.79 | — | 0.833 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | K records, K = 10 | 2 | 40 | 67.50% [60.00%, 75.00%] | 16.87% | ×4.00 | — | 0.652 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | K records, K = 10 | 2 | 40 | 85.00% [85.00%, 85.00%] | 14.67% | ×5.79 | — | 0.833 | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | K records, K = 10 | 2 | 40 | 67.50% [60.00%, 75.00%] | 16.87% | ×4.00 | — | 0.652 | no | not applicable |
 | R1 | W1 | credential path | 1186 s | K records, K = 10 | 2 | 38 | 0.00% [0.00%, 0.00%] | 2.76% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | K records, K = 10 | 2 | 38 | 0.00% [0.00%, 0.00%] | 7.37% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | K records, K = 10 | 2 | 38 | 0.00% [0.00%, 0.00%] | 6.82% | ×0.00 | — | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 10 | 2 | 38 | 0.00% [0.00%, 0.00%] | 7.37% | ×0.00 | — | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | K records, K = 10 | 2 | 38 | 0.00% [0.00%, 0.00%] | 6.82% | ×0.00 | — | — | no | not applicable |
 | R1 | W2 | credential path | 1195 s | K records, K = 10 | 2 | 36 | 5.56% [0.00%, 11.11%] | 2.75% | ×2.02 | — | 0.485 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | K records, K = 10 | 2 | 36 | 8.33% [0.00%, 16.67%] | 7.11% | ×1.17 | — | 0.545 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 10 | 2 | 36 | 11.11% [11.11%, 11.11%] | 7.27% | ×1.53 | — | 0.297 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 10 | 2 | 36 | 8.33% [0.00%, 16.67%] | 7.11% | ×1.17 | — | 0.545 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 10 | 2 | 36 | 11.11% [11.11%, 11.11%] | 7.27% | ×1.53 | — | 0.297 | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | K records, K = 10 | 2 | 36 | 61.11% [61.11%, 61.11%] | 1.98% | ×30.91 | — | 0.870 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | K records, K = 10 | 2 | 36 | 80.56% [77.78%, 83.33%] | 15.90% | ×5.07 | — | 0.773 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 10 | 2 | 36 | 83.33% [77.78%, 88.89%] | 16.59% | ×5.02 | — | 0.744 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 10 | 2 | 36 | 80.56% [77.78%, 83.33%] | 15.90% | ×5.07 | — | 0.773 | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 10 | 2 | 36 | 83.33% [77.78%, 88.89%] | 16.59% | ×5.02 | — | 0.744 | no | not applicable |
 | R1 | chain100 | credential path | 1213 s | K records, K = 10 | 2 | 41 | 41.46% [23.81%, 60.00%] | 1.94% | ×21.34 | — | 0.564 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | K records, K = 10 | 2 | 41 | 63.41% [55.00%, 71.43%] | 13.80% | ×4.59 | — | 0.677 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | K records, K = 10 | 2 | 41 | 70.73% [70.00%, 71.43%] | 12.30% | ×5.75 | — | 0.526 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | K records, K = 10 | 2 | 41 | 63.41% [55.00%, 71.43%] | 13.80% | ×4.59 | — | 0.677 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | K records, K = 10 | 2 | 41 | 70.73% [70.00%, 71.43%] | 12.30% | ×5.75 | — | 0.526 | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | K records, K = 10 | 2 | 40 | 70.00% [55.00%, 85.00%] | 3.03% | ×23.09 | — | 0.622 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | K records, K = 10 | 2 | 41 | 92.68% [90.48%, 95.00%] | 35.55% | ×2.61 | — | 0.895 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | K records, K = 10 | 2 | 41 | 92.68% [90.48%, 95.00%] | 40.83% | ×2.27 | — | 0.737 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | K records, K = 10 | 2 | 41 | 92.68% [90.48%, 95.00%] | 35.55% | ×2.61 | — | 0.895 | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | K records, K = 10 | 2 | 41 | 92.68% [90.48%, 95.00%] | 40.83% | ×2.27 | — | 0.737 | no | not applicable |
 | R100 | W1 | credential path | 1197 s | K records, K = 10 | 2 | 56 | 12.50% [3.57%, 21.43%] | 1.10% | ×11.34 | — | 0.653 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | K records, K = 10 | 2 | 56 | 16.07% [7.14%, 25.00%] | 2.56% | ×6.28 | — | 0.563 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | K records, K = 10 | 2 | 56 | 14.29% [14.29%, 14.29%] | 2.50% | ×5.72 | — | 0.656 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | K records, K = 10 | 2 | 56 | 16.07% [7.14%, 25.00%] | 2.56% | ×6.28 | — | 0.563 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | K records, K = 10 | 2 | 56 | 14.29% [14.29%, 14.29%] | 2.50% | ×5.72 | — | 0.656 | no | not applicable |
 | R100 | W2 | credential path | 1210 s | K records, K = 10 | 2 | 57 | 17.54% [13.79%, 21.43%] | 1.11% | ×15.81 | — | 0.460 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | K records, K = 10 | 2 | 57 | 17.54% [10.34%, 25.00%] | 3.13% | ×5.61 | — | 0.521 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 10 | 2 | 57 | 19.30% [13.79%, 25.00%] | 2.88% | ×6.69 | — | 0.514 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 10 | 2 | 57 | 17.54% [10.34%, 25.00%] | 3.13% | ×5.61 | — | 0.521 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 10 | 2 | 57 | 19.30% [13.79%, 25.00%] | 2.88% | ×6.69 | — | 0.514 | no | not applicable |
 
 ## K records, K = 20
 
@@ -1099,27 +1955,43 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | W0 | credential path | 1206 s | K records, K = 20 | 2 | 20 | 90.00% [80.00%, 100.00%] | 3.86% | ×23.32 | — | 0.944 | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, natural | 508 s | K records, K = 20 | 2 | 20 | 100.00% [100.00%, 100.00%] | 67.50% | ×1.48 | — | — | no | not applicable |
 | R1 | W0 | blind-issued one-time certificates, lengthened hold | 1264 s | K records, K = 20 | 2 | 20 | 100.00% [100.00%, 100.00%] | 73.75% | ×1.36 | — | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, natural, random refills | 508 s | K records, K = 20 | 2 | 20 | 100.00% [100.00%, 100.00%] | 67.50% | ×1.48 | — | — | no | not applicable |
+| R1 | W0 | blind-issued one-time certificates, lengthened hold, random refills | 1264 s | K records, K = 20 | 2 | 20 | 100.00% [100.00%, 100.00%] | 73.75% | ×1.36 | — | — | no | not applicable |
 | R1 | W1 | credential path | 1186 s | K records, K = 20 | 2 | 19 | 0.00% [0.00%, 0.00%] | 3.93% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, natural | 525 s | K records, K = 20 | 2 | 19 | 0.00% [0.00%, 0.00%] | 12.27% | ×0.00 | — | — | no | not applicable |
 | R1 | W1 | blind-issued one-time certificates, lengthened hold | 1184 s | K records, K = 20 | 2 | 19 | 0.00% [0.00%, 0.00%] | 10.95% | ×0.00 | — | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, natural, random refills | 525 s | K records, K = 20 | 2 | 19 | 0.00% [0.00%, 0.00%] | 12.27% | ×0.00 | — | — | no | not applicable |
+| R1 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1184 s | K records, K = 20 | 2 | 19 | 0.00% [0.00%, 0.00%] | 10.95% | ×0.00 | — | — | no | not applicable |
 | R1 | W2 | credential path | 1195 s | K records, K = 20 | 2 | 18 | 5.56% [0.00%, 11.11%] | 3.78% | ×1.47 | — | 0.176 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, natural | 532 s | K records, K = 20 | 2 | 18 | 11.11% [11.11%, 11.11%] | 11.87% | ×0.94 | — | 0.281 | no | not applicable |
 | R1 | W2 | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 20 | 2 | 18 | 5.56% [0.00%, 11.11%] | 12.59% | ×0.44 | — | 0.059 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 20 | 2 | 18 | 11.11% [11.11%, 11.11%] | 11.87% | ×0.94 | — | 0.281 | no | not applicable |
+| R1 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 20 | 2 | 18 | 5.56% [0.00%, 11.11%] | 12.59% | ×0.44 | — | 0.059 | no | not applicable |
 | R1 | Wmis | credential path | 1195 s | K records, K = 20 | 2 | 18 | 94.44% [88.89%, 100.00%] | 3.94% | ×23.95 | — | 0.765 | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, natural | 532 s | K records, K = 20 | 2 | 18 | 100.00% [100.00%, 100.00%] | 56.64% | ×1.77 | — | — | no | not applicable |
 | R1 | Wmis | blind-issued one-time certificates, lengthened hold | 1232 s | K records, K = 20 | 2 | 18 | 100.00% [100.00%, 100.00%] | 66.82% | ×1.50 | — | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, natural, random refills | 532 s | K records, K = 20 | 2 | 18 | 100.00% [100.00%, 100.00%] | 56.64% | ×1.77 | — | — | no | not applicable |
+| R1 | Wmis | blind-issued one-time certificates, lengthened hold, random refills | 1232 s | K records, K = 20 | 2 | 18 | 100.00% [100.00%, 100.00%] | 66.82% | ×1.50 | — | — | no | not applicable |
 | R1 | chain100 | credential path | 1213 s | K records, K = 20 | 2 | 20 | 85.00% [80.00%, 90.00%] | 3.49% | ×24.36 | — | 0.588 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | K records, K = 20 | 2 | 20 | 90.00% [90.00%, 90.00%] | 61.00% | ×1.48 | — | 1.000 | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | K records, K = 20 | 2 | 20 | 95.00% [90.00%, 100.00%] | 69.75% | ×1.36 | — | 0.947 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | K records, K = 20 | 2 | 20 | 90.00% [90.00%, 90.00%] | 61.00% | ×1.48 | — | 1.000 | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | K records, K = 20 | 2 | 20 | 95.00% [90.00%, 100.00%] | 69.75% | ×1.36 | — | 0.947 | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | K records, K = 20 | 2 | 18 | 94.44% [88.89%, 100.00%] | 6.89% | ×13.70 | — | 0.824 | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | K records, K = 20 | 2 | 19 | 100.00% [100.00%, 100.00%] | 93.86% | ×1.07 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | K records, K = 20 | 2 | 19 | 100.00% [100.00%, 100.00%] | 93.86% | ×1.07 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | K records, K = 20 | 2 | 19 | 100.00% [100.00%, 100.00%] | 93.86% | ×1.07 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | K records, K = 20 | 2 | 19 | 100.00% [100.00%, 100.00%] | 93.86% | ×1.07 | — | — | no | not applicable |
 | R100 | W1 | credential path | 1197 s | K records, K = 20 | 2 | 14 | 28.57% [16.67%, 37.50%] | 1.32% | ×21.59 | — | 0.475 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, natural | 531 s | K records, K = 20 | 2 | 14 | 28.57% [16.67%, 37.50%] | 3.73% | ×7.67 | — | 0.575 | no | not applicable |
 | R100 | W1 | blind-issued one-time certificates, lengthened hold | 1234 s | K records, K = 20 | 2 | 14 | 35.71% [33.33%, 37.50%] | 3.57% | ×9.99 | — | 0.556 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, natural, random refills | 531 s | K records, K = 20 | 2 | 14 | 28.57% [16.67%, 37.50%] | 3.73% | ×7.67 | — | 0.575 | no | not applicable |
+| R100 | W1 | blind-issued one-time certificates, lengthened hold, random refills | 1234 s | K records, K = 20 | 2 | 14 | 35.71% [33.33%, 37.50%] | 3.57% | ×9.99 | — | 0.556 | no | not applicable |
 | R100 | W2 | credential path | 1210 s | K records, K = 20 | 2 | 11 | 36.36% [14.29%, 75.00%] | 1.32% | ×27.55 | — | 0.536 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, natural | 521 s | K records, K = 20 | 2 | 11 | 27.27% [0.00%, 75.00%] | 4.69% | ×5.81 | — | 0.750 | no | not applicable |
 | R100 | W2 | blind-issued one-time certificates, lengthened hold | 1227 s | K records, K = 20 | 2 | 11 | 18.18% [0.00%, 50.00%] | 4.17% | ×4.36 | — | 0.778 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, natural, random refills | 521 s | K records, K = 20 | 2 | 11 | 27.27% [0.00%, 75.00%] | 4.69% | ×5.81 | — | 0.750 | no | not applicable |
+| R100 | W2 | blind-issued one-time certificates, lengthened hold, random refills | 1227 s | K records, K = 20 | 2 | 11 | 18.18% [0.00%, 50.00%] | 4.17% | ×4.36 | — | 0.778 | no | not applicable |
 
 ## edit chain, 1 records
 
@@ -1128,15 +2000,23 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | chain100 | credential path | 1213 s | edit chain, 1 records | 2 | 191 | 6.28% [6.00%, 6.59%] | 1.12% | ×5.59 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | edit chain, 1 records | 2 | 191 | 3.14% [0.00%, 6.59%] | 1.47% | ×2.14 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | edit chain, 1 records | 2 | 191 | 5.24% [4.00%, 6.59%] | 1.46% | ×3.58 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | edit chain, 1 records | 2 | 191 | 3.14% [0.00%, 6.59%] | 1.47% | ×2.14 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | edit chain, 1 records | 2 | 191 | 5.24% [4.00%, 6.59%] | 1.46% | ×3.58 | — | — | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | edit chain, 1 records | 2 | 191 | 3.66% [3.00%, 4.40%] | 0.88% | ×4.17 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | edit chain, 1 records | 2 | 191 | 4.19% [3.30%, 5.00%] | 1.26% | ×3.32 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | edit chain, 1 records | 2 | 191 | 6.28% [6.00%, 6.59%] | 1.26% | ×4.97 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | edit chain, 1 records | 2 | 191 | 4.19% [3.30%, 5.00%] | 1.26% | ×3.32 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | edit chain, 1 records | 2 | 191 | 6.28% [6.00%, 6.59%] | 1.26% | ×4.97 | — | — | no | not applicable |
 | R100 | chain100 | credential path | 1189 s | edit chain, 1 records | 2 | 824 | 1.21% [0.94%, 1.50%] | 0.56% | ×2.16 | — | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | edit chain, 1 records | 2 | 772 | 2.33% [1.97%, 2.73%] | 0.75% | ×3.11 | — | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | edit chain, 1 records | 2 | 808 | 2.72% [2.65%, 2.80%] | 0.74% | ×3.67 | — | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | edit chain, 1 records | 2 | 772 | 2.33% [1.97%, 2.73%] | 0.75% | ×3.11 | — | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | edit chain, 1 records | 2 | 808 | 2.72% [2.65%, 2.80%] | 0.74% | ×3.67 | — | — | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | edit chain, 1 records | 2 | 821 | 1.95% [1.41%, 2.54%] | 0.43% | ×4.48 | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | edit chain, 1 records | 2 | 765 | 2.48% [2.26%, 2.72%] | 0.63% | ×3.96 | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | edit chain, 1 records | 2 | 811 | 3.58% [3.10%, 4.09%] | 0.62% | ×5.81 | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | edit chain, 1 records | 2 | 765 | 2.48% [2.26%, 2.72%] | 0.63% | ×3.96 | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | edit chain, 1 records | 2 | 811 | 3.58% [3.10%, 4.09%] | 0.62% | ×5.81 | — | — | no | not applicable |
 
 ## edit chain, 2 records
 
@@ -1145,15 +2025,23 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | chain100 | credential path | 1213 s | edit chain, 2 records | 2 | 62 | 14.52% [4.17%, 21.05%] | 1.29% | ×11.25 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | edit chain, 2 records | 2 | 61 | 13.11% [0.00%, 21.62%] | 2.25% | ×5.83 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | edit chain, 2 records | 2 | 62 | 6.45% [0.00%, 10.53%] | 2.22% | ×2.91 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | edit chain, 2 records | 2 | 61 | 13.11% [0.00%, 21.62%] | 2.25% | ×5.83 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | edit chain, 2 records | 2 | 62 | 6.45% [0.00%, 10.53%] | 2.22% | ×2.91 | — | — | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | edit chain, 2 records | 2 | 61 | 11.48% [0.00%, 18.92%] | 1.10% | ×10.44 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | edit chain, 2 records | 2 | 61 | 14.75% [4.17%, 21.62%] | 1.84% | ×8.02 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | edit chain, 2 records | 2 | 61 | 11.48% [0.00%, 18.92%] | 2.06% | ×5.57 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | edit chain, 2 records | 2 | 61 | 14.75% [4.17%, 21.62%] | 1.84% | ×8.02 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | edit chain, 2 records | 2 | 61 | 11.48% [0.00%, 18.92%] | 2.06% | ×5.57 | — | — | no | not applicable |
 | R100 | chain100 | credential path | 1189 s | edit chain, 2 records | 2 | 162 | 4.94% [3.80%, 6.02%] | 0.67% | ×7.34 | — | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | edit chain, 2 records | 2 | 157 | 8.92% [8.64%, 9.21%] | 1.19% | ×7.47 | — | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | edit chain, 2 records | 2 | 159 | 8.18% [7.06%, 9.46%] | 1.13% | ×7.23 | — | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | edit chain, 2 records | 2 | 157 | 8.92% [8.64%, 9.21%] | 1.19% | ×7.47 | — | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | edit chain, 2 records | 2 | 159 | 8.18% [7.06%, 9.46%] | 1.13% | ×7.23 | — | — | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | edit chain, 2 records | 2 | 157 | 4.46% [1.32%, 7.41%] | 0.58% | ×7.66 | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | edit chain, 2 records | 2 | 160 | 5.00% [4.00%, 5.88%] | 0.96% | ×5.19 | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | edit chain, 2 records | 2 | 160 | 3.12% [2.35%, 4.00%] | 0.94% | ×3.33 | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | edit chain, 2 records | 2 | 160 | 5.00% [4.00%, 5.88%] | 0.96% | ×5.19 | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | edit chain, 2 records | 2 | 160 | 3.12% [2.35%, 4.00%] | 0.94% | ×3.33 | — | — | no | not applicable |
 
 ## edit chain, 3 records
 
@@ -1162,15 +2050,23 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | chain100 | credential path | 1213 s | edit chain, 3 records | 2 | 31 | 25.81% [15.79%, 41.67%] | 1.49% | ×17.27 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | edit chain, 3 records | 2 | 32 | 28.12% [26.32%, 30.77%] | 3.36% | ×8.36 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | edit chain, 3 records | 2 | 31 | 22.58% [21.05%, 25.00%] | 3.22% | ×7.00 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | edit chain, 3 records | 2 | 32 | 28.12% [26.32%, 30.77%] | 3.36% | ×8.36 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | edit chain, 3 records | 2 | 31 | 22.58% [21.05%, 25.00%] | 3.22% | ×7.00 | — | — | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | edit chain, 3 records | 2 | 32 | 18.75% [10.53%, 30.77%] | 1.42% | ×13.21 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | edit chain, 3 records | 2 | 32 | 9.38% [0.00%, 23.08%] | 3.28% | ×2.86 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | edit chain, 3 records | 2 | 32 | 18.75% [15.38%, 21.05%] | 2.70% | ×6.95 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | edit chain, 3 records | 2 | 32 | 9.38% [0.00%, 23.08%] | 3.28% | ×2.86 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | edit chain, 3 records | 2 | 32 | 18.75% [15.38%, 21.05%] | 2.70% | ×6.95 | — | — | no | not applicable |
 | R100 | chain100 | credential path | 1189 s | edit chain, 3 records | 2 | 26 | 7.69% [7.14%, 8.33%] | 0.82% | ×9.40 | — | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | edit chain, 3 records | 2 | 42 | 11.90% [11.11%, 12.50%] | 1.85% | ×6.43 | — | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, lengthened hold | 1230 s | edit chain, 3 records | 2 | 39 | 5.13% [0.00%, 10.53%] | 1.74% | ×2.95 | — | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | edit chain, 3 records | 2 | 42 | 11.90% [11.11%, 12.50%] | 1.85% | ×6.43 | — | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1230 s | edit chain, 3 records | 2 | 39 | 5.13% [0.00%, 10.53%] | 1.74% | ×2.95 | — | — | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | edit chain, 3 records | 2 | 33 | 6.06% [0.00%, 11.11%] | 0.72% | ×8.40 | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | edit chain, 3 records | 2 | 42 | 7.14% [5.88%, 8.00%] | 1.10% | ×6.50 | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | edit chain, 3 records | 2 | 37 | 5.41% [4.76%, 6.25%] | 0.85% | ×6.37 | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | edit chain, 3 records | 2 | 42 | 7.14% [5.88%, 8.00%] | 1.10% | ×6.50 | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | edit chain, 3 records | 2 | 37 | 5.41% [4.76%, 6.25%] | 0.85% | ×6.37 | — | — | no | not applicable |
 
 ## edit chain, 4 records
 
@@ -1179,14 +2075,21 @@ Chance is the expected accuracy of naming, for each decision, one candidate draw
 | R1 | chain100 | credential path | 1213 s | edit chain, 4 records | 2 | 3 | 0.00% [0.00%, 0.00%] | 1.57% | ×0.00 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, natural | 516 s | edit chain, 4 records | 2 | 3 | 66.67% [50.00%, 100.00%] | 4.48% | ×14.89 | — | — | no | not applicable |
 | R1 | chain100 | blind-issued one-time certificates, lengthened hold | 1266 s | edit chain, 4 records | 2 | 3 | 33.33% [0.00%, 50.00%] | 3.72% | ×8.97 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, natural, random refills | 516 s | edit chain, 4 records | 2 | 3 | 66.67% [50.00%, 100.00%] | 4.48% | ×14.89 | — | — | no | not applicable |
+| R1 | chain100 | blind-issued one-time certificates, lengthened hold, random refills | 1266 s | edit chain, 4 records | 2 | 3 | 33.33% [0.00%, 50.00%] | 3.72% | ×8.97 | — | — | no | not applicable |
 | R1 | chain50 | credential path | 1208 s | edit chain, 4 records | 2 | 3 | 33.33% [0.00%, 100.00%] | 1.81% | ×18.42 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, natural | 522 s | edit chain, 4 records | 2 | 3 | 33.33% [0.00%, 100.00%] | 4.88% | ×6.83 | — | — | no | not applicable |
 | R1 | chain50 | blind-issued one-time certificates, lengthened hold | 1282 s | edit chain, 4 records | 2 | 3 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, natural, random refills | 522 s | edit chain, 4 records | 2 | 3 | 33.33% [0.00%, 100.00%] | 4.88% | ×6.83 | — | — | no | not applicable |
+| R1 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1282 s | edit chain, 4 records | 2 | 3 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | — | — | no | not applicable |
 | R100 | chain100 | credential path | 1189 s | edit chain, 4 records | 2 | 2 | 0.00% [0.00%, 0.00%] | 1.10% | ×0.00 | — | — | no | not applicable |
 | R100 | chain100 | blind-issued one-time certificates, natural | 520 s | edit chain, 4 records | 2 | 3 | 0.00% [0.00%, 0.00%] | 2.46% | ×0.00 | — | — | no | not applicable |
+| R100 | chain100 | blind-issued one-time certificates, natural, random refills | 520 s | edit chain, 4 records | 2 | 3 | 0.00% [0.00%, 0.00%] | 2.46% | ×0.00 | — | — | no | not applicable |
 | R100 | chain50 | credential path | 1201 s | edit chain, 4 records | 2 | 2 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, natural | 525 s | edit chain, 4 records | 2 | 3 | 33.33% [0.00%, 33.33%] | 1.28% | ×26.00 | — | — | no | not applicable |
 | R100 | chain50 | blind-issued one-time certificates, lengthened hold | 1214 s | edit chain, 4 records | 2 | 1 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, natural, random refills | 525 s | edit chain, 4 records | 2 | 3 | 33.33% [0.00%, 33.33%] | 1.28% | ×26.00 | — | — | no | not applicable |
+| R100 | chain50 | blind-issued one-time certificates, lengthened hold, random refills | 1214 s | edit chain, 4 records | 2 | 1 | 0.00% [0.00%, 0.00%] | 0.00% | ×— | — | — | no | not applicable |
 
 ## issuer withholding or delaying refills
 
@@ -1271,6 +2174,366 @@ Entropy and min-entropy in bits at the calibrated temperature; the effective ano
 | c6__cp_chain50__R100 | first_hop | 6.99 | 128.6 | 5.17 | 2.16% | 9.42% | 17.40% | 0.00%, 0.00%, 75.00% (80) | 1.67% | 0.43% |  |
 | c6__cp_chain50__R100 | content_server | 6.81 | 114.9 | 4.97 | 2.98% | 12.00% | 20.53% | 0.00%, 11.81%, 37.50% (24) | 1.12% | 1.57% |  |
 | c6__cp_chain50__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (18) | 0.00% | 0.00% |  |
+| c6__otcLR_W0__R1 | observer | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
+| c6__otcLR_W0__R1 | first_hop | 5.76 | 54.4 | 4.55 | 2.93% | 21.78% | 38.04% | 2.92%, 3.84%, 4.07% (4180) | 3.77% | 0.94% | badly miscalibrated |
+| c6__otcLR_W0__R1 | destination | 5.64 | 50.1 | 4.44 | 4.12% | 24.46% | 38.74% | 4.09%, 5.79%, 6.22% (209) | 2.85% | 4.00% |  |
+| c6__otcLR_W0__R1 | destination_keyed | 3.95 | 15.7 | 3.01 | 15.50% | 50.61% | 78.93% | 15.46%, 17.64%, 18.18% (209) | 7.35% | 6.66% | badly miscalibrated |
+| c6__otcLR_W0__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (204) | 0.00% | 0.00% |  |
+| c6__otcLR_W0__R1 | issuer_0 [share 50%, all records] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 3.49% | 3.62% |  |
+| c6__otcLR_W0__R1 | issuer_0 [share 50%, other issuers' devices] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 3.49% | 3.62% |  |
+| c6__otcLR_W0__R1 | issuer_0_with_observer [share 50%, all records] | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
+| c6__otcLR_W0__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
+| c6__otcLR_W0__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.76 | 54.4 | 4.55 | 2.91% | 21.79% | 38.50% | 2.89%, 4.02%, 4.31% (209) | 3.34% | 3.79% |  |
+| c6__otcLR_W0__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.76 | 54.4 | 4.55 | 2.91% | 21.79% | 38.50% | 2.89%, 4.02%, 4.31% (209) | 3.34% | 3.79% |  |
+| c6__otcLR_W0__R1 | issuer_1 [share 30%, all records] | 4.90 | 30.0 | 4.31 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 5.09% | 4.68% | badly miscalibrated |
+| c6__otcLR_W0__R1 | issuer_1 [share 30%, its own devices] | 4.90 | 30.0 | 4.31 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 5.09% | 4.68% | badly miscalibrated |
+| c6__otcLR_W0__R1 | issuer_1_with_observer [share 30%, all records] | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
+| c6__otcLR_W0__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
+| c6__otcLR_W0__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.76 | 54.4 | 4.55 | 2.91% | 21.79% | 38.50% | 2.89%, 4.02%, 4.31% (209) | 3.34% | 3.79% |  |
+| c6__otcLR_W0__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.76 | 54.4 | 4.55 | 2.91% | 21.79% | 38.50% | 2.89%, 4.02%, 4.31% (209) | 3.34% | 3.79% |  |
+| c6__otcLR_W0__R1 | issuer_1_with_destination | 3.95 | 15.7 | 3.01 | 15.50% | 50.61% | 78.93% | 15.46%, 17.64%, 18.18% (209) | 7.35% | 6.66% | badly miscalibrated |
+| c6__otcLR_W0__R1 | issuer_2 [share 20%, all records] | 4.39 | 21.1 | 3.76 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 7.40% | 5.54% | badly miscalibrated |
+| c6__otcLR_W0__R1 | issuer_2 [share 20%, other issuers' devices] | 4.39 | 21.1 | 3.76 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 7.40% | 5.54% | badly miscalibrated |
+| c6__otcLR_W0__R1 | issuer_2_with_observer [share 20%, all records] | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
+| c6__otcLR_W0__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
+| c6__otcLR_W0__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.76 | 54.4 | 4.55 | 2.91% | 21.79% | 38.50% | 2.89%, 4.02%, 4.31% (209) | 3.34% | 3.79% |  |
+| c6__otcLR_W0__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.76 | 54.4 | 4.55 | 2.91% | 21.79% | 38.50% | 2.89%, 4.02%, 4.31% (209) | 3.34% | 3.79% |  |
+| c6__otcLR_W0__R100 | observer | 6.60 | 97.5 | 5.06 | 2.88% | 11.76% | 22.70% | 0.00%, 10.00%, 18.18% (11) | 1.00% | 1.93% |  |
+| c6__otcLR_W0__R100 | first_hop | 6.60 | 97.2 | 5.05 | 2.92% | 11.83% | 22.69% | 0.00%, 10.00%, 42.86% (140) | 0.77% | 0.47% |  |
+| c6__otcLR_W0__R100 | destination | 6.48 | 89.8 | 4.93 | 2.80% | 11.84% | 21.96% | 0.00%, 7.69%, 20.00% (10) | 1.05% | 2.06% |  |
+| c6__otcLR_W0__R100 | destination_keyed | 5.05 | 35.3 | 3.75 | 7.24% | 29.11% | 48.11% | 0.00%, 16.67%, 50.00% (10) | 1.37% | 2.99% |  |
+| c6__otcLR_W0__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (15) | 0.00% | 0.00% |  |
+| c6__otcLR_W0__R100 | issuer_0 [share 50%, all records] | 5.60 | 48.9 | 5.48 | 1.73% | 5.92% | 5.92% | 0.00%, 0.00%, 0.00% (15) | 1.85% | 1.93% |  |
+| c6__otcLR_W0__R100 | issuer_0 [share 50%, its own devices] | 5.61 | 49.2 | 5.49 | 3.17% | 10.86% | 10.86% | 0.00%, 0.00%, 0.00% (10) | 1.59% | 2.35% |  |
+| c6__otcLR_W0__R100 | issuer_0 [share 50%, other issuers' devices] | 5.48 | 44.9 | 4.45 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 4.58% | 3.43% | badly miscalibrated |
+| c6__otcLR_W0__R100 | issuer_0_with_observer [share 50%, all records] | 6.60 | 97.5 | 5.06 | 2.88% | 11.76% | 22.70% | 0.00%, 10.00%, 18.18% (11) | 1.00% | 1.93% |  |
+| c6__otcLR_W0__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.60 | 97.4 | 5.06 | 2.56% | 12.37% | 22.47% | 0.00%, 8.83%, 18.18% (11) | 2.13% | 2.56% |  |
+| c6__otcLR_W0__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.61 | 97.7 | 5.06 | 3.25% | 11.03% | 22.97% | 0.00%, 9.55%, 36.36% (11) | 1.37% | 2.83% |  |
+| c6__otcLR_W0__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.60 | 97.2 | 5.05 | 2.96% | 11.92% | 23.03% | 0.00%, 10.00%, 20.00% (10) | 1.26% | 2.00% |  |
+| c6__otcLR_W0__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.60 | 97.1 | 5.05 | 2.87% | 12.22% | 22.47% | 0.00%, 11.29%, 20.00% (10) | 1.94% | 2.63% |  |
+| c6__otcLR_W0__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.60 | 97.3 | 5.05 | 3.07% | 11.57% | 23.69% | 0.00%, 14.09%, 36.36% (11) | 1.44% | 2.99% |  |
+| c6__otcLR_W0__R100 | issuer_0_with_destination | 5.49 | 45.3 | 4.11 | 5.88% | 22.78% | 37.71% | 0.00%, 14.79%, 50.00% (10) | 1.82% | 3.67% |  |
+| c6__otcLR_W0__R100 | issuer_1 [share 30%, all records] | 4.85 | 29.1 | 4.48 | 2.55% | 8.31% | 8.31% | 0.00%, 0.00%, 0.00% (15) | 4.28% | 2.50% | badly miscalibrated |
+| c6__otcLR_W0__R100 | issuer_1 [share 30%, its own devices] | 4.86 | 29.4 | 4.49 | 9.60% | 31.27% | 31.27% | 0.00%, 0.00%, 0.00% (11) | 3.55% | 4.74% |  |
+| c6__otcLR_W0__R100 | issuer_1 [share 30%, other issuers' devices] | 4.80 | 28.2 | 4.10 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (13) | 6.00% | 3.23% | badly miscalibrated |
+| c6__otcLR_W0__R100 | issuer_1_with_observer [share 30%, all records] | 6.60 | 97.5 | 5.06 | 2.88% | 11.76% | 22.70% | 0.00%, 10.00%, 18.18% (11) | 1.00% | 1.93% |  |
+| c6__otcLR_W0__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.61 | 97.7 | 5.06 | 5.26% | 13.93% | 24.77% | 0.00%, 15.27%, 36.36% (11) | 2.85% | 3.67% |  |
+| c6__otcLR_W0__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.60 | 97.5 | 5.06 | 2.02% | 10.97% | 21.95% | 0.00%, 8.83%, 18.18% (11) | 1.99% | 2.15% |  |
+| c6__otcLR_W0__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.60 | 97.2 | 5.05 | 2.96% | 11.92% | 23.03% | 0.00%, 10.00%, 20.00% (10) | 1.26% | 2.00% |  |
+| c6__otcLR_W0__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.60 | 97.3 | 5.05 | 4.95% | 14.24% | 25.39% | 0.00%, 21.82%, 36.36% (11) | 2.43% | 3.77% |  |
+| c6__otcLR_W0__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.60 | 97.1 | 5.05 | 2.24% | 11.09% | 22.17% | 0.00%, 8.83%, 20.00% (10) | 1.85% | 2.20% |  |
+| c6__otcLR_W0__R100 | issuer_1_with_destination | 4.69 | 26.0 | 3.44 | 9.29% | 34.67% | 58.51% | 10.00%, 20.00%, 27.27% (11) | 2.44% | 6.42% |  |
+| c6__otcLR_W0__R100 | issuer_2 [share 20%, all records] | 4.46 | 22.0 | 4.37 | 0.74% | 1.40% | 5.84% | 0.00%, 0.00%, 0.00% (15) | 4.44% | 2.63% | badly miscalibrated |
+| c6__otcLR_W0__R100 | issuer_2 [share 20%, its own devices] | 4.46 | 22.0 | 4.37 | 3.91% | 7.39% | 30.87% | 0.00%, 0.00%, 0.00% (12) | 2.66% | 5.29% |  |
+| c6__otcLR_W0__R100 | issuer_2 [share 20%, other issuers' devices] | 4.36 | 20.6 | 3.63 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (11) | 8.12% | 3.18% | badly miscalibrated |
+| c6__otcLR_W0__R100 | issuer_2_with_observer [share 20%, all records] | 6.60 | 97.5 | 5.06 | 2.88% | 11.76% | 22.70% | 0.00%, 10.00%, 18.18% (11) | 1.00% | 1.93% |  |
+| c6__otcLR_W0__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.61 | 97.7 | 5.05 | 0.43% | 6.96% | 20.43% | 0.00%, 0.00%, 0.00% (12) | 2.83% | 4.68% |  |
+| c6__otcLR_W0__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.60 | 97.5 | 5.06 | 3.45% | 12.88% | 23.23% | 0.00%, 13.82%, 18.18% (11) | 1.51% | 2.28% |  |
+| c6__otcLR_W0__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.60 | 97.2 | 5.05 | 2.96% | 11.92% | 23.03% | 0.00%, 10.00%, 20.00% (10) | 1.26% | 2.00% |  |
+| c6__otcLR_W0__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.60 | 97.3 | 5.05 | 0.43% | 7.83% | 21.30% | 0.00%, 0.00%, 0.00% (12) | 2.87% | 4.44% |  |
+| c6__otcLR_W0__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.60 | 97.2 | 5.05 | 3.55% | 12.88% | 23.43% | 0.00%, 17.91%, 20.00% (10) | 1.79% | 2.15% |  |
+| c6__otcLR_W0__R100 | issuer_2_with_destination | 4.48 | 22.5 | 3.59 | 8.26% | 39.57% | 63.48% | 3.57%, 6.43%, 7.14% (14) | 3.09% | 7.61% |  |
+| c6__otcLR_W1__R1 | observer | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.17% |  |
+| c6__otcLR_W1__R1 | first_hop | 5.58 | 48.1 | 4.60 | 0.67% | 11.55% | 26.71% | 0.63%, 1.14%, 1.26% (4120) | 3.86% | 0.90% | badly miscalibrated |
+| c6__otcLR_W1__R1 | destination | 5.48 | 44.9 | 4.52 | 1.29% | 13.92% | 30.41% | 1.21%, 2.18%, 2.43% (206) | 4.41% | 4.19% | badly miscalibrated |
+| c6__otcLR_W1__R1 | destination_keyed | 3.72 | 13.5 | 2.99 | 5.93% | 47.16% | 87.63% | 5.90%, 6.23%, 6.31% (206) | 7.37% | 6.39% | badly miscalibrated |
+| c6__otcLR_W1__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (206) | 0.00% | 0.00% |  |
+| c6__otcLR_W1__R1 | issuer_0 [share 50%, all records] | 4.98 | 31.6 | 3.32 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 10.01% | 6.09% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_0 [share 50%, other issuers' devices] | 4.98 | 31.6 | 3.32 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 10.01% | 6.09% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_0_with_observer [share 50%, all records] | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.17% |  |
+| c6__otcLR_W1__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.17% |  |
+| c6__otcLR_W1__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.58 | 48.1 | 4.60 | 0.52% | 12.11% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 4.03% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.58 | 48.1 | 4.60 | 0.52% | 12.11% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 4.03% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_1 [share 30%, all records] | 4.70 | 26.0 | 3.50 | 0.00% | 0.00% | 100.00% | 0.00%, 0.00%, 0.00% (206) | 8.83% | 5.67% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_1 [share 30%, its own devices] | 4.70 | 26.0 | 3.50 | 0.00% | 0.00% | 100.00% | 0.00%, 0.00%, 0.00% (206) | 8.83% | 5.67% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_1_with_observer [share 30%, all records] | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.17% |  |
+| c6__otcLR_W1__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.17% |  |
+| c6__otcLR_W1__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.58 | 48.1 | 4.60 | 0.52% | 12.11% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 4.03% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.58 | 48.1 | 4.60 | 0.52% | 12.11% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 4.03% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_1_with_destination | 3.72 | 13.5 | 2.99 | 5.93% | 47.16% | 87.63% | 5.90%, 6.23%, 6.31% (206) | 7.37% | 6.39% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_2 [share 20%, all records] | 3.95 | 15.5 | 2.59 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 16.59% | 7.48% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_2 [share 20%, other issuers' devices] | 3.95 | 15.5 | 2.59 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 16.59% | 7.48% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_2_with_observer [share 20%, all records] | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.17% |  |
+| c6__otcLR_W1__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.17% |  |
+| c6__otcLR_W1__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.58 | 48.1 | 4.60 | 0.52% | 12.11% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 4.03% | badly miscalibrated |
+| c6__otcLR_W1__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.58 | 48.1 | 4.60 | 0.52% | 12.11% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 4.03% | badly miscalibrated |
+| c6__otcLR_W1__R100 | observer | 6.14 | 71.0 | 4.14 | 6.10% | 18.83% | 31.10% | 0.00%, 4.08%, 64.86% (74) | 1.65% | 2.68% |  |
+| c6__otcLR_W1__R100 | first_hop | 6.14 | 70.8 | 4.14 | 6.19% | 18.87% | 31.01% | 0.00%, 0.00%, 64.53% (1480) | 1.11% | 0.57% |  |
+| c6__otcLR_W1__R100 | destination | 6.05 | 66.7 | 4.09 | 6.33% | 18.90% | 31.94% | 0.00%, 5.28%, 67.44% (43) | 1.27% | 2.68% |  |
+| c6__otcLR_W1__R100 | destination_keyed | 4.58 | 25.2 | 3.05 | 12.04% | 38.64% | 59.45% | 0.00%, 25.95%, 90.70% (43) | 3.99% | 3.57% | badly miscalibrated |
+| c6__otcLR_W1__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (15) | 0.00% | 0.00% |  |
+| c6__otcLR_W1__R100 | issuer_0 [share 50%, all records] | 5.12 | 34.8 | 4.13 | 0.00% | 13.95% | 18.14% | 0.00%, 0.00%, 0.00% (15) | 5.79% | 2.56% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_0 [share 50%, its own devices] | 5.12 | 34.8 | 4.12 | 0.00% | 26.56% | 34.54% | 0.00%, 0.00%, 0.00% (15) | 5.83% | 3.68% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_0 [share 50%, other issuers' devices] | 4.94 | 30.7 | 3.30 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (24) | 10.17% | 4.64% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_0_with_observer [share 50%, all records] | 6.14 | 71.0 | 4.14 | 6.10% | 18.83% | 31.10% | 0.00%, 4.08%, 64.86% (74) | 1.65% | 2.68% |  |
+| c6__otcLR_W1__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.15 | 71.2 | 4.14 | 7.69% | 22.35% | 32.66% | 0.00%, 4.49%, 64.86% (74) | 4.97% | 3.85% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.14 | 70.7 | 4.13 | 4.33% | 14.93% | 29.37% | 0.00%, 3.23%, 58.14% (43) | 3.29% | 3.67% |  |
+| c6__otcLR_W1__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.14 | 70.7 | 4.13 | 6.17% | 18.83% | 30.95% | 0.00%, 4.36%, 64.86% (74) | 2.06% | 2.72% |  |
+| c6__otcLR_W1__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.14 | 71.0 | 4.14 | 7.69% | 22.79% | 32.95% | 0.00%, 4.49%, 64.86% (74) | 4.96% | 3.48% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.28 | 78.6 | 4.51 | 4.49% | 14.45% | 28.73% | 0.00%, 4.31%, 58.14% (43) | 5.52% | 3.32% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_0_with_destination | 5.12 | 35.0 | 3.58 | 8.71% | 30.33% | 48.33% | 0.00%, 13.43%, 62.16% (74) | 3.02% | 4.15% |  |
+| c6__otcLR_W1__R100 | issuer_1 [share 30%, all records] | 4.58 | 24.0 | 4.47 | 0.30% | 1.75% | 12.42% | 0.00%, 0.00%, 0.00% (15) | 4.52% | 2.16% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_1 [share 30%, its own devices] | 4.58 | 24.0 | 4.47 | 1.31% | 7.52% | 53.27% | 0.00%, 0.00%, 0.00% (20) | 4.52% | 4.36% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_1 [share 30%, other issuers' devices] | 4.41 | 21.4 | 3.59 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 8.74% | 3.44% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_1_with_observer [share 30%, all records] | 6.14 | 71.0 | 4.14 | 6.10% | 18.83% | 31.10% | 0.00%, 4.08%, 64.86% (74) | 1.65% | 2.68% |  |
+| c6__otcLR_W1__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.29 | 79.2 | 4.53 | 0.00% | 5.88% | 21.57% | 0.00%, 0.00%, 0.00% (20) | 4.75% | 4.67% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.14 | 71.0 | 4.14 | 7.95% | 22.76% | 34.00% | 0.00%, 4.47%, 64.86% (74) | 2.59% | 3.08% |  |
+| c6__otcLR_W1__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.14 | 70.7 | 4.13 | 6.17% | 18.83% | 30.95% | 0.00%, 4.36%, 64.86% (74) | 2.06% | 2.72% |  |
+| c6__otcLR_W1__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.28 | 79.0 | 4.53 | 0.33% | 5.56% | 21.24% | 0.00%, 1.11%, 5.56% (18) | 4.43% | 4.65% |  |
+| c6__otcLR_W1__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.14 | 70.8 | 4.13 | 7.95% | 22.86% | 33.90% | 0.00%, 4.47%, 64.86% (74) | 2.57% | 2.79% |  |
+| c6__otcLR_W1__R100 | issuer_1_with_destination | 4.37 | 20.8 | 3.05 | 7.84% | 40.52% | 63.73% | 11.11%, 19.65%, 31.58% (19) | 5.48% | 7.86% |  |
+| c6__otcLR_W1__R100 | issuer_2 [share 20%, all records] | 4.19 | 18.3 | 3.46 | 2.44% | 7.47% | 18.37% | 0.00%, 0.00%, 100.00% (32) | 7.34% | 3.13% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_2 [share 20%, its own devices] | 4.18 | 18.2 | 3.42 | 10.09% | 30.91% | 76.03% | 0.00%, 20.00%, 100.00% (32) | 7.01% | 6.65% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_2 [share 20%, other issuers' devices] | 4.10 | 17.1 | 2.85 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 13.91% | 4.48% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_2_with_observer [share 20%, all records] | 6.14 | 71.0 | 4.14 | 6.10% | 18.83% | 31.10% | 0.00%, 4.08%, 64.86% (74) | 1.65% | 2.68% |  |
+| c6__otcLR_W1__R100 | issuer_2_with_observer [share 20%, its own devices] | 5.76 | 57.0 | 3.57 | 8.52% | 23.66% | 36.91% | 0.00%, 14.96%, 58.14% (43) | 11.86% | 6.10% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.15 | 71.1 | 4.14 | 5.33% | 17.29% | 29.25% | 0.00%, 3.20%, 64.86% (74) | 3.87% | 2.84% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.14 | 70.7 | 4.13 | 6.17% | 18.83% | 30.95% | 0.00%, 4.36%, 64.86% (74) | 2.06% | 2.72% |  |
+| c6__otcLR_W1__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 5.75 | 56.7 | 3.56 | 8.52% | 23.03% | 35.96% | 0.00%, 14.96%, 58.14% (43) | 11.92% | 6.44% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.14 | 70.9 | 4.14 | 5.43% | 17.49% | 29.35% | 0.00%, 4.44%, 64.86% (74) | 3.69% | 2.81% | badly miscalibrated |
+| c6__otcLR_W1__R100 | issuer_2_with_destination | 3.98 | 16.1 | 2.64 | 23.34% | 54.89% | 79.50% | 20.00%, 55.64%, 90.70% (43) | 7.20% | 8.13% |  |
+| c6__otcLR_W2__R1 | observer | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 4.82% |  |
+| c6__otcLR_W2__R1 | first_hop | 5.45 | 43.9 | 4.11 | 5.67% | 23.47% | 40.68% | 5.68%, 6.43%, 6.61% (3600) | 4.05% | 1.14% | badly miscalibrated |
+| c6__otcLR_W2__R1 | destination | 5.41 | 42.9 | 4.31 | 4.92% | 22.68% | 38.52% | 4.91%, 5.28%, 5.38% (186) | 4.93% | 4.60% | badly miscalibrated |
+| c6__otcLR_W2__R1 | destination_keyed | 3.72 | 13.4 | 2.95 | 15.85% | 53.01% | 87.16% | 15.96%, 21.41%, 22.78% (180) | 3.41% | 6.85% |  |
+| c6__otcLR_W2__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (180) | 0.00% | 0.00% |  |
+| c6__otcLR_W2__R1 | issuer_0 [share 50%, all records] | 4.95 | 30.9 | 3.28 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 10.32% | 6.41% | badly miscalibrated |
+| c6__otcLR_W2__R1 | issuer_0 [share 50%, other issuers' devices] | 4.95 | 30.9 | 3.28 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 10.32% | 6.41% | badly miscalibrated |
+| c6__otcLR_W2__R1 | issuer_0_with_observer [share 50%, all records] | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 4.82% |  |
+| c6__otcLR_W2__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 4.82% |  |
+| c6__otcLR_W2__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.45 | 43.9 | 4.10 | 5.19% | 23.22% | 40.71% | 5.21%, 5.93%, 6.11% (180) | 3.11% | 5.01% |  |
+| c6__otcLR_W2__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.45 | 43.9 | 4.10 | 5.19% | 23.22% | 40.71% | 5.21%, 5.93%, 6.11% (180) | 3.11% | 5.01% |  |
+| c6__otcLR_W2__R1 | issuer_1 [share 30%, all records] | 4.67 | 26.0 | 3.91 | 0.00% | 0.00% | 49.18% | 0.00%, 0.00%, 0.00% (180) | 7.62% | 5.46% | badly miscalibrated |
+| c6__otcLR_W2__R1 | issuer_1 [share 30%, its own devices] | 4.67 | 26.0 | 3.91 | 0.00% | 0.00% | 49.18% | 0.00%, 0.00%, 0.00% (180) | 7.62% | 5.46% | badly miscalibrated |
+| c6__otcLR_W2__R1 | issuer_1_with_observer [share 30%, all records] | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 4.82% |  |
+| c6__otcLR_W2__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 4.82% |  |
+| c6__otcLR_W2__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.45 | 43.9 | 4.10 | 5.19% | 23.22% | 40.71% | 5.21%, 5.93%, 6.11% (180) | 3.11% | 5.01% |  |
+| c6__otcLR_W2__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.45 | 43.9 | 4.10 | 5.19% | 23.22% | 40.71% | 5.21%, 5.93%, 6.11% (180) | 3.11% | 5.01% |  |
+| c6__otcLR_W2__R1 | issuer_1_with_destination | 3.72 | 13.4 | 2.95 | 15.85% | 53.01% | 87.16% | 15.96%, 21.41%, 22.78% (180) | 3.41% | 6.85% |  |
+| c6__otcLR_W2__R1 | issuer_2 [share 20%, all records] | 4.04 | 16.7 | 2.72 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 15.69% | 7.45% | badly miscalibrated |
+| c6__otcLR_W2__R1 | issuer_2 [share 20%, other issuers' devices] | 4.04 | 16.7 | 2.72 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 15.69% | 7.45% | badly miscalibrated |
+| c6__otcLR_W2__R1 | issuer_2_with_observer [share 20%, all records] | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 4.82% |  |
+| c6__otcLR_W2__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 4.82% |  |
+| c6__otcLR_W2__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.45 | 43.9 | 4.10 | 5.19% | 23.22% | 40.71% | 5.21%, 5.93%, 6.11% (180) | 3.11% | 5.01% |  |
+| c6__otcLR_W2__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.45 | 43.9 | 4.10 | 5.19% | 23.22% | 40.71% | 5.21%, 5.93%, 6.11% (180) | 3.11% | 5.01% |  |
+| c6__otcLR_W2__R100 | observer | 6.14 | 70.8 | 4.10 | 5.81% | 20.23% | 32.19% | 0.00%, 15.92%, 61.29% (31) | 2.27% | 2.62% |  |
+| c6__otcLR_W2__R100 | first_hop | 6.14 | 70.6 | 4.10 | 5.86% | 20.32% | 32.19% | 0.00%, 0.00%, 61.29% (620) | 1.77% | 0.61% |  |
+| c6__otcLR_W2__R100 | destination | 6.19 | 73.5 | 4.45 | 5.81% | 20.48% | 33.42% | 0.00%, 14.63%, 54.84% (31) | 3.73% | 2.32% | badly miscalibrated |
+| c6__otcLR_W2__R100 | destination_keyed | 4.76 | 29.0 | 3.36 | 13.35% | 38.90% | 58.23% | 5.26%, 39.57%, 65.45% (55) | 4.61% | 3.57% | badly miscalibrated |
+| c6__otcLR_W2__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (13) | 0.00% | 0.00% |  |
+| c6__otcLR_W2__R100 | issuer_0 [share 50%, all records] | 5.16 | 35.9 | 4.07 | 0.00% | 10.40% | 14.50% | 0.00%, 0.00%, 0.00% (13) | 7.45% | 2.86% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_0 [share 50%, its own devices] | 5.16 | 36.0 | 4.09 | 0.00% | 18.04% | 25.14% | 0.00%, 0.00%, 0.00% (13) | 7.39% | 3.49% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_0 [share 50%, other issuers' devices] | 5.00 | 32.0 | 3.22 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (36) | 10.77% | 5.24% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_0_with_observer [share 50%, all records] | 6.14 | 70.8 | 4.10 | 5.81% | 20.23% | 32.19% | 0.00%, 15.92%, 61.29% (31) | 2.27% | 2.62% |  |
+| c6__otcLR_W2__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.14 | 70.9 | 4.11 | 8.38% | 22.73% | 34.38% | 0.00%, 14.78%, 61.29% (31) | 3.28% | 3.83% |  |
+| c6__otcLR_W2__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.30 | 79.7 | 4.52 | 2.32% | 16.83% | 29.21% | 0.00%, 14.69%, 25.00% (20) | 3.38% | 3.79% |  |
+| c6__otcLR_W2__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.14 | 70.6 | 4.10 | 5.81% | 20.31% | 32.02% | 0.00%, 15.92%, 61.29% (31) | 1.75% | 2.74% |  |
+| c6__otcLR_W2__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.14 | 70.7 | 4.11 | 8.38% | 22.87% | 34.52% | 0.00%, 14.78%, 61.29% (31) | 2.44% | 3.69% |  |
+| c6__otcLR_W2__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.30 | 79.5 | 4.52 | 2.32% | 16.83% | 28.63% | 0.00%, 14.69%, 25.00% (20) | 3.48% | 3.53% |  |
+| c6__otcLR_W2__R100 | issuer_0_with_destination | 5.18 | 36.4 | 3.61 | 12.07% | 34.09% | 50.43% | 0.00%, 29.59%, 65.45% (55) | 7.71% | 4.17% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_1 [share 30%, all records] | 4.39 | 21.0 | 4.26 | 0.00% | 1.72% | 7.78% | 0.00%, 0.00%, 0.00% (13) | 5.22% | 2.60% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_1 [share 30%, its own devices] | 4.39 | 21.0 | 4.26 | 0.00% | 8.86% | 40.08% | 0.00%, 0.00%, 0.00% (20) | 5.23% | 5.51% |  |
+| c6__otcLR_W2__R100 | issuer_1 [share 30%, other issuers' devices] | 4.23 | 18.7 | 3.20 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (13) | 10.87% | 4.07% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_1_with_observer [share 30%, all records] | 6.14 | 70.8 | 4.10 | 5.81% | 20.23% | 32.19% | 0.00%, 15.92%, 61.29% (31) | 2.27% | 2.62% |  |
+| c6__otcLR_W2__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.41 | 86.6 | 4.91 | 2.11% | 11.39% | 21.52% | 0.00%, 12.50%, 25.00% (20) | 4.88% | 4.92% |  |
+| c6__otcLR_W2__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.14 | 70.7 | 4.10 | 6.71% | 22.36% | 34.76% | 0.00%, 13.64%, 61.29% (31) | 2.70% | 3.13% |  |
+| c6__otcLR_W2__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.14 | 70.6 | 4.10 | 5.81% | 20.31% | 32.02% | 0.00%, 15.92%, 61.29% (31) | 1.75% | 2.74% |  |
+| c6__otcLR_W2__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.41 | 86.4 | 4.91 | 2.11% | 11.39% | 21.52% | 0.00%, 12.50%, 25.00% (20) | 4.88% | 4.84% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.14 | 70.6 | 4.10 | 6.71% | 22.46% | 34.55% | 0.00%, 13.64%, 61.29% (31) | 2.06% | 2.92% |  |
+| c6__otcLR_W2__R100 | issuer_1_with_destination | 4.49 | 22.8 | 3.45 | 12.24% | 39.24% | 65.40% | 20.10%, 46.19%, 52.38% (21) | 4.71% | 7.29% |  |
+| c6__otcLR_W2__R100 | issuer_2 [share 20%, all records] | 4.03 | 16.5 | 3.10 | 2.95% | 4.83% | 12.69% | 0.00%, 0.00%, 100.00% (36) | 12.10% | 3.70% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_2 [share 20%, its own devices] | 4.01 | 16.3 | 3.04 | 12.86% | 21.07% | 55.36% | 0.00%, 10.00%, 100.00% (36) | 21.70% | 7.72% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_2 [share 20%, other issuers' devices] | 4.06 | 16.7 | 2.74 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (13) | 14.97% | 4.78% | badly miscalibrated |
+| c6__otcLR_W2__R100 | issuer_2_with_observer [share 20%, all records] | 6.14 | 70.8 | 4.10 | 5.81% | 20.23% | 32.19% | 0.00%, 15.92%, 61.29% (31) | 2.27% | 2.62% |  |
+| c6__otcLR_W2__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.13 | 70.3 | 4.09 | 2.50% | 21.43% | 35.71% | 0.00%, 9.61%, 21.05% (19) | 5.29% | 5.82% |  |
+| c6__otcLR_W2__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.14 | 70.9 | 4.11 | 6.80% | 19.87% | 31.14% | 0.00%, 17.07%, 61.29% (31) | 2.25% | 3.00% |  |
+| c6__otcLR_W2__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.14 | 70.6 | 4.10 | 5.81% | 20.31% | 32.02% | 0.00%, 15.92%, 61.29% (31) | 1.75% | 2.74% |  |
+| c6__otcLR_W2__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.13 | 70.2 | 4.09 | 2.50% | 21.43% | 34.64% | 0.00%, 9.61%, 21.05% (19) | 5.29% | 5.87% |  |
+| c6__otcLR_W2__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.14 | 70.7 | 4.10 | 6.80% | 19.98% | 31.24% | 0.00%, 17.07%, 61.29% (31) | 1.80% | 3.24% |  |
+| c6__otcLR_W2__R100 | issuer_2_with_destination | 4.08 | 17.0 | 2.91 | 17.50% | 50.71% | 71.79% | 11.69%, 44.01%, 61.11% (36) | 5.65% | 7.58% |  |
+| c6__otcLR_Wmis__R1 | observer | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.46% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | first_hop | 5.43 | 43.7 | 3.84 | 16.12% | 32.36% | 44.84% | 16.10%, 17.11%, 17.37% (3720) | 8.71% | 1.16% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | destination | 5.62 | 49.7 | 4.40 | 13.11% | 30.33% | 43.72% | 13.10%, 13.80%, 13.98% (186) | 8.19% | 4.82% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | destination_keyed | 3.93 | 15.5 | 2.94 | 26.23% | 55.19% | 76.78% | 26.18%, 28.46%, 29.03% (186) | 12.70% | 7.09% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (180) | 0.00% | 0.00% |  |
+| c6__otcLR_Wmis__R1 | issuer_0 [share 50%, all records] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 3.49% | 3.71% |  |
+| c6__otcLR_Wmis__R1 | issuer_0 [share 50%, other issuers' devices] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 3.49% | 3.71% |  |
+| c6__otcLR_Wmis__R1 | issuer_0_with_observer [share 50%, all records] | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.46% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.46% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.43 | 43.7 | 3.83 | 16.12% | 32.24% | 45.36% | 16.09%, 17.41%, 17.74% (186) | 9.23% | 5.51% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.43 | 43.7 | 3.83 | 16.12% | 32.24% | 45.36% | 16.09%, 17.41%, 17.74% (186) | 9.23% | 5.51% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_1 [share 30%, all records] | 4.90 | 30.0 | 4.30 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 5.09% | 4.55% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_1 [share 30%, its own devices] | 4.90 | 30.0 | 4.30 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 5.09% | 4.55% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_1_with_observer [share 30%, all records] | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.46% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.46% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.43 | 43.7 | 3.83 | 16.12% | 32.24% | 45.36% | 16.09%, 17.41%, 17.74% (186) | 9.23% | 5.51% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.43 | 43.7 | 3.83 | 16.12% | 32.24% | 45.36% | 16.09%, 17.41%, 17.74% (186) | 9.23% | 5.51% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_1_with_destination | 3.93 | 15.5 | 2.94 | 26.23% | 55.19% | 76.78% | 26.18%, 28.46%, 29.03% (186) | 12.70% | 7.09% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_2 [share 20%, all records] | 4.39 | 21.1 | 3.77 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 7.39% | 5.38% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_2 [share 20%, other issuers' devices] | 4.39 | 21.1 | 3.77 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 7.39% | 5.38% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_2_with_observer [share 20%, all records] | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.46% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.46% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.43 | 43.7 | 3.83 | 16.12% | 32.24% | 45.36% | 16.09%, 17.41%, 17.74% (186) | 9.23% | 5.51% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.43 | 43.7 | 3.83 | 16.12% | 32.24% | 45.36% | 16.09%, 17.41%, 17.74% (186) | 9.23% | 5.51% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | observer | 6.37 | 82.7 | 4.37 | 9.17% | 25.88% | 37.84% | 0.00%, 17.00%, 64.52% (31) | 4.10% | 2.45% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | first_hop | 6.36 | 82.5 | 4.37 | 9.28% | 25.91% | 37.77% | 0.00%, 1.41%, 64.84% (620) | 4.20% | 0.61% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | destination | 6.26 | 76.9 | 4.33 | 8.85% | 24.73% | 37.35% | 0.00%, 19.00%, 64.52% (31) | 3.83% | 2.31% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | destination_keyed | 4.83 | 30.3 | 3.29 | 15.23% | 42.51% | 59.21% | 4.76%, 41.40%, 64.52% (31) | 4.85% | 3.54% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (12) | 0.00% | 0.00% |  |
+| c6__otcLR_Wmis__R100 | issuer_0 [share 50%, all records] | 5.32 | 40.3 | 4.58 | 7.29% | 11.88% | 14.50% | 0.00%, 0.00%, 100.00% (14) | 5.51% | 2.52% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_0 [share 50%, its own devices] | 5.33 | 40.4 | 4.59 | 12.64% | 20.60% | 25.14% | 0.00%, 0.00%, 100.00% (14) | 7.97% | 3.11% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_0 [share 50%, other issuers' devices] | 5.34 | 40.5 | 4.14 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (12) | 5.77% | 4.27% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_0_with_observer [share 50%, all records] | 6.37 | 82.7 | 4.37 | 9.17% | 25.88% | 37.84% | 0.00%, 17.00%, 64.52% (31) | 4.10% | 2.45% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.09 | 69.6 | 3.90 | 11.22% | 28.55% | 40.48% | 0.00%, 17.21%, 72.73% (55) | 6.74% | 3.85% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.37 | 82.7 | 4.38 | 6.38% | 22.24% | 34.24% | 0.00%, 23.82%, 41.67% (36) | 3.41% | 3.75% |  |
+| c6__otcLR_Wmis__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.36 | 82.4 | 4.37 | 9.17% | 25.80% | 37.35% | 0.00%, 17.73%, 64.52% (31) | 4.07% | 2.49% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.08 | 69.4 | 3.89 | 11.22% | 28.69% | 39.91% | 0.00%, 17.21%, 70.91% (55) | 6.46% | 3.99% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.36 | 82.4 | 4.37 | 6.38% | 21.86% | 33.85% | 0.00%, 25.00%, 41.67% (36) | 2.94% | 3.68% |  |
+| c6__otcLR_Wmis__R100 | issuer_0_with_destination | 5.24 | 38.2 | 3.53 | 13.64% | 37.22% | 52.41% | 0.00%, 39.06%, 69.09% (55) | 5.47% | 4.42% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1 [share 30%, all records] | 4.56 | 23.6 | 4.11 | 1.31% | 5.00% | 7.78% | 0.00%, 0.00%, 0.00% (12) | 6.02% | 2.64% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1 [share 30%, its own devices] | 4.57 | 23.8 | 4.16 | 6.75% | 25.74% | 40.08% | 0.00%, 0.00%, 0.00% (10) | 5.82% | 5.85% |  |
+| c6__otcLR_Wmis__R100 | issuer_1 [share 30%, other issuers' devices] | 4.49 | 22.5 | 3.56 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 8.52% | 3.43% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1_with_observer [share 30%, all records] | 6.37 | 82.7 | 4.37 | 9.17% | 25.88% | 37.84% | 0.00%, 17.00%, 64.52% (31) | 4.10% | 2.45% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.52 | 92.8 | 4.80 | 4.64% | 15.19% | 25.32% | 0.00%, 22.59%, 30.00% (20) | 5.68% | 4.72% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.10 | 69.9 | 3.91 | 10.26% | 28.46% | 40.85% | 0.00%, 23.70%, 72.73% (55) | 4.65% | 3.34% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.36 | 82.4 | 4.37 | 9.17% | 25.80% | 37.35% | 0.00%, 17.73%, 64.52% (31) | 4.07% | 2.49% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.52 | 92.5 | 4.80 | 3.80% | 15.19% | 26.16% | 0.00%, 20.57%, 30.00% (20) | 4.84% | 4.83% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.09 | 69.6 | 3.90 | 10.47% | 28.35% | 40.04% | 0.00%, 23.70%, 70.91% (55) | 4.57% | 3.39% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_1_with_destination | 4.45 | 22.1 | 3.14 | 13.92% | 43.88% | 62.45% | 33.33%, 45.66%, 52.38% (21) | 6.31% | 8.48% |  |
+| c6__otcLR_Wmis__R100 | issuer_2 [share 20%, all records] | 4.15 | 17.8 | 3.63 | 2.95% | 11.06% | 12.69% | 0.00%, 0.00%, 100.00% (36) | 6.12% | 3.39% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2 [share 20%, its own devices] | 4.14 | 17.7 | 3.60 | 12.86% | 48.21% | 55.36% | 0.00%, 10.00%, 100.00% (36) | 15.33% | 6.48% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2 [share 20%, other issuers' devices] | 4.09 | 17.1 | 3.06 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (10) | 12.54% | 4.17% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2_with_observer [share 20%, all records] | 6.37 | 82.7 | 4.37 | 9.17% | 25.88% | 37.84% | 0.00%, 17.00%, 64.52% (31) | 4.10% | 2.45% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.04 | 68.1 | 3.80 | 7.86% | 28.21% | 41.79% | 0.00%, 27.85%, 41.67% (36) | 9.36% | 6.28% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.37 | 82.7 | 4.37 | 9.56% | 25.19% | 36.66% | 0.00%, 16.40%, 64.52% (31) | 5.04% | 2.63% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.36 | 82.4 | 4.37 | 9.17% | 25.80% | 37.35% | 0.00%, 17.73%, 64.52% (31) | 4.07% | 2.49% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.03 | 67.8 | 3.79 | 8.57% | 27.50% | 40.36% | 0.00%, 27.85%, 41.67% (36) | 9.23% | 6.01% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.36 | 82.4 | 4.36 | 9.35% | 25.29% | 36.45% | 0.00%, 15.06%, 64.52% (31) | 5.01% | 2.62% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | issuer_2_with_destination | 4.13 | 17.6 | 2.84 | 20.36% | 54.64% | 73.57% | 19.05%, 53.48%, 61.11% (36) | 8.46% | 8.22% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | observer | 5.63 | 49.7 | 4.25 | 5.48% | 21.19% | 37.38% | 5.51%, 7.29%, 7.73% (207) | 2.39% | 4.47% |  |
+| c6__otcLR_chain100__R1 | first_hop | 5.63 | 49.5 | 4.24 | 5.39% | 21.49% | 37.39% | 5.42%, 7.13%, 7.56% (4140) | 1.85% | 0.93% |  |
+| c6__otcLR_chain100__R1 | destination | 5.50 | 45.6 | 4.13 | 5.71% | 23.33% | 37.86% | 5.76%, 8.11%, 8.70% (207) | 3.04% | 4.61% |  |
+| c6__otcLR_chain100__R1 | destination_keyed | 5.71 | 52.4 | 4.67 | 2.14% | 5.95% | 10.48% | 2.15%, 2.75%, 2.90% (207) | 1.00% | 1.70% |  |
+| c6__otcLR_chain100__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (207) | 0.00% | 0.00% |  |
+| c6__otcLR_chain100__R1 | issuer_0 [share 50%, all records] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (207) | 3.93% | 4.02% |  |
+| c6__otcLR_chain100__R1 | issuer_0 [share 50%, other issuers' devices] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (207) | 3.93% | 4.02% |  |
+| c6__otcLR_chain100__R1 | issuer_0_with_observer [share 50%, all records] | 5.63 | 49.7 | 4.25 | 5.48% | 21.19% | 37.38% | 5.51%, 7.29%, 7.73% (207) | 2.39% | 4.47% |  |
+| c6__otcLR_chain100__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.63 | 49.7 | 4.25 | 5.48% | 21.19% | 37.38% | 5.51%, 7.29%, 7.73% (207) | 2.39% | 4.47% |  |
+| c6__otcLR_chain100__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.62 | 49.5 | 4.24 | 5.24% | 21.19% | 37.86% | 5.27%, 7.24%, 7.73% (207) | 3.80% | 4.06% |  |
+| c6__otcLR_chain100__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.62 | 49.5 | 4.24 | 5.24% | 21.19% | 37.86% | 5.27%, 7.24%, 7.73% (207) | 3.80% | 4.06% |  |
+| c6__otcLR_chain100__R1 | issuer_1 [share 30%, all records] | 4.42 | 22.5 | 3.13 | 0.00% | 0.00% | 49.29% | 0.00%, 0.00%, 0.00% (207) | 13.19% | 6.46% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | issuer_1 [share 30%, its own devices] | 4.43 | 22.6 | 3.14 | 0.00% | 0.00% | 49.82% | 0.00%, 0.00%, 0.00% (142) | 13.12% | 7.24% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | issuer_1 [share 30%, other issuers' devices] | 4.41 | 22.4 | 3.11 | 0.00% | 0.00% | 48.15% | 0.00%, 0.00%, 0.00% (65) | 13.34% | 10.52% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | issuer_1_with_observer [share 30%, all records] | 5.63 | 49.7 | 4.25 | 5.48% | 21.19% | 37.38% | 5.51%, 7.29%, 7.73% (207) | 2.39% | 4.47% |  |
+| c6__otcLR_chain100__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.64 | 49.9 | 4.25 | 5.96% | 22.81% | 40.35% | 5.98%, 8.52%, 9.15% (142) | 3.93% | 5.34% |  |
+| c6__otcLR_chain100__R1 | issuer_1_with_observer [share 30%, other issuers' devices] | 5.73 | 53.4 | 4.52 | 4.44% | 17.78% | 31.11% | 4.45%, 4.58%, 4.62% (65) | 4.66% | 7.35% |  |
+| c6__otcLR_chain100__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.62 | 49.5 | 4.24 | 5.24% | 21.19% | 37.86% | 5.27%, 7.24%, 7.73% (207) | 3.80% | 4.06% |  |
+| c6__otcLR_chain100__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.63 | 49.8 | 4.24 | 5.96% | 22.81% | 41.40% | 5.98%, 8.52%, 9.15% (142) | 3.87% | 5.29% |  |
+| c6__otcLR_chain100__R1 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 5.72 | 53.2 | 4.51 | 3.70% | 17.78% | 30.37% | 3.74%, 4.44%, 4.62% (65) | 4.63% | 7.34% |  |
+| c6__otcLR_chain100__R1 | issuer_1_with_destination | — | — | — | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (142) | 0.00% | 0.00% |  |
+| c6__otcLR_chain100__R1 | issuer_2 [share 20%, all records] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (207) | 7.23% | 4.55% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | issuer_2 [share 20%, other issuers' devices] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (207) | 7.23% | 4.55% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | issuer_2_with_observer [share 20%, all records] | 5.63 | 49.7 | 4.25 | 5.48% | 21.19% | 37.38% | 5.51%, 7.29%, 7.73% (207) | 2.39% | 4.47% |  |
+| c6__otcLR_chain100__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.63 | 49.7 | 4.25 | 5.48% | 21.19% | 37.38% | 5.51%, 7.29%, 7.73% (207) | 2.39% | 4.47% |  |
+| c6__otcLR_chain100__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.62 | 49.5 | 4.24 | 5.24% | 21.19% | 37.86% | 5.27%, 7.24%, 7.73% (207) | 3.80% | 4.06% |  |
+| c6__otcLR_chain100__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.62 | 49.5 | 4.24 | 5.24% | 21.19% | 37.86% | 5.27%, 7.24%, 7.73% (207) | 3.80% | 4.06% |  |
+| c6__otcLR_chain100__R100 | observer | 6.62 | 98.4 | 5.10 | 3.14% | 12.31% | 21.48% | 0.00%, 15.76%, 27.27% (11) | 1.65% | 1.94% |  |
+| c6__otcLR_chain100__R100 | first_hop | 6.61 | 98.1 | 5.09 | 3.15% | 12.18% | 21.56% | 0.00%, 9.14%, 32.78% (180) | 1.33% | 0.40% |  |
+| c6__otcLR_chain100__R100 | destination | 6.61 | 98.2 | 5.30 | 3.22% | 13.27% | 22.28% | 0.00%, 11.93%, 27.27% (11) | 1.86% | 1.85% |  |
+| c6__otcLR_chain100__R100 | destination_keyed | 3.20 | 43.9 | 2.53 | 1.61% | 5.71% | 8.77% | 0.00%, 8.71%, 28.57% (14) | 33.13% | 2.30% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (15) | 0.00% | 0.00% |  |
+| c6__otcLR_chain100__R100 | issuer_0 [share 50%, all records] | 5.88 | 59.0 | 5.74 | 1.61% | 6.36% | 9.09% | 0.00%, 0.00%, 0.00% (15) | 1.66% | 1.50% |  |
+| c6__otcLR_chain100__R100 | issuer_0 [share 50%, its own devices] | 5.88 | 59.1 | 5.74 | 1.72% | 10.30% | 15.24% | 0.00%, 0.00%, 0.00% (10) | 1.71% | 2.63% |  |
+| c6__otcLR_chain100__R100 | issuer_0 [share 50%, other issuers' devices] | 5.88 | 58.8 | 5.59 | 1.54% | 3.99% | 5.41% | 0.00%, 0.00%, 0.00% (10) | 1.85% | 2.00% |  |
+| c6__otcLR_chain100__R100 | issuer_0_with_observer [share 50%, all records] | 6.62 | 98.4 | 5.10 | 3.14% | 12.31% | 21.48% | 0.00%, 15.76%, 27.27% (11) | 1.65% | 1.94% |  |
+| c6__otcLR_chain100__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.62 | 98.7 | 5.11 | 2.79% | 11.59% | 21.67% | 0.00%, 0.00%, 0.00% (10) | 2.20% | 3.07% |  |
+| c6__otcLR_chain100__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.62 | 98.3 | 5.10 | 3.35% | 12.74% | 21.36% | 0.00%, 12.48%, 20.00% (10) | 1.42% | 2.41% |  |
+| c6__otcLR_chain100__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.61 | 98.2 | 5.09 | 3.14% | 12.23% | 21.32% | 0.00%, 13.33%, 27.27% (11) | 1.65% | 1.82% |  |
+| c6__otcLR_chain100__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.62 | 98.5 | 5.10 | 3.00% | 10.94% | 21.03% | 0.00%, 0.00%, 0.00% (10) | 1.98% | 3.06% |  |
+| c6__otcLR_chain100__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.61 | 98.0 | 5.09 | 3.22% | 13.00% | 21.49% | 0.00%, 12.67%, 18.75% (16) | 1.48% | 2.28% |  |
+| c6__otcLR_chain100__R100 | issuer_0_with_destination | 0.48 | 1.5 | 0.30 | 2.15% | 2.79% | 2.79% | 0.00%, 12.31%, 30.77% (13) | 66.73% | 4.57% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | issuer_1 [share 30%, all records] | 5.26 | 38.3 | 4.94 | 1.77% | 2.90% | 11.67% | 0.00%, 0.00%, 0.00% (15) | 3.29% | 2.14% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | issuer_1 [share 30%, its own devices] | 5.27 | 38.5 | 5.14 | 6.93% | 12.87% | 45.05% | — | 2.83% | 5.05% |  |
+| c6__otcLR_chain100__R100 | issuer_1 [share 30%, other issuers' devices] | 5.25 | 38.0 | 4.79 | 0.77% | 0.96% | 5.19% | 0.00%, 0.00%, 0.00% (11) | 3.74% | 2.51% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | issuer_1_with_observer [share 30%, all records] | 6.62 | 98.4 | 5.10 | 3.14% | 12.31% | 21.48% | 0.00%, 15.76%, 27.27% (11) | 1.65% | 1.94% |  |
+| c6__otcLR_chain100__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.62 | 98.8 | 5.09 | 2.48% | 13.37% | 22.28% | — | 2.16% | 4.89% |  |
+| c6__otcLR_chain100__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.62 | 98.4 | 5.11 | 3.27% | 12.10% | 21.33% | 0.00%, 16.90%, 27.27% (11) | 1.92% | 2.25% |  |
+| c6__otcLR_chain100__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.61 | 98.2 | 5.09 | 3.14% | 12.23% | 21.32% | 0.00%, 13.33%, 27.27% (11) | 1.65% | 1.82% |  |
+| c6__otcLR_chain100__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.62 | 98.6 | 5.08 | 2.48% | 13.37% | 22.28% | — | 2.18% | 4.73% |  |
+| c6__otcLR_chain100__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.61 | 98.1 | 5.10 | 3.27% | 12.01% | 21.13% | 0.00%, 12.89%, 27.27% (11) | 1.91% | 1.97% |  |
+| c6__otcLR_chain100__R100 | issuer_1_with_destination | 0.46 | 1.4 | 0.31 | 0.50% | 0.99% | 0.99% | — | 26.53% | 3.50% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | issuer_2 [share 20%, all records] | 4.52 | 23.0 | 4.36 | 0.00% | 1.53% | 6.36% | 0.00%, 0.00%, 0.00% (15) | 4.89% | 2.46% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | issuer_2 [share 20%, its own devices] | 4.51 | 22.8 | 4.34 | 0.00% | 7.14% | 32.74% | — | 4.93% | 6.80% |  |
+| c6__otcLR_chain100__R100 | issuer_2 [share 20%, other issuers' devices] | 4.52 | 23.0 | 4.36 | 0.00% | 0.65% | 2.23% | 0.00%, 0.00%, 0.00% (15) | 4.88% | 2.64% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | issuer_2_with_observer [share 20%, all records] | 6.62 | 98.4 | 5.10 | 3.14% | 12.31% | 21.48% | 0.00%, 15.76%, 27.27% (11) | 1.65% | 1.94% |  |
+| c6__otcLR_chain100__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.73 | 106.7 | 5.44 | 4.76% | 14.29% | 20.83% | — | 4.43% | 4.95% |  |
+| c6__otcLR_chain100__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.62 | 98.6 | 5.10 | 2.88% | 12.00% | 21.58% | 0.00%, 16.97%, 30.00% (10) | 1.65% | 1.93% |  |
+| c6__otcLR_chain100__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.61 | 98.2 | 5.09 | 3.14% | 12.23% | 21.32% | 0.00%, 13.33%, 27.27% (11) | 1.65% | 1.82% |  |
+| c6__otcLR_chain100__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.73 | 106.4 | 5.43 | 4.76% | 14.88% | 20.83% | — | 5.36% | 4.95% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.62 | 98.4 | 5.10 | 2.88% | 11.81% | 21.40% | 0.00%, 16.97%, 30.00% (10) | 1.38% | 2.12% |  |
+| c6__otcLR_chain100__R100 | issuer_2_with_destination | 0.02 | 1.0 | 0.01 | 0.00% | 0.00% | 0.00% | — | 30.78% | 0.42% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | observer | 5.83 | 57.1 | 4.40 | 6.41% | 21.85% | 37.29% | 2.02%, 9.45%, 11.76% (170) | 2.79% | 4.09% |  |
+| c6__otcLR_chain50__R1 | first_hop | 5.83 | 56.9 | 4.39 | 6.22% | 21.84% | 37.41% | 1.98%, 9.16%, 11.38% (3400) | 2.46% | 0.88% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | destination | 5.68 | 51.6 | 4.26 | 4.28% | 23.52% | 37.77% | 2.12%, 6.51%, 8.24% (170) | 3.00% | 4.47% |  |
+| c6__otcLR_chain50__R1 | destination_keyed | 5.85 | 58.4 | 4.77 | 0.95% | 5.23% | 8.79% | 0.88%, 2.28%, 2.50% (40) | 0.56% | 1.44% |  |
+| c6__otcLR_chain50__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (40) | 0.00% | 0.00% |  |
+| c6__otcLR_chain50__R1 | issuer_0 [share 50%, all records] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (40) | 3.93% | 3.77% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_0 [share 50%, other issuers' devices] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (40) | 3.93% | 3.77% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_0_with_observer [share 50%, all records] | 5.83 | 57.1 | 4.40 | 6.41% | 21.85% | 37.29% | 2.02%, 9.45%, 11.76% (170) | 2.79% | 4.09% |  |
+| c6__otcLR_chain50__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.83 | 57.1 | 4.40 | 6.41% | 21.85% | 37.29% | 2.02%, 9.45%, 11.76% (170) | 2.79% | 4.09% |  |
+| c6__otcLR_chain50__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.83 | 56.9 | 4.39 | 6.41% | 20.90% | 37.29% | 2.31%, 9.21%, 11.18% (170) | 3.70% | 4.00% |  |
+| c6__otcLR_chain50__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.83 | 56.9 | 4.39 | 6.41% | 20.90% | 37.29% | 2.31%, 9.21%, 11.18% (170) | 3.70% | 4.00% |  |
+| c6__otcLR_chain50__R1 | issuer_1 [share 30%, all records] | 4.43 | 22.5 | 3.13 | 0.00% | 0.00% | 40.38% | 0.00%, 0.00%, 0.00% (40) | 13.17% | 6.57% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_1 [share 30%, its own devices] | 4.43 | 22.6 | 3.14 | 0.00% | 0.00% | 49.82% | 0.00%, 0.00%, 0.00% (143) | 13.12% | 7.24% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_1 [share 30%, other issuers' devices] | 4.42 | 22.4 | 3.12 | 0.00% | 0.00% | 20.59% | 0.00%, 0.00%, 0.00% (40) | 13.29% | 11.09% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_1_with_observer [share 30%, all records] | 5.83 | 57.1 | 4.40 | 6.41% | 21.85% | 37.29% | 2.02%, 9.45%, 11.76% (170) | 2.79% | 4.09% |  |
+| c6__otcLR_chain50__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.62 | 50.0 | 4.02 | 7.37% | 25.26% | 42.81% | 7.38%, 10.49%, 11.27% (142) | 6.19% | 5.90% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.06 | 66.9 | 4.99 | 4.41% | 14.71% | 25.74% | 3.33%, 12.00%, 14.29% (28) | 4.41% | 6.09% |  |
+| c6__otcLR_chain50__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.83 | 56.9 | 4.39 | 6.41% | 20.90% | 37.29% | 2.31%, 9.21%, 11.18% (170) | 3.70% | 4.00% |  |
+| c6__otcLR_chain50__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.62 | 49.8 | 4.01 | 7.72% | 24.21% | 42.81% | 7.73%, 10.56%, 11.27% (142) | 5.64% | 5.81% |  |
+| c6__otcLR_chain50__R1 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.05 | 66.6 | 4.98 | 3.68% | 13.97% | 25.74% | 3.33%, 9.50%, 10.71% (28) | 4.39% | 6.55% |  |
+| c6__otcLR_chain50__R1 | issuer_1_with_destination | — | — | — | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (143) | 0.00% | 0.00% |  |
+| c6__otcLR_chain50__R1 | issuer_2 [share 20%, all records] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (40) | 7.23% | 5.04% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_2 [share 20%, other issuers' devices] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (40) | 7.23% | 5.04% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | issuer_2_with_observer [share 20%, all records] | 5.83 | 57.1 | 4.40 | 6.41% | 21.85% | 37.29% | 2.02%, 9.45%, 11.76% (170) | 2.79% | 4.09% |  |
+| c6__otcLR_chain50__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.83 | 57.1 | 4.40 | 6.41% | 21.85% | 37.29% | 2.02%, 9.45%, 11.76% (170) | 2.79% | 4.09% |  |
+| c6__otcLR_chain50__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.83 | 56.9 | 4.39 | 6.41% | 20.90% | 37.29% | 2.31%, 9.21%, 11.18% (170) | 3.70% | 4.00% |  |
+| c6__otcLR_chain50__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.83 | 56.9 | 4.39 | 6.41% | 20.90% | 37.29% | 2.31%, 9.21%, 11.18% (170) | 3.70% | 4.00% |  |
+| c6__otcLR_chain50__R100 | observer | 6.80 | 111.4 | 5.23 | 3.13% | 11.80% | 19.42% | 6.25%, 20.00%, 27.27% (11) | 0.89% | 1.81% |  |
+| c6__otcLR_chain50__R100 | first_hop | 6.79 | 111.0 | 5.22 | 3.04% | 11.73% | 19.65% | 0.00%, 3.38%, 36.00% (100) | 0.75% | 0.43% |  |
+| c6__otcLR_chain50__R100 | destination | 6.77 | 109.9 | 5.42 | 3.53% | 12.68% | 19.90% | 6.25%, 20.00%, 27.27% (11) | 1.83% | 1.97% |  |
+| c6__otcLR_chain50__R100 | destination_keyed | 3.71 | 37.9 | 2.95 | 4.57% | 12.92% | 15.81% | 0.00%, 9.09%, 20.00% (10) | 20.14% | 4.28% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (14) | 0.00% | 0.00% |  |
+| c6__otcLR_chain50__R100 | issuer_0 [share 50%, all records] | 5.88 | 59.0 | 5.74 | 0.96% | 4.98% | 7.06% | 0.00%, 0.00%, 0.00% (14) | 1.41% | 1.47% |  |
+| c6__otcLR_chain50__R100 | issuer_0 [share 50%, its own devices] | 5.88 | 59.1 | 5.74 | 1.72% | 10.30% | 15.24% | 0.00%, 0.00%, 0.00% (12) | 1.40% | 2.63% |  |
+| c6__otcLR_chain50__R100 | issuer_0 [share 50%, other issuers' devices] | 5.88 | 58.8 | 5.65 | 0.51% | 1.79% | 2.18% | 0.00%, 0.00%, 0.00% (12) | 1.62% | 2.01% |  |
+| c6__otcLR_chain50__R100 | issuer_0_with_observer [share 50%, all records] | 6.80 | 111.4 | 5.23 | 3.13% | 11.80% | 19.42% | 6.25%, 20.00%, 27.27% (11) | 0.89% | 1.81% |  |
+| c6__otcLR_chain50__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.80 | 111.7 | 5.25 | 3.00% | 12.88% | 22.53% | 9.38%, 16.88%, 18.75% (16) | 2.06% | 2.97% |  |
+| c6__otcLR_chain50__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.80 | 111.2 | 5.22 | 3.21% | 11.15% | 17.56% | 8.33%, 20.00%, 20.00% (10) | 1.92% | 2.24% |  |
+| c6__otcLR_chain50__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.79 | 111.1 | 5.22 | 3.13% | 11.96% | 19.58% | 6.25%, 20.00%, 27.27% (11) | 1.13% | 1.84% |  |
+| c6__otcLR_chain50__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.80 | 111.4 | 5.24 | 3.22% | 13.30% | 22.32% | 6.25%, 11.25%, 12.50% (16) | 2.40% | 3.04% |  |
+| c6__otcLR_chain50__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.79 | 110.9 | 5.21 | 3.08% | 11.15% | 17.95% | 8.71%, 20.00%, 20.00% (10) | 2.05% | 2.24% |  |
+| c6__otcLR_chain50__R100 | issuer_0_with_destination | 2.49 | 6.0 | 1.69 | 6.22% | 17.81% | 20.17% | 0.00%, 0.00%, 0.00% (12) | 26.90% | 8.44% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | issuer_1 [share 30%, all records] | 5.26 | 38.4 | 5.14 | 1.44% | 2.49% | 9.15% | 0.00%, 0.00%, 0.00% (14) | 2.27% | 2.03% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | issuer_1 [share 30%, its own devices] | 5.27 | 38.5 | 5.14 | 6.93% | 12.87% | 45.05% | 0.00%, 0.00%, 0.00% (10) | 3.11% | 5.05% |  |
+| c6__otcLR_chain50__R100 | issuer_1 [share 30%, other issuers' devices] | 5.25 | 38.0 | 4.79 | 0.38% | 0.48% | 2.20% | 0.00%, 0.00%, 0.00% (14) | 3.45% | 2.25% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | issuer_1_with_observer [share 30%, all records] | 6.80 | 111.4 | 5.23 | 3.13% | 11.80% | 19.42% | 6.25%, 20.00%, 27.27% (11) | 0.89% | 1.81% |  |
+| c6__otcLR_chain50__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.60 | 98.1 | 4.82 | 6.44% | 15.35% | 22.28% | 10.00%, 10.00%, 10.00% (10) | 4.99% | 5.52% |  |
+| c6__otcLR_chain50__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.80 | 111.3 | 5.23 | 2.49% | 11.11% | 18.87% | 0.00%, 17.65%, 20.00% (10) | 1.27% | 1.91% |  |
+| c6__otcLR_chain50__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.79 | 111.1 | 5.22 | 3.13% | 11.96% | 19.58% | 6.25%, 20.00%, 27.27% (11) | 1.13% | 1.84% |  |
+| c6__otcLR_chain50__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.80 | 111.6 | 5.23 | 6.44% | 15.35% | 22.28% | 10.00%, 10.00%, 10.00% (10) | 5.23% | 4.52% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.79 | 111.0 | 5.22 | 2.49% | 11.30% | 19.06% | 0.00%, 13.33%, 20.00% (10) | 1.03% | 2.14% |  |
+| c6__otcLR_chain50__R100 | issuer_1_with_destination | 1.79 | 3.9 | 1.41 | 1.98% | 5.94% | 6.44% | 0.00%, 0.00%, 0.00% (10) | 40.49% | 12.27% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | issuer_2 [share 20%, all records] | 4.52 | 23.0 | 4.36 | 0.00% | 1.04% | 4.98% | 0.00%, 0.00%, 0.00% (14) | 4.89% | 2.37% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | issuer_2 [share 20%, its own devices] | 4.51 | 22.8 | 4.34 | 0.00% | 7.14% | 32.74% | — | 4.93% | 6.80% |  |
+| c6__otcLR_chain50__R100 | issuer_2 [share 20%, other issuers' devices] | 4.33 | 20.2 | 3.02 | 0.00% | 0.09% | 0.65% | 0.00%, 0.00%, 0.00% (14) | 12.42% | 3.94% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | issuer_2_with_observer [share 20%, all records] | 6.80 | 111.4 | 5.23 | 3.13% | 11.80% | 19.42% | 6.25%, 20.00%, 27.27% (11) | 0.89% | 1.81% |  |
+| c6__otcLR_chain50__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.74 | 109.7 | 5.23 | 4.17% | 14.29% | 23.21% | — | 4.11% | 5.31% |  |
+| c6__otcLR_chain50__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.80 | 111.6 | 5.23 | 2.97% | 11.41% | 18.83% | 0.00%, 18.82%, 27.27% (11) | 0.97% | 1.88% |  |
+| c6__otcLR_chain50__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.79 | 111.1 | 5.22 | 3.13% | 11.96% | 19.58% | 6.25%, 20.00%, 27.27% (11) | 1.13% | 1.84% |  |
+| c6__otcLR_chain50__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.74 | 109.2 | 5.21 | 4.17% | 14.29% | 23.81% | — | 4.13% | 5.31% |  |
+| c6__otcLR_chain50__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.79 | 111.2 | 5.22 | 2.97% | 11.60% | 18.92% | 0.00%, 18.33%, 27.27% (11) | 1.16% | 1.92% |  |
+| c6__otcLR_chain50__R100 | issuer_2_with_destination | 1.22 | 2.6 | 0.85 | 8.93% | 16.07% | 16.07% | — | 51.06% | 13.22% | badly miscalibrated |
 | c6__otcL_W0__R1 | observer | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.19% |  |
 | c6__otcL_W0__R1 | first_hop | 5.76 | 54.4 | 4.55 | 2.93% | 21.78% | 38.04% | 2.92%, 3.84%, 4.07% (4180) | 3.77% | 0.94% | badly miscalibrated |
 | c6__otcL_W0__R1 | destination | 5.64 | 50.1 | 4.44 | 4.12% | 24.46% | 38.74% | 4.09%, 5.79%, 6.22% (209) | 2.85% | 4.00% |  |
@@ -1631,6 +2894,366 @@ Entropy and min-entropy in bits at the calibrated temperature; the effective ano
 | c6__otcL_chain50__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.58 | 96.9 | 4.73 | 4.17% | 17.26% | 27.98% | — | 3.80% | 6.15% |  |
 | c6__otcL_chain50__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.79 | 110.6 | 5.14 | 2.50% | 11.04% | 18.37% | 0.00%, 18.33%, 27.27% (11) | 1.29% | 1.95% |  |
 | c6__otcL_chain50__R100 | issuer_2_with_destination | 1.32 | 2.7 | 0.85 | 9.52% | 16.07% | 16.07% | — | 49.53% | 13.13% | badly miscalibrated |
+| c6__otcR_W0__R1 | observer | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
+| c6__otcR_W0__R1 | first_hop | 5.64 | 50.1 | 4.26 | 6.13% | 20.87% | 36.23% | 6.11%, 7.38%, 7.70% (4180) | 2.58% | 1.01% | badly miscalibrated |
+| c6__otcR_W0__R1 | destination | 5.63 | 49.9 | 4.43 | 7.02% | 21.55% | 33.66% | 7.00%, 8.67%, 9.09% (209) | 4.80% | 4.64% | badly miscalibrated |
+| c6__otcR_W0__R1 | destination_keyed | 3.96 | 15.7 | 3.01 | 14.29% | 50.36% | 80.87% | 14.23%, 18.16%, 19.14% (209) | 4.85% | 6.52% |  |
+| c6__otcR_W0__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (204) | 0.00% | 0.00% |  |
+| c6__otcR_W0__R1 | issuer_0 [share 50%, all records] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 3.49% | 3.62% |  |
+| c6__otcR_W0__R1 | issuer_0 [share 50%, other issuers' devices] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 3.49% | 3.62% |  |
+| c6__otcR_W0__R1 | issuer_0_with_observer [share 50%, all records] | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
+| c6__otcR_W0__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
+| c6__otcR_W0__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.64 | 50.1 | 4.26 | 6.05% | 20.34% | 34.87% | 6.03%, 7.33%, 7.66% (209) | 3.67% | 4.34% |  |
+| c6__otcR_W0__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.64 | 50.1 | 4.26 | 6.05% | 20.34% | 34.87% | 6.03%, 7.33%, 7.66% (209) | 3.67% | 4.34% |  |
+| c6__otcR_W0__R1 | issuer_1 [share 30%, all records] | 4.90 | 30.0 | 4.31 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 5.09% | 4.68% | badly miscalibrated |
+| c6__otcR_W0__R1 | issuer_1 [share 30%, its own devices] | 4.90 | 30.0 | 4.31 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 5.09% | 4.68% | badly miscalibrated |
+| c6__otcR_W0__R1 | issuer_1_with_observer [share 30%, all records] | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
+| c6__otcR_W0__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
+| c6__otcR_W0__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.64 | 50.1 | 4.26 | 6.05% | 20.34% | 34.87% | 6.03%, 7.33%, 7.66% (209) | 3.67% | 4.34% |  |
+| c6__otcR_W0__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.64 | 50.1 | 4.26 | 6.05% | 20.34% | 34.87% | 6.03%, 7.33%, 7.66% (209) | 3.67% | 4.34% |  |
+| c6__otcR_W0__R1 | issuer_1_with_destination | 3.96 | 15.7 | 3.01 | 14.29% | 50.36% | 80.87% | 14.23%, 18.16%, 19.14% (209) | 4.85% | 6.52% |  |
+| c6__otcR_W0__R1 | issuer_2 [share 20%, all records] | 4.39 | 21.1 | 3.76 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 7.40% | 5.54% | badly miscalibrated |
+| c6__otcR_W0__R1 | issuer_2 [share 20%, other issuers' devices] | 4.39 | 21.1 | 3.76 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (204) | 7.40% | 5.54% | badly miscalibrated |
+| c6__otcR_W0__R1 | issuer_2_with_observer [share 20%, all records] | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
+| c6__otcR_W0__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
+| c6__otcR_W0__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.64 | 50.1 | 4.26 | 6.05% | 20.34% | 34.87% | 6.03%, 7.33%, 7.66% (209) | 3.67% | 4.34% |  |
+| c6__otcR_W0__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.64 | 50.1 | 4.26 | 6.05% | 20.34% | 34.87% | 6.03%, 7.33%, 7.66% (209) | 3.67% | 4.34% |  |
+| c6__otcR_W0__R100 | observer | 6.62 | 98.8 | 5.08 | 3.04% | 13.40% | 22.78% | 0.00%, 15.38%, 27.27% (11) | 0.87% | 1.98% |  |
+| c6__otcR_W0__R100 | first_hop | 6.62 | 98.5 | 5.07 | 3.10% | 13.61% | 22.77% | 0.00%, 9.88%, 32.22% (180) | 0.89% | 0.44% |  |
+| c6__otcR_W0__R100 | destination | 6.50 | 90.6 | 4.95 | 2.30% | 13.57% | 23.11% | 0.00%, 9.09%, 20.00% (15) | 1.73% | 1.92% |  |
+| c6__otcR_W0__R100 | destination_keyed | 5.07 | 35.6 | 3.77 | 7.32% | 30.18% | 48.85% | 7.69%, 18.18%, 30.00% (10) | 2.25% | 3.19% |  |
+| c6__otcR_W0__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (15) | 0.00% | 0.00% |  |
+| c6__otcR_W0__R100 | issuer_0 [share 50%, all records] | 5.60 | 48.9 | 5.48 | 1.73% | 5.92% | 5.92% | 0.00%, 0.00%, 0.00% (15) | 1.85% | 1.93% |  |
+| c6__otcR_W0__R100 | issuer_0 [share 50%, its own devices] | 5.61 | 49.2 | 5.49 | 3.17% | 10.86% | 10.86% | 0.00%, 0.00%, 0.00% (10) | 1.59% | 2.35% |  |
+| c6__otcR_W0__R100 | issuer_0 [share 50%, other issuers' devices] | 5.48 | 44.9 | 4.45 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 4.58% | 3.43% | badly miscalibrated |
+| c6__otcR_W0__R100 | issuer_0_with_observer [share 50%, all records] | 6.62 | 98.8 | 5.08 | 3.04% | 13.40% | 22.78% | 0.00%, 15.38%, 27.27% (11) | 0.87% | 1.98% |  |
+| c6__otcR_W0__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.62 | 98.7 | 5.07 | 2.56% | 13.42% | 24.13% | 0.00%, 16.22%, 20.00% (10) | 1.19% | 2.83% |  |
+| c6__otcR_W0__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.63 | 99.0 | 5.09 | 3.62% | 13.38% | 21.16% | 0.00%, 15.00%, 20.00% (10) | 1.44% | 2.84% |  |
+| c6__otcR_W0__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.62 | 98.5 | 5.07 | 3.29% | 13.65% | 22.62% | 0.00%, 18.18%, 27.27% (11) | 1.68% | 1.89% |  |
+| c6__otcR_W0__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.62 | 98.4 | 5.06 | 2.87% | 14.03% | 23.68% | 0.00%, 16.22%, 20.00% (10) | 1.82% | 2.52% |  |
+| c6__otcR_W0__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.62 | 98.6 | 5.08 | 3.80% | 13.20% | 21.34% | 0.00%, 18.33%, 20.00% (15) | 2.41% | 3.14% |  |
+| c6__otcR_W0__R100 | issuer_0_with_destination | 5.50 | 45.4 | 4.14 | 5.28% | 24.43% | 40.27% | 8.39%, 18.73%, 30.00% (10) | 2.29% | 3.69% |  |
+| c6__otcR_W0__R100 | issuer_1 [share 30%, all records] | 4.85 | 29.1 | 4.48 | 2.55% | 8.31% | 8.31% | 0.00%, 0.00%, 0.00% (15) | 4.28% | 2.50% | badly miscalibrated |
+| c6__otcR_W0__R100 | issuer_1 [share 30%, its own devices] | 4.86 | 29.4 | 4.49 | 9.60% | 31.27% | 31.27% | 0.00%, 0.00%, 0.00% (11) | 3.55% | 4.74% |  |
+| c6__otcR_W0__R100 | issuer_1 [share 30%, other issuers' devices] | 4.80 | 28.2 | 4.10 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (13) | 6.00% | 3.23% | badly miscalibrated |
+| c6__otcR_W0__R100 | issuer_1_with_observer [share 30%, all records] | 6.62 | 98.8 | 5.08 | 3.04% | 13.40% | 22.78% | 0.00%, 15.38%, 27.27% (11) | 0.87% | 1.98% |  |
+| c6__otcR_W0__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.62 | 98.7 | 5.08 | 4.95% | 16.72% | 25.08% | 8.33%, 11.27%, 20.00% (10) | 2.26% | 3.67% |  |
+| c6__otcR_W0__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.62 | 98.9 | 5.08 | 2.35% | 12.21% | 21.95% | 0.00%, 16.22%, 27.27% (11) | 1.40% | 2.29% |  |
+| c6__otcR_W0__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.62 | 98.5 | 5.07 | 3.29% | 13.65% | 22.62% | 0.00%, 18.18%, 27.27% (11) | 1.68% | 1.89% |  |
+| c6__otcR_W0__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.62 | 98.4 | 5.08 | 5.26% | 16.72% | 25.08% | 0.00%, 18.55%, 20.00% (10) | 3.10% | 3.94% |  |
+| c6__otcR_W0__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.62 | 98.5 | 5.07 | 2.58% | 12.54% | 21.72% | 0.00%, 18.73%, 27.27% (11) | 2.00% | 2.12% |  |
+| c6__otcR_W0__R100 | issuer_1_with_destination | 4.70 | 26.3 | 3.46 | 9.91% | 35.91% | 57.28% | 16.67%, 20.00%, 27.27% (11) | 6.15% | 6.80% |  |
+| c6__otcR_W0__R100 | issuer_2 [share 20%, all records] | 4.46 | 22.0 | 4.37 | 0.74% | 1.40% | 5.84% | 0.00%, 0.00%, 0.00% (15) | 4.44% | 2.63% | badly miscalibrated |
+| c6__otcR_W0__R100 | issuer_2 [share 20%, its own devices] | 4.46 | 22.0 | 4.37 | 3.91% | 7.39% | 30.87% | 0.00%, 0.00%, 0.00% (12) | 2.66% | 5.29% |  |
+| c6__otcR_W0__R100 | issuer_2 [share 20%, other issuers' devices] | 4.36 | 20.6 | 3.63 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (11) | 8.12% | 3.18% | badly miscalibrated |
+| c6__otcR_W0__R100 | issuer_2_with_observer [share 20%, all records] | 6.62 | 98.8 | 5.08 | 3.04% | 13.40% | 22.78% | 0.00%, 15.38%, 27.27% (11) | 0.87% | 1.98% |  |
+| c6__otcR_W0__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.85 | 115.9 | 5.71 | 1.74% | 8.70% | 15.65% | 0.00%, 0.00%, 0.00% (12) | 2.54% | 3.95% |  |
+| c6__otcR_W0__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.62 | 98.7 | 5.07 | 3.35% | 14.50% | 24.44% | 0.00%, 14.51%, 20.00% (10) | 1.12% | 2.07% |  |
+| c6__otcR_W0__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.62 | 98.5 | 5.07 | 3.29% | 13.65% | 22.62% | 0.00%, 18.18%, 27.27% (11) | 1.68% | 1.89% |  |
+| c6__otcR_W0__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.85 | 115.5 | 5.70 | 1.74% | 8.26% | 16.09% | 0.00%, 0.00%, 0.00% (12) | 2.55% | 3.95% |  |
+| c6__otcR_W0__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.62 | 98.4 | 5.07 | 3.65% | 14.91% | 24.14% | 0.00%, 16.78%, 20.00% (10) | 2.14% | 2.22% |  |
+| c6__otcR_W0__R100 | issuer_2_with_destination | 4.54 | 23.4 | 3.63 | 9.57% | 38.70% | 61.74% | 15.48%, 16.43%, 16.67% (12) | 5.53% | 7.17% |  |
+| c6__otcR_W1__R1 | observer | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | first_hop | 5.57 | 47.8 | 4.60 | 0.71% | 9.68% | 24.54% | 0.67%, 1.18%, 1.31% (4120) | 4.26% | 0.91% | badly miscalibrated |
+| c6__otcR_W1__R1 | destination | 5.52 | 45.9 | 4.71 | 1.80% | 12.37% | 25.26% | 1.76%, 2.29%, 2.43% (206) | 2.34% | 3.81% |  |
+| c6__otcR_W1__R1 | destination_keyed | 3.76 | 13.7 | 3.11 | 6.96% | 46.91% | 86.08% | 6.91%, 7.59%, 7.77% (206) | 6.59% | 6.46% | badly miscalibrated |
+| c6__otcR_W1__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (206) | 0.00% | 0.00% |  |
+| c6__otcR_W1__R1 | issuer_0 [share 50%, all records] | 4.98 | 31.6 | 3.32 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 10.01% | 6.09% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_0 [share 50%, other issuers' devices] | 4.98 | 31.6 | 3.32 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 10.01% | 6.09% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_0_with_observer [share 50%, all records] | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.57 | 47.8 | 4.59 | 0.52% | 9.54% | 24.48% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 3.91% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.57 | 47.8 | 4.59 | 0.52% | 9.54% | 24.48% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 3.91% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_1 [share 30%, all records] | 4.70 | 26.0 | 3.50 | 0.00% | 0.00% | 100.00% | 0.00%, 0.00%, 0.00% (206) | 8.83% | 5.67% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_1 [share 30%, its own devices] | 4.70 | 26.0 | 3.50 | 0.00% | 0.00% | 100.00% | 0.00%, 0.00%, 0.00% (206) | 8.83% | 5.67% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_1_with_observer [share 30%, all records] | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.57 | 47.8 | 4.59 | 0.52% | 9.54% | 24.48% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 3.91% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.57 | 47.8 | 4.59 | 0.52% | 9.54% | 24.48% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 3.91% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_1_with_destination | 3.76 | 13.7 | 3.11 | 6.96% | 46.91% | 86.08% | 6.91%, 7.59%, 7.77% (206) | 6.59% | 6.46% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_2 [share 20%, all records] | 3.95 | 15.5 | 2.59 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 16.59% | 7.48% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_2 [share 20%, other issuers' devices] | 3.95 | 15.5 | 2.59 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (206) | 16.59% | 7.48% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_2_with_observer [share 20%, all records] | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.57 | 47.8 | 4.59 | 0.52% | 9.54% | 24.48% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 3.91% | badly miscalibrated |
+| c6__otcR_W1__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.57 | 47.8 | 4.59 | 0.52% | 9.54% | 24.48% | 0.49%, 0.87%, 0.97% (206) | 4.12% | 3.91% | badly miscalibrated |
+| c6__otcR_W1__R100 | observer | 6.14 | 70.8 | 4.20 | 7.16% | 18.14% | 30.79% | 0.00%, 9.81%, 82.43% (74) | 2.15% | 2.69% |  |
+| c6__otcR_W1__R100 | first_hop | 6.14 | 70.7 | 4.20 | 7.22% | 18.19% | 30.77% | 0.00%, 0.00%, 83.31% (1480) | 2.08% | 0.56% | badly miscalibrated |
+| c6__otcR_W1__R100 | destination | 6.05 | 66.5 | 4.16 | 7.24% | 19.44% | 30.41% | 0.00%, 9.38%, 82.43% (74) | 2.56% | 2.50% | badly miscalibrated |
+| c6__otcR_W1__R100 | destination_keyed | 4.57 | 25.0 | 3.08 | 13.87% | 38.19% | 58.08% | 0.00%, 31.41%, 87.84% (74) | 3.72% | 3.55% | badly miscalibrated |
+| c6__otcR_W1__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (15) | 0.00% | 0.00% |  |
+| c6__otcR_W1__R100 | issuer_0 [share 50%, all records] | 5.12 | 34.8 | 4.13 | 0.00% | 13.95% | 18.14% | 0.00%, 0.00%, 0.00% (15) | 5.79% | 2.56% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_0 [share 50%, its own devices] | 5.12 | 34.8 | 4.12 | 0.00% | 26.56% | 34.54% | 0.00%, 0.00%, 0.00% (15) | 5.83% | 3.68% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_0 [share 50%, other issuers' devices] | 4.94 | 30.7 | 3.30 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (24) | 10.17% | 4.64% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_0_with_observer [share 50%, all records] | 6.14 | 70.8 | 4.20 | 7.16% | 18.14% | 30.79% | 0.00%, 9.81%, 82.43% (74) | 2.15% | 2.69% |  |
+| c6__otcR_W1__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.14 | 70.6 | 4.18 | 10.16% | 21.34% | 31.20% | 0.00%, 7.97%, 82.43% (74) | 5.68% | 3.45% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.15 | 71.1 | 4.22 | 3.85% | 14.61% | 30.34% | 0.00%, 10.72%, 37.21% (43) | 3.62% | 4.04% |  |
+| c6__otcR_W1__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.14 | 70.7 | 4.20 | 7.39% | 18.37% | 31.02% | 0.00%, 9.81%, 87.84% (74) | 2.61% | 2.41% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.13 | 70.4 | 4.18 | 10.60% | 21.48% | 31.64% | 0.00%, 7.97%, 87.84% (74) | 6.41% | 3.60% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.14 | 70.9 | 4.21 | 3.85% | 14.93% | 30.34% | 0.00%, 10.72%, 37.21% (43) | 3.93% | 3.66% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_0_with_destination | 5.11 | 34.7 | 3.61 | 11.90% | 28.59% | 45.86% | 0.00%, 18.57%, 87.84% (74) | 6.29% | 4.17% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_1 [share 30%, all records] | 4.58 | 24.0 | 4.47 | 0.30% | 1.75% | 12.42% | 0.00%, 0.00%, 0.00% (15) | 4.52% | 2.16% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_1 [share 30%, its own devices] | 4.58 | 24.0 | 4.47 | 1.31% | 7.52% | 53.27% | 0.00%, 0.00%, 0.00% (20) | 4.52% | 4.36% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_1 [share 30%, other issuers' devices] | 4.41 | 21.4 | 3.59 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 8.74% | 3.44% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_1_with_observer [share 30%, all records] | 6.14 | 70.8 | 4.20 | 7.16% | 18.14% | 30.79% | 0.00%, 9.81%, 82.43% (74) | 2.15% | 2.69% |  |
+| c6__otcR_W1__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.29 | 79.3 | 4.59 | 0.65% | 9.48% | 25.16% | 0.00%, 2.11%, 10.53% (19) | 4.65% | 4.68% |  |
+| c6__otcR_W1__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.14 | 70.8 | 4.20 | 9.15% | 20.78% | 32.50% | 0.00%, 11.82%, 82.43% (74) | 3.98% | 2.78% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.14 | 70.7 | 4.20 | 7.39% | 18.37% | 31.02% | 0.00%, 9.81%, 87.84% (74) | 2.61% | 2.41% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.29 | 79.1 | 4.59 | 0.65% | 9.48% | 24.84% | 0.00%, 2.11%, 10.53% (19) | 4.64% | 4.67% |  |
+| c6__otcR_W1__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.14 | 70.6 | 4.19 | 9.44% | 21.07% | 32.90% | 0.00%, 11.82%, 87.84% (74) | 4.32% | 2.75% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_1_with_destination | 4.47 | 22.5 | 3.34 | 13.07% | 42.16% | 66.01% | 22.22%, 32.26%, 35.00% (20) | 5.41% | 7.12% |  |
+| c6__otcR_W1__R100 | issuer_2 [share 20%, all records] | 4.19 | 18.3 | 3.46 | 2.44% | 7.47% | 18.37% | 0.00%, 0.00%, 100.00% (32) | 7.34% | 3.13% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_2 [share 20%, its own devices] | 4.18 | 18.2 | 3.42 | 10.09% | 30.91% | 76.03% | 0.00%, 20.00%, 100.00% (32) | 7.01% | 6.65% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_2 [share 20%, other issuers' devices] | 4.10 | 17.1 | 2.85 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 13.91% | 4.48% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_2_with_observer [share 20%, all records] | 6.14 | 70.8 | 4.20 | 7.16% | 18.14% | 30.79% | 0.00%, 9.81%, 82.43% (74) | 2.15% | 2.69% |  |
+| c6__otcR_W1__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.15 | 71.3 | 4.22 | 6.94% | 19.56% | 35.33% | 0.00%, 17.44%, 37.21% (43) | 4.95% | 5.21% |  |
+| c6__otcR_W1__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.14 | 70.7 | 4.19 | 7.24% | 17.69% | 29.35% | 0.00%, 7.94%, 82.43% (74) | 3.17% | 2.93% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.14 | 70.7 | 4.20 | 7.39% | 18.37% | 31.02% | 0.00%, 9.81%, 87.84% (74) | 2.61% | 2.41% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.15 | 71.1 | 4.22 | 6.94% | 20.19% | 35.65% | 0.00%, 17.44%, 37.21% (43) | 4.95% | 5.42% |  |
+| c6__otcR_W1__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.13 | 70.5 | 4.19 | 7.54% | 17.79% | 29.55% | 0.00%, 7.94%, 87.84% (74) | 3.98% | 2.89% | badly miscalibrated |
+| c6__otcR_W1__R100 | issuer_2_with_destination | 4.00 | 16.2 | 2.69 | 18.93% | 55.21% | 76.97% | 6.67%, 41.73%, 81.40% (43) | 5.82% | 8.04% |  |
+| c6__otcR_W2__R1 | observer | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 5.85% | badly miscalibrated |
+| c6__otcR_W2__R1 | first_hop | 5.29 | 39.6 | 3.71 | 7.98% | 26.11% | 39.63% | 7.95%, 9.16%, 9.46% (3720) | 6.86% | 1.17% | badly miscalibrated |
+| c6__otcR_W2__R1 | destination | 5.42 | 43.1 | 4.28 | 7.38% | 27.60% | 37.43% | 7.33%, 9.64%, 10.22% (186) | 5.35% | 4.97% | badly miscalibrated |
+| c6__otcR_W2__R1 | destination_keyed | 3.68 | 13.0 | 2.74 | 19.67% | 53.28% | 84.70% | 19.70%, 20.83%, 21.11% (180) | 8.83% | 7.07% | badly miscalibrated |
+| c6__otcR_W2__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (180) | 0.00% | 0.00% |  |
+| c6__otcR_W2__R1 | issuer_0 [share 50%, all records] | 4.95 | 30.9 | 3.28 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 10.32% | 6.41% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_0 [share 50%, other issuers' devices] | 4.95 | 30.9 | 3.28 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 10.32% | 6.41% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_0_with_observer [share 50%, all records] | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 5.85% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 5.85% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.29 | 39.7 | 3.72 | 8.20% | 25.68% | 39.34% | 8.17%, 9.38%, 9.68% (186) | 6.83% | 5.84% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.29 | 39.7 | 3.72 | 8.20% | 25.68% | 39.34% | 8.17%, 9.38%, 9.68% (186) | 6.83% | 5.84% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_1 [share 30%, all records] | 4.67 | 26.0 | 3.91 | 0.00% | 0.00% | 49.18% | 0.00%, 0.00%, 0.00% (180) | 7.62% | 5.46% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_1 [share 30%, its own devices] | 4.67 | 26.0 | 3.91 | 0.00% | 0.00% | 49.18% | 0.00%, 0.00%, 0.00% (180) | 7.62% | 5.46% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_1_with_observer [share 30%, all records] | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 5.85% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 5.85% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.29 | 39.7 | 3.72 | 8.20% | 25.68% | 39.34% | 8.17%, 9.38%, 9.68% (186) | 6.83% | 5.84% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.29 | 39.7 | 3.72 | 8.20% | 25.68% | 39.34% | 8.17%, 9.38%, 9.68% (186) | 6.83% | 5.84% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_1_with_destination | 3.68 | 13.0 | 2.74 | 19.67% | 53.28% | 84.70% | 19.70%, 20.83%, 21.11% (180) | 8.83% | 7.07% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_2 [share 20%, all records] | 4.04 | 16.7 | 2.72 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 15.69% | 7.45% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_2 [share 20%, other issuers' devices] | 4.04 | 16.7 | 2.72 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 15.69% | 7.45% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_2_with_observer [share 20%, all records] | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 5.85% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 5.85% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.29 | 39.7 | 3.72 | 8.20% | 25.68% | 39.34% | 8.17%, 9.38%, 9.68% (186) | 6.83% | 5.84% | badly miscalibrated |
+| c6__otcR_W2__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.29 | 39.7 | 3.72 | 8.20% | 25.68% | 39.34% | 8.17%, 9.38%, 9.68% (186) | 6.83% | 5.84% | badly miscalibrated |
+| c6__otcR_W2__R100 | observer | 6.11 | 69.3 | 4.03 | 6.63% | 19.25% | 32.51% | 0.00%, 15.24%, 70.97% (31) | 2.44% | 2.79% |  |
+| c6__otcR_W2__R100 | first_hop | 6.10 | 69.1 | 4.02 | 6.61% | 19.38% | 32.47% | 0.00%, 0.00%, 68.71% (620) | 2.14% | 0.63% | badly miscalibrated |
+| c6__otcR_W2__R100 | destination | 6.01 | 64.9 | 4.00 | 5.90% | 19.90% | 31.86% | 0.00%, 16.67%, 61.29% (31) | 2.25% | 3.02% |  |
+| c6__otcR_W2__R100 | destination_keyed | 4.59 | 25.8 | 3.01 | 11.71% | 37.67% | 60.52% | 5.88%, 31.71%, 64.52% (31) | 2.96% | 4.08% |  |
+| c6__otcR_W2__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (13) | 0.00% | 0.00% |  |
+| c6__otcR_W2__R100 | issuer_0 [share 50%, all records] | 5.16 | 35.9 | 4.07 | 0.00% | 10.40% | 14.50% | 0.00%, 0.00%, 0.00% (13) | 7.45% | 2.86% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_0 [share 50%, its own devices] | 5.16 | 36.0 | 4.09 | 0.00% | 18.04% | 25.14% | 0.00%, 0.00%, 0.00% (13) | 7.39% | 3.49% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_0 [share 50%, other issuers' devices] | 5.00 | 32.0 | 3.22 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (36) | 10.77% | 5.24% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_0_with_observer [share 50%, all records] | 6.11 | 69.3 | 4.03 | 6.63% | 19.25% | 32.51% | 0.00%, 15.24%, 70.97% (31) | 2.44% | 2.79% |  |
+| c6__otcR_W2__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.11 | 69.1 | 4.02 | 7.95% | 20.60% | 34.52% | 0.00%, 7.91%, 70.97% (31) | 4.79% | 3.67% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.28 | 78.5 | 4.48 | 4.84% | 17.41% | 29.79% | 0.00%, 21.97%, 50.00% (20) | 4.73% | 3.61% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.11 | 69.1 | 4.03 | 6.47% | 19.08% | 32.51% | 0.00%, 15.24%, 64.52% (31) | 2.33% | 2.71% |  |
+| c6__otcR_W2__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.10 | 69.0 | 4.02 | 7.67% | 20.31% | 34.38% | 0.00%, 7.91%, 64.52% (31) | 4.10% | 3.69% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.28 | 78.4 | 4.48 | 4.84% | 17.41% | 29.98% | 0.00%, 21.97%, 50.00% (20) | 3.98% | 3.45% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_0_with_destination | 5.00 | 32.5 | 3.25 | 10.51% | 32.10% | 52.56% | 0.00%, 23.99%, 64.52% (31) | 3.22% | 4.79% |  |
+| c6__otcR_W2__R100 | issuer_1 [share 30%, all records] | 4.39 | 21.0 | 4.26 | 0.00% | 1.72% | 7.78% | 0.00%, 0.00%, 0.00% (13) | 5.22% | 2.60% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_1 [share 30%, its own devices] | 4.39 | 21.0 | 4.26 | 0.00% | 8.86% | 40.08% | 0.00%, 0.00%, 0.00% (20) | 5.23% | 5.51% |  |
+| c6__otcR_W2__R100 | issuer_1 [share 30%, other issuers' devices] | 4.23 | 18.7 | 3.20 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (13) | 10.87% | 4.07% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_1_with_observer [share 30%, all records] | 6.11 | 69.3 | 4.03 | 6.63% | 19.25% | 32.51% | 0.00%, 15.24%, 70.97% (31) | 2.44% | 2.79% |  |
+| c6__otcR_W2__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.39 | 85.2 | 4.88 | 5.91% | 12.24% | 19.83% | 0.00%, 34.52%, 50.00% (20) | 7.68% | 5.20% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.11 | 69.2 | 4.03 | 6.81% | 20.93% | 35.57% | 0.00%, 12.90%, 70.97% (31) | 3.61% | 2.87% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.11 | 69.1 | 4.03 | 6.47% | 19.08% | 32.51% | 0.00%, 15.24%, 64.52% (31) | 2.33% | 2.71% |  |
+| c6__otcR_W2__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.38 | 85.1 | 4.88 | 5.91% | 12.24% | 19.83% | 0.00%, 34.52%, 50.00% (20) | 7.69% | 4.99% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.10 | 69.1 | 4.03 | 6.61% | 20.73% | 35.57% | 0.00%, 12.90%, 64.52% (31) | 3.17% | 3.19% |  |
+| c6__otcR_W2__R100 | issuer_1_with_destination | 4.44 | 22.0 | 3.33 | 11.81% | 37.13% | 63.71% | 22.50%, 48.81%, 50.00% (20) | 8.11% | 7.50% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_2 [share 20%, all records] | 4.03 | 16.5 | 3.10 | 2.95% | 4.83% | 12.69% | 0.00%, 0.00%, 100.00% (36) | 12.10% | 3.70% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_2 [share 20%, its own devices] | 4.01 | 16.3 | 3.04 | 12.86% | 21.07% | 55.36% | 0.00%, 10.00%, 100.00% (36) | 21.70% | 7.72% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_2 [share 20%, other issuers' devices] | 4.06 | 16.7 | 2.74 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (13) | 14.97% | 4.78% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_2_with_observer [share 20%, all records] | 6.11 | 69.3 | 4.03 | 6.63% | 19.25% | 32.51% | 0.00%, 15.24%, 70.97% (31) | 2.44% | 2.79% |  |
+| c6__otcR_W2__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.11 | 69.3 | 4.04 | 3.93% | 21.79% | 38.21% | 0.00%, 17.73%, 27.27% (11) | 6.07% | 5.88% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.11 | 69.3 | 4.02 | 7.44% | 18.49% | 30.82% | 0.00%, 16.59%, 70.97% (31) | 2.62% | 3.30% |  |
+| c6__otcR_W2__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.11 | 69.1 | 4.03 | 6.47% | 19.08% | 32.51% | 0.00%, 15.24%, 64.52% (31) | 2.33% | 2.71% |  |
+| c6__otcR_W2__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.11 | 69.2 | 4.04 | 3.93% | 21.79% | 38.57% | 0.00%, 17.73%, 27.27% (11) | 5.97% | 5.83% | badly miscalibrated |
+| c6__otcR_W2__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.10 | 69.1 | 4.02 | 7.23% | 18.28% | 30.71% | 0.00%, 16.59%, 64.52% (31) | 2.96% | 3.14% |  |
+| c6__otcR_W2__R100 | issuer_2_with_destination | 4.05 | 16.7 | 2.89 | 14.64% | 52.14% | 77.86% | 16.03%, 29.82%, 52.78% (36) | 5.10% | 8.16% |  |
+| c6__otcR_Wmis__R1 | observer | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 13.26% | 5.89% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | first_hop | 5.42 | 43.6 | 3.82 | 20.15% | 32.68% | 43.99% | 20.09%, 22.81%, 23.49% (3720) | 12.80% | 1.15% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | destination | 5.31 | 40.3 | 3.70 | 17.76% | 31.42% | 41.80% | 17.72%, 19.46%, 19.89% (186) | 9.80% | 6.53% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | destination_keyed | 3.81 | 14.3 | 2.67 | 25.14% | 53.83% | 77.87% | 25.09%, 27.38%, 27.96% (186) | 12.95% | 7.39% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (180) | 0.00% | 0.00% |  |
+| c6__otcR_Wmis__R1 | issuer_0 [share 50%, all records] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 3.49% | 3.71% |  |
+| c6__otcR_Wmis__R1 | issuer_0 [share 50%, other issuers' devices] | 5.52 | 46.0 | 4.84 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 3.49% | 3.71% |  |
+| c6__otcR_Wmis__R1 | issuer_0_with_observer [share 50%, all records] | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 13.26% | 5.89% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 13.26% | 5.89% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.42 | 43.6 | 3.81 | 20.49% | 32.79% | 43.44% | 20.44%, 23.01%, 23.66% (186) | 13.65% | 5.25% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.42 | 43.6 | 3.81 | 20.49% | 32.79% | 43.44% | 20.44%, 23.01%, 23.66% (186) | 13.65% | 5.25% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_1 [share 30%, all records] | 4.90 | 30.0 | 4.30 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 5.09% | 4.55% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_1 [share 30%, its own devices] | 4.90 | 30.0 | 4.30 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 5.09% | 4.55% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_1_with_observer [share 30%, all records] | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 13.26% | 5.89% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 13.26% | 5.89% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.42 | 43.6 | 3.81 | 20.49% | 32.79% | 43.44% | 20.44%, 23.01%, 23.66% (186) | 13.65% | 5.25% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.42 | 43.6 | 3.81 | 20.49% | 32.79% | 43.44% | 20.44%, 23.01%, 23.66% (186) | 13.65% | 5.25% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_1_with_destination | 3.81 | 14.3 | 2.67 | 25.14% | 53.83% | 77.87% | 25.09%, 27.38%, 27.96% (186) | 12.95% | 7.39% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_2 [share 20%, all records] | 4.39 | 21.1 | 3.77 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 7.39% | 5.38% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_2 [share 20%, other issuers' devices] | 4.39 | 21.1 | 3.77 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (180) | 7.39% | 5.38% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_2_with_observer [share 20%, all records] | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 13.26% | 5.89% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 13.26% | 5.89% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.42 | 43.6 | 3.81 | 20.49% | 32.79% | 43.44% | 20.44%, 23.01%, 23.66% (186) | 13.65% | 5.25% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.42 | 43.6 | 3.81 | 20.49% | 32.79% | 43.44% | 20.44%, 23.01%, 23.66% (186) | 13.65% | 5.25% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | observer | 5.77 | 55.3 | 3.32 | 9.58% | 25.47% | 38.17% | 0.00%, 22.42%, 77.42% (31) | 2.08% | 3.37% |  |
+| c6__otcR_Wmis__R100 | first_hop | 5.76 | 55.1 | 3.32 | 9.56% | 25.58% | 38.20% | 0.00%, 1.85%, 73.87% (620) | 2.16% | 0.78% |  |
+| c6__otcR_Wmis__R100 | destination | 6.26 | 76.8 | 4.31 | 8.60% | 24.49% | 37.10% | 0.00%, 17.89%, 64.52% (31) | 3.39% | 2.47% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | destination_keyed | 4.84 | 30.6 | 3.29 | 16.38% | 41.85% | 61.51% | 8.33%, 43.35%, 64.52% (31) | 5.31% | 3.63% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (12) | 0.00% | 0.00% |  |
+| c6__otcR_Wmis__R100 | issuer_0 [share 50%, all records] | 5.32 | 40.3 | 4.58 | 7.29% | 11.88% | 14.50% | 0.00%, 0.00%, 100.00% (14) | 5.51% | 2.52% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_0 [share 50%, its own devices] | 5.33 | 40.4 | 4.59 | 12.64% | 20.60% | 25.14% | 0.00%, 0.00%, 100.00% (14) | 7.97% | 3.11% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_0 [share 50%, other issuers' devices] | 5.34 | 40.5 | 4.14 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (12) | 5.77% | 4.27% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_0_with_observer [share 50%, all records] | 5.77 | 55.3 | 3.32 | 9.58% | 25.47% | 38.17% | 0.00%, 22.42%, 77.42% (31) | 2.08% | 3.37% |  |
+| c6__otcR_Wmis__R100 | issuer_0_with_observer [share 50%, its own devices] | 5.77 | 55.4 | 3.32 | 11.79% | 26.56% | 41.90% | 0.00%, 27.83%, 77.42% (31) | 3.35% | 4.43% |  |
+| c6__otcR_Wmis__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.07 | 69.0 | 3.84 | 6.58% | 23.98% | 33.08% | 0.00%, 21.11%, 50.00% (20) | 7.10% | 4.50% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_0_with_first_relay [share 50%, all records] | 5.76 | 55.2 | 3.33 | 9.66% | 25.55% | 38.49% | 0.00%, 23.64%, 70.97% (31) | 2.39% | 3.48% |  |
+| c6__otcR_Wmis__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 5.77 | 55.4 | 3.33 | 11.36% | 26.70% | 42.19% | 0.00%, 26.54%, 70.97% (31) | 3.36% | 4.67% |  |
+| c6__otcR_Wmis__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.06 | 68.9 | 3.84 | 7.35% | 23.98% | 33.46% | 0.00%, 23.75%, 50.00% (20) | 7.64% | 4.52% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_0_with_destination | 5.26 | 38.6 | 3.57 | 13.64% | 35.94% | 54.26% | 0.00%, 41.17%, 64.52% (31) | 4.79% | 4.18% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_1 [share 30%, all records] | 4.56 | 23.6 | 4.11 | 1.31% | 5.00% | 7.78% | 0.00%, 0.00%, 0.00% (12) | 6.02% | 2.64% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_1 [share 30%, its own devices] | 4.57 | 23.8 | 4.16 | 6.75% | 25.74% | 40.08% | 0.00%, 0.00%, 0.00% (10) | 5.82% | 5.85% |  |
+| c6__otcR_Wmis__R100 | issuer_1 [share 30%, other issuers' devices] | 4.49 | 22.5 | 3.56 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (15) | 8.52% | 3.43% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_1_with_observer [share 30%, all records] | 5.77 | 55.3 | 3.32 | 9.58% | 25.47% | 38.17% | 0.00%, 22.42%, 77.42% (31) | 2.08% | 3.37% |  |
+| c6__otcR_Wmis__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.53 | 92.7 | 4.78 | 6.33% | 15.19% | 22.78% | 0.00%, 31.43%, 50.00% (20) | 6.17% | 4.96% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 5.77 | 55.5 | 3.34 | 10.37% | 27.95% | 41.87% | 0.00%, 22.37%, 77.42% (31) | 3.70% | 3.73% |  |
+| c6__otcR_Wmis__R100 | issuer_1_with_first_relay [share 30%, all records] | 5.76 | 55.2 | 3.33 | 9.66% | 25.55% | 38.49% | 0.00%, 23.64%, 70.97% (31) | 2.39% | 3.48% |  |
+| c6__otcR_Wmis__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.52 | 92.4 | 4.79 | 7.59% | 15.61% | 23.21% | 0.00%, 40.00%, 50.00% (20) | 6.93% | 5.09% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 5.77 | 55.4 | 3.34 | 10.16% | 27.95% | 42.17% | 0.00%, 23.41%, 70.97% (31) | 3.12% | 3.76% |  |
+| c6__otcR_Wmis__R100 | issuer_1_with_destination | 4.44 | 21.8 | 3.01 | 16.03% | 39.24% | 61.60% | 30.00%, 45.71%, 50.00% (20) | 7.14% | 7.86% |  |
+| c6__otcR_Wmis__R100 | issuer_2 [share 20%, all records] | 4.15 | 17.8 | 3.63 | 2.95% | 11.06% | 12.69% | 0.00%, 0.00%, 100.00% (36) | 6.12% | 3.39% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_2 [share 20%, its own devices] | 4.14 | 17.7 | 3.60 | 12.86% | 48.21% | 55.36% | 0.00%, 10.00%, 100.00% (36) | 15.33% | 6.48% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_2 [share 20%, other issuers' devices] | 4.09 | 17.1 | 3.06 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (10) | 12.54% | 4.17% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_2_with_observer [share 20%, all records] | 5.77 | 55.3 | 3.32 | 9.58% | 25.47% | 38.17% | 0.00%, 22.42%, 77.42% (31) | 2.08% | 3.37% |  |
+| c6__otcR_Wmis__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.04 | 68.1 | 3.82 | 6.79% | 31.43% | 41.79% | 5.26%, 20.22%, 22.22% (36) | 10.47% | 6.65% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.07 | 69.0 | 3.84 | 10.41% | 23.70% | 37.09% | 0.00%, 24.45%, 77.42% (31) | 4.25% | 3.27% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_2_with_first_relay [share 20%, all records] | 5.76 | 55.2 | 3.33 | 9.66% | 25.55% | 38.49% | 0.00%, 23.64%, 70.97% (31) | 2.39% | 3.48% |  |
+| c6__otcR_Wmis__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.04 | 67.9 | 3.82 | 7.14% | 31.07% | 42.14% | 5.26%, 20.50%, 25.00% (36) | 10.14% | 6.21% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.07 | 68.9 | 3.85 | 10.41% | 23.91% | 37.41% | 0.00%, 29.12%, 70.97% (31) | 4.31% | 3.43% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | issuer_2_with_destination | 3.66 | 13.0 | 2.19 | 23.57% | 58.93% | 79.64% | 24.29%, 52.98%, 58.33% (36) | 6.90% | 9.89% |  |
+| c6__otcR_chain100__R1 | observer | 5.63 | 49.7 | 4.22 | 4.75% | 20.43% | 37.77% | 4.79%, 7.50%, 8.17% (208) | 2.05% | 4.36% |  |
+| c6__otcR_chain100__R1 | first_hop | 5.63 | 49.6 | 4.21 | 4.70% | 20.57% | 37.77% | 4.74%, 7.33%, 7.98% (4160) | 1.81% | 0.92% |  |
+| c6__otcR_chain100__R1 | destination | 5.63 | 49.7 | 4.41 | 4.75% | 19.71% | 36.34% | 4.78%, 6.73%, 7.21% (208) | 3.64% | 4.67% |  |
+| c6__otcR_chain100__R1 | destination_keyed | 5.62 | 49.6 | 4.41 | 1.43% | 6.89% | 12.35% | 1.44%, 2.21%, 2.40% (208) | 1.15% | 1.75% |  |
+| c6__otcR_chain100__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (208) | 0.00% | 0.00% |  |
+| c6__otcR_chain100__R1 | issuer_0 [share 50%, all records] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (208) | 3.93% | 3.77% | badly miscalibrated |
+| c6__otcR_chain100__R1 | issuer_0 [share 50%, other issuers' devices] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (208) | 3.93% | 3.77% | badly miscalibrated |
+| c6__otcR_chain100__R1 | issuer_0_with_observer [share 50%, all records] | 5.63 | 49.7 | 4.22 | 4.75% | 20.43% | 37.77% | 4.79%, 7.50%, 8.17% (208) | 2.05% | 4.36% |  |
+| c6__otcR_chain100__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.63 | 49.7 | 4.22 | 4.75% | 20.43% | 37.77% | 4.79%, 7.50%, 8.17% (208) | 2.05% | 4.36% |  |
+| c6__otcR_chain100__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.63 | 49.6 | 4.21 | 4.75% | 20.67% | 37.77% | 4.79%, 7.11%, 7.69% (208) | 2.45% | 4.35% |  |
+| c6__otcR_chain100__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.63 | 49.6 | 4.21 | 4.75% | 20.67% | 37.77% | 4.79%, 7.11%, 7.69% (208) | 2.45% | 4.35% |  |
+| c6__otcR_chain100__R1 | issuer_1 [share 30%, all records] | 4.43 | 22.5 | 3.13 | 0.00% | 0.00% | 49.41% | 0.00%, 0.00%, 0.00% (208) | 13.17% | 6.57% | badly miscalibrated |
+| c6__otcR_chain100__R1 | issuer_1 [share 30%, its own devices] | 4.43 | 22.6 | 3.14 | 0.00% | 0.00% | 49.82% | 0.00%, 0.00%, 0.00% (142) | 13.12% | 7.24% | badly miscalibrated |
+| c6__otcR_chain100__R1 | issuer_1 [share 30%, other issuers' devices] | 4.42 | 22.4 | 3.12 | 0.00% | 0.00% | 48.53% | 0.00%, 0.00%, 0.00% (66) | 13.29% | 11.09% | badly miscalibrated |
+| c6__otcR_chain100__R1 | issuer_1_with_observer [share 30%, all records] | 5.63 | 49.7 | 4.22 | 4.75% | 20.43% | 37.77% | 4.79%, 7.50%, 8.17% (208) | 2.05% | 4.36% |  |
+| c6__otcR_chain100__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.63 | 49.7 | 4.22 | 4.56% | 18.25% | 36.14% | 4.58%, 7.68%, 8.45% (142) | 2.30% | 5.43% |  |
+| c6__otcR_chain100__R1 | issuer_1_with_observer [share 30%, other issuers' devices] | 5.63 | 49.7 | 4.21 | 5.15% | 25.00% | 41.18% | 5.22%, 7.10%, 7.58% (66) | 4.55% | 8.33% |  |
+| c6__otcR_chain100__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.63 | 49.6 | 4.21 | 4.75% | 20.67% | 37.77% | 4.79%, 7.11%, 7.69% (208) | 2.45% | 4.35% |  |
+| c6__otcR_chain100__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.63 | 49.6 | 4.21 | 4.21% | 17.89% | 35.79% | 4.22%, 7.04%, 7.75% (142) | 2.18% | 5.12% |  |
+| c6__otcR_chain100__R1 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 5.63 | 49.6 | 4.20 | 5.88% | 26.47% | 41.91% | 5.93%, 7.25%, 7.58% (66) | 5.03% | 8.09% |  |
+| c6__otcR_chain100__R1 | issuer_1_with_destination | — | — | — | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (142) | 0.00% | 0.00% |  |
+| c6__otcR_chain100__R1 | issuer_2 [share 20%, all records] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (208) | 7.23% | 5.04% | badly miscalibrated |
+| c6__otcR_chain100__R1 | issuer_2 [share 20%, other issuers' devices] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (208) | 7.23% | 5.04% | badly miscalibrated |
+| c6__otcR_chain100__R1 | issuer_2_with_observer [share 20%, all records] | 5.63 | 49.7 | 4.22 | 4.75% | 20.43% | 37.77% | 4.79%, 7.50%, 8.17% (208) | 2.05% | 4.36% |  |
+| c6__otcR_chain100__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.63 | 49.7 | 4.22 | 4.75% | 20.43% | 37.77% | 4.79%, 7.50%, 8.17% (208) | 2.05% | 4.36% |  |
+| c6__otcR_chain100__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.63 | 49.6 | 4.21 | 4.75% | 20.67% | 37.77% | 4.79%, 7.11%, 7.69% (208) | 2.45% | 4.35% |  |
+| c6__otcR_chain100__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.63 | 49.6 | 4.21 | 4.75% | 20.67% | 37.77% | 4.79%, 7.11%, 7.69% (208) | 2.45% | 4.35% |  |
+| c6__otcR_chain100__R100 | observer | 6.61 | 98.0 | 5.10 | 2.45% | 12.58% | 21.81% | 0.00%, 10.00%, 25.00% (16) | 1.49% | 1.98% |  |
+| c6__otcR_chain100__R100 | first_hop | 6.61 | 97.7 | 5.09 | 2.59% | 12.45% | 21.70% | 0.00%, 6.35%, 42.86% (140) | 1.11% | 0.45% |  |
+| c6__otcR_chain100__R100 | destination | 6.49 | 90.1 | 4.98 | 3.59% | 13.64% | 23.12% | 0.00%, 16.67%, 31.25% (16) | 1.12% | 1.97% |  |
+| c6__otcR_chain100__R100 | destination_keyed | 3.10 | 40.4 | 2.35 | 2.37% | 5.39% | 8.25% | 0.00%, 11.25%, 42.86% (14) | 33.11% | 2.01% | badly miscalibrated |
+| c6__otcR_chain100__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (16) | 0.00% | 0.00% |  |
+| c6__otcR_chain100__R100 | issuer_0 [share 50%, all records] | 5.88 | 59.0 | 5.74 | 1.55% | 6.21% | 8.91% | 0.00%, 0.00%, 0.00% (16) | 1.54% | 1.55% |  |
+| c6__otcR_chain100__R100 | issuer_0 [share 50%, its own devices] | 5.88 | 59.1 | 5.74 | 1.72% | 10.30% | 15.24% | 0.00%, 0.00%, 0.00% (10) | 1.71% | 2.63% |  |
+| c6__otcR_chain100__R100 | issuer_0 [share 50%, other issuers' devices] | 5.87 | 58.6 | 5.52 | 1.45% | 3.69% | 5.01% | 0.00%, 0.00%, 0.00% (11) | 1.83% | 2.05% |  |
+| c6__otcR_chain100__R100 | issuer_0_with_observer [share 50%, all records] | 6.61 | 98.0 | 5.10 | 2.45% | 12.58% | 21.81% | 0.00%, 10.00%, 25.00% (16) | 1.49% | 1.98% |  |
+| c6__otcR_chain100__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.62 | 98.5 | 5.12 | 3.43% | 13.52% | 20.60% | 0.00%, 14.00%, 20.00% (10) | 1.65% | 3.21% |  |
+| c6__otcR_chain100__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.61 | 97.7 | 5.09 | 1.85% | 12.01% | 22.56% | 0.00%, 8.33%, 25.00% (16) | 1.96% | 2.56% |  |
+| c6__otcR_chain100__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.61 | 97.7 | 5.10 | 2.53% | 12.50% | 21.41% | 0.00%, 10.00%, 31.25% (16) | 1.38% | 1.92% |  |
+| c6__otcR_chain100__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.62 | 98.2 | 5.12 | 3.43% | 13.73% | 20.39% | 0.00%, 14.00%, 20.00% (10) | 1.86% | 3.18% |  |
+| c6__otcR_chain100__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.60 | 97.5 | 5.09 | 1.98% | 11.74% | 22.03% | 0.00%, 8.33%, 31.25% (16) | 1.57% | 2.59% |  |
+| c6__otcR_chain100__R100 | issuer_0_with_destination | 0.41 | 1.4 | 0.29 | 2.36% | 2.79% | 2.79% | 0.00%, 18.46%, 46.15% (13) | 58.61% | 3.85% | badly miscalibrated |
+| c6__otcR_chain100__R100 | issuer_1 [share 30%, all records] | 5.26 | 38.4 | 5.04 | 1.80% | 3.02% | 11.60% | 0.00%, 0.00%, 0.00% (16) | 3.05% | 1.99% | badly miscalibrated |
+| c6__otcR_chain100__R100 | issuer_1 [share 30%, its own devices] | 5.27 | 38.5 | 5.14 | 6.93% | 12.87% | 45.05% | — | 2.83% | 5.05% |  |
+| c6__otcR_chain100__R100 | issuer_1 [share 30%, other issuers' devices] | 5.25 | 38.0 | 4.79 | 0.78% | 1.08% | 4.99% | 0.00%, 0.00%, 0.00% (12) | 3.73% | 2.57% | badly miscalibrated |
+| c6__otcR_chain100__R100 | issuer_1_with_observer [share 30%, all records] | 6.61 | 98.0 | 5.10 | 2.45% | 12.58% | 21.81% | 0.00%, 10.00%, 25.00% (16) | 1.49% | 1.98% |  |
+| c6__otcR_chain100__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.62 | 98.2 | 5.10 | 2.48% | 11.39% | 20.30% | — | 3.49% | 4.51% |  |
+| c6__otcR_chain100__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.61 | 98.0 | 5.10 | 2.45% | 12.82% | 22.11% | 0.00%, 10.00%, 21.43% (14) | 1.30% | 2.13% |  |
+| c6__otcR_chain100__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.61 | 97.7 | 5.10 | 2.53% | 12.50% | 21.41% | 0.00%, 10.00%, 31.25% (16) | 1.38% | 1.92% |  |
+| c6__otcR_chain100__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.61 | 98.0 | 5.09 | 2.97% | 10.89% | 21.29% | — | 2.88% | 4.64% |  |
+| c6__otcR_chain100__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.61 | 97.7 | 5.10 | 2.45% | 12.82% | 21.43% | 0.00%, 10.00%, 21.43% (14) | 1.32% | 2.22% |  |
+| c6__otcR_chain100__R100 | issuer_1_with_destination | 0.34 | 1.3 | 0.19 | 0.99% | 0.99% | 0.99% | — | 33.81% | 3.54% | badly miscalibrated |
+| c6__otcR_chain100__R100 | issuer_2 [share 20%, all records] | 4.52 | 23.0 | 4.36 | 0.00% | 1.88% | 6.86% | 0.00%, 0.00%, 0.00% (16) | 4.89% | 2.58% | badly miscalibrated |
+| c6__otcR_chain100__R100 | issuer_2 [share 20%, its own devices] | 4.51 | 22.8 | 4.34 | 0.00% | 7.14% | 32.74% | — | 4.93% | 6.80% |  |
+| c6__otcR_chain100__R100 | issuer_2 [share 20%, other issuers' devices] | 4.42 | 21.5 | 3.68 | 0.00% | 1.04% | 2.75% | 0.00%, 0.00%, 0.00% (16) | 9.00% | 3.27% | badly miscalibrated |
+| c6__otcR_chain100__R100 | issuer_2_with_observer [share 20%, all records] | 6.61 | 98.0 | 5.10 | 2.45% | 12.58% | 21.81% | 0.00%, 10.00%, 25.00% (16) | 1.49% | 1.98% |  |
+| c6__otcR_chain100__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.73 | 106.7 | 5.45 | 0.00% | 11.31% | 26.19% | — | 2.34% | 4.94% |  |
+| c6__otcR_chain100__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.61 | 98.1 | 5.10 | 2.84% | 12.78% | 21.12% | 0.00%, 10.86%, 25.00% (16) | 1.66% | 2.04% |  |
+| c6__otcR_chain100__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.61 | 97.7 | 5.10 | 2.53% | 12.50% | 21.41% | 0.00%, 10.00%, 31.25% (16) | 1.38% | 1.92% |  |
+| c6__otcR_chain100__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.73 | 106.4 | 5.45 | 0.00% | 11.31% | 23.81% | — | 2.34% | 4.93% |  |
+| c6__otcR_chain100__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.61 | 97.8 | 5.10 | 2.94% | 12.69% | 21.02% | 0.00%, 10.86%, 31.25% (16) | 1.31% | 2.20% |  |
+| c6__otcR_chain100__R100 | issuer_2_with_destination | 0.03 | 1.0 | 0.01 | 0.00% | 0.00% | 0.00% | — | 35.43% | 0.91% | badly miscalibrated |
+| c6__otcR_chain50__R1 | observer | 5.83 | 57.2 | 4.39 | 4.51% | 17.58% | 29.22% | 3.46%, 5.67%, 6.36% (173) | 3.35% | 3.99% |  |
+| c6__otcR_chain50__R1 | first_hop | 5.83 | 57.0 | 4.38 | 4.57% | 17.71% | 29.29% | 3.25%, 5.87%, 6.71% (3460) | 2.59% | 0.92% | badly miscalibrated |
+| c6__otcR_chain50__R1 | destination | 5.81 | 56.4 | 4.56 | 4.04% | 15.91% | 30.40% | 1.74%, 5.50%, 6.36% (173) | 2.38% | 4.12% |  |
+| c6__otcR_chain50__R1 | destination_keyed | 5.93 | 61.1 | 4.86 | 0.95% | 3.80% | 7.84% | 0.29%, 1.39%, 1.73% (173) | 0.78% | 1.59% |  |
+| c6__otcR_chain50__R1 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (41) | 0.00% | 0.00% |  |
+| c6__otcR_chain50__R1 | issuer_0 [share 50%, all records] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (41) | 3.93% | 3.77% | badly miscalibrated |
+| c6__otcR_chain50__R1 | issuer_0 [share 50%, other issuers' devices] | 5.48 | 44.6 | 4.68 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (41) | 3.93% | 3.77% | badly miscalibrated |
+| c6__otcR_chain50__R1 | issuer_0_with_observer [share 50%, all records] | 5.83 | 57.2 | 4.39 | 4.51% | 17.58% | 29.22% | 3.46%, 5.67%, 6.36% (173) | 3.35% | 3.99% |  |
+| c6__otcR_chain50__R1 | issuer_0_with_observer [share 50%, other issuers' devices] | 5.83 | 57.2 | 4.39 | 4.51% | 17.58% | 29.22% | 3.46%, 5.67%, 6.36% (173) | 3.35% | 3.99% |  |
+| c6__otcR_chain50__R1 | issuer_0_with_first_relay [share 50%, all records] | 5.83 | 57.0 | 4.38 | 4.75% | 18.53% | 28.98% | 3.46%, 6.08%, 6.94% (173) | 2.49% | 4.04% |  |
+| c6__otcR_chain50__R1 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 5.83 | 57.0 | 4.38 | 4.75% | 18.53% | 28.98% | 3.46%, 6.08%, 6.94% (173) | 2.49% | 4.04% |  |
+| c6__otcR_chain50__R1 | issuer_1 [share 30%, all records] | 4.43 | 22.5 | 3.13 | 0.00% | 0.00% | 41.09% | 0.00%, 0.00%, 0.00% (41) | 13.17% | 6.57% | badly miscalibrated |
+| c6__otcR_chain50__R1 | issuer_1 [share 30%, its own devices] | 4.43 | 22.6 | 3.14 | 0.00% | 0.00% | 49.82% | 0.00%, 0.00%, 0.00% (143) | 13.12% | 7.24% | badly miscalibrated |
+| c6__otcR_chain50__R1 | issuer_1 [share 30%, other issuers' devices] | 4.42 | 22.4 | 3.12 | 0.00% | 0.00% | 22.79% | 0.00%, 0.00%, 0.00% (41) | 13.29% | 11.09% | badly miscalibrated |
+| c6__otcR_chain50__R1 | issuer_1_with_observer [share 30%, all records] | 5.83 | 57.2 | 4.39 | 4.51% | 17.58% | 29.22% | 3.46%, 5.67%, 6.36% (173) | 3.35% | 3.99% |  |
+| c6__otcR_chain50__R1 | issuer_1_with_observer [share 30%, its own devices] | 5.83 | 57.1 | 4.39 | 5.26% | 21.05% | 34.04% | 5.27%, 6.12%, 6.34% (142) | 3.91% | 4.92% |  |
+| c6__otcR_chain50__R1 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.06 | 67.0 | 4.97 | 2.94% | 10.29% | 19.12% | 3.15%, 5.55%, 6.45% (31) | 3.70% | 6.46% |  |
+| c6__otcR_chain50__R1 | issuer_1_with_first_relay [share 30%, all records] | 5.83 | 57.0 | 4.38 | 4.75% | 18.53% | 28.98% | 3.46%, 6.08%, 6.94% (173) | 2.49% | 4.04% |  |
+| c6__otcR_chain50__R1 | issuer_1_with_first_relay [share 30%, its own devices] | 5.83 | 57.0 | 4.37 | 5.61% | 21.75% | 33.68% | 5.62%, 6.76%, 7.04% (142) | 4.23% | 5.08% |  |
+| c6__otcR_chain50__R1 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.06 | 66.7 | 4.97 | 2.94% | 11.76% | 19.12% | 3.15%, 5.55%, 6.45% (31) | 3.70% | 6.68% |  |
+| c6__otcR_chain50__R1 | issuer_1_with_destination | — | — | — | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (143) | 0.00% | 0.00% |  |
+| c6__otcR_chain50__R1 | issuer_2 [share 20%, all records] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (41) | 7.23% | 5.04% | badly miscalibrated |
+| c6__otcR_chain50__R1 | issuer_2 [share 20%, other issuers' devices] | 4.42 | 21.4 | 3.79 | 0.00% | 0.00% | 0.00% | 0.00%, 0.00%, 0.00% (41) | 7.23% | 5.04% | badly miscalibrated |
+| c6__otcR_chain50__R1 | issuer_2_with_observer [share 20%, all records] | 5.83 | 57.2 | 4.39 | 4.51% | 17.58% | 29.22% | 3.46%, 5.67%, 6.36% (173) | 3.35% | 3.99% |  |
+| c6__otcR_chain50__R1 | issuer_2_with_observer [share 20%, other issuers' devices] | 5.83 | 57.2 | 4.39 | 4.51% | 17.58% | 29.22% | 3.46%, 5.67%, 6.36% (173) | 3.35% | 3.99% |  |
+| c6__otcR_chain50__R1 | issuer_2_with_first_relay [share 20%, all records] | 5.83 | 57.0 | 4.38 | 4.75% | 18.53% | 28.98% | 3.46%, 6.08%, 6.94% (173) | 2.49% | 4.04% |  |
+| c6__otcR_chain50__R1 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 5.83 | 57.0 | 4.38 | 4.75% | 18.53% | 28.98% | 3.46%, 6.08%, 6.94% (173) | 2.49% | 4.04% |  |
+| c6__otcR_chain50__R100 | observer | 6.81 | 112.5 | 5.22 | 2.45% | 11.37% | 19.22% | 0.00%, 28.00%, 38.46% (13) | 0.64% | 1.84% |  |
+| c6__otcR_chain50__R100 | first_hop | 6.81 | 112.1 | 5.22 | 2.40% | 11.23% | 19.04% | 0.00%, 0.83%, 39.62% (260) | 0.51% | 0.42% |  |
+| c6__otcR_chain50__R100 | destination | 6.89 | 118.7 | 5.72 | 3.43% | 11.37% | 19.95% | 4.76%, 26.00%, 38.46% (13) | 1.68% | 1.51% |  |
+| c6__otcR_chain50__R100 | destination_keyed | 3.69 | 38.1 | 3.05 | 3.76% | 11.45% | 14.15% | 0.00%, 36.77%, 50.00% (10) | 19.43% | 4.15% | badly miscalibrated |
+| c6__otcR_chain50__R100 | first_relay_with_destination | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (10) | 0.00% | 0.00% |  |
+| c6__otcR_chain50__R100 | issuer_0 [share 50%, all records] | 5.88 | 59.0 | 5.74 | 0.90% | 4.91% | 7.20% | 0.00%, 0.00%, 0.00% (10) | 1.46% | 1.55% |  |
+| c6__otcR_chain50__R100 | issuer_0 [share 50%, its own devices] | 5.88 | 59.1 | 5.74 | 1.72% | 10.30% | 15.24% | 0.00%, 0.00%, 0.00% (10) | 1.40% | 2.63% |  |
+| c6__otcR_chain50__R100 | issuer_0 [share 50%, other issuers' devices] | 5.81 | 56.3 | 5.09 | 0.40% | 1.59% | 2.25% | 0.00%, 0.00%, 0.00% (10) | 2.99% | 2.51% | badly miscalibrated |
+| c6__otcR_chain50__R100 | issuer_0_with_observer [share 50%, all records] | 6.81 | 112.5 | 5.22 | 2.45% | 11.37% | 19.22% | 0.00%, 28.00%, 38.46% (13) | 0.64% | 1.84% |  |
+| c6__otcR_chain50__R100 | issuer_0_with_observer [share 50%, its own devices] | 6.82 | 112.9 | 5.25 | 4.51% | 15.02% | 22.10% | 0.00%, 6.15%, 7.69% (13) | 2.13% | 3.02% |  |
+| c6__otcR_chain50__R100 | issuer_0_with_observer [share 50%, other issuers' devices] | 6.93 | 122.0 | 5.55 | 1.19% | 9.11% | 17.44% | 3.85%, 9.17%, 10.00% (10) | 1.20% | 2.21% |  |
+| c6__otcR_chain50__R100 | issuer_0_with_first_relay [share 50%, all records] | 6.81 | 112.1 | 5.22 | 2.29% | 11.20% | 18.81% | 0.00%, 19.00%, 38.46% (13) | 0.79% | 1.79% |  |
+| c6__otcR_chain50__R100 | issuer_0_with_first_relay [share 50%, its own devices] | 6.81 | 112.5 | 5.25 | 4.29% | 14.59% | 21.24% | 0.00%, 6.15%, 7.69% (13) | 2.59% | 2.84% |  |
+| c6__otcR_chain50__R100 | issuer_0_with_first_relay [share 50%, other issuers' devices] | 6.92 | 121.6 | 5.55 | 1.06% | 9.11% | 17.31% | 0.00%, 3.85%, 7.69% (13) | 1.22% | 2.16% |  |
+| c6__otcR_chain50__R100 | issuer_0_with_destination | 2.25 | 5.0 | 1.46 | 4.29% | 14.59% | 16.74% | 0.00%, 32.00%, 40.00% (10) | 34.24% | 8.14% | badly miscalibrated |
+| c6__otcR_chain50__R100 | issuer_1 [share 30%, all records] | 5.26 | 38.4 | 5.14 | 1.39% | 2.45% | 8.99% | 0.00%, 0.00%, 0.00% (10) | 2.35% | 2.03% | badly miscalibrated |
+| c6__otcR_chain50__R100 | issuer_1 [share 30%, its own devices] | 5.27 | 38.5 | 5.14 | 6.93% | 12.87% | 45.05% | — | 3.11% | 5.05% |  |
+| c6__otcR_chain50__R100 | issuer_1 [share 30%, other issuers' devices] | 5.26 | 38.4 | 5.04 | 0.29% | 0.39% | 1.86% | 0.00%, 0.00%, 0.00% (10) | 2.86% | 2.07% | badly miscalibrated |
+| c6__otcR_chain50__R100 | issuer_1_with_observer [share 30%, all records] | 6.81 | 112.5 | 5.22 | 2.45% | 11.37% | 19.22% | 0.00%, 28.00%, 38.46% (13) | 0.64% | 1.84% |  |
+| c6__otcR_chain50__R100 | issuer_1_with_observer [share 30%, its own devices] | 6.82 | 112.8 | 5.21 | 2.48% | 11.88% | 23.27% | — | 3.15% | 4.70% |  |
+| c6__otcR_chain50__R100 | issuer_1_with_observer [share 30%, other issuers' devices] | 6.81 | 112.5 | 5.23 | 2.45% | 11.26% | 18.41% | 0.00%, 22.00%, 30.00% (10) | 0.95% | 2.25% |  |
+| c6__otcR_chain50__R100 | issuer_1_with_first_relay [share 30%, all records] | 6.81 | 112.1 | 5.22 | 2.29% | 11.20% | 18.81% | 0.00%, 19.00%, 38.46% (13) | 0.79% | 1.79% |  |
+| c6__otcR_chain50__R100 | issuer_1_with_first_relay [share 30%, its own devices] | 6.81 | 112.4 | 5.20 | 1.49% | 11.88% | 24.26% | — | 2.54% | 4.63% |  |
+| c6__otcR_chain50__R100 | issuer_1_with_first_relay [share 30%, other issuers' devices] | 6.81 | 112.0 | 5.23 | 2.45% | 11.07% | 17.73% | 0.00%, 16.00%, 30.00% (10) | 0.97% | 2.03% |  |
+| c6__otcR_chain50__R100 | issuer_1_with_destination | 1.86 | 3.9 | 1.25 | 1.49% | 7.43% | 7.43% | — | 42.86% | 13.75% | badly miscalibrated |
+| c6__otcR_chain50__R100 | issuer_2 [share 20%, all records] | 4.52 | 23.0 | 4.36 | 0.00% | 1.14% | 5.72% | 0.00%, 0.00%, 0.00% (10) | 4.89% | 2.50% | badly miscalibrated |
+| c6__otcR_chain50__R100 | issuer_2 [share 20%, its own devices] | 4.51 | 22.8 | 4.34 | 0.00% | 7.14% | 32.74% | 0.00%, 0.00%, 0.00% (10) | 4.93% | 6.80% |  |
+| c6__otcR_chain50__R100 | issuer_2 [share 20%, other issuers' devices] | 4.42 | 21.5 | 3.69 | 0.00% | 0.19% | 1.42% | 0.00%, 0.00%, 0.00% (10) | 8.99% | 3.32% | badly miscalibrated |
+| c6__otcR_chain50__R100 | issuer_2_with_observer [share 20%, all records] | 6.81 | 112.5 | 5.22 | 2.45% | 11.37% | 19.22% | 0.00%, 28.00%, 38.46% (13) | 0.64% | 1.84% |  |
+| c6__otcR_chain50__R100 | issuer_2_with_observer [share 20%, its own devices] | 6.80 | 112.0 | 5.23 | 0.60% | 13.69% | 25.60% | 0.00%, 0.00%, 0.00% (10) | 2.89% | 4.82% |  |
+| c6__otcR_chain50__R100 | issuer_2_with_observer [share 20%, other issuers' devices] | 6.81 | 112.6 | 5.22 | 2.75% | 11.00% | 18.20% | 0.00%, 30.00%, 38.46% (13) | 0.98% | 2.08% |  |
+| c6__otcR_chain50__R100 | issuer_2_with_first_relay [share 20%, all records] | 6.81 | 112.1 | 5.22 | 2.29% | 11.20% | 18.81% | 0.00%, 19.00%, 38.46% (13) | 0.79% | 1.79% |  |
+| c6__otcR_chain50__R100 | issuer_2_with_first_relay [share 20%, its own devices] | 6.80 | 111.6 | 5.24 | 1.19% | 13.10% | 24.40% | 0.00%, 0.00%, 0.00% (10) | 3.47% | 5.21% |  |
+| c6__otcR_chain50__R100 | issuer_2_with_first_relay [share 20%, other issuers' devices] | 6.81 | 112.2 | 5.22 | 2.46% | 10.90% | 17.91% | 0.00%, 22.00%, 38.46% (13) | 1.13% | 1.92% |  |
+| c6__otcR_chain50__R100 | issuer_2_with_destination | 1.47 | 3.3 | 1.14 | 10.71% | 19.05% | 19.05% | 0.00%, 0.00%, 0.00% (10) | 40.99% | 11.54% | badly miscalibrated |
 | c6__otc_W0__R1 | observer | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.59% |  |
 | c6__otc_W0__R1 | first_hop | 5.64 | 50.1 | 4.26 | 6.13% | 20.87% | 36.23% | 6.11%, 7.38%, 7.70% (4180) | 2.58% | 1.01% | badly miscalibrated |
 | c6__otc_W0__R1 | destination | 5.63 | 49.9 | 4.43 | 7.02% | 21.55% | 33.66% | 7.00%, 8.67%, 9.09% (209) | 4.80% | 4.64% | badly miscalibrated |
@@ -2055,6 +3678,70 @@ Entropy and min-entropy in bits at the calibrated temperature; the effective ano
 | c6__cp_chain50__R100 | K records, K = 2 | 5.90 | 63.8 | 3.70 | 3.27% | 13.46% | 23.08% | — | 5.50% | 5.33% | badly miscalibrated |
 | c6__cp_chain50__R100 | K records, K = 3 | 4.97 | 34.9 | 2.77 | 4.70% | 19.46% | 34.23% | — | 11.93% | 8.41% | badly miscalibrated |
 | c6__cp_chain50__R100 | K records, K = 5 | 3.45 | 13.1 | 1.68 | 13.22% | 46.28% | 77.69% | — | 22.96% | 15.90% | badly miscalibrated |
+| c6__otcLR_W0__R1 | K records, K = 1 | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.48% |  |
+| c6__otcLR_W0__R1 | K records, K = 2 | 4.81 | 28.5 | 3.10 | 9.22% | 35.92% | 53.40% | 9.20%, 11.07%, 11.54% (104) | 7.65% | 9.24% |  |
+| c6__otcLR_W0__R1 | K records, K = 3 | 3.94 | 15.9 | 2.25 | 11.68% | 47.45% | 72.26% | 11.66%, 13.93%, 14.49% (69) | 14.49% | 14.27% | badly miscalibrated |
+| c6__otcLR_W0__R1 | K records, K = 5 | 2.55 | 6.4 | 1.31 | 23.46% | 77.78% | 95.06% | 23.35%, 30.04%, 31.71% (41) | 20.76% | 19.17% | badly miscalibrated |
+| c6__otcLR_W0__R1 | K records, K = 10 | 0.63 | 1.7 | 0.32 | 67.50% | 97.50% | 100.00% | 67.50%, 73.50%, 75.00% (20) | 20.55% | 17.71% |  |
+| c6__otcLR_W0__R1 | K records, K = 20 | 0.05 | 1.0 | 0.01 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (10) | 0.91% | 4.09% |  |
+| c6__otcLR_W0__R100 | K records, K = 1 | 6.60 | 97.5 | 5.06 | 2.88% | 11.76% | 22.70% | 0.00%, 10.00%, 18.18% (11) | 1.04% | 2.05% |  |
+| c6__otcLR_W0__R100 | K records, K = 2 | 5.72 | 53.4 | 3.77 | 3.76% | 19.86% | 37.39% | 20.00%, 20.00%, 20.00% (10) | 4.05% | 4.93% |  |
+| c6__otcLR_W0__R100 | K records, K = 3 | 4.85 | 29.5 | 2.90 | 8.66% | 35.22% | 57.31% | — | 8.82% | 7.65% | badly miscalibrated |
+| c6__otcLR_W0__R100 | K records, K = 5 | 3.34 | 10.7 | 1.76 | 31.61% | 69.68% | 85.81% | — | 9.99% | 14.40% |  |
+| c6__otcLR_W1__R1 | K records, K = 1 | 5.59 | 48.3 | 4.60 | 0.52% | 11.34% | 26.55% | 0.49%, 0.87%, 0.97% (206) | 4.06% | 4.05% | badly miscalibrated |
+| c6__otcLR_W1__R1 | K records, K = 2 | 4.96 | 31.8 | 3.59 | 1.03% | 11.34% | 34.02% | 0.97%, 1.75%, 1.94% (103) | 7.75% | 8.24% |  |
+| c6__otcLR_W1__R1 | K records, K = 3 | 4.34 | 21.1 | 2.83 | 1.56% | 11.72% | 39.06% | 1.47%, 2.65%, 2.94% (68) | 15.26% | 12.72% | badly miscalibrated |
+| c6__otcLR_W1__R1 | K records, K = 5 | 3.38 | 11.2 | 2.00 | 1.30% | 15.58% | 48.05% | 1.22%, 2.20%, 2.44% (41) | 26.48% | 18.11% | badly miscalibrated |
+| c6__otcLR_W1__R1 | K records, K = 10 | 2.08 | 4.6 | 1.05 | 0.00% | 13.16% | 76.32% | 0.00%, 0.00%, 0.00% (20) | 51.28% | 29.42% | badly miscalibrated |
+| c6__otcLR_W1__R1 | K records, K = 20 | 1.41 | 2.9 | 0.80 | 0.00% | 10.53% | 100.00% | 0.00%, 0.00%, 0.00% (10) | 61.90% | 37.87% | badly miscalibrated |
+| c6__otcLR_W1__R100 | K records, K = 1 | 6.14 | 71.0 | 4.14 | 6.10% | 18.83% | 31.10% | 0.00%, 4.08%, 64.86% (74) | 1.60% | 2.38% |  |
+| c6__otcLR_W1__R100 | K records, K = 2 | 4.69 | 27.0 | 2.38 | 6.78% | 20.17% | 34.38% | 0.00%, 39.62%, 70.27% (37) | 13.94% | 6.56% | badly miscalibrated |
+| c6__otcLR_W1__R100 | K records, K = 3 | 3.18 | 10.2 | 1.41 | 7.33% | 20.94% | 37.70% | 38.33%, 70.00%, 71.43% (14) | 32.92% | 9.29% | badly miscalibrated |
+| c6__otcLR_W1__R100 | K records, K = 5 | 1.53 | 3.2 | 0.67 | 8.65% | 24.32% | 51.35% | 71.43%, 71.43%, 71.43% (14) | 56.74% | 12.20% | badly miscalibrated |
+| c6__otcLR_W1__R100 | K records, K = 10 | 0.62 | 1.7 | 0.31 | 14.29% | 39.29% | 87.50% | — | 68.79% | 15.07% | badly miscalibrated |
+| c6__otcLR_W1__R100 | K records, K = 20 | 0.39 | 1.4 | 0.23 | 35.71% | 85.71% | 100.00% | — | 51.55% | 24.00% | badly miscalibrated |
+| c6__otcLR_W2__R1 | K records, K = 1 | 5.45 | 44.0 | 4.11 | 5.74% | 23.22% | 40.98% | 5.75%, 6.48%, 6.67% (180) | 4.17% | 5.01% |  |
+| c6__otcLR_W2__R1 | K records, K = 2 | 4.63 | 25.5 | 2.89 | 5.46% | 24.04% | 46.99% | 5.48%, 6.43%, 6.67% (90) | 10.84% | 9.72% | badly miscalibrated |
+| c6__otcLR_W2__R1 | K records, K = 3 | 3.79 | 14.9 | 2.11 | 3.28% | 26.23% | 53.28% | 3.31%, 4.66%, 5.00% (60) | 22.86% | 15.02% | badly miscalibrated |
+| c6__otcLR_W2__R1 | K records, K = 5 | 2.61 | 6.8 | 1.36 | 5.48% | 34.25% | 67.12% | 5.48%, 5.54%, 5.56% (36) | 37.39% | 19.92% | badly miscalibrated |
+| c6__otcLR_W2__R1 | K records, K = 10 | 1.35 | 2.8 | 0.67 | 11.11% | 38.89% | 88.89% | 11.11%, 11.11%, 11.11% (18) | 55.82% | 25.57% | badly miscalibrated |
+| c6__otcLR_W2__R1 | K records, K = 20 | 0.74 | 1.8 | 0.35 | 5.56% | 66.67% | 100.00% | — | 75.92% | 27.30% | badly miscalibrated |
+| c6__otcLR_W2__R100 | K records, K = 1 | 6.14 | 70.8 | 4.10 | 5.81% | 20.23% | 32.19% | 0.00%, 15.92%, 61.29% (31) | 2.27% | 2.77% |  |
+| c6__otcLR_W2__R100 | K records, K = 2 | 4.72 | 27.8 | 2.38 | 6.44% | 22.72% | 35.78% | 9.09%, 53.00%, 60.00% (15) | 15.31% | 7.22% | badly miscalibrated |
+| c6__otcLR_W2__R100 | K records, K = 3 | 3.24 | 10.9 | 1.42 | 7.94% | 25.29% | 41.76% | 40.00%, 60.78%, 61.11% (18) | 33.84% | 9.70% | badly miscalibrated |
+| c6__otcLR_W2__R100 | K records, K = 5 | 1.55 | 3.5 | 0.64 | 9.14% | 33.14% | 56.57% | 72.73%, 72.73%, 72.73% (11) | 59.08% | 11.74% | badly miscalibrated |
+| c6__otcLR_W2__R100 | K records, K = 10 | 0.49 | 1.5 | 0.18 | 19.30% | 59.65% | 82.46% | — | 69.98% | 14.38% | badly miscalibrated |
+| c6__otcLR_W2__R100 | K records, K = 20 | 0.54 | 1.6 | 0.33 | 18.18% | 100.00% | 100.00% | — | 64.58% | 28.13% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | K records, K = 1 | 5.44 | 43.9 | 3.84 | 16.12% | 32.24% | 44.81% | 16.10%, 16.98%, 17.20% (186) | 8.74% | 5.40% | badly miscalibrated |
+| c6__otcLR_Wmis__R1 | K records, K = 2 | 4.37 | 22.1 | 2.59 | 19.13% | 40.44% | 55.74% | 19.10%, 20.16%, 20.43% (93) | 7.59% | 12.07% |  |
+| c6__otcLR_Wmis__R1 | K records, K = 3 | 3.39 | 11.7 | 1.80 | 22.95% | 51.64% | 72.95% | 22.96%, 23.26%, 23.33% (60) | 10.32% | 14.82% |  |
+| c6__otcLR_Wmis__R1 | K records, K = 5 | 2.02 | 4.8 | 1.01 | 36.99% | 83.56% | 95.89% | 36.90%, 41.97%, 43.24% (37) | 18.42% | 20.36% |  |
+| c6__otcLR_Wmis__R1 | K records, K = 10 | 0.35 | 1.3 | 0.14 | 83.33% | 100.00% | 100.00% | 83.33%, 87.78%, 88.89% (18) | 12.33% | 14.11% |  |
+| c6__otcLR_Wmis__R1 | K records, K = 20 | 0.01 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | — | 0.17% | 5.39% |  |
+| c6__otcLR_Wmis__R100 | K records, K = 1 | 6.37 | 82.7 | 4.37 | 9.17% | 25.96% | 37.84% | 0.00%, 17.00%, 64.52% (31) | 4.10% | 2.81% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | K records, K = 2 | 5.02 | 34.1 | 2.52 | 11.27% | 32.74% | 47.76% | 12.44%, 61.67%, 67.74% (31) | 10.13% | 6.36% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | K records, K = 3 | 3.34 | 11.8 | 1.40 | 12.65% | 36.47% | 56.18% | 49.17%, 65.71%, 71.43% (21) | 30.33% | 9.81% | badly miscalibrated |
+| c6__otcLR_Wmis__R100 | K records, K = 5 | 1.31 | 2.9 | 0.54 | 12.00% | 50.29% | 78.29% | 75.00%, 75.00%, 75.00% (12) | 60.34% | 10.76% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | K records, K = 1 | 5.63 | 49.7 | 4.25 | 5.48% | 21.19% | 37.62% | 5.51%, 7.29%, 7.73% (207) | 2.39% | 4.64% |  |
+| c6__otcLR_chain100__R1 | K records, K = 2 | 4.80 | 28.3 | 3.10 | 7.66% | 33.01% | 54.55% | 7.68%, 9.30%, 9.71% (103) | 7.75% | 8.44% |  |
+| c6__otcLR_chain100__R1 | K records, K = 3 | 4.00 | 16.5 | 2.30 | 9.29% | 44.29% | 67.14% | 9.28%, 9.74%, 9.86% (71) | 14.13% | 12.80% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | K records, K = 5 | 2.61 | 6.7 | 1.38 | 21.69% | 75.90% | 92.77% | 21.69%, 21.90%, 21.95% (41) | 22.29% | 19.39% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | K records, K = 10 | 0.72 | 1.8 | 0.33 | 70.73% | 95.12% | 100.00% | 70.71%, 71.29%, 71.43% (21) | 21.86% | 19.34% | badly miscalibrated |
+| c6__otcLR_chain100__R1 | K records, K = 20 | 0.07 | 1.1 | 0.02 | 95.00% | 100.00% | 100.00% | 95.00%, 99.00%, 100.00% (10) | 3.84% | 8.84% |  |
+| c6__otcLR_chain100__R100 | K records, K = 1 | 6.62 | 98.4 | 5.10 | 3.14% | 12.31% | 21.48% | 0.00%, 15.76%, 27.27% (11) | 1.65% | 1.89% |  |
+| c6__otcLR_chain100__R100 | K records, K = 2 | 5.76 | 54.8 | 3.80 | 4.19% | 15.71% | 32.11% | 0.00%, 0.00%, 0.00% (10) | 3.80% | 3.96% |  |
+| c6__otcLR_chain100__R100 | K records, K = 3 | 4.93 | 31.2 | 2.90 | 6.67% | 25.80% | 49.57% | — | 8.04% | 7.42% | badly miscalibrated |
+| c6__otcLR_chain100__R100 | K records, K = 5 | 3.42 | 11.6 | 1.72 | 15.43% | 53.09% | 79.01% | — | 20.14% | 14.68% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | K records, K = 1 | 5.83 | 57.1 | 4.40 | 6.41% | 21.85% | 37.29% | 2.02%, 9.45%, 11.76% (170) | 2.79% | 4.44% |  |
+| c6__otcLR_chain50__R1 | K records, K = 2 | 4.74 | 27.6 | 3.05 | 10.48% | 35.24% | 58.10% | 5.41%, 14.92%, 18.82% (85) | 7.41% | 9.50% |  |
+| c6__otcLR_chain50__R1 | K records, K = 3 | 3.67 | 13.3 | 2.09 | 17.39% | 55.07% | 78.26% | 12.94%, 21.51%, 23.21% (56) | 9.33% | 14.47% |  |
+| c6__otcLR_chain50__R1 | K records, K = 5 | 2.15 | 4.9 | 1.13 | 32.53% | 90.36% | 98.80% | 38.24%, 40.59%, 41.18% (34) | 20.38% | 20.07% | badly miscalibrated |
+| c6__otcLR_chain50__R1 | K records, K = 10 | 0.30 | 1.3 | 0.16 | 92.68% | 100.00% | 100.00% | 94.12%, 94.12%, 94.12% (17) | 9.75% | 11.97% |  |
+| c6__otcLR_chain50__R1 | K records, K = 20 | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | — | 0.01% | 0.01% |  |
+| c6__otcLR_chain50__R100 | K records, K = 1 | 6.80 | 111.4 | 5.23 | 3.13% | 11.88% | 19.42% | 6.25%, 20.00%, 27.27% (11) | 0.89% | 1.93% |  |
+| c6__otcLR_chain50__R100 | K records, K = 2 | 5.64 | 51.4 | 3.69 | 5.98% | 20.93% | 34.95% | — | 3.22% | 4.85% |  |
+| c6__otcLR_chain50__R100 | K records, K = 3 | 4.65 | 26.2 | 2.72 | 7.80% | 41.02% | 63.05% | — | 9.39% | 8.95% | badly miscalibrated |
+| c6__otcLR_chain50__R100 | K records, K = 5 | 2.92 | 8.1 | 1.47 | 31.67% | 73.33% | 90.83% | — | 10.97% | 15.56% |  |
 | c6__otcL_W0__R1 | K records, K = 1 | 5.65 | 50.4 | 4.27 | 2.66% | 21.79% | 38.26% | 2.65%, 3.59%, 3.83% (209) | 3.93% | 4.48% |  |
 | c6__otcL_W0__R1 | K records, K = 2 | 4.81 | 28.5 | 3.10 | 9.22% | 35.92% | 53.40% | 9.20%, 11.07%, 11.54% (104) | 7.65% | 9.24% |  |
 | c6__otcL_W0__R1 | K records, K = 3 | 3.94 | 15.9 | 2.25 | 11.68% | 47.45% | 72.26% | 11.66%, 13.93%, 14.49% (69) | 14.49% | 14.27% | badly miscalibrated |
@@ -2119,6 +3806,70 @@ Entropy and min-entropy in bits at the calibrated temperature; the effective ano
 | c6__otcL_chain50__R100 | K records, K = 2 | 5.64 | 51.4 | 3.69 | 5.98% | 20.93% | 34.95% | — | 3.22% | 4.85% |  |
 | c6__otcL_chain50__R100 | K records, K = 3 | 4.65 | 26.2 | 2.72 | 7.80% | 41.02% | 63.05% | — | 9.39% | 8.95% | badly miscalibrated |
 | c6__otcL_chain50__R100 | K records, K = 5 | 2.92 | 8.1 | 1.47 | 31.67% | 73.33% | 90.83% | — | 10.97% | 15.56% |  |
+| c6__otcR_W0__R1 | K records, K = 1 | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.97% |  |
+| c6__otcR_W0__R1 | K records, K = 2 | 4.80 | 28.3 | 3.10 | 8.25% | 34.95% | 56.31% | 8.22%, 10.87%, 11.54% (104) | 5.73% | 8.64% |  |
+| c6__otcR_W0__R1 | K records, K = 3 | 4.00 | 16.5 | 2.33 | 13.87% | 53.28% | 68.61% | 13.83%, 17.84%, 18.84% (69) | 7.84% | 13.12% |  |
+| c6__otcR_W0__R1 | K records, K = 5 | 2.60 | 6.5 | 1.29 | 25.93% | 74.07% | 92.59% | 25.79%, 34.43%, 36.59% (41) | 20.55% | 20.72% |  |
+| c6__otcR_W0__R1 | K records, K = 10 | 0.67 | 1.7 | 0.30 | 85.00% | 97.50% | 100.00% | 85.00%, 85.00%, 85.00% (20) | 13.97% | 19.18% |  |
+| c6__otcR_W0__R1 | K records, K = 20 | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | 100.00%, 100.00%, 100.00% (10) | 0.03% | 4.97% |  |
+| c6__otcR_W0__R100 | K records, K = 1 | 6.62 | 98.8 | 5.08 | 3.04% | 13.40% | 22.86% | 0.00%, 15.38%, 27.27% (11) | 0.71% | 2.11% |  |
+| c6__otcR_W0__R100 | K records, K = 2 | 5.76 | 55.0 | 3.76 | 3.40% | 18.78% | 33.81% | 10.00%, 10.00%, 10.00% (10) | 5.45% | 4.62% | badly miscalibrated |
+| c6__otcR_W0__R100 | K records, K = 3 | 4.91 | 31.0 | 2.90 | 8.06% | 33.43% | 57.01% | — | 8.14% | 7.99% | badly miscalibrated |
+| c6__otcR_W0__R100 | K records, K = 5 | 3.39 | 11.1 | 1.74 | 18.71% | 67.10% | 81.29% | — | 15.52% | 14.01% | badly miscalibrated |
+| c6__otcR_W1__R1 | K records, K = 1 | 5.58 | 48.0 | 4.60 | 0.77% | 9.54% | 24.48% | 0.73%, 1.31%, 1.46% (206) | 4.37% | 3.95% | badly miscalibrated |
+| c6__otcR_W1__R1 | K records, K = 2 | 4.94 | 31.4 | 3.58 | 1.03% | 11.34% | 27.32% | 0.97%, 1.75%, 1.94% (103) | 7.81% | 8.36% |  |
+| c6__otcR_W1__R1 | K records, K = 3 | 4.33 | 20.8 | 2.84 | 1.56% | 13.28% | 33.59% | 1.57%, 1.65%, 1.67% (60) | 13.50% | 11.81% | badly miscalibrated |
+| c6__otcR_W1__R1 | K records, K = 5 | 3.37 | 11.0 | 1.94 | 1.30% | 11.69% | 48.05% | 1.39%, 2.50%, 2.78% (36) | 26.95% | 18.83% | badly miscalibrated |
+| c6__otcR_W1__R1 | K records, K = 10 | 2.13 | 4.8 | 1.23 | 0.00% | 13.16% | 86.84% | 0.00%, 0.00%, 0.00% (20) | 46.69% | 27.81% | badly miscalibrated |
+| c6__otcR_W1__R1 | K records, K = 20 | 1.33 | 2.7 | 0.67 | 0.00% | 21.05% | 100.00% | 0.00%, 0.00%, 0.00% (10) | 65.62% | 36.05% | badly miscalibrated |
+| c6__otcR_W1__R100 | K records, K = 1 | 6.14 | 70.8 | 4.20 | 7.16% | 18.14% | 30.79% | 0.00%, 9.81%, 82.43% (74) | 2.15% | 2.35% |  |
+| c6__otcR_W1__R100 | K records, K = 2 | 4.73 | 27.9 | 2.48 | 8.43% | 19.67% | 34.55% | 6.67%, 30.13%, 86.49% (37) | 11.09% | 5.94% | badly miscalibrated |
+| c6__otcR_W1__R100 | K records, K = 3 | 3.31 | 11.1 | 1.54 | 8.12% | 20.94% | 37.43% | 22.86%, 71.96%, 87.50% (24) | 29.26% | 9.33% | badly miscalibrated |
+| c6__otcR_W1__R100 | K records, K = 5 | 1.70 | 3.7 | 0.78 | 9.19% | 27.57% | 53.51% | 92.86%, 92.86%, 92.86% (14) | 52.27% | 14.39% | badly miscalibrated |
+| c6__otcR_W1__R100 | K records, K = 10 | 0.65 | 1.7 | 0.31 | 16.07% | 44.64% | 89.29% | — | 66.77% | 16.35% | badly miscalibrated |
+| c6__otcR_W1__R100 | K records, K = 20 | 0.22 | 1.2 | 0.11 | 28.57% | 92.86% | 100.00% | — | 66.15% | 17.83% | badly miscalibrated |
+| c6__otcR_W2__R1 | K records, K = 1 | 5.29 | 39.7 | 3.71 | 7.92% | 26.23% | 39.34% | 7.90%, 8.89%, 9.14% (186) | 7.02% | 6.09% | badly miscalibrated |
+| c6__otcR_W2__R1 | K records, K = 2 | 4.22 | 20.5 | 2.43 | 8.74% | 22.95% | 46.45% | 8.73%, 9.49%, 9.68% (93) | 14.63% | 11.12% | badly miscalibrated |
+| c6__otcR_W2__R1 | K records, K = 3 | 3.33 | 11.7 | 1.78 | 9.02% | 26.23% | 53.28% | 8.98%, 10.83%, 11.29% (62) | 24.73% | 15.83% | badly miscalibrated |
+| c6__otcR_W2__R1 | K records, K = 5 | 2.20 | 5.5 | 1.15 | 8.22% | 27.40% | 71.23% | 8.22%, 8.31%, 8.33% (36) | 42.21% | 20.40% | badly miscalibrated |
+| c6__otcR_W2__R1 | K records, K = 10 | 1.26 | 2.7 | 0.67 | 8.33% | 50.00% | 94.44% | 8.33%, 15.00%, 16.67% (18) | 58.48% | 24.52% | badly miscalibrated |
+| c6__otcR_W2__R1 | K records, K = 20 | 0.74 | 1.9 | 0.43 | 11.11% | 66.67% | 100.00% | — | 69.38% | 26.59% | badly miscalibrated |
+| c6__otcR_W2__R100 | K records, K = 1 | 6.11 | 69.3 | 4.03 | 6.63% | 19.25% | 32.51% | 0.00%, 15.24%, 70.97% (31) | 2.28% | 2.70% |  |
+| c6__otcR_W2__R100 | K records, K = 2 | 4.64 | 26.6 | 2.31 | 7.16% | 20.75% | 36.85% | 12.88%, 51.67%, 66.67% (15) | 15.84% | 6.40% | badly miscalibrated |
+| c6__otcR_W2__R100 | K records, K = 3 | 3.24 | 11.1 | 1.44 | 7.06% | 21.76% | 45.59% | 35.00%, 64.00%, 70.00% (10) | 34.37% | 10.25% | badly miscalibrated |
+| c6__otcR_W2__R100 | K records, K = 5 | 1.62 | 3.7 | 0.68 | 10.29% | 29.71% | 57.14% | 63.64%, 63.64%, 63.64% (11) | 56.50% | 12.44% | badly miscalibrated |
+| c6__otcR_W2__R100 | K records, K = 10 | 0.49 | 1.5 | 0.23 | 17.54% | 52.63% | 94.74% | — | 70.14% | 12.68% | badly miscalibrated |
+| c6__otcR_W2__R100 | K records, K = 20 | 0.22 | 1.2 | 0.07 | 27.27% | 90.91% | 100.00% | — | 68.76% | 15.21% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | K records, K = 1 | 5.43 | 43.7 | 3.82 | 20.49% | 32.79% | 43.99% | 20.44%, 23.01%, 23.66% (186) | 14.20% | 5.52% | badly miscalibrated |
+| c6__otcR_Wmis__R1 | K records, K = 2 | 4.30 | 21.4 | 2.47 | 21.31% | 39.34% | 56.83% | 21.27%, 23.18%, 23.66% (93) | 7.38% | 11.48% |  |
+| c6__otcR_Wmis__R1 | K records, K = 3 | 3.33 | 11.5 | 1.78 | 28.69% | 49.18% | 67.21% | 28.63%, 31.53%, 32.26% (62) | 8.30% | 14.77% |  |
+| c6__otcR_Wmis__R1 | K records, K = 5 | 1.97 | 4.6 | 0.96 | 38.36% | 78.08% | 95.89% | 38.36%, 38.78%, 38.89% (36) | 17.78% | 20.61% |  |
+| c6__otcR_Wmis__R1 | K records, K = 10 | 0.27 | 1.3 | 0.12 | 80.56% | 100.00% | 100.00% | 80.56%, 82.78%, 83.33% (18) | 16.09% | 10.45% |  |
+| c6__otcR_Wmis__R1 | K records, K = 20 | 0.01 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | — | 0.09% | 0.15% |  |
+| c6__otcR_Wmis__R100 | K records, K = 1 | 5.77 | 55.3 | 3.32 | 9.58% | 25.47% | 38.17% | 0.00%, 22.42%, 77.42% (31) | 2.49% | 3.32% |  |
+| c6__otcR_Wmis__R100 | K records, K = 2 | 3.41 | 13.1 | 1.50 | 10.02% | 29.70% | 46.33% | 14.09%, 52.90%, 66.67% (15) | 30.82% | 7.50% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | K records, K = 3 | 1.85 | 4.7 | 0.80 | 10.88% | 36.76% | 57.06% | 38.18%, 68.57%, 80.00% (10) | 52.05% | 8.68% | badly miscalibrated |
+| c6__otcR_Wmis__R100 | K records, K = 5 | 0.71 | 1.9 | 0.32 | 12.57% | 54.86% | 77.14% | 66.67%, 66.67%, 66.67% (12) | 70.31% | 8.49% | badly miscalibrated |
+| c6__otcR_chain100__R1 | K records, K = 1 | 5.63 | 49.7 | 4.22 | 4.75% | 20.43% | 37.77% | 4.79%, 7.50%, 8.17% (208) | 2.05% | 4.39% |  |
+| c6__otcR_chain100__R1 | K records, K = 2 | 4.81 | 28.3 | 3.09 | 9.05% | 29.05% | 45.71% | 9.07%, 11.04%, 11.54% (104) | 5.14% | 8.97% |  |
+| c6__otcR_chain100__R1 | K records, K = 3 | 4.00 | 16.6 | 2.30 | 10.00% | 40.00% | 59.29% | 10.00%, 10.12%, 10.14% (69) | 12.02% | 13.51% |  |
+| c6__otcR_chain100__R1 | K records, K = 5 | 2.66 | 6.9 | 1.38 | 24.10% | 61.45% | 90.36% | 24.16%, 28.25%, 29.27% (41) | 22.26% | 20.36% | badly miscalibrated |
+| c6__otcR_chain100__R1 | K records, K = 10 | 0.85 | 2.0 | 0.40 | 63.41% | 100.00% | 100.00% | 63.21%, 69.79%, 71.43% (21) | 20.78% | 22.81% |  |
+| c6__otcR_chain100__R1 | K records, K = 20 | 0.09 | 1.1 | 0.03 | 90.00% | 100.00% | 100.00% | 90.00%, 90.00%, 90.00% (10) | 9.19% | 9.21% |  |
+| c6__otcR_chain100__R100 | K records, K = 1 | 6.61 | 98.0 | 5.10 | 2.45% | 12.58% | 21.81% | 0.00%, 10.00%, 25.00% (16) | 1.33% | 1.96% |  |
+| c6__otcR_chain100__R100 | K records, K = 2 | 5.77 | 55.2 | 3.78 | 4.32% | 17.63% | 32.19% | 0.00%, 0.00%, 0.00% (10) | 3.76% | 4.23% |  |
+| c6__otcR_chain100__R100 | K records, K = 3 | 4.95 | 31.5 | 2.92 | 6.47% | 26.47% | 45.59% | — | 7.68% | 7.44% | badly miscalibrated |
+| c6__otcR_chain100__R100 | K records, K = 5 | 3.48 | 11.8 | 1.81 | 15.43% | 49.38% | 74.69% | — | 16.15% | 13.69% | badly miscalibrated |
+| c6__otcR_chain50__R1 | K records, K = 1 | 5.83 | 57.2 | 4.39 | 4.51% | 17.58% | 29.22% | 3.46%, 5.67%, 6.36% (173) | 3.35% | 4.25% |  |
+| c6__otcR_chain50__R1 | K records, K = 2 | 4.71 | 26.9 | 3.01 | 7.66% | 26.32% | 55.02% | 2.91%, 10.70%, 12.79% (86) | 5.81% | 9.21% |  |
+| c6__otcR_chain50__R1 | K records, K = 3 | 3.67 | 13.7 | 2.05 | 13.04% | 47.10% | 73.91% | 9.81%, 15.44%, 17.54% (57) | 16.03% | 14.79% | badly miscalibrated |
+| c6__otcR_chain50__R1 | K records, K = 5 | 2.19 | 5.1 | 1.15 | 20.48% | 87.95% | 98.80% | 22.06%, 25.59%, 26.47% (34) | 28.31% | 20.82% | badly miscalibrated |
+| c6__otcR_chain50__R1 | K records, K = 10 | 0.33 | 1.3 | 0.13 | 92.68% | 100.00% | 100.00% | 91.18%, 93.53%, 94.12% (17) | 5.27% | 13.15% |  |
+| c6__otcR_chain50__R1 | K records, K = 20 | 0.00 | 1.0 | 0.00 | 100.00% | 100.00% | 100.00% | — | 0.00% | 0.00% |  |
+| c6__otcR_chain50__R100 | K records, K = 1 | 6.81 | 112.5 | 5.22 | 2.45% | 11.37% | 19.22% | 0.00%, 28.00%, 38.46% (13) | 0.78% | 1.77% |  |
+| c6__otcR_chain50__R100 | K records, K = 2 | 5.68 | 52.7 | 3.68 | 2.87% | 19.92% | 35.82% | 10.00%, 10.00%, 10.00% (10) | 5.41% | 4.55% | badly miscalibrated |
+| c6__otcR_chain50__R100 | K records, K = 3 | 4.69 | 26.9 | 2.70 | 8.28% | 35.17% | 58.28% | — | 8.61% | 8.45% | badly miscalibrated |
+| c6__otcR_chain50__R100 | K records, K = 5 | 2.96 | 8.5 | 1.53 | 24.17% | 75.00% | 91.67% | — | 20.74% | 16.12% | badly miscalibrated |
 | c6__otc_W0__R1 | K records, K = 1 | 5.65 | 50.2 | 4.26 | 6.05% | 20.82% | 36.32% | 6.03%, 7.33%, 7.66% (209) | 3.61% | 4.97% |  |
 | c6__otc_W0__R1 | K records, K = 2 | 4.80 | 28.3 | 3.10 | 8.25% | 34.95% | 56.31% | 8.22%, 10.87%, 11.54% (104) | 5.73% | 8.64% |  |
 | c6__otc_W0__R1 | K records, K = 3 | 4.00 | 16.5 | 2.33 | 13.87% | 53.28% | 68.61% | 13.83%, 17.84%, 18.84% (69) | 7.84% | 13.12% |  |
@@ -2260,6 +4011,366 @@ Per row, the confidence deciles: mean confidence → hit rate.
 - c6__cp_chain50__R100, first_hop: 1.7 → 1.8; 1.8 → 1.0; 2.0 → 2.6; 2.1 → 1.9; 2.3 → 5.7; 2.9 → 0.8; 3.3 → 3.0; 3.7 → 1.5; 4.3 → 1.7; 5.9 → 1.7
 - c6__cp_chain50__R100, content_server: 1.8 → 0.8; 2.1 → 3.2; 2.2 → 3.6; 2.4 → 2.4; 2.8 → 3.2; 3.3 → 2.8; 3.8 → 3.6; 4.4 → 2.8; 5.2 → 3.2; 7.0 → 4.0
 - c6__cp_chain50__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W0__R1, observer: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, first_hop: 3.0 → 0.8; 3.3 → 2.5; 3.5 → 4.6; 3.8 → 0.8; 4.0 → 14.5; 4.3 → 1.3; 4.7 → 1.3; 5.0 → 0.5; 5.6 → 0.5; 6.6 → 2.3
+- c6__otcLR_W0__R1, destination: 3.1 → 2.4; 3.5 → 9.5; 3.8 → 7.1; 4.0 → 4.9; 4.3 → 4.9; 4.7 → 4.9; 5.1 → 2.4; 5.6 → 0.0; 6.2 → 2.4; 7.3 → 2.4
+- c6__otcLR_W0__R1, destination_keyed: 8.6 → 21.4; 9.7 → 16.7; 10.6 → 11.9; 11.2 → 17.1; 11.8 → 7.3; 12.5 → 19.5; 13.4 → 19.5; 14.4 → 24.4; 16.1 → 4.9; 19.8 → 12.2
+- c6__otcLR_W0__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W0__R1, issuer_0 [share 50%, all records]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcLR_W0__R1, issuer_0 [share 50%, other issuers' devices]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcLR_W0__R1, issuer_0_with_observer [share 50%, all records]: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, issuer_0_with_first_relay [share 50%, all records]: 3.0 → 2.4; 3.3 → 2.4; 3.6 → 4.8; 3.8 → 0.0; 4.1 → 12.2; 4.4 → 0.0; 4.7 → 0.0; 5.1 → 4.9; 5.5 → 0.0; 6.5 → 2.4
+- c6__otcLR_W0__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.0 → 2.4; 3.3 → 2.4; 3.6 → 4.8; 3.8 → 0.0; 4.1 → 12.2; 4.4 → 0.0; 4.7 → 0.0; 5.1 → 4.9; 5.5 → 0.0; 6.5 → 2.4
+- c6__otcLR_W0__R1, issuer_1 [share 30%, all records]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcLR_W0__R1, issuer_1 [share 30%, its own devices]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcLR_W0__R1, issuer_1_with_observer [share 30%, all records]: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, issuer_1_with_observer [share 30%, its own devices]: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, issuer_1_with_first_relay [share 30%, all records]: 3.0 → 2.4; 3.3 → 2.4; 3.6 → 4.8; 3.8 → 0.0; 4.1 → 12.2; 4.4 → 0.0; 4.7 → 0.0; 5.1 → 4.9; 5.5 → 0.0; 6.5 → 2.4
+- c6__otcLR_W0__R1, issuer_1_with_first_relay [share 30%, its own devices]: 3.0 → 2.4; 3.3 → 2.4; 3.6 → 4.8; 3.8 → 0.0; 4.1 → 12.2; 4.4 → 0.0; 4.7 → 0.0; 5.1 → 4.9; 5.5 → 0.0; 6.5 → 2.4
+- c6__otcLR_W0__R1, issuer_1_with_destination: 8.6 → 21.4; 9.7 → 16.7; 10.6 → 11.9; 11.2 → 17.1; 11.8 → 7.3; 12.5 → 19.5; 13.4 → 19.5; 14.4 → 24.4; 16.1 → 4.9; 19.8 → 12.2
+- c6__otcLR_W0__R1, issuer_2 [share 20%, all records]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcLR_W0__R1, issuer_2 [share 20%, other issuers' devices]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcLR_W0__R1, issuer_2_with_observer [share 20%, all records]: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, issuer_2_with_first_relay [share 20%, all records]: 3.0 → 2.4; 3.3 → 2.4; 3.6 → 4.8; 3.8 → 0.0; 4.1 → 12.2; 4.4 → 0.0; 4.7 → 0.0; 5.1 → 4.9; 5.5 → 0.0; 6.5 → 2.4
+- c6__otcLR_W0__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.0 → 2.4; 3.3 → 2.4; 3.6 → 4.8; 3.8 → 0.0; 4.1 → 12.2; 4.4 → 0.0; 4.7 → 0.0; 5.1 → 4.9; 5.5 → 0.0; 6.5 → 2.4
+- c6__otcLR_W0__R100, observer: 2.3 → 4.9; 2.5 → 2.5; 2.6 → 0.8; 2.7 → 1.6; 2.8 → 2.5; 3.0 → 3.3; 3.2 → 0.8; 3.4 → 4.1; 3.6 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, first_hop: 2.3 → 4.5; 2.5 → 2.5; 2.6 → 1.4; 2.7 → 1.9; 2.9 → 2.9; 3.0 → 3.4; 3.2 → 0.9; 3.4 → 3.5; 3.6 → 4.0; 4.3 → 4.4
+- c6__otcLR_W0__R100, destination: 2.5 → 2.5; 2.7 → 2.5; 2.9 → 2.5; 3.0 → 2.5; 3.1 → 3.3; 3.3 → 5.7; 3.5 → 1.7; 3.7 → 3.3; 4.0 → 1.7; 4.8 → 2.5
+- c6__otcLR_W0__R100, destination_keyed: 4.6 → 4.1; 5.1 → 6.6; 5.6 → 4.1; 6.1 → 7.4; 6.7 → 6.6; 7.5 → 7.4; 8.5 → 6.6; 9.6 → 6.6; 11.2 → 11.6; 15.1 → 11.6
+- c6__otcLR_W0__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W0__R100, issuer_0 [share 50%, all records]: 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.5 → 0.8; 2.5 → 0.8; 2.5 → 0.0; 2.5 → 0.8; 2.5 → 1.7
+- c6__otcLR_W0__R100, issuer_0 [share 50%, its own devices]: 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.4 → 1.5; 2.5 → 1.5; 2.5 → 0.0; 2.5 → 1.5; 2.5 → 3.0
+- c6__otcLR_W0__R100, issuer_0 [share 50%, other issuers' devices]: 4.3 → 0.0; 4.3 → 0.0; 4.3 → 0.0; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0
+- c6__otcLR_W0__R100, issuer_0_with_observer [share 50%, all records]: 2.3 → 4.9; 2.5 → 2.5; 2.6 → 0.8; 2.7 → 1.6; 2.8 → 2.5; 3.0 → 3.3; 3.2 → 0.8; 3.4 → 4.1; 3.6 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, issuer_0_with_observer [share 50%, its own devices]: 2.3 → 7.5; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 1.5; 2.8 → 0.0; 3.0 → 6.1; 3.2 → 1.5; 3.4 → 3.0; 3.6 → 3.0; 4.2 → 3.0
+- c6__otcLR_W0__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 2.3 → 1.8; 2.5 → 3.6; 2.6 → 3.6; 2.7 → 1.8; 2.9 → 3.6; 3.0 → 1.8; 3.2 → 0.0; 3.4 → 5.5; 3.7 → 5.5; 4.3 → 5.5
+- c6__otcLR_W0__R100, issuer_0_with_first_relay [share 50%, all records]: 2.3 → 5.7; 2.5 → 0.0; 2.7 → 4.1; 2.7 → 1.6; 2.9 → 3.3; 3.0 → 1.6; 3.2 → 2.5; 3.4 → 2.5; 3.7 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, issuer_0_with_first_relay [share 50%, its own devices]: 2.3 → 9.0; 2.6 → 0.0; 2.7 → 4.5; 2.7 → 1.5; 2.9 → 3.0; 3.1 → 1.5; 3.2 → 3.0; 3.4 → 0.0; 3.6 → 3.0; 4.2 → 3.0
+- c6__otcLR_W0__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.3 → 1.8; 2.5 → 0.0; 2.7 → 1.8; 2.7 → 3.6; 2.9 → 3.6; 3.0 → 3.6; 3.2 → 0.0; 3.4 → 5.5; 3.7 → 5.5; 4.3 → 5.5
+- c6__otcLR_W0__R100, issuer_0_with_destination: 4.4 → 4.5; 4.8 → 3.0; 5.1 → 7.5; 5.3 → 4.5; 5.5 → 6.1; 5.8 → 4.5; 6.2 → 7.6; 6.5 → 7.6; 7.0 → 10.6; 8.3 → 3.0
+- c6__otcLR_W0__R100, issuer_1 [share 30%, all records]: 3.9 → 0.0; 3.9 → 0.8; 3.9 → 0.8; 3.9 → 0.8; 3.9 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_W0__R100, issuer_1 [share 30%, its own devices]: 3.9 → 0.0; 3.9 → 3.0; 3.9 → 3.0; 3.9 → 0.0; 3.9 → 3.1; 4.7 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_W0__R100, issuer_1 [share 30%, other issuers' devices]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 7.4 → 0.0; 7.4 → 0.0; 7.4 → 0.0; 7.4 → 0.0; 7.4 → 0.0
+- c6__otcLR_W0__R100, issuer_1_with_observer [share 30%, all records]: 2.3 → 4.9; 2.5 → 2.5; 2.6 → 0.8; 2.7 → 1.6; 2.8 → 2.5; 3.0 → 3.3; 3.2 → 0.8; 3.4 → 4.1; 3.6 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, issuer_1_with_observer [share 30%, its own devices]: 2.3 → 3.0; 2.5 → 6.1; 2.6 → 6.1; 2.7 → 3.1; 2.9 → 6.2; 3.1 → 3.1; 3.2 → 0.0; 3.4 → 6.2; 3.6 → 6.2; 4.2 → 12.5
+- c6__otcLR_W0__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 2.3 → 5.6; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 1.1; 2.8 → 0.0; 3.0 → 4.5; 3.2 → 1.1; 3.4 → 3.4; 3.6 → 2.2; 4.2 → 2.2
+- c6__otcLR_W0__R100, issuer_1_with_first_relay [share 30%, all records]: 2.3 → 5.7; 2.5 → 0.0; 2.7 → 4.1; 2.7 → 1.6; 2.9 → 3.3; 3.0 → 1.6; 3.2 → 2.5; 3.4 → 2.5; 3.7 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.3 → 3.0; 2.5 → 0.0; 2.7 → 6.1; 2.7 → 3.1; 2.9 → 6.2; 3.0 → 3.1; 3.2 → 3.1; 3.4 → 6.2; 3.6 → 9.4; 4.2 → 9.4
+- c6__otcLR_W0__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.3 → 6.7; 2.5 → 0.0; 2.7 → 3.3; 2.7 → 1.1; 2.9 → 2.2; 3.1 → 1.1; 3.2 → 2.2; 3.4 → 1.1; 3.7 → 2.2; 4.2 → 2.2
+- c6__otcLR_W0__R100, issuer_1_with_destination: 6.3 → 6.1; 7.4 → 3.0; 7.8 → 6.1; 8.3 → 9.4; 8.7 → 12.5; 9.3 → 6.2; 9.9 → 6.2; 10.5 → 12.5; 11.6 → 15.6; 15.2 → 15.6
+- c6__otcLR_W0__R100, issuer_2 [share 20%, all records]: 4.6 → 0.8; 4.6 → 0.8; 4.6 → 0.8; 4.6 → 0.8; 4.6 → 0.8; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_W0__R100, issuer_2 [share 20%, its own devices]: 4.6 → 4.3; 4.6 → 4.3; 4.6 → 4.3; 4.6 → 4.3; 4.6 → 4.3; 5.0 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_W0__R100, issuer_2 [share 20%, other issuers' devices]: 7.1 → 0.0; 7.1 → 0.0; 7.1 → 0.0; 7.1 → 0.0; 7.2 → 0.0; 9.1 → 0.0; 9.1 → 0.0; 9.1 → 0.0; 9.1 → 0.0; 9.1 → 0.0
+- c6__otcLR_W0__R100, issuer_2_with_observer [share 20%, all records]: 2.3 → 4.9; 2.5 → 2.5; 2.6 → 0.8; 2.7 → 1.6; 2.8 → 2.5; 3.0 → 3.3; 3.2 → 0.8; 3.4 → 4.1; 3.6 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, issuer_2_with_observer [share 20%, its own devices]: 2.3 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 0.0; 2.8 → 0.0; 3.0 → 0.0; 3.2 → 0.0; 3.4 → 4.3; 3.7 → 0.0; 4.4 → 0.0
+- c6__otcLR_W0__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 2.3 → 6.1; 2.5 → 3.0; 2.6 → 1.0; 2.7 → 2.0; 2.8 → 4.0; 3.0 → 4.0; 3.2 → 0.0; 3.4 → 4.1; 3.6 → 4.1; 4.2 → 6.1
+- c6__otcLR_W0__R100, issuer_2_with_first_relay [share 20%, all records]: 2.3 → 5.7; 2.5 → 0.0; 2.7 → 4.1; 2.7 → 1.6; 2.9 → 3.3; 3.0 → 1.6; 3.2 → 2.5; 3.4 → 2.5; 3.7 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, issuer_2_with_first_relay [share 20%, its own devices]: 2.3 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 0.0; 2.9 → 0.0; 3.1 → 0.0; 3.2 → 4.3; 3.4 → 0.0; 3.7 → 0.0; 4.4 → 0.0
+- c6__otcLR_W0__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 2.3 → 7.1; 2.5 → 0.0; 2.7 → 5.1; 2.7 → 2.0; 2.9 → 4.0; 3.0 → 2.0; 3.2 → 1.0; 3.4 → 4.1; 3.6 → 5.1; 4.2 → 5.1
+- c6__otcLR_W0__R100, issuer_2_with_destination: 5.9 → 4.3; 6.7 → 8.7; 7.2 → 4.3; 7.6 → 0.0; 7.9 → 13.0; 8.4 → 8.7; 9.0 → 8.7; 9.6 → 8.7; 10.3 → 17.4; 12.2 → 8.7
+- c6__otcLR_W1__R1, observer: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, first_hop: 3.0 → 1.2; 3.3 → 4.9; 3.5 → 0.5; 3.7 → 0.1; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, destination: 3.1 → 7.7; 3.4 → 5.1; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.7 → 0.0; 5.1 → 0.0; 5.5 → 0.0; 6.4 → 0.0
+- c6__otcLR_W1__R1, destination_keyed: 8.4 → 7.7; 9.7 → 7.7; 10.5 → 2.6; 11.5 → 12.8; 12.1 → 5.1; 12.8 → 2.6; 13.7 → 2.6; 14.8 → 2.6; 16.3 → 10.5; 20.6 → 5.3
+- c6__otcLR_W1__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W1__R1, issuer_0 [share 50%, all records]: 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 10.0 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0
+- c6__otcLR_W1__R1, issuer_0 [share 50%, other issuers' devices]: 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 10.0 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0
+- c6__otcLR_W1__R1, issuer_0_with_observer [share 50%, all records]: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_0_with_first_relay [share 50%, all records]: 3.0 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.0 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_1 [share 30%, all records]: 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0
+- c6__otcLR_W1__R1, issuer_1 [share 30%, its own devices]: 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0
+- c6__otcLR_W1__R1, issuer_1_with_observer [share 30%, all records]: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_1_with_observer [share 30%, its own devices]: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_1_with_first_relay [share 30%, all records]: 3.0 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_1_with_first_relay [share 30%, its own devices]: 3.0 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_1_with_destination: 8.4 → 7.7; 9.7 → 7.7; 10.5 → 2.6; 11.5 → 12.8; 12.1 → 5.1; 12.8 → 2.6; 13.7 → 2.6; 14.8 → 2.6; 16.3 → 10.5; 20.6 → 5.3
+- c6__otcLR_W1__R1, issuer_2 [share 20%, all records]: 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0
+- c6__otcLR_W1__R1, issuer_2 [share 20%, other issuers' devices]: 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0
+- c6__otcLR_W1__R1, issuer_2_with_observer [share 20%, all records]: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_2_with_first_relay [share 20%, all records]: 3.0 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.0 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R100, observer: 3.5 → 2.3; 4.2 → 3.8; 4.7 → 3.8; 5.2 → 5.3; 5.7 → 3.8; 6.0 → 6.1; 6.4 → 6.9; 6.8 → 7.6; 7.4 → 4.6; 9.0 → 16.8
+- c6__otcLR_W1__R100, first_hop: 3.5 → 2.7; 4.2 → 4.0; 4.7 → 3.7; 5.2 → 5.8; 5.6 → 4.0; 6.0 → 6.5; 6.4 → 6.4; 6.8 → 7.2; 7.4 → 7.0; 9.0 → 14.6
+- c6__otcLR_W1__R100, destination: 3.6 → 3.8; 4.3 → 3.8; 4.9 → 6.9; 5.3 → 5.3; 5.7 → 5.3; 6.1 → 6.1; 6.6 → 8.4; 7.1 → 3.8; 7.7 → 6.9; 9.3 → 13.0
+- c6__otcLR_W1__R100, destination_keyed: 6.5 → 4.5; 8.3 → 5.3; 9.5 → 9.9; 10.6 → 5.3; 11.6 → 9.2; 12.6 → 8.4; 13.7 → 10.7; 15.3 → 10.7; 17.6 → 21.4; 23.8 → 35.1
+- c6__otcLR_W1__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W1__R100, issuer_0 [share 50%, all records]: 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 5.0 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0
+- c6__otcLR_W1__R100, issuer_0 [share 50%, its own devices]: 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 5.4 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0
+- c6__otcLR_W1__R100, issuer_0 [share 50%, other issuers' devices]: 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 10.8 → 0.0; 10.9 → 0.0; 10.9 → 0.0; 10.9 → 0.0; 10.9 → 0.0
+- c6__otcLR_W1__R100, issuer_0_with_observer [share 50%, all records]: 3.5 → 2.3; 4.2 → 3.8; 4.7 → 3.8; 5.2 → 5.3; 5.7 → 3.8; 6.0 → 6.1; 6.4 → 6.9; 6.8 → 7.6; 7.4 → 4.6; 9.0 → 16.8
+- c6__otcLR_W1__R100, issuer_0_with_observer [share 50%, its own devices]: 3.5 → 2.9; 4.1 → 7.2; 4.7 → 1.4; 5.1 → 2.9; 5.6 → 0.0; 6.0 → 2.9; 6.4 → 13.0; 6.9 → 5.8; 7.5 → 11.6; 9.1 → 29.4
+- c6__otcLR_W1__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 3.5 → 1.6; 4.3 → 1.6; 4.8 → 6.3; 5.3 → 6.5; 5.7 → 9.7; 6.0 → 8.1; 6.3 → 3.2; 6.7 → 6.5; 7.2 → 0.0; 9.0 → 0.0
+- c6__otcLR_W1__R100, issuer_0_with_first_relay [share 50%, all records]: 3.5 → 2.3; 4.3 → 3.8; 4.7 → 3.1; 5.1 → 6.9; 5.6 → 4.6; 6.0 → 4.6; 6.5 → 9.9; 6.9 → 3.8; 7.5 → 9.2; 9.0 → 13.7
+- c6__otcLR_W1__R100, issuer_0_with_first_relay [share 50%, its own devices]: 3.5 → 2.9; 4.2 → 5.8; 4.7 → 1.4; 5.0 → 4.3; 5.5 → 0.0; 6.0 → 2.9; 6.5 → 13.0; 7.1 → 4.3; 7.6 → 15.9; 9.0 → 26.5
+- c6__otcLR_W1__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.4 → 1.6; 2.8 → 11.1; 3.0 → 3.2; 3.2 → 8.1; 3.6 → 16.1; 4.7 → 4.8; 6.0 → 0.0; 6.5 → 0.0; 7.2 → 0.0; 8.9 → 0.0
+- c6__otcLR_W1__R100, issuer_0_with_destination: 5.7 → 2.9; 6.4 → 8.7; 6.9 → 7.2; 7.4 → 5.8; 7.9 → 11.6; 8.4 → 7.2; 9.1 → 11.6; 9.9 → 11.6; 11.2 → 15.9; 13.7 → 4.4
+- c6__otcLR_W1__R100, issuer_1 [share 30%, all records]: 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.3 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0
+- c6__otcLR_W1__R100, issuer_1 [share 30%, its own devices]: 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.3 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0
+- c6__otcLR_W1__R100, issuer_1 [share 30%, other issuers' devices]: 5.9 → 0.0; 5.9 → 0.0; 5.9 → 0.0; 5.9 → 0.0; 6.9 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0
+- c6__otcLR_W1__R100, issuer_1_with_observer [share 30%, all records]: 3.5 → 2.3; 4.2 → 3.8; 4.7 → 3.8; 5.2 → 5.3; 5.7 → 3.8; 6.0 → 6.1; 6.4 → 6.9; 6.8 → 7.6; 7.4 → 4.6; 9.0 → 16.8
+- c6__otcLR_W1__R100, issuer_1_with_observer [share 30%, its own devices]: 2.3 → 0.0; 2.8 → 0.0; 3.0 → 0.0; 3.2 → 0.0; 3.5 → 0.0; 4.4 → 0.0; 5.8 → 0.0; 6.5 → 0.0; 7.1 → 0.0; 9.1 → 0.0
+- c6__otcLR_W1__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 3.5 → 3.0; 4.2 → 5.0; 4.7 → 5.0; 5.2 → 6.9; 5.7 → 5.0; 6.0 → 7.9; 6.4 → 9.0; 6.8 → 10.0; 7.4 → 6.0; 9.0 → 22.0
+- c6__otcLR_W1__R100, issuer_1_with_first_relay [share 30%, all records]: 3.5 → 2.3; 4.3 → 3.8; 4.7 → 3.1; 5.1 → 6.9; 5.6 → 4.6; 6.0 → 4.6; 6.5 → 9.9; 6.9 → 3.8; 7.5 → 9.2; 9.0 → 13.7
+- c6__otcLR_W1__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.4 → 0.0; 2.8 → 0.0; 3.0 → 0.0; 3.2 → 0.0; 3.6 → 0.0; 4.4 → 3.2; 5.8 → 0.0; 6.5 → 0.0; 7.2 → 0.0; 8.9 → 0.0
+- c6__otcLR_W1__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 3.5 → 3.0; 4.3 → 4.0; 4.7 → 4.0; 5.1 → 8.9; 5.6 → 5.9; 6.0 → 5.9; 6.5 → 13.0; 6.9 → 6.0; 7.5 → 11.0; 9.0 → 18.0
+- c6__otcLR_W1__R100, issuer_1_with_destination: 8.5 → 12.9; 9.4 → 9.7; 10.1 → 3.2; 10.8 → 6.5; 11.5 → 6.5; 12.1 → 9.7; 12.8 → 6.7; 14.0 → 3.3; 15.7 → 10.0; 19.4 → 10.0
+- c6__otcLR_W1__R100, issuer_2 [share 20%, all records]: 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 12.6 → 4.6; 13.5 → 7.6; 13.5 → 3.1; 13.5 → 4.6; 13.5 → 4.6
+- c6__otcLR_W1__R100, issuer_2 [share 20%, its own devices]: 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 8.3 → 0.0; 13.5 → 28.1; 13.5 → 25.0; 13.5 → 12.9; 13.5 → 22.6; 13.5 → 12.9
+- c6__otcLR_W1__R100, issuer_2 [share 20%, other issuers' devices]: 13.5 → 0.0; 13.5 → 0.0; 13.5 → 0.0; 13.5 → 0.0; 13.7 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0
+- c6__otcLR_W1__R100, issuer_2_with_observer [share 20%, all records]: 3.5 → 2.3; 4.2 → 3.8; 4.7 → 3.8; 5.2 → 5.3; 5.7 → 3.8; 6.0 → 6.1; 6.4 → 6.9; 6.8 → 7.6; 7.4 → 4.6; 9.0 → 16.8
+- c6__otcLR_W1__R100, issuer_2_with_observer [share 20%, its own devices]: 3.7 → 3.1; 4.7 → 15.6; 5.3 → 12.5; 5.9 → 28.1; 6.8 → 18.8; 9.6 → 6.2; 12.3 → 0.0; 13.7 → 0.0; 15.4 → 0.0; 21.3 → 0.0
+- c6__otcLR_W1__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 3.5 → 2.0; 4.2 → 5.0; 4.7 → 1.0; 5.1 → 2.0; 5.6 → 0.0; 6.0 → 2.0; 6.4 → 9.1; 6.9 → 4.0; 7.4 → 6.1; 9.1 → 22.2
+- c6__otcLR_W1__R100, issuer_2_with_first_relay [share 20%, all records]: 3.5 → 2.3; 4.3 → 3.8; 4.7 → 3.1; 5.1 → 6.9; 5.6 → 4.6; 6.0 → 4.6; 6.5 → 9.9; 6.9 → 3.8; 7.5 → 9.2; 9.0 → 13.7
+- c6__otcLR_W1__R100, issuer_2_with_first_relay [share 20%, its own devices]: 3.8 → 3.1; 4.7 → 9.4; 5.2 → 15.6; 5.8 → 28.1; 6.9 → 21.9; 9.7 → 6.2; 12.4 → 0.0; 13.7 → 0.0; 16.0 → 0.0; 21.4 → 0.0
+- c6__otcLR_W1__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.5 → 2.0; 4.2 → 5.0; 4.7 → 1.0; 5.1 → 3.0; 5.6 → 0.0; 6.0 → 2.0; 6.5 → 9.1; 7.0 → 3.0; 7.5 → 11.1; 9.0 → 18.2
+- c6__otcLR_W1__R100, issuer_2_with_destination: 9.9 → 9.4; 11.3 → 18.8; 12.5 → 12.5; 13.5 → 12.5; 14.7 → 12.5; 16.1 → 25.0; 17.9 → 37.5; 20.8 → 29.0; 24.0 → 48.4; 28.9 → 29.0
+- c6__otcLR_W2__R1, observer: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, first_hop: 4.1 → 10.0; 4.6 → 7.5; 4.9 → 10.8; 5.2 → 3.3; 5.4 → 4.8; 5.7 → 8.9; 6.1 → 0.7; 6.6 → 2.6; 7.5 → 8.2; 9.9 → 0.0
+- c6__otcLR_W2__R1, destination: 3.4 → 10.8; 3.8 → 0.0; 4.1 → 8.1; 4.4 → 0.0; 4.8 → 2.7; 5.1 → 10.8; 5.4 → 11.1; 5.8 → 0.0; 6.6 → 5.6; 9.4 → 0.0
+- c6__otcLR_W2__R1, destination_keyed: 8.3 → 8.1; 9.6 → 8.1; 10.5 → 16.2; 11.4 → 8.1; 12.3 → 13.5; 13.2 → 16.2; 14.6 → 19.4; 15.8 → 25.0; 17.5 → 19.4; 21.7 → 25.0
+- c6__otcLR_W2__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W2__R1, issuer_0 [share 50%, all records]: 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.8 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0
+- c6__otcLR_W2__R1, issuer_0 [share 50%, other issuers' devices]: 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.8 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0
+- c6__otcLR_W2__R1, issuer_0_with_observer [share 50%, all records]: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_0_with_first_relay [share 50%, all records]: 4.1 → 8.1; 4.6 → 5.4; 4.9 → 5.4; 5.2 → 5.4; 5.4 → 5.4; 5.7 → 10.8; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 4.1 → 8.1; 4.6 → 5.4; 4.9 → 5.4; 5.2 → 5.4; 5.4 → 5.4; 5.7 → 10.8; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_1 [share 30%, all records]: 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 4.9 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0
+- c6__otcLR_W2__R1, issuer_1 [share 30%, its own devices]: 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 4.9 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0
+- c6__otcLR_W2__R1, issuer_1_with_observer [share 30%, all records]: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_1_with_observer [share 30%, its own devices]: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_1_with_first_relay [share 30%, all records]: 4.1 → 8.1; 4.6 → 5.4; 4.9 → 5.4; 5.2 → 5.4; 5.4 → 5.4; 5.7 → 10.8; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_1_with_first_relay [share 30%, its own devices]: 4.1 → 8.1; 4.6 → 5.4; 4.9 → 5.4; 5.2 → 5.4; 5.4 → 5.4; 5.7 → 10.8; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_1_with_destination: 8.3 → 8.1; 9.6 → 8.1; 10.5 → 16.2; 11.4 → 8.1; 12.3 → 13.5; 13.2 → 16.2; 14.6 → 19.4; 15.8 → 25.0; 17.5 → 19.4; 21.7 → 25.0
+- c6__otcLR_W2__R1, issuer_2 [share 20%, all records]: 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 19.6 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0
+- c6__otcLR_W2__R1, issuer_2 [share 20%, other issuers' devices]: 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 19.6 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0
+- c6__otcLR_W2__R1, issuer_2_with_observer [share 20%, all records]: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_2_with_first_relay [share 20%, all records]: 4.1 → 8.1; 4.6 → 5.4; 4.9 → 5.4; 5.2 → 5.4; 5.4 → 5.4; 5.7 → 10.8; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 4.1 → 8.1; 4.6 → 5.4; 4.9 → 5.4; 5.2 → 5.4; 5.4 → 5.4; 5.7 → 10.8; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R100, observer: 3.5 → 1.6; 4.0 → 4.9; 4.6 → 5.7; 5.2 → 1.6; 5.5 → 8.2; 5.8 → 8.2; 6.3 → 9.0; 7.5 → 4.9; 8.7 → 5.7; 10.2 → 8.2
+- c6__otcLR_W2__R100, first_hop: 3.5 → 2.1; 4.1 → 4.0; 4.7 → 5.7; 5.2 → 3.4; 5.5 → 7.6; 5.8 → 8.1; 6.3 → 8.4; 7.5 → 5.6; 8.7 → 5.7; 10.2 → 8.1
+- c6__otcLR_W2__R100, destination: 2.8 → 4.9; 3.2 → 7.4; 3.4 → 9.8; 3.7 → 5.7; 3.9 → 3.3; 4.3 → 9.0; 4.8 → 7.4; 5.6 → 6.6; 7.6 → 0.8; 10.2 → 3.3
+- c6__otcLR_W2__R100, destination_keyed: 5.3 → 9.8; 6.5 → 13.9; 7.2 → 13.9; 8.0 → 17.2; 8.6 → 13.9; 9.5 → 9.8; 10.7 → 12.3; 12.8 → 9.8; 16.3 → 9.8; 21.3 → 23.0
+- c6__otcLR_W2__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W2__R100, issuer_0 [share 50%, all records]: 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 3.6 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0
+- c6__otcLR_W2__R100, issuer_0 [share 50%, its own devices]: 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 3.2 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0
+- c6__otcLR_W2__R100, issuer_0 [share 50%, other issuers' devices]: 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 10.0 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0
+- c6__otcLR_W2__R100, issuer_0_with_observer [share 50%, all records]: 3.5 → 1.6; 4.0 → 4.9; 4.6 → 5.7; 5.2 → 1.6; 5.5 → 8.2; 5.8 → 8.2; 6.3 → 9.0; 7.5 → 4.9; 8.7 → 5.7; 10.2 → 8.2
+- c6__otcLR_W2__R100, issuer_0_with_observer [share 50%, its own devices]: 3.5 → 1.4; 4.0 → 7.0; 4.6 → 8.5; 5.1 → 2.8; 5.5 → 10.0; 5.8 → 12.9; 6.3 → 15.7; 7.5 → 7.1; 8.7 → 8.6; 10.1 → 10.0
+- c6__otcLR_W2__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 2.4 → 1.9; 2.8 → 3.8; 3.1 → 0.0; 3.6 → 1.9; 4.2 → 0.0; 4.7 → 3.8; 5.3 → 1.9; 5.7 → 9.8; 6.4 → 0.0; 8.7 → 0.0
+- c6__otcLR_W2__R100, issuer_0_with_first_relay [share 50%, all records]: 3.5 → 2.4; 4.1 → 4.1; 4.7 → 5.7; 5.1 → 2.5; 5.5 → 8.2; 5.8 → 7.4; 6.4 → 8.2; 7.5 → 5.7; 8.7 → 4.9; 10.2 → 9.0
+- c6__otcLR_W2__R100, issuer_0_with_first_relay [share 50%, its own devices]: 3.5 → 2.8; 4.1 → 5.6; 4.6 → 8.5; 5.1 → 5.6; 5.5 → 8.6; 5.8 → 11.4; 6.4 → 14.3; 7.5 → 8.6; 8.7 → 8.6; 10.1 → 10.0
+- c6__otcLR_W2__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.4 → 1.9; 2.8 → 3.8; 3.1 → 0.0; 3.6 → 1.9; 4.2 → 0.0; 4.7 → 0.0; 5.3 → 5.8; 5.7 → 9.8; 6.5 → 0.0; 8.7 → 0.0
+- c6__otcLR_W2__R100, issuer_0_with_destination: 5.0 → 9.9; 5.9 → 9.9; 6.5 → 14.1; 7.0 → 18.3; 7.5 → 11.4; 8.1 → 17.1; 8.7 → 14.3; 9.8 → 18.6; 11.9 → 7.1; 17.3 → 0.0
+- c6__otcLR_W2__R100, issuer_1 [share 30%, all records]: 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0
+- c6__otcLR_W2__R100, issuer_1 [share 30%, its own devices]: 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0
+- c6__otcLR_W2__R100, issuer_1 [share 30%, other issuers' devices]: 10.3 → 0.0; 10.3 → 0.0; 10.3 → 0.0; 10.3 → 0.0; 10.3 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0
+- c6__otcLR_W2__R100, issuer_1_with_observer [share 30%, all records]: 3.5 → 1.6; 4.0 → 4.9; 4.6 → 5.7; 5.2 → 1.6; 5.5 → 8.2; 5.8 → 8.2; 6.3 → 9.0; 7.5 → 4.9; 8.7 → 5.7; 10.2 → 8.2
+- c6__otcLR_W2__R100, issuer_1_with_observer [share 30%, its own devices]: 1.7 → 0.0; 1.9 → 0.0; 2.1 → 0.0; 2.3 → 4.2; 2.6 → 0.0; 3.1 → 16.7; 4.6 → 0.0; 5.6 → 0.0; 6.4 → 0.0; 8.6 → 0.0
+- c6__otcLR_W2__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 3.5 → 2.0; 4.0 → 6.1; 4.6 → 7.1; 5.2 → 4.0; 5.5 → 8.2; 5.8 → 10.2; 6.3 → 11.2; 7.5 → 5.1; 8.7 → 7.1; 10.1 → 6.1
+- c6__otcLR_W2__R100, issuer_1_with_first_relay [share 30%, all records]: 3.5 → 2.4; 4.1 → 4.1; 4.7 → 5.7; 5.1 → 2.5; 5.5 → 8.2; 5.8 → 7.4; 6.4 → 8.2; 7.5 → 5.7; 8.7 → 4.9; 10.2 → 9.0
+- c6__otcLR_W2__R100, issuer_1_with_first_relay [share 30%, its own devices]: 1.7 → 0.0; 1.9 → 0.0; 2.1 → 0.0; 2.3 → 4.2; 2.6 → 0.0; 3.1 → 16.7; 4.7 → 0.0; 5.6 → 0.0; 6.4 → 0.0; 8.6 → 0.0
+- c6__otcLR_W2__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 3.5 → 3.0; 4.1 → 6.1; 4.7 → 6.1; 5.2 → 5.1; 5.5 → 8.2; 5.8 → 8.2; 6.3 → 11.2; 7.4 → 5.1; 8.7 → 7.1; 10.1 → 7.1
+- c6__otcLR_W2__R100, issuer_1_with_destination: 6.4 → 8.3; 7.2 → 12.5; 7.7 → 12.5; 8.2 → 16.7; 8.7 → 12.5; 9.3 → 4.2; 10.0 → 8.3; 10.6 → 13.0; 11.4 → 8.7; 15.3 → 26.1
+- c6__otcLR_W2__R100, issuer_2 [share 20%, all records]: 6.0 → 4.9; 6.0 → 4.9; 6.0 → 7.4; 6.0 → 4.9; 6.0 → 7.4; 22.1 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0
+- c6__otcLR_W2__R100, issuer_2 [share 20%, its own devices]: 6.0 → 21.4; 6.0 → 35.7; 6.0 → 21.4; 6.0 → 42.9; 10.3 → 7.1; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0
+- c6__otcLR_W2__R100, issuer_2 [share 20%, other issuers' devices]: 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.5 → 0.0; 15.6 → 0.0; 15.6 → 0.0; 15.6 → 0.0; 15.6 → 0.0; 15.6 → 0.0
+- c6__otcLR_W2__R100, issuer_2_with_observer [share 20%, all records]: 3.5 → 1.6; 4.0 → 4.9; 4.6 → 5.7; 5.2 → 1.6; 5.5 → 8.2; 5.8 → 8.2; 6.3 → 9.0; 7.5 → 4.9; 8.7 → 5.7; 10.2 → 8.2
+- c6__otcLR_W2__R100, issuer_2_with_observer [share 20%, its own devices]: 3.5 → 3.6; 4.1 → 7.1; 4.8 → 0.0; 5.3 → 0.0; 5.5 → 10.7; 5.8 → 3.6; 6.2 → 0.0; 7.3 → 0.0; 8.7 → 0.0; 10.1 → 0.0
+- c6__otcLR_W2__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 3.5 → 1.1; 4.0 → 5.3; 4.6 → 6.4; 5.1 → 2.1; 5.5 → 6.4; 5.8 → 11.7; 6.3 → 10.6; 7.6 → 6.4; 8.7 → 7.4; 10.2 → 10.6
+- c6__otcLR_W2__R100, issuer_2_with_first_relay [share 20%, all records]: 3.5 → 2.4; 4.1 → 4.1; 4.7 → 5.7; 5.1 → 2.5; 5.5 → 8.2; 5.8 → 7.4; 6.4 → 8.2; 7.5 → 5.7; 8.7 → 4.9; 10.2 → 9.0
+- c6__otcLR_W2__R100, issuer_2_with_first_relay [share 20%, its own devices]: 3.5 → 3.6; 4.2 → 7.1; 4.8 → 0.0; 5.3 → 0.0; 5.5 → 10.7; 5.8 → 3.6; 6.2 → 0.0; 7.3 → 0.0; 8.7 → 0.0; 10.1 → 0.0
+- c6__otcLR_W2__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.5 → 2.1; 4.1 → 4.3; 4.6 → 6.4; 5.1 → 3.2; 5.5 → 7.4; 5.8 → 8.5; 6.4 → 10.6; 7.5 → 7.4; 8.7 → 6.4; 10.2 → 11.7
+- c6__otcLR_W2__R100, issuer_2_with_destination: 9.4 → 21.4; 10.8 → 17.9; 11.6 → 17.9; 12.2 → 10.7; 12.8 → 10.7; 13.3 → 10.7; 14.0 → 32.1; 14.9 → 17.9; 16.4 → 17.9; 20.2 → 17.9
+- c6__otcLR_Wmis__R1, observer: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, first_hop: 4.3 → 5.2; 4.9 → 6.6; 5.4 → 6.8; 5.9 → 12.0; 6.5 → 19.3; 7.1 → 19.0; 7.9 → 18.3; 8.8 → 12.2; 10.0 → 21.2; 13.3 → 40.7
+- c6__otcLR_Wmis__R1, destination: 3.3 → 5.4; 3.6 → 5.4; 3.8 → 8.1; 4.2 → 13.5; 4.5 → 10.8; 4.8 → 10.8; 5.3 → 22.2; 5.7 → 11.1; 6.3 → 19.4; 7.9 → 25.0
+- c6__otcLR_Wmis__R1, destination_keyed: 8.6 → 21.6; 9.9 → 16.2; 10.7 → 13.5; 11.7 → 13.5; 12.4 → 27.0; 13.2 → 18.9; 14.1 → 41.7; 15.3 → 30.6; 17.3 → 22.2; 22.6 → 58.3
+- c6__otcLR_Wmis__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_Wmis__R1, issuer_0 [share 50%, all records]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcLR_Wmis__R1, issuer_0 [share 50%, other issuers' devices]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcLR_Wmis__R1, issuer_0_with_observer [share 50%, all records]: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, issuer_0_with_first_relay [share 50%, all records]: 4.3 → 5.4; 5.0 → 10.8; 5.4 → 2.7; 6.0 → 18.9; 6.5 → 13.5; 7.2 → 16.2; 7.9 → 16.7; 8.8 → 19.4; 9.9 → 13.9; 13.7 → 44.4
+- c6__otcLR_Wmis__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 4.3 → 5.4; 5.0 → 10.8; 5.4 → 2.7; 6.0 → 18.9; 6.5 → 13.5; 7.2 → 16.2; 7.9 → 16.7; 8.8 → 19.4; 9.9 → 13.9; 13.7 → 44.4
+- c6__otcLR_Wmis__R1, issuer_1 [share 30%, all records]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.7 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcLR_Wmis__R1, issuer_1 [share 30%, its own devices]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.7 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcLR_Wmis__R1, issuer_1_with_observer [share 30%, all records]: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, issuer_1_with_observer [share 30%, its own devices]: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, issuer_1_with_first_relay [share 30%, all records]: 4.3 → 5.4; 5.0 → 10.8; 5.4 → 2.7; 6.0 → 18.9; 6.5 → 13.5; 7.2 → 16.2; 7.9 → 16.7; 8.8 → 19.4; 9.9 → 13.9; 13.7 → 44.4
+- c6__otcLR_Wmis__R1, issuer_1_with_first_relay [share 30%, its own devices]: 4.3 → 5.4; 5.0 → 10.8; 5.4 → 2.7; 6.0 → 18.9; 6.5 → 13.5; 7.2 → 16.2; 7.9 → 16.7; 8.8 → 19.4; 9.9 → 13.9; 13.7 → 44.4
+- c6__otcLR_Wmis__R1, issuer_1_with_destination: 8.6 → 21.6; 9.9 → 16.2; 10.7 → 13.5; 11.7 → 13.5; 12.4 → 27.0; 13.2 → 18.9; 14.1 → 41.7; 15.3 → 30.6; 17.3 → 22.2; 22.6 → 58.3
+- c6__otcLR_Wmis__R1, issuer_2 [share 20%, all records]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcLR_Wmis__R1, issuer_2 [share 20%, other issuers' devices]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcLR_Wmis__R1, issuer_2_with_observer [share 20%, all records]: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, issuer_2_with_first_relay [share 20%, all records]: 4.3 → 5.4; 5.0 → 10.8; 5.4 → 2.7; 6.0 → 18.9; 6.5 → 13.5; 7.2 → 16.2; 7.9 → 16.7; 8.8 → 19.4; 9.9 → 13.9; 13.7 → 44.4
+- c6__otcLR_Wmis__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 4.3 → 5.4; 5.0 → 10.8; 5.4 → 2.7; 6.0 → 18.9; 6.5 → 13.5; 7.2 → 16.2; 7.9 → 16.7; 8.8 → 19.4; 9.9 → 13.9; 13.7 → 44.4
+- c6__otcLR_Wmis__R100, observer: 3.2 → 5.7; 3.6 → 6.6; 3.9 → 4.9; 4.1 → 7.4; 4.4 → 9.8; 4.8 → 7.4; 5.3 → 9.0; 5.6 → 14.8; 6.4 → 12.3; 9.4 → 13.9
+- c6__otcLR_Wmis__R100, first_hop: 3.2 → 5.8; 3.6 → 6.1; 3.9 → 5.9; 4.1 → 8.1; 4.4 → 9.0; 4.8 → 7.2; 5.3 → 10.1; 5.6 → 14.4; 6.4 → 11.8; 9.5 → 14.5
+- c6__otcLR_Wmis__R100, destination: 3.2 → 3.3; 3.7 → 4.1; 4.0 → 11.5; 4.3 → 8.2; 4.6 → 8.2; 5.0 → 10.7; 5.3 → 8.2; 5.8 → 13.1; 6.7 → 5.7; 9.6 → 15.6
+- c6__otcLR_Wmis__R100, destination_keyed: 5.9 → 3.3; 7.0 → 10.7; 7.8 → 9.8; 8.6 → 13.1; 9.5 → 12.3; 10.4 → 21.3; 11.5 → 14.8; 13.1 → 13.1; 15.2 → 18.9; 20.2 → 35.2
+- c6__otcLR_Wmis__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_Wmis__R100, issuer_0 [share 50%, all records]: 2.5 → 9.8; 2.5 → 9.8; 2.5 → 9.8; 2.5 → 9.8; 2.8 → 5.7; 6.9 → 0.8; 6.9 → 3.3; 6.9 → 2.5; 6.9 → 2.5; 6.9 → 2.5
+- c6__otcLR_Wmis__R100, issuer_0 [share 50%, its own devices]: 2.5 → 16.9; 2.5 → 19.7; 2.5 → 15.5; 2.5 → 15.5; 2.6 → 10.0; 6.9 → 2.9; 6.9 → 2.9; 6.9 → 5.7; 6.9 → 4.3; 6.9 → 4.3
+- c6__otcLR_Wmis__R100, issuer_0 [share 50%, other issuers' devices]: 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 6.6 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0
+- c6__otcLR_Wmis__R100, issuer_0_with_observer [share 50%, all records]: 3.2 → 5.7; 3.6 → 6.6; 3.9 → 4.9; 4.1 → 7.4; 4.4 → 9.8; 4.8 → 7.4; 5.3 → 9.0; 5.6 → 14.8; 6.4 → 12.3; 9.4 → 13.9
+- c6__otcLR_Wmis__R100, issuer_0_with_observer [share 50%, its own devices]: 3.8 → 14.1; 4.6 → 15.5; 5.2 → 11.3; 5.6 → 15.5; 6.0 → 8.6; 6.7 → 8.6; 7.5 → 1.4; 8.5 → 10.0; 9.9 → 20.0; 15.2 → 7.1
+- c6__otcLR_Wmis__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 3.2 → 5.8; 3.6 → 5.8; 3.9 → 9.6; 4.2 → 0.0; 4.4 → 11.5; 4.8 → 3.8; 5.2 → 1.9; 5.5 → 11.8; 6.2 → 5.9; 9.3 → 7.8
+- c6__otcLR_Wmis__R100, issuer_0_with_first_relay [share 50%, all records]: 3.2 → 6.5; 3.6 → 6.6; 3.9 → 5.7; 4.2 → 8.2; 4.5 → 7.4; 4.8 → 7.4; 5.3 → 9.0; 5.6 → 14.8; 6.4 → 12.3; 9.4 → 13.9
+- c6__otcLR_Wmis__R100, issuer_0_with_first_relay [share 50%, its own devices]: 3.8 → 14.1; 4.6 → 15.5; 5.2 → 12.7; 5.6 → 14.1; 6.1 → 8.6; 6.9 → 10.0; 7.7 → 2.9; 8.6 → 8.6; 9.9 → 18.6; 15.3 → 7.1
+- c6__otcLR_Wmis__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.2 → 5.8; 3.6 → 5.8; 3.9 → 13.5; 4.2 → 1.9; 4.5 → 5.8; 4.8 → 3.8; 5.2 → 1.9; 5.6 → 7.8; 6.3 → 9.8; 9.3 → 7.8
+- c6__otcLR_Wmis__R100, issuer_0_with_destination: 5.6 → 4.2; 6.3 → 2.8; 6.9 → 9.9; 7.5 → 16.9; 8.0 → 10.0; 8.6 → 15.7; 9.4 → 18.6; 10.4 → 22.9; 11.9 → 14.3; 17.1 → 21.4
+- c6__otcLR_Wmis__R100, issuer_1 [share 30%, all records]: 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 7.5 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0
+- c6__otcLR_Wmis__R100, issuer_1 [share 30%, its own devices]: 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 5.8 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0
+- c6__otcLR_Wmis__R100, issuer_1 [share 30%, other issuers' devices]: 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 9.3 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0
+- c6__otcLR_Wmis__R100, issuer_1_with_observer [share 30%, all records]: 3.2 → 5.7; 3.6 → 6.6; 3.9 → 4.9; 4.1 → 7.4; 4.4 → 9.8; 4.8 → 7.4; 5.3 → 9.0; 5.6 → 14.8; 6.4 → 12.3; 9.4 → 13.9
+- c6__otcLR_Wmis__R100, issuer_1_with_observer [share 30%, its own devices]: 2.1 → 0.0; 2.4 → 0.0; 2.5 → 0.0; 2.7 → 16.7; 3.0 → 0.0; 3.4 → 12.5; 4.3 → 12.5; 5.1 → 0.0; 5.9 → 4.3; 8.8 → 0.0
+- c6__otcLR_Wmis__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 3.8 → 11.1; 4.6 → 13.1; 5.2 → 8.1; 5.6 → 16.2; 6.0 → 9.2; 6.6 → 7.1; 7.4 → 5.1; 8.4 → 8.2; 9.8 → 15.3; 14.5 → 9.2
+- c6__otcLR_Wmis__R100, issuer_1_with_first_relay [share 30%, all records]: 3.2 → 6.5; 3.6 → 6.6; 3.9 → 5.7; 4.2 → 8.2; 4.5 → 7.4; 4.8 → 7.4; 5.3 → 9.0; 5.6 → 14.8; 6.4 → 12.3; 9.4 → 13.9
+- c6__otcLR_Wmis__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.1 → 0.0; 2.4 → 0.0; 2.6 → 0.0; 2.7 → 8.3; 3.0 → 0.0; 3.4 → 12.5; 4.3 → 12.5; 5.1 → 4.3; 5.9 → 0.0; 8.8 → 0.0
+- c6__otcLR_Wmis__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 3.8 → 12.1; 4.6 → 12.1; 5.2 → 7.1; 5.6 → 18.2; 6.1 → 9.2; 6.8 → 7.1; 7.7 → 8.2; 8.5 → 7.1; 9.7 → 14.3; 14.6 → 9.2
+- c6__otcLR_Wmis__R100, issuer_1_with_destination: 7.5 → 4.2; 8.6 → 0.0; 9.3 → 8.3; 9.9 → 12.5; 10.5 → 16.7; 11.3 → 16.7; 12.3 → 12.5; 13.3 → 4.3; 15.0 → 21.7; 22.7 → 43.5
+- c6__otcLR_Wmis__R100, issuer_2 [share 20%, all records]: 6.0 → 4.9; 6.0 → 4.9; 6.0 → 7.4; 6.0 → 4.9; 6.0 → 7.4; 10.8 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0
+- c6__otcLR_Wmis__R100, issuer_2 [share 20%, its own devices]: 6.0 → 21.4; 6.0 → 35.7; 6.0 → 21.4; 6.0 → 42.9; 7.2 → 7.1; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0
+- c6__otcLR_Wmis__R100, issuer_2 [share 20%, other issuers' devices]: 8.7 → 0.0; 8.7 → 0.0; 8.7 → 0.0; 8.7 → 0.0; 10.0 → 0.0; 16.1 → 0.0; 16.1 → 0.0; 16.1 → 0.0; 16.1 → 0.0; 16.1 → 0.0
+- c6__otcLR_Wmis__R100, issuer_2_with_observer [share 20%, all records]: 3.2 → 5.7; 3.6 → 6.6; 3.9 → 4.9; 4.1 → 7.4; 4.4 → 9.8; 4.8 → 7.4; 5.3 → 9.0; 5.6 → 14.8; 6.4 → 12.3; 9.4 → 13.9
+- c6__otcLR_Wmis__R100, issuer_2_with_observer [share 20%, its own devices]: 3.3 → 10.7; 3.7 → 21.4; 4.1 → 0.0; 4.6 → 10.7; 5.8 → 10.7; 7.7 → 10.7; 10.0 → 0.0; 11.2 → 14.3; 14.0 → 0.0; 23.4 → 0.0
+- c6__otcLR_Wmis__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 3.1 → 4.2; 3.6 → 5.3; 3.9 → 1.1; 4.1 → 9.6; 4.4 → 10.6; 4.8 → 7.4; 5.3 → 11.7; 5.6 → 16.0; 6.5 → 11.7; 9.5 → 18.1
+- c6__otcLR_Wmis__R100, issuer_2_with_first_relay [share 20%, all records]: 3.2 → 6.5; 3.6 → 6.6; 3.9 → 5.7; 4.2 → 8.2; 4.5 → 7.4; 4.8 → 7.4; 5.3 → 9.0; 5.6 → 14.8; 6.4 → 12.3; 9.4 → 13.9
+- c6__otcLR_Wmis__R100, issuer_2_with_first_relay [share 20%, its own devices]: 3.3 → 14.3; 3.8 → 17.9; 4.2 → 7.1; 4.6 → 10.7; 5.8 → 10.7; 7.7 → 10.7; 9.9 → 0.0; 11.3 → 14.3; 14.1 → 0.0; 23.2 → 0.0
+- c6__otcLR_Wmis__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.1 → 5.3; 3.6 → 5.3; 3.9 → 0.0; 4.2 → 10.6; 4.5 → 6.4; 4.8 → 9.6; 5.3 → 9.6; 5.6 → 14.9; 6.6 → 14.9; 9.5 → 17.0
+- c6__otcLR_Wmis__R100, issuer_2_with_destination: 8.9 → 0.0; 10.6 → 25.0; 11.6 → 10.7; 12.6 → 21.4; 13.5 → 10.7; 14.3 → 17.9; 15.2 → 21.4; 16.7 → 25.0; 18.5 → 32.1; 22.1 → 39.3
+- c6__otcLR_chain100__R1, observer: 3.9 → 4.8; 4.3 → 7.1; 4.6 → 9.5; 4.8 → 0.0; 5.1 → 7.1; 5.4 → 0.0; 5.6 → 4.8; 5.9 → 7.1; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, first_hop: 3.9 → 5.1; 4.4 → 6.7; 4.6 → 7.5; 4.9 → 0.8; 5.1 → 5.8; 5.4 → 1.1; 5.6 → 4.8; 5.9 → 7.5; 6.5 → 6.5; 7.5 → 8.1
+- c6__otcLR_chain100__R1, destination: 4.2 → 0.0; 4.7 → 4.8; 5.0 → 2.4; 5.3 → 2.4; 5.5 → 7.1; 5.8 → 7.1; 6.0 → 0.0; 6.4 → 7.1; 7.0 → 14.3; 8.4 → 11.9
+- c6__otcLR_chain100__R1, destination_keyed: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.7 → 0.0; 3.5 → 4.8; 3.9 → 4.8; 4.7 → 11.9
+- c6__otcLR_chain100__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_chain100__R1, issuer_0 [share 50%, all records]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcLR_chain100__R1, issuer_0 [share 50%, other issuers' devices]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcLR_chain100__R1, issuer_0_with_observer [share 50%, all records]: 3.9 → 4.8; 4.3 → 7.1; 4.6 → 9.5; 4.8 → 0.0; 5.1 → 7.1; 5.4 → 0.0; 5.6 → 4.8; 5.9 → 7.1; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 3.9 → 4.8; 4.3 → 7.1; 4.6 → 9.5; 4.8 → 0.0; 5.1 → 7.1; 5.4 → 0.0; 5.6 → 4.8; 5.9 → 7.1; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, issuer_0_with_first_relay [share 50%, all records]: 3.9 → 2.4; 4.4 → 9.5; 4.7 → 7.1; 4.9 → 0.0; 5.2 → 0.0; 5.4 → 0.0; 5.7 → 9.5; 5.9 → 7.1; 6.5 → 11.9; 7.5 → 4.8
+- c6__otcLR_chain100__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.9 → 2.4; 4.4 → 9.5; 4.7 → 7.1; 4.9 → 0.0; 5.2 → 0.0; 5.4 → 0.0; 5.7 → 9.5; 5.9 → 7.1; 6.5 → 11.9; 7.5 → 4.8
+- c6__otcLR_chain100__R1, issuer_1 [share 30%, all records]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.5 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcLR_chain100__R1, issuer_1 [share 30%, its own devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.9 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcLR_chain100__R1, issuer_1 [share 30%, other issuers' devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 11.2 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcLR_chain100__R1, issuer_1_with_observer [share 30%, all records]: 3.9 → 4.8; 4.3 → 7.1; 4.6 → 9.5; 4.8 → 0.0; 5.1 → 7.1; 5.4 → 0.0; 5.6 → 4.8; 5.9 → 7.1; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, issuer_1_with_observer [share 30%, its own devices]: 3.9 → 6.9; 4.3 → 0.0; 4.6 → 17.2; 4.8 → 0.0; 5.1 → 3.4; 5.4 → 0.0; 5.6 → 7.1; 5.9 → 10.7; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, issuer_1_with_observer [share 30%, other issuers' devices]: 3.1 → 7.1; 3.3 → 7.1; 3.5 → 7.1; 3.8 → 0.0; 4.2 → 0.0; 4.5 → 7.7; 4.9 → 0.0; 5.3 → 0.0; 5.7 → 0.0; 7.0 → 15.4
+- c6__otcLR_chain100__R1, issuer_1_with_first_relay [share 30%, all records]: 3.9 → 2.4; 4.4 → 9.5; 4.7 → 7.1; 4.9 → 0.0; 5.2 → 0.0; 5.4 → 0.0; 5.7 → 9.5; 5.9 → 7.1; 6.5 → 11.9; 7.5 → 4.8
+- c6__otcLR_chain100__R1, issuer_1_with_first_relay [share 30%, its own devices]: 3.9 → 3.4; 4.3 → 6.9; 4.6 → 10.3; 4.9 → 0.0; 5.2 → 0.0; 5.5 → 0.0; 5.7 → 10.7; 5.9 → 10.7; 6.4 → 10.7; 7.5 → 7.1
+- c6__otcLR_chain100__R1, issuer_1_with_first_relay [share 30%, other issuers' devices]: 3.1 → 7.1; 3.4 → 0.0; 3.6 → 7.1; 3.8 → 0.0; 4.2 → 7.1; 4.5 → 0.0; 4.9 → 0.0; 5.3 → 0.0; 5.8 → 0.0; 7.0 → 15.4
+- c6__otcLR_chain100__R1, issuer_1_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0
+- c6__otcLR_chain100__R1, issuer_2 [share 20%, all records]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcLR_chain100__R1, issuer_2 [share 20%, other issuers' devices]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcLR_chain100__R1, issuer_2_with_observer [share 20%, all records]: 3.9 → 4.8; 4.3 → 7.1; 4.6 → 9.5; 4.8 → 0.0; 5.1 → 7.1; 5.4 → 0.0; 5.6 → 4.8; 5.9 → 7.1; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 3.9 → 4.8; 4.3 → 7.1; 4.6 → 9.5; 4.8 → 0.0; 5.1 → 7.1; 5.4 → 0.0; 5.6 → 4.8; 5.9 → 7.1; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, issuer_2_with_first_relay [share 20%, all records]: 3.9 → 2.4; 4.4 → 9.5; 4.7 → 7.1; 4.9 → 0.0; 5.2 → 0.0; 5.4 → 0.0; 5.7 → 9.5; 5.9 → 7.1; 6.5 → 11.9; 7.5 → 4.8
+- c6__otcLR_chain100__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.9 → 2.4; 4.4 → 9.5; 4.7 → 7.1; 4.9 → 0.0; 5.2 → 0.0; 5.4 → 0.0; 5.7 → 9.5; 5.9 → 7.1; 6.5 → 11.9; 7.5 → 4.8
+- c6__otcLR_chain100__R100, observer: 2.2 → 2.4; 2.4 → 0.8; 2.6 → 1.6; 2.7 → 0.8; 2.8 → 4.0; 2.9 → 1.6; 3.1 → 1.6; 3.2 → 8.1; 3.5 → 6.5; 3.9 → 4.0
+- c6__otcLR_chain100__R100, first_hop: 2.3 → 2.3; 2.5 → 1.1; 2.6 → 1.1; 2.7 → 1.4; 2.8 → 3.9; 3.0 → 1.9; 3.1 → 2.7; 3.3 → 6.6; 3.5 → 6.0; 3.9 → 4.4
+- c6__otcLR_chain100__R100, destination: 1.8 → 0.8; 1.9 → 2.4; 2.0 → 4.0; 2.2 → 6.5; 2.3 → 5.6; 2.6 → 2.4; 2.9 → 0.8; 3.1 → 2.4; 3.4 → 5.6; 4.1 → 1.6
+- c6__otcLR_chain100__R100, destination_keyed: 0.0 → 0.0; 0.0 → 0.0; 0.6 → 0.0; 2.1 → 3.2; 2.7 → 1.6; 5.2 → 2.4; 55.8 → 0.8; 79.6 → 2.4; 100.0 → 3.2; 100.0 → 2.4
+- c6__otcLR_chain100__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_chain100__R100, issuer_0 [share 50%, all records]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 3.2; 1.9 → 1.6; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0
+- c6__otcLR_chain100__R100, issuer_0 [share 50%, its own devices]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 2.1; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0
+- c6__otcLR_chain100__R100, issuer_0 [share 50%, other issuers' devices]: 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.2 → 0.0; 2.2 → 0.0; 2.2 → 3.9; 2.2 → 0.0; 2.2 → 2.6
+- c6__otcLR_chain100__R100, issuer_0_with_observer [share 50%, all records]: 2.2 → 2.4; 2.4 → 0.8; 2.6 → 1.6; 2.7 → 0.8; 2.8 → 4.0; 2.9 → 1.6; 3.1 → 1.6; 3.2 → 8.1; 3.5 → 6.5; 3.9 → 4.0
+- c6__otcLR_chain100__R100, issuer_0_with_observer [share 50%, its own devices]: 2.2 → 2.1; 2.4 → 2.1; 2.6 → 0.0; 2.7 → 0.0; 2.8 → 6.4; 2.9 → 0.0; 3.1 → 0.0; 3.3 → 8.7; 3.5 → 4.3; 3.9 → 4.3
+- c6__otcLR_chain100__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 2.3 → 2.6; 2.5 → 0.0; 2.6 → 2.6; 2.7 → 1.3; 2.8 → 2.6; 3.0 → 2.6; 3.1 → 2.6; 3.2 → 7.8; 3.5 → 7.8; 3.9 → 3.9
+- c6__otcLR_chain100__R100, issuer_0_with_first_relay [share 50%, all records]: 2.2 → 3.2; 2.5 → 0.0; 2.6 → 1.6; 2.7 → 0.8; 2.9 → 6.5; 3.0 → 1.6; 3.1 → 2.4; 3.3 → 5.6; 3.5 → 4.0; 3.9 → 5.6
+- c6__otcLR_chain100__R100, issuer_0_with_first_relay [share 50%, its own devices]: 2.2 → 2.1; 2.4 → 2.1; 2.6 → 0.0; 2.7 → 0.0; 2.8 → 8.5; 2.9 → 0.0; 3.1 → 2.2; 3.3 → 6.5; 3.5 → 4.3; 3.9 → 4.3
+- c6__otcLR_chain100__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.3 → 2.6; 2.5 → 0.0; 2.6 → 2.6; 2.7 → 1.3; 2.9 → 5.1; 3.0 → 2.6; 3.1 → 1.3; 3.3 → 6.5; 3.6 → 3.9; 4.0 → 6.5
+- c6__otcLR_chain100__R100, issuer_0_with_destination: 0.0 → 0.0; 10.8 → 0.0; 53.4 → 0.0; 63.3 → 0.0; 76.6 → 2.1; 88.1 → 4.3; 99.2 → 0.0; 100.0 → 6.5; 100.0 → 2.2; 100.0 → 6.5
+- c6__otcLR_chain100__R100, issuer_1 [share 30%, all records]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 3.0 → 0.0; 3.8 → 0.0; 3.8 → 0.0; 3.8 → 0.0; 3.8 → 0.0; 3.8 → 0.0
+- c6__otcLR_chain100__R100, issuer_1 [share 30%, its own devices]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0
+- c6__otcLR_chain100__R100, issuer_1 [share 30%, other issuers' devices]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 3.2 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0
+- c6__otcLR_chain100__R100, issuer_1_with_observer [share 30%, all records]: 2.2 → 2.4; 2.4 → 0.8; 2.6 → 1.6; 2.7 → 0.8; 2.8 → 4.0; 2.9 → 1.6; 3.1 → 1.6; 3.2 → 8.1; 3.5 → 6.5; 3.9 → 4.0
+- c6__otcLR_chain100__R100, issuer_1_with_observer [share 30%, its own devices]: 2.3 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 5.0; 2.8 → 0.0; 2.9 → 0.0; 3.1 → 5.0; 3.2 → 5.0; 3.5 → 5.0; 4.0 → 5.0
+- c6__otcLR_chain100__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 2.2 → 2.9; 2.4 → 1.0; 2.6 → 1.9; 2.7 → 0.0; 2.8 → 4.8; 2.9 → 1.0; 3.1 → 1.9; 3.3 → 8.7; 3.5 → 6.7; 3.9 → 3.8
+- c6__otcLR_chain100__R100, issuer_1_with_first_relay [share 30%, all records]: 2.2 → 3.2; 2.5 → 0.0; 2.6 → 1.6; 2.7 → 0.8; 2.9 → 6.5; 3.0 → 1.6; 3.1 → 2.4; 3.3 → 5.6; 3.5 → 4.0; 3.9 → 5.6
+- c6__otcLR_chain100__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.3 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 5.0; 2.9 → 0.0; 3.0 → 5.0; 3.1 → 0.0; 3.3 → 5.0; 3.6 → 5.0; 4.1 → 5.0
+- c6__otcLR_chain100__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.2 → 3.8; 2.5 → 0.0; 2.6 → 1.9; 2.7 → 0.0; 2.9 → 7.7; 3.0 → 1.0; 3.1 → 2.9; 3.3 → 5.8; 3.5 → 3.8; 3.9 → 5.8
+- c6__otcLR_chain100__R100, issuer_1_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 16.5 → 0.0; 64.1 → 5.0; 92.3 → 0.0; 100.0 → 0.0
+- c6__otcLR_chain100__R100, issuer_2 [share 20%, all records]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_chain100__R100, issuer_2 [share 20%, its own devices]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.0 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_chain100__R100, issuer_2 [share 20%, other issuers' devices]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.0 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_chain100__R100, issuer_2_with_observer [share 20%, all records]: 2.2 → 2.4; 2.4 → 0.8; 2.6 → 1.6; 2.7 → 0.8; 2.8 → 4.0; 2.9 → 1.6; 3.1 → 1.6; 3.2 → 8.1; 3.5 → 6.5; 3.9 → 4.0
+- c6__otcLR_chain100__R100, issuer_2_with_observer [share 20%, its own devices]: 1.7 → 11.8; 1.8 → 0.0; 1.9 → 5.9; 2.0 → 5.9; 2.1 → 5.9; 2.3 → 5.9; 2.5 → 0.0; 2.8 → 0.0; 3.2 → 0.0; 3.7 → 12.5
+- c6__otcLR_chain100__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 2.2 → 1.9; 2.4 → 0.9; 2.6 → 0.9; 2.7 → 0.9; 2.8 → 3.7; 2.9 → 1.9; 3.1 → 0.9; 3.2 → 8.4; 3.5 → 4.7; 3.9 → 4.7
+- c6__otcLR_chain100__R100, issuer_2_with_first_relay [share 20%, all records]: 2.2 → 3.2; 2.5 → 0.0; 2.6 → 1.6; 2.7 → 0.8; 2.9 → 6.5; 3.0 → 1.6; 3.1 → 2.4; 3.3 → 5.6; 3.5 → 4.0; 3.9 → 5.6
+- c6__otcLR_chain100__R100, issuer_2_with_first_relay [share 20%, its own devices]: 1.7 → 11.8; 1.8 → 0.0; 1.9 → 17.6; 2.0 → 0.0; 2.1 → 0.0; 2.3 → 11.8; 2.5 → 0.0; 2.9 → 0.0; 3.2 → 6.2; 3.7 → 0.0
+- c6__otcLR_chain100__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 2.2 → 2.8; 2.5 → 0.0; 2.6 → 0.9; 2.7 → 0.9; 2.9 → 4.6; 3.0 → 1.9; 3.1 → 2.8; 3.3 → 5.6; 3.5 → 3.7; 3.9 → 5.6
+- c6__otcLR_chain100__R100, issuer_2_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 15.9 → 0.0; 100.0 → 0.0; 100.0 → 0.0; 100.0 → 0.0
+- c6__otcLR_chain50__R1, observer: 3.5 → 4.7; 3.9 → 7.1; 4.2 → 7.1; 4.3 → 11.9; 4.5 → 7.1; 4.8 → 2.4; 5.0 → 9.5; 5.4 → 4.8; 5.8 → 4.8; 6.7 → 4.8
+- c6__otcLR_chain50__R1, first_hop: 3.5 → 3.2; 3.9 → 8.3; 4.2 → 7.0; 4.4 → 12.5; 4.6 → 5.6; 4.8 → 4.9; 5.0 → 7.8; 5.4 → 3.8; 5.8 → 4.0; 6.8 → 5.1
+- c6__otcLR_chain50__R1, destination: 3.8 → 2.3; 4.3 → 0.0; 4.5 → 2.4; 4.8 → 2.4; 5.1 → 0.0; 5.3 → 9.5; 5.6 → 2.4; 5.9 → 9.5; 6.4 → 4.8; 7.5 → 9.5
+- c6__otcLR_chain50__R1, destination_keyed: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.5 → 0.0; 2.5 → 0.0; 3.8 → 2.4; 6.0 → 7.1
+- c6__otcLR_chain50__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_chain50__R1, issuer_0 [share 50%, all records]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcLR_chain50__R1, issuer_0 [share 50%, other issuers' devices]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcLR_chain50__R1, issuer_0_with_observer [share 50%, all records]: 3.5 → 4.7; 3.9 → 7.1; 4.2 → 7.1; 4.3 → 11.9; 4.5 → 7.1; 4.8 → 2.4; 5.0 → 9.5; 5.4 → 4.8; 5.8 → 4.8; 6.7 → 4.8
+- c6__otcLR_chain50__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 3.5 → 4.7; 3.9 → 7.1; 4.2 → 7.1; 4.3 → 11.9; 4.5 → 7.1; 4.8 → 2.4; 5.0 → 9.5; 5.4 → 4.8; 5.8 → 4.8; 6.7 → 4.8
+- c6__otcLR_chain50__R1, issuer_0_with_first_relay [share 50%, all records]: 3.6 → 4.7; 4.0 → 7.1; 4.2 → 4.8; 4.4 → 23.8; 4.6 → 2.4; 4.8 → 4.8; 5.1 → 7.1; 5.4 → 0.0; 5.8 → 4.8; 6.8 → 4.8
+- c6__otcLR_chain50__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.6 → 4.7; 4.0 → 7.1; 4.2 → 4.8; 4.4 → 23.8; 4.6 → 2.4; 4.8 → 4.8; 5.1 → 7.1; 5.4 → 0.0; 5.8 → 4.8; 6.8 → 4.8
+- c6__otcLR_chain50__R1, issuer_1 [share 30%, all records]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.5 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcLR_chain50__R1, issuer_1 [share 30%, its own devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.9 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcLR_chain50__R1, issuer_1 [share 30%, other issuers' devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 10.3 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcLR_chain50__R1, issuer_1_with_observer [share 30%, all records]: 3.5 → 4.7; 3.9 → 7.1; 4.2 → 7.1; 4.3 → 11.9; 4.5 → 7.1; 4.8 → 2.4; 5.0 → 9.5; 5.4 → 4.8; 5.8 → 4.8; 6.7 → 4.8
+- c6__otcLR_chain50__R1, issuer_1_with_observer [share 30%, its own devices]: 3.8 → 10.3; 4.3 → 13.8; 4.8 → 10.3; 5.3 → 10.3; 5.8 → 3.4; 6.4 → 14.3; 6.9 → 0.0; 7.7 → 7.1; 9.1 → 3.6; 12.0 → 0.0
+- c6__otcLR_chain50__R1, issuer_1_with_observer [share 30%, other issuers' devices]: 2.5 → 0.0; 2.8 → 7.1; 2.9 → 0.0; 3.0 → 14.3; 3.1 → 7.1; 3.2 → 0.0; 3.3 → 0.0; 3.5 → 7.7; 3.6 → 7.7; 3.9 → 0.0
+- c6__otcLR_chain50__R1, issuer_1_with_first_relay [share 30%, all records]: 3.6 → 4.7; 4.0 → 7.1; 4.2 → 4.8; 4.4 → 23.8; 4.6 → 2.4; 4.8 → 4.8; 5.1 → 7.1; 5.4 → 0.0; 5.8 → 4.8; 6.8 → 4.8
+- c6__otcLR_chain50__R1, issuer_1_with_first_relay [share 30%, its own devices]: 3.8 → 10.3; 4.4 → 17.2; 4.8 → 10.3; 5.3 → 3.4; 5.8 → 10.3; 6.4 → 7.1; 6.9 → 7.1; 7.7 → 10.7; 9.0 → 0.0; 11.9 → 0.0
+- c6__otcLR_chain50__R1, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.5 → 0.0; 2.8 → 7.1; 2.9 → 0.0; 3.0 → 7.1; 3.1 → 14.3; 3.3 → 0.0; 3.4 → 7.7; 3.5 → 0.0; 3.6 → 0.0; 4.0 → 0.0
+- c6__otcLR_chain50__R1, issuer_1_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0
+- c6__otcLR_chain50__R1, issuer_2 [share 20%, all records]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcLR_chain50__R1, issuer_2 [share 20%, other issuers' devices]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcLR_chain50__R1, issuer_2_with_observer [share 20%, all records]: 3.5 → 4.7; 3.9 → 7.1; 4.2 → 7.1; 4.3 → 11.9; 4.5 → 7.1; 4.8 → 2.4; 5.0 → 9.5; 5.4 → 4.8; 5.8 → 4.8; 6.7 → 4.8
+- c6__otcLR_chain50__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 3.5 → 4.7; 3.9 → 7.1; 4.2 → 7.1; 4.3 → 11.9; 4.5 → 7.1; 4.8 → 2.4; 5.0 → 9.5; 5.4 → 4.8; 5.8 → 4.8; 6.7 → 4.8
+- c6__otcLR_chain50__R1, issuer_2_with_first_relay [share 20%, all records]: 3.6 → 4.7; 4.0 → 7.1; 4.2 → 4.8; 4.4 → 23.8; 4.6 → 2.4; 4.8 → 4.8; 5.1 → 7.1; 5.4 → 0.0; 5.8 → 4.8; 6.8 → 4.8
+- c6__otcLR_chain50__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.6 → 4.7; 4.0 → 7.1; 4.2 → 4.8; 4.4 → 23.8; 4.6 → 2.4; 4.8 → 4.8; 5.1 → 7.1; 5.4 → 0.0; 5.8 → 4.8; 6.8 → 4.8
+- c6__otcLR_chain50__R100, observer: 2.0 → 1.6; 2.2 → 4.0; 2.4 → 4.8; 2.5 → 2.4; 2.6 → 2.4; 2.7 → 1.6; 2.8 → 3.2; 2.9 → 3.2; 3.1 → 4.8; 3.7 → 3.2
+- c6__otcLR_chain50__R100, first_hop: 2.0 → 2.0; 2.3 → 4.2; 2.4 → 3.7; 2.5 → 2.4; 2.6 → 1.8; 2.7 → 2.3; 2.8 → 2.3; 2.9 → 3.2; 3.2 → 5.1; 3.7 → 3.4
+- c6__otcLR_chain50__R100, destination: 1.6 → 3.2; 1.7 → 1.6; 1.9 → 4.8; 2.0 → 6.4; 2.2 → 1.6; 2.4 → 3.2; 2.7 → 6.5; 2.9 → 0.8; 3.2 → 2.4; 3.6 → 4.8
+- c6__otcLR_chain50__R100, destination_keyed: 1.8 → 0.8; 2.1 → 4.0; 2.3 → 1.6; 12.3 → 0.8; 20.2 → 8.8; 24.1 → 5.6; 28.2 → 6.5; 34.9 → 6.5; 45.0 → 7.3; 73.0 → 4.0
+- c6__otcLR_chain50__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_chain50__R100, issuer_0 [share 50%, all records]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 2.4; 1.9 → 0.0; 1.9 → 0.8; 1.9 → 0.0; 1.9 → 0.8; 1.9 → 0.8; 1.9 → 0.8
+- c6__otcLR_chain50__R100, issuer_0 [share 50%, its own devices]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 2.1; 1.9 → 0.0; 1.9 → 2.2; 1.9 → 0.0; 1.9 → 2.2; 1.9 → 0.0
+- c6__otcLR_chain50__R100, issuer_0 [share 50%, other issuers' devices]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 2.6; 1.9 → 0.0; 1.9 → 0.0; 2.1 → 0.0; 2.1 → 0.0; 2.1 → 1.3; 2.1 → 1.3; 2.1 → 0.0
+- c6__otcLR_chain50__R100, issuer_0_with_observer [share 50%, all records]: 2.0 → 1.6; 2.2 → 4.0; 2.4 → 4.8; 2.5 → 2.4; 2.6 → 2.4; 2.7 → 1.6; 2.8 → 3.2; 2.9 → 3.2; 3.1 → 4.8; 3.7 → 3.2
+- c6__otcLR_chain50__R100, issuer_0_with_observer [share 50%, its own devices]: 2.0 → 2.1; 2.2 → 0.0; 2.3 → 8.5; 2.5 → 4.3; 2.6 → 2.1; 2.7 → 4.3; 2.8 → 4.3; 2.9 → 0.0; 3.1 → 0.0; 3.7 → 4.3
+- c6__otcLR_chain50__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 2.0 → 1.3; 2.3 → 6.4; 2.4 → 2.6; 2.5 → 1.3; 2.6 → 1.3; 2.7 → 0.0; 2.8 → 3.8; 2.9 → 5.1; 3.1 → 7.7; 3.7 → 2.6
+- c6__otcLR_chain50__R100, issuer_0_with_first_relay [share 50%, all records]: 2.0 → 3.2; 2.3 → 5.6; 2.4 → 2.4; 2.5 → 1.6; 2.6 → 2.4; 2.7 → 0.8; 2.8 → 3.2; 2.9 → 2.4; 3.2 → 5.6; 3.7 → 4.0
+- c6__otcLR_chain50__R100, issuer_0_with_first_relay [share 50%, its own devices]: 2.0 → 6.4; 2.2 → 0.0; 2.4 → 8.5; 2.5 → 4.3; 2.6 → 4.3; 2.7 → 0.0; 2.8 → 2.2; 2.9 → 0.0; 3.1 → 2.2; 3.7 → 4.3
+- c6__otcLR_chain50__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.1 → 1.3; 2.3 → 6.4; 2.4 → 0.0; 2.6 → 1.3; 2.6 → 1.3; 2.7 → 0.0; 2.8 → 5.1; 3.0 → 3.8; 3.2 → 7.7; 3.7 → 3.8
+- c6__otcLR_chain50__R100, issuer_0_with_destination: 18.6 → 0.0; 22.1 → 4.3; 24.4 → 6.4; 26.6 → 8.5; 28.7 → 4.3; 30.5 → 12.8; 33.3 → 6.5; 37.4 → 4.3; 45.2 → 8.7; 65.5 → 6.5
+- c6__otcLR_chain50__R100, issuer_1 [share 30%, all records]: 2.8 → 1.6; 2.8 → 0.8; 2.8 → 0.0; 2.8 → 2.4; 2.8 → 0.8; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0
+- c6__otcLR_chain50__R100, issuer_1 [share 30%, its own devices]: 2.8 → 4.8; 2.8 → 9.5; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 5.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0
+- c6__otcLR_chain50__R100, issuer_1 [share 30%, other issuers' devices]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 1.9; 3.2 → 1.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0
+- c6__otcLR_chain50__R100, issuer_1_with_observer [share 30%, all records]: 2.0 → 1.6; 2.2 → 4.0; 2.4 → 4.8; 2.5 → 2.4; 2.6 → 2.4; 2.7 → 1.6; 2.8 → 3.2; 2.9 → 3.2; 3.1 → 4.8; 3.7 → 3.2
+- c6__otcLR_chain50__R100, issuer_1_with_observer [share 30%, its own devices]: 2.0 → 4.8; 2.4 → 4.8; 2.5 → 0.0; 2.7 → 5.0; 3.2 → 15.0; 3.9 → 5.0; 4.4 → 0.0; 5.0 → 0.0; 5.5 → 20.0; 6.7 → 10.0
+- c6__otcLR_chain50__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 2.0 → 1.0; 2.3 → 2.9; 2.4 → 5.7; 2.5 → 2.9; 2.6 → 1.9; 2.7 → 1.9; 2.8 → 3.8; 2.9 → 1.0; 3.1 → 1.0; 3.7 → 2.9
+- c6__otcLR_chain50__R100, issuer_1_with_first_relay [share 30%, all records]: 2.0 → 3.2; 2.3 → 5.6; 2.4 → 2.4; 2.5 → 1.6; 2.6 → 2.4; 2.7 → 0.8; 2.8 → 3.2; 2.9 → 2.4; 3.2 → 5.6; 3.7 → 4.0
+- c6__otcLR_chain50__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.0 → 4.8; 2.2 → 9.5; 2.4 → 0.0; 2.5 → 0.0; 2.6 → 5.0; 2.7 → 0.0; 2.8 → 5.0; 3.0 → 10.0; 3.2 → 25.0; 3.8 → 5.0
+- c6__otcLR_chain50__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.1 → 2.9; 2.3 → 4.8; 2.4 → 2.9; 2.5 → 1.9; 2.6 → 1.9; 2.7 → 1.0; 2.8 → 2.9; 2.9 → 1.0; 3.2 → 1.9; 3.7 → 3.8
+- c6__otcLR_chain50__R100, issuer_1_with_destination: 16.3 → 0.0; 24.3 → 0.0; 29.0 → 5.0; 33.0 → 5.0; 35.3 → 0.0; 38.4 → 5.0; 42.9 → 5.0; 49.2 → 0.0; 60.8 → 0.0; 97.7 → 0.0
+- c6__otcLR_chain50__R100, issuer_2 [share 20%, all records]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_chain50__R100, issuer_2 [share 20%, its own devices]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.0 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcLR_chain50__R100, issuer_2 [share 20%, other issuers' devices]: 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 13.1 → 0.0; 13.9 → 0.0; 13.9 → 0.0; 13.9 → 0.0; 13.9 → 0.0
+- c6__otcLR_chain50__R100, issuer_2_with_observer [share 20%, all records]: 2.0 → 1.6; 2.2 → 4.0; 2.4 → 4.8; 2.5 → 2.4; 2.6 → 2.4; 2.7 → 1.6; 2.8 → 3.2; 2.9 → 3.2; 3.1 → 4.8; 3.7 → 3.2
+- c6__otcLR_chain50__R100, issuer_2_with_observer [share 20%, its own devices]: 1.5 → 11.8; 1.7 → 0.0; 1.8 → 0.0; 1.8 → 11.8; 1.9 → 5.9; 2.4 → 0.0; 3.8 → 0.0; 4.3 → 0.0; 4.8 → 6.2; 7.4 → 6.2
+- c6__otcLR_chain50__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 2.0 → 1.9; 2.2 → 2.8; 2.4 → 5.6; 2.5 → 1.9; 2.6 → 2.8; 2.7 → 1.9; 2.8 → 1.9; 2.9 → 3.7; 3.1 → 4.7; 3.7 → 2.8
+- c6__otcLR_chain50__R100, issuer_2_with_first_relay [share 20%, all records]: 2.0 → 3.2; 2.3 → 5.6; 2.4 → 2.4; 2.5 → 1.6; 2.6 → 2.4; 2.7 → 0.8; 2.8 → 3.2; 2.9 → 2.4; 3.2 → 5.6; 3.7 → 4.0
+- c6__otcLR_chain50__R100, issuer_2_with_first_relay [share 20%, its own devices]: 1.5 → 11.8; 1.7 → 0.0; 1.8 → 0.0; 1.8 → 11.8; 1.9 → 5.9; 2.5 → 0.0; 3.9 → 0.0; 4.3 → 0.0; 4.9 → 6.2; 7.5 → 6.2
+- c6__otcLR_chain50__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 2.0 → 3.7; 2.2 → 2.8; 2.4 → 4.6; 2.5 → 0.9; 2.6 → 2.8; 2.7 → 0.9; 2.8 → 1.9; 2.9 → 2.8; 3.2 → 5.6; 3.7 → 3.7
+- c6__otcLR_chain50__R100, issuer_2_with_destination: 24.6 → 11.8; 34.2 → 11.8; 41.6 → 17.6; 46.4 → 11.8; 51.4 → 0.0; 58.3 → 0.0; 70.9 → 5.9; 83.3 → 0.0; 93.5 → 25.0; 99.9 → 6.2
 - c6__otcL_W0__R1, observer: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
 - c6__otcL_W0__R1, first_hop: 3.0 → 0.8; 3.3 → 2.5; 3.5 → 4.6; 3.8 → 0.8; 4.0 → 14.5; 4.3 → 1.3; 4.7 → 1.3; 5.0 → 0.5; 5.6 → 0.5; 6.6 → 2.3
 - c6__otcL_W0__R1, destination: 3.1 → 2.4; 3.5 → 9.5; 3.8 → 7.1; 4.0 → 4.9; 4.3 → 4.9; 4.7 → 4.9; 5.1 → 2.4; 5.6 → 0.0; 6.2 → 2.4; 7.3 → 2.4
@@ -2620,6 +4731,366 @@ Per row, the confidence deciles: mean confidence → hit rate.
 - c6__otcL_chain50__R100, issuer_2_with_first_relay [share 20%, its own devices]: 2.3 → 0.0; 2.7 → 11.8; 2.8 → 5.9; 3.0 → 0.0; 3.2 → 5.9; 3.5 → 0.0; 4.1 → 0.0; 4.7 → 5.9; 5.9 → 0.0; 9.4 → 12.5
 - c6__otcL_chain50__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 2.0 → 0.9; 2.3 → 4.6; 2.5 → 1.9; 2.6 → 1.9; 2.7 → 0.9; 2.8 → 3.7; 3.0 → 3.7; 3.2 → 3.7; 3.4 → 1.9; 4.4 → 1.9
 - c6__otcL_chain50__R100, issuer_2_with_destination: 27.2 → 5.9; 36.1 → 5.9; 41.7 → 11.8; 48.4 → 17.6; 53.9 → 11.8; 61.1 → 0.0; 66.8 → 17.6; 74.3 → 5.9; 85.5 → 18.8; 99.5 → 0.0
+- c6__otcR_W0__R1, observer: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, first_hop: 4.0 → 0.6; 4.4 → 2.7; 4.6 → 1.2; 4.9 → 5.6; 5.1 → 10.4; 5.3 → 5.0; 5.5 → 6.3; 5.8 → 8.2; 6.3 → 9.3; 7.4 → 12.0
+- c6__otcR_W0__R1, destination: 3.2 → 2.4; 3.5 → 11.9; 3.7 → 11.9; 4.0 → 4.9; 4.3 → 14.6; 4.8 → 9.8; 5.2 → 0.0; 5.6 → 2.4; 6.2 → 2.4; 7.6 → 9.8
+- c6__otcR_W0__R1, destination_keyed: 8.3 → 14.3; 9.4 → 11.9; 10.4 → 14.3; 11.2 → 22.0; 11.8 → 14.6; 12.4 → 17.1; 13.5 → 9.8; 14.8 → 9.8; 16.5 → 17.1; 20.7 → 12.2
+- c6__otcR_W0__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_W0__R1, issuer_0 [share 50%, all records]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcR_W0__R1, issuer_0 [share 50%, other issuers' devices]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcR_W0__R1, issuer_0_with_observer [share 50%, all records]: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, issuer_0_with_first_relay [share 50%, all records]: 4.0 → 0.0; 4.4 → 7.1; 4.6 → 0.0; 4.8 → 2.4; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.3 → 9.8; 7.4 → 12.2
+- c6__otcR_W0__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 4.0 → 0.0; 4.4 → 7.1; 4.6 → 0.0; 4.8 → 2.4; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.3 → 9.8; 7.4 → 12.2
+- c6__otcR_W0__R1, issuer_1 [share 30%, all records]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcR_W0__R1, issuer_1 [share 30%, its own devices]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcR_W0__R1, issuer_1_with_observer [share 30%, all records]: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, issuer_1_with_observer [share 30%, its own devices]: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, issuer_1_with_first_relay [share 30%, all records]: 4.0 → 0.0; 4.4 → 7.1; 4.6 → 0.0; 4.8 → 2.4; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.3 → 9.8; 7.4 → 12.2
+- c6__otcR_W0__R1, issuer_1_with_first_relay [share 30%, its own devices]: 4.0 → 0.0; 4.4 → 7.1; 4.6 → 0.0; 4.8 → 2.4; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.3 → 9.8; 7.4 → 12.2
+- c6__otcR_W0__R1, issuer_1_with_destination: 8.3 → 14.3; 9.4 → 11.9; 10.4 → 14.3; 11.2 → 22.0; 11.8 → 14.6; 12.4 → 17.1; 13.5 → 9.8; 14.8 → 9.8; 16.5 → 17.1; 20.7 → 12.2
+- c6__otcR_W0__R1, issuer_2 [share 20%, all records]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcR_W0__R1, issuer_2 [share 20%, other issuers' devices]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcR_W0__R1, issuer_2_with_observer [share 20%, all records]: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, issuer_2_with_first_relay [share 20%, all records]: 4.0 → 0.0; 4.4 → 7.1; 4.6 → 0.0; 4.8 → 2.4; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.3 → 9.8; 7.4 → 12.2
+- c6__otcR_W0__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 4.0 → 0.0; 4.4 → 7.1; 4.6 → 0.0; 4.8 → 2.4; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.3 → 9.8; 7.4 → 12.2
+- c6__otcR_W0__R100, observer: 2.3 → 2.5; 2.5 → 3.3; 2.6 → 4.1; 2.8 → 2.5; 2.9 → 4.1; 3.0 → 1.6; 3.1 → 2.5; 3.2 → 4.1; 3.5 → 3.3; 4.2 → 2.5
+- c6__otcR_W0__R100, first_hop: 2.3 → 2.5; 2.5 → 4.1; 2.7 → 3.5; 2.8 → 2.3; 2.9 → 3.8; 3.0 → 2.7; 3.1 → 2.4; 3.2 → 4.5; 3.6 → 2.5; 4.2 → 2.7
+- c6__otcR_W0__R100, destination: 2.5 → 0.8; 2.7 → 0.8; 2.9 → 3.3; 3.0 → 5.7; 3.1 → 0.0; 3.3 → 1.6; 3.4 → 1.7; 3.6 → 4.1; 3.9 → 2.5; 4.6 → 2.5
+- c6__otcR_W0__R100, destination_keyed: 4.4 → 0.8; 4.9 → 4.1; 5.4 → 5.7; 5.9 → 7.4; 6.6 → 7.4; 7.5 → 10.7; 8.5 → 11.6; 9.8 → 9.1; 11.0 → 7.4; 14.3 → 9.1
+- c6__otcR_W0__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_W0__R100, issuer_0 [share 50%, all records]: 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.5 → 0.8; 2.5 → 0.8; 2.5 → 0.0; 2.5 → 0.8; 2.5 → 1.7
+- c6__otcR_W0__R100, issuer_0 [share 50%, its own devices]: 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.0 → 0.0; 2.4 → 1.5; 2.5 → 1.5; 2.5 → 0.0; 2.5 → 1.5; 2.5 → 3.0
+- c6__otcR_W0__R100, issuer_0 [share 50%, other issuers' devices]: 4.3 → 0.0; 4.3 → 0.0; 4.3 → 0.0; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0
+- c6__otcR_W0__R100, issuer_0_with_observer [share 50%, all records]: 2.3 → 2.5; 2.5 → 3.3; 2.6 → 4.1; 2.8 → 2.5; 2.9 → 4.1; 3.0 → 1.6; 3.1 → 2.5; 3.2 → 4.1; 3.5 → 3.3; 4.2 → 2.5
+- c6__otcR_W0__R100, issuer_0_with_observer [share 50%, its own devices]: 2.3 → 0.0; 2.5 → 3.0; 2.7 → 3.0; 2.8 → 1.5; 2.9 → 1.5; 3.0 → 1.5; 3.1 → 3.0; 3.3 → 6.1; 3.6 → 3.0; 4.2 → 3.0
+- c6__otcR_W0__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 2.3 → 5.4; 2.5 → 3.6; 2.6 → 5.4; 2.7 → 3.6; 2.8 → 3.6; 2.9 → 3.6; 3.0 → 3.6; 3.2 → 3.6; 3.5 → 1.8; 4.2 → 1.8
+- c6__otcR_W0__R100, issuer_0_with_first_relay [share 50%, all records]: 2.3 → 2.5; 2.5 → 4.1; 2.7 → 4.9; 2.8 → 0.0; 2.9 → 4.1; 3.0 → 4.1; 3.1 → 1.7; 3.2 → 6.6; 3.6 → 2.5; 4.2 → 2.5
+- c6__otcR_W0__R100, issuer_0_with_first_relay [share 50%, its own devices]: 2.3 → 0.0; 2.5 → 3.0; 2.7 → 4.5; 2.8 → 0.0; 2.9 → 6.1; 3.0 → 0.0; 3.1 → 3.0; 3.3 → 6.1; 3.6 → 3.0; 4.2 → 3.0
+- c6__otcR_W0__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.3 → 7.1; 2.5 → 3.6; 2.6 → 5.4; 2.8 → 0.0; 2.9 → 5.5; 3.0 → 5.5; 3.1 → 1.8; 3.2 → 5.5; 3.5 → 1.8; 4.2 → 1.8
+- c6__otcR_W0__R100, issuer_0_with_destination: 4.2 → 0.0; 4.6 → 1.5; 4.9 → 4.5; 5.1 → 6.1; 5.4 → 6.1; 5.7 → 3.0; 6.0 → 12.1; 6.4 → 7.6; 7.0 → 4.5; 8.7 → 7.6
+- c6__otcR_W0__R100, issuer_1 [share 30%, all records]: 3.9 → 0.0; 3.9 → 0.8; 3.9 → 0.8; 3.9 → 0.8; 3.9 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_W0__R100, issuer_1 [share 30%, its own devices]: 3.9 → 0.0; 3.9 → 3.0; 3.9 → 3.0; 3.9 → 0.0; 3.9 → 3.1; 4.7 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_W0__R100, issuer_1 [share 30%, other issuers' devices]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 7.4 → 0.0; 7.4 → 0.0; 7.4 → 0.0; 7.4 → 0.0; 7.4 → 0.0
+- c6__otcR_W0__R100, issuer_1_with_observer [share 30%, all records]: 2.3 → 2.5; 2.5 → 3.3; 2.6 → 4.1; 2.8 → 2.5; 2.9 → 4.1; 3.0 → 1.6; 3.1 → 2.5; 3.2 → 4.1; 3.5 → 3.3; 4.2 → 2.5
+- c6__otcR_W0__R100, issuer_1_with_observer [share 30%, its own devices]: 2.3 → 6.1; 2.5 → 9.1; 2.7 → 6.1; 2.8 → 6.2; 2.8 → 3.1; 2.9 → 3.1; 3.1 → 6.2; 3.2 → 3.1; 3.5 → 3.1; 4.2 → 3.1
+- c6__otcR_W0__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 2.3 → 0.0; 2.5 → 3.3; 2.6 → 2.2; 2.8 → 1.1; 2.9 → 3.4; 3.0 → 2.2; 3.1 → 0.0; 3.2 → 5.6; 3.6 → 3.4; 4.2 → 2.2
+- c6__otcR_W0__R100, issuer_1_with_first_relay [share 30%, all records]: 2.3 → 2.5; 2.5 → 4.1; 2.7 → 4.9; 2.8 → 0.0; 2.9 → 4.1; 3.0 → 4.1; 3.1 → 1.7; 3.2 → 6.6; 3.6 → 2.5; 4.2 → 2.5
+- c6__otcR_W0__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.3 → 9.1; 2.5 → 6.1; 2.7 → 9.1; 2.8 → 0.0; 2.9 → 3.1; 3.0 → 6.2; 3.1 → 3.1; 3.2 → 9.4; 3.5 → 3.1; 4.2 → 3.1
+- c6__otcR_W0__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.3 → 0.0; 2.5 → 3.3; 2.7 → 3.3; 2.8 → 0.0; 2.9 → 5.6; 3.0 → 2.2; 3.1 → 0.0; 3.2 → 6.7; 3.6 → 2.2; 4.2 → 2.2
+- c6__otcR_W0__R100, issuer_1_with_destination: 6.3 → 6.1; 7.2 → 21.2; 7.8 → 3.0; 8.3 → 3.1; 8.9 → 18.8; 9.5 → 3.1; 10.1 → 15.6; 10.6 → 3.1; 11.3 → 15.6; 13.0 → 9.4
+- c6__otcR_W0__R100, issuer_2 [share 20%, all records]: 4.6 → 0.8; 4.6 → 0.8; 4.6 → 0.8; 4.6 → 0.8; 4.6 → 0.8; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_W0__R100, issuer_2 [share 20%, its own devices]: 4.6 → 4.3; 4.6 → 4.3; 4.6 → 4.3; 4.6 → 4.3; 4.6 → 4.3; 5.0 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_W0__R100, issuer_2 [share 20%, other issuers' devices]: 7.1 → 0.0; 7.1 → 0.0; 7.1 → 0.0; 7.1 → 0.0; 7.2 → 0.0; 9.1 → 0.0; 9.1 → 0.0; 9.1 → 0.0; 9.1 → 0.0; 9.1 → 0.0
+- c6__otcR_W0__R100, issuer_2_with_observer [share 20%, all records]: 2.3 → 2.5; 2.5 → 3.3; 2.6 → 4.1; 2.8 → 2.5; 2.9 → 4.1; 3.0 → 1.6; 3.1 → 2.5; 3.2 → 4.1; 3.5 → 3.3; 4.2 → 2.5
+- c6__otcR_W0__R100, issuer_2_with_observer [share 20%, its own devices]: 1.6 → 4.3; 1.7 → 0.0; 1.8 → 0.0; 1.8 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 2.0 → 8.7; 2.0 → 4.3; 2.1 → 0.0; 2.4 → 0.0
+- c6__otcR_W0__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 2.3 → 2.0; 2.5 → 5.1; 2.7 → 4.0; 2.8 → 3.0; 2.9 → 3.0; 3.0 → 2.0; 3.1 → 2.0; 3.2 → 6.1; 3.6 → 3.1; 4.2 → 3.1
+- c6__otcR_W0__R100, issuer_2_with_first_relay [share 20%, all records]: 2.3 → 2.5; 2.5 → 4.1; 2.7 → 4.9; 2.8 → 0.0; 2.9 → 4.1; 3.0 → 4.1; 3.1 → 1.7; 3.2 → 6.6; 3.6 → 2.5; 4.2 → 2.5
+- c6__otcR_W0__R100, issuer_2_with_first_relay [share 20%, its own devices]: 1.6 → 4.3; 1.7 → 0.0; 1.8 → 0.0; 1.8 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 2.0 → 8.7; 2.0 → 4.3; 2.1 → 0.0; 2.4 → 0.0
+- c6__otcR_W0__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 2.3 → 3.0; 2.5 → 4.0; 2.7 → 6.1; 2.8 → 0.0; 2.9 → 5.1; 3.0 → 2.0; 3.1 → 2.0; 3.2 → 9.2; 3.6 → 2.0; 4.2 → 3.1
+- c6__otcR_W0__R100, issuer_2_with_destination: 5.9 → 13.0; 6.6 → 13.0; 7.1 → 17.4; 7.4 → 13.0; 7.8 → 8.7; 8.2 → 4.3; 8.6 → 4.3; 9.1 → 13.0; 9.9 → 4.3; 11.8 → 4.3
+- c6__otcR_W1__R1, observer: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, first_hop: 3.1 → 6.8; 3.3 → 0.1; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.1; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, destination: 3.1 → 2.6; 3.4 → 2.6; 3.5 → 0.0; 3.6 → 5.1; 3.7 → 2.6; 3.9 → 2.6; 4.0 → 0.0; 4.1 → 2.6; 4.3 → 0.0; 4.8 → 0.0
+- c6__otcR_W1__R1, destination_keyed: 8.5 → 7.7; 9.5 → 5.1; 10.1 → 5.1; 10.7 → 5.1; 11.2 → 2.6; 11.8 → 20.5; 12.4 → 7.7; 13.1 → 7.7; 14.1 → 0.0; 16.7 → 7.9
+- c6__otcR_W1__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_W1__R1, issuer_0 [share 50%, all records]: 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 10.0 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0
+- c6__otcR_W1__R1, issuer_0 [share 50%, other issuers' devices]: 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 9.9 → 0.0; 10.0 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0; 10.1 → 0.0
+- c6__otcR_W1__R1, issuer_0_with_observer [share 50%, all records]: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_0_with_first_relay [share 50%, all records]: 3.1 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.1 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_1 [share 30%, all records]: 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0
+- c6__otcR_W1__R1, issuer_1 [share 30%, its own devices]: 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0; 8.8 → 0.0
+- c6__otcR_W1__R1, issuer_1_with_observer [share 30%, all records]: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_1_with_observer [share 30%, its own devices]: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_1_with_first_relay [share 30%, all records]: 3.1 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_1_with_first_relay [share 30%, its own devices]: 3.1 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_1_with_destination: 8.5 → 7.7; 9.5 → 5.1; 10.1 → 5.1; 10.7 → 5.1; 11.2 → 2.6; 11.8 → 20.5; 12.4 → 7.7; 13.1 → 7.7; 14.1 → 0.0; 16.7 → 7.9
+- c6__otcR_W1__R1, issuer_2 [share 20%, all records]: 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0
+- c6__otcR_W1__R1, issuer_2 [share 20%, other issuers' devices]: 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0; 16.6 → 0.0
+- c6__otcR_W1__R1, issuer_2_with_observer [share 20%, all records]: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_2_with_first_relay [share 20%, all records]: 3.1 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.1 → 5.1; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R100, observer: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 4.6; 4.7 → 9.2; 5.1 → 7.6; 5.6 → 7.6; 6.3 → 6.1; 7.0 → 12.2; 7.6 → 10.7; 8.2 → 9.2
+- c6__otcR_W1__R100, first_hop: 3.5 → 1.5; 4.1 → 3.8; 4.5 → 4.9; 4.8 → 9.1; 5.1 → 6.6; 5.6 → 8.4; 6.3 → 6.0; 7.0 → 12.1; 7.6 → 10.3; 8.2 → 9.6
+- c6__otcR_W1__R100, destination: 3.7 → 6.1; 4.2 → 0.8; 4.6 → 3.8; 4.9 → 7.6; 5.3 → 8.4; 5.7 → 5.3; 6.3 → 5.3; 7.0 → 10.7; 7.7 → 9.2; 8.6 → 15.3
+- c6__otcR_W1__R100, destination_keyed: 6.6 → 3.0; 8.3 → 6.1; 9.3 → 8.4; 10.5 → 12.2; 11.5 → 13.0; 12.6 → 18.3; 13.7 → 15.3; 15.1 → 12.2; 16.7 → 14.5; 21.0 → 35.9
+- c6__otcR_W1__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_W1__R100, issuer_0 [share 50%, all records]: 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 5.0 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0
+- c6__otcR_W1__R100, issuer_0 [share 50%, its own devices]: 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 5.4 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0
+- c6__otcR_W1__R100, issuer_0 [share 50%, other issuers' devices]: 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 10.8 → 0.0; 10.9 → 0.0; 10.9 → 0.0; 10.9 → 0.0; 10.9 → 0.0
+- c6__otcR_W1__R100, issuer_0_with_observer [share 50%, all records]: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 4.6; 4.7 → 9.2; 5.1 → 7.6; 5.6 → 7.6; 6.3 → 6.1; 7.0 → 12.2; 7.6 → 10.7; 8.2 → 9.2
+- c6__otcR_W1__R100, issuer_0_with_observer [share 50%, its own devices]: 3.4 → 0.0; 4.0 → 1.4; 4.5 → 4.3; 4.8 → 10.1; 5.2 → 13.0; 5.7 → 8.7; 6.5 → 10.1; 7.1 → 20.3; 7.6 → 17.4; 8.2 → 16.2
+- c6__otcR_W1__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 3.5 → 1.6; 4.1 → 6.3; 4.5 → 4.8; 4.7 → 11.3; 5.0 → 1.6; 5.4 → 3.2; 6.0 → 6.5; 6.8 → 3.2; 7.5 → 0.0; 8.2 → 0.0
+- c6__otcR_W1__R100, issuer_0_with_first_relay [share 50%, all records]: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 6.1; 4.8 → 9.2; 5.2 → 3.8; 5.6 → 8.4; 6.3 → 6.9; 7.0 → 11.5; 7.5 → 13.0; 8.2 → 10.7
+- c6__otcR_W1__R100, issuer_0_with_first_relay [share 50%, its own devices]: 3.4 → 0.0; 4.1 → 1.4; 4.5 → 2.9; 4.8 → 11.6; 5.3 → 8.7; 5.8 → 10.1; 6.6 → 10.1; 7.1 → 21.7; 7.5 → 23.2; 8.2 → 16.2
+- c6__otcR_W1__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.5 → 1.6; 4.1 → 6.3; 4.5 → 11.1; 4.8 → 6.5; 5.1 → 0.0; 5.4 → 3.2; 6.0 → 6.5; 6.9 → 3.2; 7.4 → 0.0; 8.1 → 0.0
+- c6__otcR_W1__R100, issuer_0_with_destination: 5.7 → 1.4; 6.6 → 8.7; 7.1 → 14.5; 7.6 → 14.5; 8.0 → 11.6; 8.4 → 15.9; 8.8 → 13.0; 9.3 → 13.0; 10.1 → 23.2; 13.0 → 2.9
+- c6__otcR_W1__R100, issuer_1 [share 30%, all records]: 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.3 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0
+- c6__otcR_W1__R100, issuer_1 [share 30%, its own devices]: 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.2 → 0.0; 4.3 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0; 4.9 → 0.0
+- c6__otcR_W1__R100, issuer_1 [share 30%, other issuers' devices]: 5.9 → 0.0; 5.9 → 0.0; 5.9 → 0.0; 5.9 → 0.0; 6.9 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0
+- c6__otcR_W1__R100, issuer_1_with_observer [share 30%, all records]: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 4.6; 4.7 → 9.2; 5.1 → 7.6; 5.6 → 7.6; 6.3 → 6.1; 7.0 → 12.2; 7.6 → 10.7; 8.2 → 9.2
+- c6__otcR_W1__R100, issuer_1_with_observer [share 30%, its own devices]: 2.3 → 0.0; 2.7 → 0.0; 2.8 → 6.5; 3.0 → 0.0; 3.5 → 0.0; 4.4 → 0.0; 5.2 → 0.0; 6.3 → 0.0; 7.5 → 0.0; 8.2 → 0.0
+- c6__otcR_W1__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 3.5 → 1.0; 4.0 → 5.0; 4.5 → 5.9; 4.8 → 12.9; 5.2 → 7.9; 5.6 → 9.9; 6.4 → 11.0; 7.0 → 12.0; 7.6 → 14.0; 8.2 → 12.0
+- c6__otcR_W1__R100, issuer_1_with_first_relay [share 30%, all records]: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 6.1; 4.8 → 9.2; 5.2 → 3.8; 5.6 → 8.4; 6.3 → 6.9; 7.0 → 11.5; 7.5 → 13.0; 8.2 → 10.7
+- c6__otcR_W1__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.3 → 0.0; 2.7 → 0.0; 2.9 → 6.5; 3.0 → 0.0; 3.5 → 0.0; 4.4 → 0.0; 5.3 → 0.0; 6.4 → 0.0; 7.4 → 0.0; 8.2 → 0.0
+- c6__otcR_W1__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 3.5 → 1.0; 4.1 → 5.0; 4.5 → 5.9; 4.8 → 12.9; 5.2 → 5.0; 5.7 → 11.9; 6.4 → 9.0; 7.1 → 13.0; 7.4 → 18.0; 8.2 → 13.0
+- c6__otcR_W1__R100, issuer_1_with_destination: 6.5 → 9.7; 7.2 → 9.7; 7.9 → 16.1; 8.4 → 19.4; 9.2 → 9.7; 10.1 → 12.9; 11.2 → 16.7; 12.4 → 16.7; 14.0 → 16.7; 17.1 → 3.3
+- c6__otcR_W1__R100, issuer_2 [share 20%, all records]: 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 12.6 → 4.6; 13.5 → 7.6; 13.5 → 3.1; 13.5 → 4.6; 13.5 → 4.6
+- c6__otcR_W1__R100, issuer_2 [share 20%, its own devices]: 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 6.3 → 0.0; 8.3 → 0.0; 13.5 → 28.1; 13.5 → 25.0; 13.5 → 12.9; 13.5 → 22.6; 13.5 → 12.9
+- c6__otcR_W1__R100, issuer_2 [share 20%, other issuers' devices]: 13.5 → 0.0; 13.5 → 0.0; 13.5 → 0.0; 13.5 → 0.0; 13.7 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0
+- c6__otcR_W1__R100, issuer_2_with_observer [share 20%, all records]: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 4.6; 4.7 → 9.2; 5.1 → 7.6; 5.6 → 7.6; 6.3 → 6.1; 7.0 → 12.2; 7.6 → 10.7; 8.2 → 9.2
+- c6__otcR_W1__R100, issuer_2_with_observer [share 20%, its own devices]: 3.5 → 3.1; 4.1 → 12.5; 4.5 → 9.4; 4.7 → 15.6; 5.0 → 3.1; 5.5 → 6.2; 6.1 → 12.5; 6.8 → 6.5; 7.4 → 0.0; 8.1 → 0.0
+- c6__otcR_W1__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 3.4 → 0.0; 4.1 → 1.0; 4.5 → 3.0; 4.8 → 9.0; 5.2 → 7.0; 5.6 → 7.1; 6.4 → 7.1; 7.0 → 14.1; 7.6 → 12.1; 8.2 → 12.1
+- c6__otcR_W1__R100, issuer_2_with_first_relay [share 20%, all records]: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 6.1; 4.8 → 9.2; 5.2 → 3.8; 5.6 → 8.4; 6.3 → 6.9; 7.0 → 11.5; 7.5 → 13.0; 8.2 → 10.7
+- c6__otcR_W1__R100, issuer_2_with_first_relay [share 20%, its own devices]: 3.5 → 3.1; 4.1 → 12.5; 4.5 → 12.5; 4.8 → 12.5; 5.1 → 3.1; 5.5 → 9.4; 6.1 → 9.4; 6.8 → 6.5; 7.3 → 0.0; 8.1 → 0.0
+- c6__otcR_W1__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.4 → 0.0; 4.1 → 1.0; 4.5 → 4.0; 4.8 → 8.0; 5.2 → 3.0; 5.7 → 10.1; 6.4 → 5.1; 7.1 → 17.2; 7.5 → 15.2; 8.2 → 12.1
+- c6__otcR_W1__R100, issuer_2_with_destination: 10.5 → 6.2; 11.8 → 12.5; 12.8 → 25.0; 13.8 → 12.5; 15.0 → 12.5; 15.9 → 9.4; 17.0 → 18.8; 18.3 → 19.4; 19.9 → 32.3; 25.9 → 41.9
+- c6__otcR_W2__R1, observer: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, first_hop: 4.4 → 0.8; 5.0 → 4.0; 5.7 → 4.6; 6.2 → 17.9; 6.9 → 12.0; 7.5 → 11.5; 8.4 → 16.4; 9.6 → 12.6; 11.6 → 0.0; 19.6 → 0.0
+- c6__otcR_W2__R1, destination: 3.4 → 5.4; 3.8 → 2.7; 4.2 → 2.7; 4.5 → 24.3; 4.8 → 5.4; 5.1 → 8.1; 5.6 → 16.7; 6.1 → 0.0; 6.8 → 5.6; 9.9 → 2.8
+- c6__otcR_W2__R1, destination_keyed: 10.0 → 21.6; 11.5 → 13.5; 12.5 → 5.4; 13.3 → 5.4; 14.3 → 8.1; 15.2 → 13.5; 16.3 → 36.1; 17.9 → 38.9; 20.1 → 30.6; 24.1 → 25.0
+- c6__otcR_W2__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_W2__R1, issuer_0 [share 50%, all records]: 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.8 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0
+- c6__otcR_W2__R1, issuer_0 [share 50%, other issuers' devices]: 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.8 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0; 11.0 → 0.0
+- c6__otcR_W2__R1, issuer_0_with_observer [share 50%, all records]: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, issuer_0_with_first_relay [share 50%, all records]: 4.4 → 2.7; 5.0 → 5.4; 5.6 → 2.7; 6.2 → 16.2; 6.9 → 13.5; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.6 → 0.0
+- c6__otcR_W2__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 4.4 → 2.7; 5.0 → 5.4; 5.6 → 2.7; 6.2 → 16.2; 6.9 → 13.5; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.6 → 0.0
+- c6__otcR_W2__R1, issuer_1 [share 30%, all records]: 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 4.9 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0
+- c6__otcR_W2__R1, issuer_1 [share 30%, its own devices]: 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 3.9 → 0.0; 4.9 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0; 11.2 → 0.0
+- c6__otcR_W2__R1, issuer_1_with_observer [share 30%, all records]: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, issuer_1_with_observer [share 30%, its own devices]: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, issuer_1_with_first_relay [share 30%, all records]: 4.4 → 2.7; 5.0 → 5.4; 5.6 → 2.7; 6.2 → 16.2; 6.9 → 13.5; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.6 → 0.0
+- c6__otcR_W2__R1, issuer_1_with_first_relay [share 30%, its own devices]: 4.4 → 2.7; 5.0 → 5.4; 5.6 → 2.7; 6.2 → 16.2; 6.9 → 13.5; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.6 → 0.0
+- c6__otcR_W2__R1, issuer_1_with_destination: 10.0 → 21.6; 11.5 → 13.5; 12.5 → 5.4; 13.3 → 5.4; 14.3 → 8.1; 15.2 → 13.5; 16.3 → 36.1; 17.9 → 38.9; 20.1 → 30.6; 24.1 → 25.0
+- c6__otcR_W2__R1, issuer_2 [share 20%, all records]: 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 19.6 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0
+- c6__otcR_W2__R1, issuer_2 [share 20%, other issuers' devices]: 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 11.6 → 0.0; 19.6 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0; 19.9 → 0.0
+- c6__otcR_W2__R1, issuer_2_with_observer [share 20%, all records]: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, issuer_2_with_first_relay [share 20%, all records]: 4.4 → 2.7; 5.0 → 5.4; 5.6 → 2.7; 6.2 → 16.2; 6.9 → 13.5; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.6 → 0.0
+- c6__otcR_W2__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 4.4 → 2.7; 5.0 → 5.4; 5.6 → 2.7; 6.2 → 16.2; 6.9 → 13.5; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.6 → 0.0
+- c6__otcR_W2__R100, observer: 3.7 → 1.6; 4.1 → 4.9; 4.7 → 5.7; 5.2 → 3.3; 5.8 → 4.9; 6.4 → 12.3; 7.0 → 10.7; 7.8 → 9.0; 8.7 → 7.4; 12.2 → 6.6
+- c6__otcR_W2__R100, first_hop: 3.7 → 2.1; 4.1 → 4.4; 4.7 → 4.9; 5.2 → 3.8; 5.8 → 5.2; 6.4 → 12.0; 7.0 → 10.2; 7.8 → 9.5; 8.7 → 7.5; 12.2 → 6.6
+- c6__otcR_W2__R100, destination: 3.7 → 3.3; 4.3 → 2.5; 4.9 → 1.6; 5.3 → 2.5; 5.8 → 7.4; 6.4 → 7.4; 7.0 → 8.2; 7.8 → 11.5; 9.0 → 7.4; 12.6 → 7.4
+- c6__otcR_W2__R100, destination_keyed: 6.2 → 8.9; 7.8 → 6.6; 9.2 → 9.8; 10.6 → 9.0; 11.9 → 11.5; 13.2 → 7.4; 14.6 → 8.2; 16.3 → 18.9; 18.7 → 18.0; 26.4 → 18.9
+- c6__otcR_W2__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_W2__R100, issuer_0 [share 50%, all records]: 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 3.6 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0
+- c6__otcR_W2__R100, issuer_0 [share 50%, its own devices]: 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 3.2 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0
+- c6__otcR_W2__R100, issuer_0 [share 50%, other issuers' devices]: 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 9.6 → 0.0; 10.0 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0; 11.9 → 0.0
+- c6__otcR_W2__R100, issuer_0_with_observer [share 50%, all records]: 3.7 → 1.6; 4.1 → 4.9; 4.7 → 5.7; 5.2 → 3.3; 5.8 → 4.9; 6.4 → 12.3; 7.0 → 10.7; 7.8 → 9.0; 8.7 → 7.4; 12.2 → 6.6
+- c6__otcR_W2__R100, issuer_0_with_observer [share 50%, its own devices]: 3.7 → 1.4; 4.1 → 5.6; 4.7 → 8.5; 5.2 → 1.4; 5.9 → 5.7; 6.5 → 15.7; 7.1 → 14.3; 7.9 → 12.9; 8.7 → 12.9; 12.3 → 1.4
+- c6__otcR_W2__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 2.5 → 5.8; 2.9 → 3.8; 3.4 → 11.5; 3.8 → 9.6; 4.2 → 1.9; 4.7 → 5.8; 5.3 → 9.6; 6.1 → 0.0; 7.0 → 0.0; 8.5 → 0.0
+- c6__otcR_W2__R100, issuer_0_with_first_relay [share 50%, all records]: 3.7 → 1.6; 4.1 → 4.1; 4.6 → 3.3; 5.2 → 6.6; 5.8 → 4.1; 6.4 → 10.7; 7.0 → 11.5; 7.8 → 9.0; 8.7 → 7.4; 12.1 → 6.6
+- c6__otcR_W2__R100, issuer_0_with_first_relay [share 50%, its own devices]: 3.7 → 1.4; 4.1 → 4.2; 4.7 → 4.2; 5.2 → 8.5; 5.8 → 4.3; 6.5 → 11.4; 7.1 → 15.7; 7.9 → 12.9; 8.8 → 12.9; 12.2 → 1.4
+- c6__otcR_W2__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.5 → 5.8; 2.8 → 3.8; 3.4 → 11.5; 3.7 → 9.6; 4.2 → 1.9; 4.7 → 5.8; 5.3 → 5.8; 6.1 → 3.9; 7.0 → 0.0; 8.5 → 0.0
+- c6__otcR_W2__R100, issuer_0_with_destination: 5.8 → 11.3; 6.9 → 7.0; 7.8 → 7.0; 8.7 → 7.0; 9.6 → 11.4; 10.8 → 8.6; 12.4 → 14.3; 14.2 → 8.6; 16.1 → 18.6; 21.8 → 11.4
+- c6__otcR_W2__R100, issuer_1 [share 30%, all records]: 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0
+- c6__otcR_W2__R100, issuer_1 [share 30%, its own devices]: 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.2 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0; 5.3 → 0.0
+- c6__otcR_W2__R100, issuer_1 [share 30%, other issuers' devices]: 10.3 → 0.0; 10.3 → 0.0; 10.3 → 0.0; 10.3 → 0.0; 10.3 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0; 11.4 → 0.0
+- c6__otcR_W2__R100, issuer_1_with_observer [share 30%, all records]: 3.7 → 1.6; 4.1 → 4.9; 4.7 → 5.7; 5.2 → 3.3; 5.8 → 4.9; 6.4 → 12.3; 7.0 → 10.7; 7.8 → 9.0; 8.7 → 7.4; 12.2 → 6.6
+- c6__otcR_W2__R100, issuer_1_with_observer [share 30%, its own devices]: 1.8 → 0.0; 2.0 → 0.0; 2.2 → 12.5; 2.4 → 12.5; 2.6 → 8.3; 3.3 → 25.0; 4.5 → 0.0; 5.5 → 0.0; 6.7 → 0.0; 8.4 → 0.0
+- c6__otcR_W2__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 3.7 → 1.0; 4.1 → 7.1; 4.7 → 7.1; 5.2 → 4.0; 5.8 → 4.1; 6.4 → 15.3; 7.0 → 10.2; 7.8 → 9.2; 8.6 → 9.2; 12.3 → 1.0
+- c6__otcR_W2__R100, issuer_1_with_first_relay [share 30%, all records]: 3.7 → 1.6; 4.1 → 4.1; 4.6 → 3.3; 5.2 → 6.6; 5.8 → 4.1; 6.4 → 10.7; 7.0 → 11.5; 7.8 → 9.0; 8.7 → 7.4; 12.1 → 6.6
+- c6__otcR_W2__R100, issuer_1_with_first_relay [share 30%, its own devices]: 1.8 → 0.0; 2.0 → 0.0; 2.2 → 16.7; 2.4 → 8.3; 2.6 → 8.3; 3.3 → 25.0; 4.5 → 0.0; 5.4 → 0.0; 6.7 → 0.0; 8.4 → 0.0
+- c6__otcR_W2__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 3.7 → 1.0; 4.1 → 6.1; 4.6 → 5.1; 5.2 → 7.1; 5.8 → 4.1; 6.4 → 12.2; 7.0 → 11.2; 7.8 → 9.2; 8.7 → 9.2; 12.2 → 1.0
+- c6__otcR_W2__R100, issuer_1_with_destination: 6.8 → 4.2; 7.8 → 20.8; 8.3 → 4.2; 8.8 → 4.2; 9.4 → 12.5; 9.9 → 0.0; 10.6 → 16.7; 11.5 → 8.7; 13.5 → 4.3; 17.3 → 43.5
+- c6__otcR_W2__R100, issuer_2 [share 20%, all records]: 6.0 → 4.9; 6.0 → 4.9; 6.0 → 7.4; 6.0 → 4.9; 6.0 → 7.4; 22.1 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0
+- c6__otcR_W2__R100, issuer_2 [share 20%, its own devices]: 6.0 → 21.4; 6.0 → 35.7; 6.0 → 21.4; 6.0 → 42.9; 10.3 → 7.1; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0; 23.2 → 0.0
+- c6__otcR_W2__R100, issuer_2 [share 20%, other issuers' devices]: 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.3 → 0.0; 14.5 → 0.0; 15.6 → 0.0; 15.6 → 0.0; 15.6 → 0.0; 15.6 → 0.0; 15.6 → 0.0
+- c6__otcR_W2__R100, issuer_2_with_observer [share 20%, all records]: 3.7 → 1.6; 4.1 → 4.9; 4.7 → 5.7; 5.2 → 3.3; 5.8 → 4.9; 6.4 → 12.3; 7.0 → 10.7; 7.8 → 9.0; 8.7 → 7.4; 12.2 → 6.6
+- c6__otcR_W2__R100, issuer_2_with_observer [share 20%, its own devices]: 3.6 → 7.1; 4.1 → 3.6; 4.6 → 10.7; 5.1 → 3.6; 5.7 → 0.0; 6.3 → 14.3; 6.9 → 0.0; 7.6 → 0.0; 8.6 → 0.0; 12.2 → 0.0
+- c6__otcR_W2__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 3.7 → 1.1; 4.1 → 4.3; 4.7 → 4.3; 5.2 → 3.2; 5.8 → 6.4; 6.4 → 13.8; 7.0 → 11.7; 7.9 → 11.7; 8.7 → 9.6; 12.1 → 8.5
+- c6__otcR_W2__R100, issuer_2_with_first_relay [share 20%, all records]: 3.7 → 1.6; 4.1 → 4.1; 4.6 → 3.3; 5.2 → 6.6; 5.8 → 4.1; 6.4 → 10.7; 7.0 → 11.5; 7.8 → 9.0; 8.7 → 7.4; 12.1 → 6.6
+- c6__otcR_W2__R100, issuer_2_with_first_relay [share 20%, its own devices]: 3.7 → 3.6; 4.1 → 7.1; 4.6 → 10.7; 5.1 → 0.0; 5.7 → 3.6; 6.3 → 14.3; 6.9 → 0.0; 7.6 → 0.0; 8.6 → 0.0; 12.2 → 0.0
+- c6__otcR_W2__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.7 → 1.1; 4.1 → 3.2; 4.7 → 2.1; 5.2 → 7.4; 5.8 → 4.3; 6.4 → 10.6; 7.0 → 13.8; 7.9 → 12.8; 8.8 → 8.5; 12.1 → 8.5
+- c6__otcR_W2__R100, issuer_2_with_destination: 9.0 → 17.9; 10.5 → 7.1; 11.6 → 10.7; 12.1 → 14.3; 12.7 → 17.9; 13.6 → 7.1; 14.4 → 7.1; 15.7 → 25.0; 17.5 → 21.4; 21.7 → 17.9
+- c6__otcR_Wmis__R1, observer: 4.2 → 5.4; 4.7 → 2.7; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 13.5; 8.0 → 8.3; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, first_hop: 4.2 → 2.6; 4.7 → 6.8; 5.2 → 15.7; 5.8 → 28.4; 6.4 → 12.7; 7.2 → 13.8; 8.0 → 8.3; 9.2 → 18.0; 11.1 → 35.4; 14.9 → 59.7
+- c6__otcR_Wmis__R1, destination: 4.4 → 2.7; 5.1 → 8.1; 5.7 → 8.1; 6.3 → 13.5; 7.0 → 18.9; 7.9 → 10.8; 8.8 → 19.4; 10.0 → 11.1; 11.9 → 36.1; 16.2 → 50.0
+- c6__otcR_Wmis__R1, destination_keyed: 10.0 → 8.1; 11.7 → 13.5; 12.7 → 13.5; 13.8 → 24.3; 14.8 → 8.1; 15.6 → 2.7; 16.9 → 41.7; 18.5 → 22.2; 21.4 → 52.8; 30.5 → 66.7
+- c6__otcR_Wmis__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_Wmis__R1, issuer_0 [share 50%, all records]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcR_Wmis__R1, issuer_0 [share 50%, other issuers' devices]: 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.4 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0; 3.6 → 0.0
+- c6__otcR_Wmis__R1, issuer_0_with_observer [share 50%, all records]: 4.2 → 5.4; 4.7 → 2.7; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 13.5; 8.0 → 8.3; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 4.2 → 5.4; 4.7 → 2.7; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 13.5; 8.0 → 8.3; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, issuer_0_with_first_relay [share 50%, all records]: 4.2 → 0.0; 4.7 → 8.1; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 10.8; 7.3 → 10.8; 8.1 → 13.9; 9.3 → 22.2; 11.2 → 36.1; 14.9 → 58.3
+- c6__otcR_Wmis__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 4.2 → 0.0; 4.7 → 8.1; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 10.8; 7.3 → 10.8; 8.1 → 13.9; 9.3 → 22.2; 11.2 → 36.1; 14.9 → 58.3
+- c6__otcR_Wmis__R1, issuer_1 [share 30%, all records]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.7 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcR_Wmis__R1, issuer_1 [share 30%, its own devices]: 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.5 → 0.0; 4.7 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0; 5.6 → 0.0
+- c6__otcR_Wmis__R1, issuer_1_with_observer [share 30%, all records]: 4.2 → 5.4; 4.7 → 2.7; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 13.5; 8.0 → 8.3; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, issuer_1_with_observer [share 30%, its own devices]: 4.2 → 5.4; 4.7 → 2.7; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 13.5; 8.0 → 8.3; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, issuer_1_with_first_relay [share 30%, all records]: 4.2 → 0.0; 4.7 → 8.1; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 10.8; 7.3 → 10.8; 8.1 → 13.9; 9.3 → 22.2; 11.2 → 36.1; 14.9 → 58.3
+- c6__otcR_Wmis__R1, issuer_1_with_first_relay [share 30%, its own devices]: 4.2 → 0.0; 4.7 → 8.1; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 10.8; 7.3 → 10.8; 8.1 → 13.9; 9.3 → 22.2; 11.2 → 36.1; 14.9 → 58.3
+- c6__otcR_Wmis__R1, issuer_1_with_destination: 10.0 → 8.1; 11.7 → 13.5; 12.7 → 13.5; 13.8 → 24.3; 14.8 → 8.1; 15.6 → 2.7; 16.9 → 41.7; 18.5 → 22.2; 21.4 → 52.8; 30.5 → 66.7
+- c6__otcR_Wmis__R1, issuer_2 [share 20%, all records]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcR_Wmis__R1, issuer_2 [share 20%, other issuers' devices]: 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 6.6 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0; 8.2 → 0.0
+- c6__otcR_Wmis__R1, issuer_2_with_observer [share 20%, all records]: 4.2 → 5.4; 4.7 → 2.7; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 13.5; 8.0 → 8.3; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 4.2 → 5.4; 4.7 → 2.7; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 13.5; 8.0 → 8.3; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, issuer_2_with_first_relay [share 20%, all records]: 4.2 → 0.0; 4.7 → 8.1; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 10.8; 7.3 → 10.8; 8.1 → 13.9; 9.3 → 22.2; 11.2 → 36.1; 14.9 → 58.3
+- c6__otcR_Wmis__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 4.2 → 0.0; 4.7 → 8.1; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 10.8; 7.3 → 10.8; 8.1 → 13.9; 9.3 → 22.2; 11.2 → 36.1; 14.9 → 58.3
+- c6__otcR_Wmis__R100, observer: 5.0 → 4.9; 5.8 → 4.9; 6.8 → 6.6; 7.7 → 8.2; 8.6 → 9.0; 10.2 → 10.7; 12.6 → 9.0; 14.4 → 14.8; 17.1 → 13.1; 25.2 → 14.8
+- c6__otcR_Wmis__R100, first_hop: 5.0 → 5.2; 5.8 → 4.9; 6.8 → 6.4; 7.7 → 8.1; 8.7 → 9.8; 10.3 → 9.5; 12.5 → 9.0; 14.4 → 14.2; 17.1 → 13.6; 25.2 → 14.8
+- c6__otcR_Wmis__R100, destination: 3.1 → 4.9; 3.5 → 5.7; 3.9 → 3.3; 4.2 → 4.9; 4.6 → 7.4; 5.1 → 9.0; 5.7 → 9.8; 6.3 → 14.8; 7.1 → 11.5; 9.6 → 14.8
+- c6__otcR_Wmis__R100, destination_keyed: 5.5 → 9.8; 6.5 → 8.2; 7.4 → 8.2; 8.7 → 12.3; 9.8 → 13.1; 11.0 → 16.4; 12.1 → 16.4; 13.3 → 18.9; 15.3 → 23.8; 21.2 → 36.9
+- c6__otcR_Wmis__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_Wmis__R100, issuer_0 [share 50%, all records]: 2.5 → 9.8; 2.5 → 9.8; 2.5 → 9.8; 2.5 → 9.8; 2.8 → 5.7; 6.9 → 0.8; 6.9 → 3.3; 6.9 → 2.5; 6.9 → 2.5; 6.9 → 2.5
+- c6__otcR_Wmis__R100, issuer_0 [share 50%, its own devices]: 2.5 → 16.9; 2.5 → 19.7; 2.5 → 15.5; 2.5 → 15.5; 2.6 → 10.0; 6.9 → 2.9; 6.9 → 2.9; 6.9 → 5.7; 6.9 → 4.3; 6.9 → 4.3
+- c6__otcR_Wmis__R100, issuer_0 [share 50%, other issuers' devices]: 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 4.8 → 0.0; 6.6 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0; 6.8 → 0.0
+- c6__otcR_Wmis__R100, issuer_0_with_observer [share 50%, all records]: 5.0 → 4.9; 5.8 → 4.9; 6.8 → 6.6; 7.7 → 8.2; 8.6 → 9.0; 10.2 → 10.7; 12.6 → 9.0; 14.4 → 14.8; 17.1 → 13.1; 25.2 → 14.8
+- c6__otcR_Wmis__R100, issuer_0_with_observer [share 50%, its own devices]: 5.0 → 4.2; 5.9 → 5.6; 6.8 → 11.3; 7.7 → 9.9; 8.8 → 14.3; 10.5 → 8.6; 12.7 → 14.3; 14.5 → 18.6; 17.1 → 18.6; 24.3 → 12.9
+- c6__otcR_Wmis__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 3.1 → 1.9; 3.6 → 0.0; 4.2 → 9.6; 4.9 → 11.5; 5.8 → 15.4; 7.2 → 11.5; 8.7 → 1.9; 12.0 → 5.9; 15.1 → 7.8; 20.3 → 0.0
+- c6__otcR_Wmis__R100, issuer_0_with_first_relay [share 50%, all records]: 5.0 → 4.9; 5.8 → 4.1; 6.7 → 5.7; 7.7 → 8.2; 8.6 → 11.5; 10.2 → 10.7; 12.1 → 8.2; 14.3 → 13.9; 17.3 → 13.9; 25.2 → 15.6
+- c6__otcR_Wmis__R100, issuer_0_with_first_relay [share 50%, its own devices]: 5.0 → 2.8; 5.8 → 4.2; 6.7 → 8.5; 7.7 → 14.1; 8.6 → 10.0; 10.4 → 12.9; 12.3 → 8.6; 14.3 → 18.6; 17.2 → 18.6; 24.4 → 15.7
+- c6__otcR_Wmis__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.1 → 3.8; 3.6 → 0.0; 4.1 → 7.7; 4.9 → 17.3; 5.8 → 15.4; 7.1 → 13.5; 8.7 → 1.9; 11.8 → 9.8; 15.1 → 3.9; 20.5 → 0.0
+- c6__otcR_Wmis__R100, issuer_0_with_destination: 5.2 → 5.6; 5.9 → 12.7; 6.4 → 9.9; 7.0 → 9.9; 7.6 → 7.1; 8.6 → 15.7; 9.7 → 14.3; 11.1 → 17.1; 12.4 → 22.9; 15.8 → 21.4
+- c6__otcR_Wmis__R100, issuer_1 [share 30%, all records]: 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 7.5 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0
+- c6__otcR_Wmis__R100, issuer_1 [share 30%, its own devices]: 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 5.8 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0
+- c6__otcR_Wmis__R100, issuer_1 [share 30%, other issuers' devices]: 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 7.7 → 0.0; 9.3 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0; 9.4 → 0.0
+- c6__otcR_Wmis__R100, issuer_1_with_observer [share 30%, all records]: 5.0 → 4.9; 5.8 → 4.9; 6.8 → 6.6; 7.7 → 8.2; 8.6 → 9.0; 10.2 → 10.7; 12.6 → 9.0; 14.4 → 14.8; 17.1 → 13.1; 25.2 → 14.8
+- c6__otcR_Wmis__R100, issuer_1_with_observer [share 30%, its own devices]: 2.1 → 0.0; 2.3 → 0.0; 2.5 → 0.0; 2.9 → 8.3; 3.3 → 4.2; 3.7 → 20.8; 4.3 → 0.0; 5.0 → 21.7; 6.0 → 8.7; 7.9 → 0.0
+- c6__otcR_Wmis__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 5.0 → 5.1; 5.7 → 4.0; 6.7 → 9.1; 7.7 → 11.1; 8.7 → 13.3; 10.3 → 11.2; 12.5 → 9.2; 14.4 → 17.3; 17.0 → 14.3; 24.2 → 9.2
+- c6__otcR_Wmis__R100, issuer_1_with_first_relay [share 30%, all records]: 5.0 → 4.9; 5.8 → 4.1; 6.7 → 5.7; 7.7 → 8.2; 8.6 → 11.5; 10.2 → 10.7; 12.1 → 8.2; 14.3 → 13.9; 17.3 → 13.9; 25.2 → 15.6
+- c6__otcR_Wmis__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.1 → 0.0; 2.3 → 0.0; 2.5 → 12.5; 2.9 → 8.3; 3.2 → 8.3; 3.7 → 16.7; 4.3 → 0.0; 4.9 → 21.7; 6.0 → 8.7; 7.9 → 0.0
+- c6__otcR_Wmis__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 4.9 → 5.1; 5.7 → 5.1; 6.6 → 7.1; 7.6 → 10.1; 8.6 → 12.2; 10.3 → 13.3; 12.2 → 7.1; 14.2 → 15.3; 17.2 → 15.3; 24.3 → 11.2
+- c6__otcR_Wmis__R100, issuer_1_with_destination: 7.9 → 4.2; 9.1 → 12.5; 9.9 → 4.2; 10.6 → 8.3; 11.3 → 16.7; 12.1 → 20.8; 13.1 → 16.7; 14.8 → 4.3; 18.0 → 21.7; 27.0 → 52.2
+- c6__otcR_Wmis__R100, issuer_2 [share 20%, all records]: 6.0 → 4.9; 6.0 → 4.9; 6.0 → 7.4; 6.0 → 4.9; 6.0 → 7.4; 10.8 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0
+- c6__otcR_Wmis__R100, issuer_2 [share 20%, its own devices]: 6.0 → 21.4; 6.0 → 35.7; 6.0 → 21.4; 6.0 → 42.9; 7.2 → 7.1; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0; 11.1 → 0.0
+- c6__otcR_Wmis__R100, issuer_2 [share 20%, other issuers' devices]: 8.7 → 0.0; 8.7 → 0.0; 8.7 → 0.0; 8.7 → 0.0; 10.0 → 0.0; 16.1 → 0.0; 16.1 → 0.0; 16.1 → 0.0; 16.1 → 0.0; 16.1 → 0.0
+- c6__otcR_Wmis__R100, issuer_2_with_observer [share 20%, all records]: 5.0 → 4.9; 5.8 → 4.9; 6.8 → 6.6; 7.7 → 8.2; 8.6 → 9.0; 10.2 → 10.7; 12.6 → 9.0; 14.4 → 14.8; 17.1 → 13.1; 25.2 → 14.8
+- c6__otcR_Wmis__R100, issuer_2_with_observer [share 20%, its own devices]: 3.1 → 3.6; 3.5 → 0.0; 4.1 → 17.9; 4.9 → 17.9; 5.6 → 17.9; 7.3 → 10.7; 9.5 → 0.0; 12.8 → 0.0; 15.7 → 0.0; 20.5 → 0.0
+- c6__otcR_Wmis__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 3.5 → 9.5; 4.5 → 10.6; 5.1 → 7.4; 5.7 → 8.5; 6.3 → 14.9; 6.8 → 11.7; 7.5 → 9.6; 8.4 → 7.4; 11.3 → 9.6; 21.9 → 14.9
+- c6__otcR_Wmis__R100, issuer_2_with_first_relay [share 20%, all records]: 5.0 → 4.9; 5.8 → 4.1; 6.7 → 5.7; 7.7 → 8.2; 8.6 → 11.5; 10.2 → 10.7; 12.1 → 8.2; 14.3 → 13.9; 17.3 → 13.9; 25.2 → 15.6
+- c6__otcR_Wmis__R100, issuer_2_with_first_relay [share 20%, its own devices]: 3.0 → 7.1; 3.4 → 0.0; 4.1 → 14.3; 4.9 → 17.9; 5.6 → 21.4; 7.1 → 7.1; 9.4 → 3.6; 12.6 → 0.0; 15.7 → 0.0; 20.7 → 0.0
+- c6__otcR_Wmis__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.5 → 8.4; 4.4 → 9.6; 5.0 → 9.6; 5.7 → 5.3; 6.3 → 12.8; 6.8 → 11.7; 7.5 → 11.7; 8.3 → 11.7; 11.0 → 8.5; 21.7 → 14.9
+- c6__otcR_Wmis__R100, issuer_2_with_destination: 12.5 → 10.7; 15.4 → 21.4; 17.7 → 7.1; 19.3 → 10.7; 20.6 → 14.3; 22.4 → 32.1; 24.5 → 32.1; 27.6 → 39.3; 31.1 → 32.1; 41.4 → 35.7
+- c6__otcR_chain100__R1, observer: 4.1 → 9.3; 4.5 → 4.8; 4.8 → 2.4; 5.0 → 2.4; 5.2 → 4.8; 5.4 → 2.4; 5.7 → 4.8; 6.0 → 7.1; 6.5 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, first_hop: 4.1 → 6.8; 4.5 → 6.4; 4.8 → 2.0; 5.0 → 4.2; 5.2 → 3.8; 5.4 → 2.1; 5.7 → 6.3; 6.0 → 5.3; 6.5 → 4.4; 7.6 → 5.7
+- c6__otcR_chain100__R1, destination: 3.3 → 9.3; 3.6 → 7.1; 3.9 → 0.0; 4.2 → 9.5; 4.5 → 4.8; 4.8 → 7.1; 5.1 → 4.8; 5.6 → 2.4; 6.2 → 2.4; 7.5 → 0.0
+- c6__otcR_chain100__R1, destination_keyed: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.8 → 2.4; 3.7 → 7.1; 4.8 → 4.8; 6.5 → 0.0
+- c6__otcR_chain100__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_chain100__R1, issuer_0 [share 50%, all records]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcR_chain100__R1, issuer_0 [share 50%, other issuers' devices]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcR_chain100__R1, issuer_0_with_observer [share 50%, all records]: 4.1 → 9.3; 4.5 → 4.8; 4.8 → 2.4; 5.0 → 2.4; 5.2 → 4.8; 5.4 → 2.4; 5.7 → 4.8; 6.0 → 7.1; 6.5 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 4.1 → 9.3; 4.5 → 4.8; 4.8 → 2.4; 5.0 → 2.4; 5.2 → 4.8; 5.4 → 2.4; 5.7 → 4.8; 6.0 → 7.1; 6.5 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_0_with_first_relay [share 50%, all records]: 4.1 → 2.3; 4.6 → 9.5; 4.8 → 2.4; 5.0 → 7.1; 5.2 → 2.4; 5.4 → 2.4; 5.7 → 7.1; 6.1 → 4.8; 6.6 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 4.1 → 2.3; 4.6 → 9.5; 4.8 → 2.4; 5.0 → 7.1; 5.2 → 2.4; 5.4 → 2.4; 5.7 → 7.1; 6.1 → 4.8; 6.6 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_1 [share 30%, all records]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.5 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcR_chain100__R1, issuer_1 [share 30%, its own devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.9 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcR_chain100__R1, issuer_1 [share 30%, other issuers' devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 10.3 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcR_chain100__R1, issuer_1_with_observer [share 30%, all records]: 4.1 → 9.3; 4.5 → 4.8; 4.8 → 2.4; 5.0 → 2.4; 5.2 → 4.8; 5.4 → 2.4; 5.7 → 4.8; 6.0 → 7.1; 6.5 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_1_with_observer [share 30%, its own devices]: 4.1 → 6.9; 4.5 → 3.4; 4.8 → 0.0; 5.0 → 3.4; 5.2 → 3.4; 5.4 → 3.6; 5.7 → 3.6; 6.0 → 7.1; 6.5 → 3.6; 7.6 → 10.7
+- c6__otcR_chain100__R1, issuer_1_with_observer [share 30%, other issuers' devices]: 4.1 → 7.1; 4.6 → 14.3; 4.8 → 7.1; 5.0 → 0.0; 5.2 → 7.1; 5.5 → 7.1; 5.8 → 7.7; 6.1 → 0.0; 6.6 → 0.0; 7.5 → 0.0
+- c6__otcR_chain100__R1, issuer_1_with_first_relay [share 30%, all records]: 4.1 → 2.3; 4.6 → 9.5; 4.8 → 2.4; 5.0 → 7.1; 5.2 → 2.4; 5.4 → 2.4; 5.7 → 7.1; 6.1 → 4.8; 6.6 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_1_with_first_relay [share 30%, its own devices]: 4.1 → 3.4; 4.6 → 3.4; 4.8 → 3.4; 5.0 → 3.4; 5.2 → 0.0; 5.4 → 3.6; 5.7 → 7.1; 6.1 → 3.6; 6.6 → 3.6; 7.6 → 10.7
+- c6__otcR_chain100__R1, issuer_1_with_first_relay [share 30%, other issuers' devices]: 4.1 → 0.0; 4.6 → 21.4; 4.8 → 7.1; 5.0 → 7.1; 5.3 → 7.1; 5.6 → 7.1; 5.9 → 0.0; 6.2 → 7.7; 6.6 → 0.0; 7.5 → 0.0
+- c6__otcR_chain100__R1, issuer_1_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0
+- c6__otcR_chain100__R1, issuer_2 [share 20%, all records]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcR_chain100__R1, issuer_2 [share 20%, other issuers' devices]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcR_chain100__R1, issuer_2_with_observer [share 20%, all records]: 4.1 → 9.3; 4.5 → 4.8; 4.8 → 2.4; 5.0 → 2.4; 5.2 → 4.8; 5.4 → 2.4; 5.7 → 4.8; 6.0 → 7.1; 6.5 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 4.1 → 9.3; 4.5 → 4.8; 4.8 → 2.4; 5.0 → 2.4; 5.2 → 4.8; 5.4 → 2.4; 5.7 → 4.8; 6.0 → 7.1; 6.5 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_2_with_first_relay [share 20%, all records]: 4.1 → 2.3; 4.6 → 9.5; 4.8 → 2.4; 5.0 → 7.1; 5.2 → 2.4; 5.4 → 2.4; 5.7 → 7.1; 6.1 → 4.8; 6.6 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 4.1 → 2.3; 4.6 → 9.5; 4.8 → 2.4; 5.0 → 7.1; 5.2 → 2.4; 5.4 → 2.4; 5.7 → 7.1; 6.1 → 4.8; 6.6 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R100, observer: 2.2 → 0.0; 2.4 → 3.3; 2.6 → 1.6; 2.7 → 1.6; 2.8 → 0.8; 2.9 → 0.8; 3.1 → 5.7; 3.3 → 4.1; 3.5 → 4.1; 4.1 → 2.5
+- c6__otcR_chain100__R100, first_hop: 2.2 → 0.1; 2.5 → 2.8; 2.6 → 2.2; 2.7 → 1.6; 2.8 → 1.5; 2.9 → 1.6; 3.1 → 5.6; 3.3 → 3.3; 3.5 → 4.2; 4.2 → 2.9
+- c6__otcR_chain100__R100, destination: 2.4 → 2.4; 2.7 → 4.9; 2.8 → 4.9; 2.9 → 4.1; 3.1 → 0.8; 3.2 → 2.5; 3.4 → 4.1; 3.5 → 3.3; 3.8 → 3.3; 4.5 → 5.7
+- c6__otcR_chain100__R100, destination_keyed: 0.0 → 0.0; 0.0 → 0.0; 0.2 → 0.0; 2.7 → 4.1; 3.2 → 4.9; 3.9 → 3.3; 50.9 → 4.9; 88.9 → 1.6; 100.0 → 2.5; 100.0 → 2.5
+- c6__otcR_chain100__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_chain100__R100, issuer_0 [share 50%, all records]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 1.6; 1.9 → 1.6; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0
+- c6__otcR_chain100__R100, issuer_0 [share 50%, its own devices]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 2.1; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0
+- c6__otcR_chain100__R100, issuer_0 [share 50%, other issuers' devices]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.6 → 1.3; 2.6 → 0.0; 2.6 → 2.7
+- c6__otcR_chain100__R100, issuer_0_with_observer [share 50%, all records]: 2.2 → 0.0; 2.4 → 3.3; 2.6 → 1.6; 2.7 → 1.6; 2.8 → 0.8; 2.9 → 0.8; 3.1 → 5.7; 3.3 → 4.1; 3.5 → 4.1; 4.1 → 2.5
+- c6__otcR_chain100__R100, issuer_0_with_observer [share 50%, its own devices]: 2.2 → 0.0; 2.4 → 2.1; 2.6 → 4.3; 2.7 → 2.1; 2.8 → 2.1; 2.9 → 2.1; 3.1 → 4.3; 3.2 → 6.5; 3.4 → 2.2; 4.0 → 8.7
+- c6__otcR_chain100__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 2.2 → 0.0; 2.5 → 3.9; 2.6 → 0.0; 2.7 → 1.3; 2.8 → 0.0; 2.9 → 1.3; 3.1 → 5.3; 3.3 → 1.3; 3.5 → 4.0; 4.2 → 1.3
+- c6__otcR_chain100__R100, issuer_0_with_first_relay [share 50%, all records]: 2.2 → 0.0; 2.4 → 3.3; 2.6 → 3.3; 2.7 → 0.0; 2.8 → 1.6; 3.0 → 2.5; 3.1 → 4.9; 3.3 → 2.5; 3.5 → 4.9; 4.1 → 2.5
+- c6__otcR_chain100__R100, issuer_0_with_first_relay [share 50%, its own devices]: 2.2 → 0.0; 2.4 → 0.0; 2.6 → 6.4; 2.7 → 2.1; 2.8 → 2.1; 2.9 → 4.3; 3.1 → 2.2; 3.2 → 4.3; 3.4 → 4.3; 4.0 → 8.7
+- c6__otcR_chain100__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 2.2 → 0.0; 2.5 → 3.9; 2.6 → 1.3; 2.7 → 1.3; 2.9 → 0.0; 3.0 → 2.6; 3.1 → 3.9; 3.3 → 1.3; 3.5 → 4.0; 4.2 → 1.3
+- c6__otcR_chain100__R100, issuer_0_with_destination: 0.0 → 0.0; 0.0 → 0.0; 9.9 → 0.0; 53.1 → 6.4; 63.7 → 4.3; 86.4 → 4.3; 100.0 → 0.0; 100.0 → 6.5; 100.0 → 0.0; 100.0 → 2.2
+- c6__otcR_chain100__R100, issuer_1 [share 30%, all records]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.9 → 0.0; 3.3 → 0.0; 3.3 → 0.0; 3.3 → 0.0; 3.3 → 0.0; 3.3 → 0.0
+- c6__otcR_chain100__R100, issuer_1 [share 30%, its own devices]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0
+- c6__otcR_chain100__R100, issuer_1 [share 30%, other issuers' devices]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 3.1 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0
+- c6__otcR_chain100__R100, issuer_1_with_observer [share 30%, all records]: 2.2 → 0.0; 2.4 → 3.3; 2.6 → 1.6; 2.7 → 1.6; 2.8 → 0.8; 2.9 → 0.8; 3.1 → 5.7; 3.3 → 4.1; 3.5 → 4.1; 4.1 → 2.5
+- c6__otcR_chain100__R100, issuer_1_with_observer [share 30%, its own devices]: 2.2 → 0.0; 2.4 → 0.0; 2.6 → 0.0; 2.7 → 0.0; 2.8 → 0.0; 3.0 → 0.0; 3.1 → 10.0; 3.2 → 5.0; 3.6 → 10.0; 4.2 → 0.0
+- c6__otcR_chain100__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 2.2 → 0.0; 2.5 → 3.9; 2.6 → 2.0; 2.7 → 2.0; 2.8 → 1.0; 2.9 → 1.0; 3.1 → 4.9; 3.3 → 3.9; 3.5 → 2.9; 4.1 → 2.9
+- c6__otcR_chain100__R100, issuer_1_with_first_relay [share 30%, all records]: 2.2 → 0.0; 2.4 → 3.3; 2.6 → 3.3; 2.7 → 0.0; 2.8 → 1.6; 3.0 → 2.5; 3.1 → 4.9; 3.3 → 2.5; 3.5 → 4.9; 4.1 → 2.5
+- c6__otcR_chain100__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.2 → 0.0; 2.4 → 0.0; 2.6 → 5.0; 2.7 → 0.0; 2.9 → 0.0; 3.0 → 5.0; 3.1 → 5.0; 3.3 → 5.0; 3.5 → 10.0; 4.2 → 0.0
+- c6__otcR_chain100__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.2 → 0.0; 2.5 → 3.9; 2.6 → 2.9; 2.7 → 0.0; 2.8 → 2.0; 3.0 → 2.0; 3.1 → 4.9; 3.3 → 2.0; 3.4 → 3.9; 4.1 → 2.9
+- c6__otcR_chain100__R100, issuer_1_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 63.6 → 0.0; 87.8 → 0.0; 100.0 → 10.0; 100.0 → 0.0
+- c6__otcR_chain100__R100, issuer_2 [share 20%, all records]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_chain100__R100, issuer_2 [share 20%, its own devices]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.0 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_chain100__R100, issuer_2 [share 20%, other issuers' devices]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 11.5 → 0.0; 13.9 → 0.0; 13.9 → 0.0; 13.9 → 0.0; 13.9 → 0.0
+- c6__otcR_chain100__R100, issuer_2_with_observer [share 20%, all records]: 2.2 → 0.0; 2.4 → 3.3; 2.6 → 1.6; 2.7 → 1.6; 2.8 → 0.8; 2.9 → 0.8; 3.1 → 5.7; 3.3 → 4.1; 3.5 → 4.1; 4.1 → 2.5
+- c6__otcR_chain100__R100, issuer_2_with_observer [share 20%, its own devices]: 1.7 → 0.0; 1.8 → 0.0; 1.9 → 0.0; 2.0 → 0.0; 2.2 → 0.0; 2.3 → 0.0; 2.4 → 0.0; 2.7 → 0.0; 3.0 → 0.0; 3.6 → 0.0
+- c6__otcR_chain100__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 2.2 → 0.0; 2.5 → 3.8; 2.6 → 1.9; 2.7 → 1.9; 2.8 → 0.9; 2.9 → 0.9; 3.1 → 7.6; 3.3 → 3.8; 3.5 → 4.8; 4.2 → 2.9
+- c6__otcR_chain100__R100, issuer_2_with_first_relay [share 20%, all records]: 2.2 → 0.0; 2.4 → 3.3; 2.6 → 3.3; 2.7 → 0.0; 2.8 → 1.6; 3.0 → 2.5; 3.1 → 4.9; 3.3 → 2.5; 3.5 → 4.9; 4.1 → 2.5
+- c6__otcR_chain100__R100, issuer_2_with_first_relay [share 20%, its own devices]: 1.7 → 0.0; 1.8 → 0.0; 1.9 → 0.0; 2.0 → 0.0; 2.2 → 0.0; 2.3 → 0.0; 2.4 → 0.0; 2.7 → 0.0; 3.0 → 0.0; 3.5 → 0.0
+- c6__otcR_chain100__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 2.2 → 0.0; 2.4 → 3.8; 2.6 → 3.8; 2.7 → 0.0; 2.8 → 2.8; 3.0 → 2.8; 3.1 → 4.8; 3.3 → 2.9; 3.5 → 5.7; 4.1 → 2.9
+- c6__otcR_chain100__R100, issuer_2_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 61.9 → 0.0; 100.0 → 0.0; 100.0 → 0.0; 100.0 → 0.0
+- c6__otcR_chain50__R1, observer: 3.6 → 2.3; 4.0 → 11.9; 4.2 → 0.0; 4.4 → 7.1; 4.6 → 2.4; 4.8 → 2.4; 5.0 → 2.4; 5.3 → 7.1; 5.7 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, first_hop: 3.6 → 2.9; 4.0 → 10.1; 4.2 → 1.1; 4.4 → 6.2; 4.6 → 3.1; 4.8 → 3.0; 5.0 → 3.0; 5.3 → 6.7; 5.7 → 0.6; 7.0 → 9.3
+- c6__otcR_chain50__R1, destination: 3.0 → 7.0; 3.3 → 4.8; 3.6 → 7.1; 3.7 → 4.8; 4.0 → 0.0; 4.3 → 2.4; 4.6 → 4.8; 4.9 → 2.4; 5.5 → 2.4; 6.7 → 4.8
+- c6__otcR_chain50__R1, destination_keyed: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.6 → 2.4; 3.1 → 2.4; 3.4 → 4.8; 4.1 → 0.0
+- c6__otcR_chain50__R1, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_chain50__R1, issuer_0 [share 50%, all records]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcR_chain50__R1, issuer_0 [share 50%, other issuers' devices]: 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 3.5 → 0.0; 4.3 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0; 4.4 → 0.0
+- c6__otcR_chain50__R1, issuer_0_with_observer [share 50%, all records]: 3.6 → 2.3; 4.0 → 11.9; 4.2 → 0.0; 4.4 → 7.1; 4.6 → 2.4; 4.8 → 2.4; 5.0 → 2.4; 5.3 → 7.1; 5.7 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_0_with_observer [share 50%, other issuers' devices]: 3.6 → 2.3; 4.0 → 11.9; 4.2 → 0.0; 4.4 → 7.1; 4.6 → 2.4; 4.8 → 2.4; 5.0 → 2.4; 5.3 → 7.1; 5.7 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_0_with_first_relay [share 50%, all records]: 3.6 → 4.7; 4.0 → 9.5; 4.3 → 4.8; 4.5 → 4.8; 4.7 → 2.4; 4.9 → 2.4; 5.1 → 2.4; 5.3 → 7.1; 5.8 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_0_with_first_relay [share 50%, other issuers' devices]: 3.6 → 4.7; 4.0 → 9.5; 4.3 → 4.8; 4.5 → 4.8; 4.7 → 2.4; 4.9 → 2.4; 5.1 → 2.4; 5.3 → 7.1; 5.8 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_1 [share 30%, all records]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.5 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcR_chain50__R1, issuer_1 [share 30%, its own devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 7.9 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcR_chain50__R1, issuer_1 [share 30%, other issuers' devices]: 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 6.5 → 0.0; 10.3 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0; 19.7 → 0.0
+- c6__otcR_chain50__R1, issuer_1_with_observer [share 30%, all records]: 3.6 → 2.3; 4.0 → 11.9; 4.2 → 0.0; 4.4 → 7.1; 4.6 → 2.4; 4.8 → 2.4; 5.0 → 2.4; 5.3 → 7.1; 5.7 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_1_with_observer [share 30%, its own devices]: 3.6 → 3.4; 4.0 → 13.8; 4.2 → 0.0; 4.4 → 6.9; 4.6 → 3.4; 4.9 → 0.0; 5.0 → 3.6; 5.3 → 7.1; 5.8 → 0.0; 6.9 → 14.3
+- c6__otcR_chain50__R1, issuer_1_with_observer [share 30%, other issuers' devices]: 2.6 → 7.1; 2.8 → 0.0; 2.9 → 0.0; 3.0 → 7.1; 3.1 → 0.0; 3.2 → 7.1; 3.3 → 7.7; 3.5 → 0.0; 3.6 → 0.0; 4.2 → 0.0
+- c6__otcR_chain50__R1, issuer_1_with_first_relay [share 30%, all records]: 3.6 → 4.7; 4.0 → 9.5; 4.3 → 4.8; 4.5 → 4.8; 4.7 → 2.4; 4.9 → 2.4; 5.1 → 2.4; 5.3 → 7.1; 5.8 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_1_with_first_relay [share 30%, its own devices]: 3.6 → 6.9; 4.0 → 13.8; 4.3 → 3.4; 4.5 → 6.9; 4.7 → 0.0; 4.9 → 0.0; 5.1 → 3.6; 5.3 → 7.1; 5.9 → 0.0; 7.0 → 14.3
+- c6__otcR_chain50__R1, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.6 → 7.1; 2.8 → 0.0; 2.9 → 0.0; 3.0 → 7.1; 3.2 → 0.0; 3.3 → 7.1; 3.4 → 7.7; 3.5 → 0.0; 3.6 → 0.0; 4.2 → 0.0
+- c6__otcR_chain50__R1, issuer_1_with_destination: 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0; 0.0 → 0.0
+- c6__otcR_chain50__R1, issuer_2 [share 20%, all records]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcR_chain50__R1, issuer_2 [share 20%, other issuers' devices]: 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 6.9 → 0.0; 7.5 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0; 7.6 → 0.0
+- c6__otcR_chain50__R1, issuer_2_with_observer [share 20%, all records]: 3.6 → 2.3; 4.0 → 11.9; 4.2 → 0.0; 4.4 → 7.1; 4.6 → 2.4; 4.8 → 2.4; 5.0 → 2.4; 5.3 → 7.1; 5.7 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_2_with_observer [share 20%, other issuers' devices]: 3.6 → 2.3; 4.0 → 11.9; 4.2 → 0.0; 4.4 → 7.1; 4.6 → 2.4; 4.8 → 2.4; 5.0 → 2.4; 5.3 → 7.1; 5.7 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_2_with_first_relay [share 20%, all records]: 3.6 → 4.7; 4.0 → 9.5; 4.3 → 4.8; 4.5 → 4.8; 4.7 → 2.4; 4.9 → 2.4; 5.1 → 2.4; 5.3 → 7.1; 5.8 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, issuer_2_with_first_relay [share 20%, other issuers' devices]: 3.6 → 4.7; 4.0 → 9.5; 4.3 → 4.8; 4.5 → 4.8; 4.7 → 2.4; 4.9 → 2.4; 5.1 → 2.4; 5.3 → 7.1; 5.8 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R100, observer: 2.1 → 1.6; 2.2 → 2.4; 2.4 → 2.4; 2.5 → 1.6; 2.6 → 1.6; 2.7 → 3.3; 2.8 → 0.8; 3.0 → 3.3; 3.2 → 2.5; 3.8 → 4.1
+- c6__otcR_chain50__R100, first_hop: 2.1 → 2.0; 2.2 → 1.8; 2.4 → 1.8; 2.5 → 1.0; 2.6 → 2.4; 2.7 → 3.0; 2.8 → 2.1; 3.0 → 2.7; 3.2 → 2.5; 3.9 → 4.1
+- c6__otcR_chain50__R100, destination: 1.6 → 4.1; 1.7 → 4.9; 1.7 → 2.4; 1.8 → 4.1; 1.8 → 3.3; 1.9 → 1.6; 2.0 → 3.3; 2.1 → 4.9; 2.2 → 1.6; 2.4 → 4.1
+- c6__otcR_chain50__R100, destination_keyed: 1.6 → 0.8; 1.8 → 2.4; 2.1 → 0.8; 12.2 → 3.3; 19.2 → 3.3; 23.5 → 5.7; 27.6 → 3.3; 32.4 → 6.6; 40.8 → 4.9; 69.9 → 6.6
+- c6__otcR_chain50__R100, first_relay_with_destination: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_chain50__R100, issuer_0 [share 50%, all records]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.8; 1.9 → 0.0; 1.9 → 0.8; 1.9 → 0.0; 1.9 → 0.8; 1.9 → 0.8; 1.9 → 0.8
+- c6__otcR_chain50__R100, issuer_0 [share 50%, its own devices]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 2.1; 1.9 → 0.0; 1.9 → 2.2; 1.9 → 0.0; 1.9 → 2.2; 1.9 → 0.0
+- c6__otcR_chain50__R100, issuer_0 [share 50%, other issuers' devices]: 1.9 → 0.0; 1.9 → 0.0; 1.9 → 0.0; 1.9 → 1.3; 1.9 → 1.3; 4.4 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0; 4.7 → 0.0
+- c6__otcR_chain50__R100, issuer_0_with_observer [share 50%, all records]: 2.1 → 1.6; 2.2 → 2.4; 2.4 → 2.4; 2.5 → 1.6; 2.6 → 1.6; 2.7 → 3.3; 2.8 → 0.8; 3.0 → 3.3; 3.2 → 2.5; 3.8 → 4.1
+- c6__otcR_chain50__R100, issuer_0_with_observer [share 50%, its own devices]: 2.0 → 0.0; 2.2 → 2.1; 2.3 → 4.3; 2.5 → 2.1; 2.6 → 4.3; 2.6 → 4.3; 2.7 → 6.5; 2.9 → 4.3; 3.1 → 4.3; 3.7 → 10.9
+- c6__otcR_chain50__R100, issuer_0_with_observer [share 50%, other issuers' devices]: 1.6 → 1.3; 1.7 → 1.3; 1.8 → 0.0; 1.9 → 0.0; 2.1 → 2.6; 2.2 → 2.6; 2.3 → 0.0; 2.5 → 0.0; 2.7 → 1.3; 3.2 → 2.7
+- c6__otcR_chain50__R100, issuer_0_with_first_relay [share 50%, all records]: 2.0 → 2.4; 2.2 → 1.6; 2.3 → 0.0; 2.5 → 2.5; 2.6 → 0.8; 2.6 → 3.3; 2.8 → 3.3; 3.0 → 1.6; 3.2 → 3.3; 3.8 → 4.1
+- c6__otcR_chain50__R100, issuer_0_with_first_relay [share 50%, its own devices]: 2.0 → 0.0; 2.2 → 2.1; 2.3 → 0.0; 2.5 → 2.1; 2.6 → 4.3; 2.6 → 6.4; 2.7 → 6.5; 2.9 → 6.5; 3.1 → 4.3; 3.7 → 10.9
+- c6__otcR_chain50__R100, issuer_0_with_first_relay [share 50%, other issuers' devices]: 1.6 → 1.3; 1.7 → 1.3; 1.8 → 0.0; 1.9 → 1.3; 2.1 → 1.3; 2.2 → 2.6; 2.3 → 0.0; 2.5 → 0.0; 2.7 → 0.0; 3.1 → 2.7
+- c6__otcR_chain50__R100, issuer_0_with_destination: 21.9 → 4.3; 26.7 → 0.0; 29.1 → 0.0; 31.4 → 4.3; 33.7 → 4.3; 36.7 → 0.0; 39.7 → 8.7; 44.4 → 6.5; 51.9 → 8.7; 71.0 → 6.5
+- c6__otcR_chain50__R100, issuer_1 [share 30%, all records]: 2.8 → 1.6; 2.8 → 0.8; 2.8 → 0.0; 2.8 → 1.6; 2.8 → 0.8; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0
+- c6__otcR_chain50__R100, issuer_1 [share 30%, its own devices]: 2.8 → 4.8; 2.8 → 9.5; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 5.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0; 2.9 → 0.0
+- c6__otcR_chain50__R100, issuer_1 [share 30%, other issuers' devices]: 2.8 → 0.0; 2.8 → 0.0; 2.8 → 0.0; 2.8 → 1.0; 2.9 → 1.0; 3.3 → 0.0; 3.3 → 0.0; 3.3 → 0.0; 3.3 → 0.0; 3.3 → 0.0
+- c6__otcR_chain50__R100, issuer_1_with_observer [share 30%, all records]: 2.1 → 1.6; 2.2 → 2.4; 2.4 → 2.4; 2.5 → 1.6; 2.6 → 1.6; 2.7 → 3.3; 2.8 → 0.8; 3.0 → 3.3; 3.2 → 2.5; 3.8 → 4.1
+- c6__otcR_chain50__R100, issuer_1_with_observer [share 30%, its own devices]: 2.1 → 4.8; 2.2 → 4.8; 2.4 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 5.0; 2.8 → 0.0; 3.1 → 0.0; 3.3 → 10.0; 4.0 → 0.0
+- c6__otcR_chain50__R100, issuer_1_with_observer [share 30%, other issuers' devices]: 2.1 → 1.0; 2.2 → 2.0; 2.4 → 2.9; 2.5 → 2.0; 2.6 → 2.0; 2.7 → 2.9; 2.8 → 1.0; 2.9 → 3.9; 3.2 → 1.0; 3.8 → 4.9
+- c6__otcR_chain50__R100, issuer_1_with_first_relay [share 30%, all records]: 2.0 → 2.4; 2.2 → 1.6; 2.3 → 0.0; 2.5 → 2.5; 2.6 → 0.8; 2.6 → 3.3; 2.8 → 3.3; 3.0 → 1.6; 3.2 → 3.3; 3.8 → 4.1
+- c6__otcR_chain50__R100, issuer_1_with_first_relay [share 30%, its own devices]: 2.1 → 4.8; 2.2 → 0.0; 2.3 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 0.0; 2.9 → 0.0; 3.1 → 5.0; 3.4 → 5.0; 4.0 → 0.0
+- c6__otcR_chain50__R100, issuer_1_with_first_relay [share 30%, other issuers' devices]: 2.0 → 1.9; 2.2 → 2.0; 2.4 → 1.0; 2.5 → 2.0; 2.6 → 1.0; 2.6 → 3.9; 2.8 → 3.9; 3.0 → 2.0; 3.2 → 2.0; 3.8 → 4.9
+- c6__otcR_chain50__R100, issuer_1_with_destination: 23.5 → 4.8; 29.1 → 4.8; 33.0 → 0.0; 37.1 → 0.0; 41.2 → 0.0; 44.9 → 0.0; 48.5 → 5.0; 52.8 → 0.0; 60.8 → 0.0; 74.4 → 0.0
+- c6__otcR_chain50__R100, issuer_2 [share 20%, all records]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_chain50__R100, issuer_2 [share 20%, its own devices]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 5.0 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0; 5.1 → 0.0
+- c6__otcR_chain50__R100, issuer_2 [share 20%, other issuers' devices]: 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 4.6 → 0.0; 11.3 → 0.0; 13.9 → 0.0; 13.9 → 0.0; 13.9 → 0.0; 13.9 → 0.0
+- c6__otcR_chain50__R100, issuer_2_with_observer [share 20%, all records]: 2.1 → 1.6; 2.2 → 2.4; 2.4 → 2.4; 2.5 → 1.6; 2.6 → 1.6; 2.7 → 3.3; 2.8 → 0.8; 3.0 → 3.3; 3.2 → 2.5; 3.8 → 4.1
+- c6__otcR_chain50__R100, issuer_2_with_observer [share 20%, its own devices]: 2.0 → 5.9; 2.2 → 0.0; 2.4 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 0.0; 2.8 → 0.0; 2.9 → 0.0; 3.2 → 0.0; 3.8 → 0.0
+- c6__otcR_chain50__R100, issuer_2_with_observer [share 20%, other issuers' devices]: 2.1 → 1.9; 2.2 → 1.9; 2.4 → 2.8; 2.5 → 0.0; 2.6 → 3.8; 2.7 → 3.8; 2.8 → 1.0; 3.0 → 3.8; 3.2 → 2.9; 3.9 → 4.8
+- c6__otcR_chain50__R100, issuer_2_with_first_relay [share 20%, all records]: 2.0 → 2.4; 2.2 → 1.6; 2.3 → 0.0; 2.5 → 2.5; 2.6 → 0.8; 2.6 → 3.3; 2.8 → 3.3; 3.0 → 1.6; 3.2 → 3.3; 3.8 → 4.1
+- c6__otcR_chain50__R100, issuer_2_with_first_relay [share 20%, its own devices]: 2.0 → 11.8; 2.2 → 0.0; 2.4 → 0.0; 2.5 → 0.0; 2.6 → 0.0; 2.7 → 0.0; 2.8 → 0.0; 2.9 → 0.0; 3.1 → 0.0; 3.7 → 0.0
+- c6__otcR_chain50__R100, issuer_2_with_first_relay [share 20%, other issuers' devices]: 2.0 → 0.9; 2.2 → 1.9; 2.3 → 0.0; 2.5 → 2.8; 2.6 → 0.9; 2.6 → 3.8; 2.8 → 4.8; 3.0 → 1.9; 3.3 → 2.9; 3.8 → 4.8
+- c6__otcR_chain50__R100, issuer_2_with_destination: 19.0 → 5.9; 24.6 → 11.8; 28.4 → 23.5; 32.0 → 11.8; 37.8 → 5.9; 47.0 → 5.9; 58.2 → 5.9; 76.6 → 11.8; 99.1 → 12.5; 100.0 → 12.5
 - c6__otc_W0__R1, observer: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 2.4; 5.5 → 4.9; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
 - c6__otc_W0__R1, first_hop: 4.0 → 0.6; 4.4 → 2.7; 4.6 → 1.2; 4.9 → 5.6; 5.1 → 10.4; 5.3 → 5.0; 5.5 → 6.3; 5.8 → 8.2; 6.3 → 9.3; 7.4 → 12.0
 - c6__otc_W0__R1, destination: 3.2 → 2.4; 3.5 → 11.9; 3.7 → 11.9; 4.0 → 4.9; 4.3 → 14.6; 4.8 → 9.8; 5.2 → 0.0; 5.6 → 2.4; 6.2 → 2.4; 7.6 → 9.8
@@ -3044,6 +5515,70 @@ Per row, the confidence deciles: mean confidence → hit rate.
 - c6__cp_chain50__R100, K records, K = 2: 3.9 → 1.9; 4.7 → 1.9; 5.4 → 3.8; 6.0 → 1.9; 6.8 → 3.8; 7.7 → 1.9; 8.9 → 5.8; 10.2 → 3.8; 12.7 → 0.0; 21.3 → 7.7
 - c6__cp_chain50__R100, K records, K = 3: 7.1 → 3.3; 8.9 → 3.3; 10.2 → 6.7; 11.6 → 0.0; 13.1 → 6.7; 15.0 → 6.7; 17.1 → 6.7; 20.5 → 0.0; 26.3 → 10.3; 37.4 → 3.4
 - c6__cp_chain50__R100, K records, K = 5: 13.1 → 15.4; 17.3 → 8.3; 21.7 → 8.3; 24.0 → 16.7; 28.2 → 16.7; 35.2 → 8.3; 42.9 → 8.3; 48.8 → 8.3; 55.9 → 8.3; 71.7 → 33.3
+- c6__otcLR_W0__R1, K records, K = 1: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
+- c6__otcLR_W0__R1, K records, K = 2: 7.7 → 4.8; 8.9 → 4.8; 9.6 → 14.3; 10.3 → 0.0; 11.1 → 23.8; 11.9 → 4.8; 12.8 → 10.0; 14.0 → 20.0; 15.3 → 5.0; 20.8 → 5.0
+- c6__otcLR_W0__R1, K records, K = 3: 11.5 → 0.0; 13.8 → 7.1; 15.8 → 14.3; 18.3 → 35.7; 20.5 → 7.1; 21.9 → 0.0; 24.1 → 7.1; 28.3 → 23.1; 33.1 → 15.4; 41.2 → 7.7
+- c6__otcLR_W0__R1, K records, K = 5: 20.4 → 22.2; 27.2 → 12.5; 29.7 → 12.5; 33.3 → 25.0; 35.4 → 12.5; 39.8 → 37.5; 51.8 → 12.5; 60.4 → 25.0; 67.4 → 50.0; 75.6 → 25.0
+- c6__otcLR_W0__R1, K records, K = 10: 49.9 → 75.0; 57.0 → 50.0; 66.0 → 25.0; 75.7 → 50.0; 87.4 → 75.0; 93.4 → 75.0; 97.6 → 100.0; 98.3 → 50.0; 99.6 → 100.0; 99.9 → 75.0
+- c6__otcLR_W0__R1, K records, K = 20: 90.9 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_W0__R100, K records, K = 1: 2.3 → 4.9; 2.5 → 2.5; 2.6 → 0.8; 2.7 → 1.6; 2.8 → 3.3; 3.0 → 2.5; 3.2 → 0.8; 3.4 → 4.1; 3.6 → 4.1; 4.2 → 4.1
+- c6__otcLR_W0__R100, K records, K = 2: 4.6 → 0.0; 5.6 → 1.8; 6.0 → 1.8; 6.5 → 3.6; 7.0 → 7.1; 7.5 → 3.6; 8.1 → 1.8; 8.8 → 1.8; 10.0 → 10.7; 12.4 → 5.5
+- c6__otcLR_W0__R100, K records, K = 3: 7.8 → 2.9; 9.4 → 20.6; 10.4 → 11.8; 11.4 → 14.7; 12.7 → 8.8; 13.7 → 0.0; 15.2 → 3.0; 16.8 → 3.0; 19.2 → 9.1; 26.6 → 12.1
+- c6__otcLR_W0__R100, K records, K = 5: 15.8 → 12.5; 20.2 → 25.0; 23.4 → 37.5; 26.2 → 18.8; 28.9 → 43.8; 31.9 → 46.7; 35.5 → 20.0; 39.0 → 40.0; 43.1 → 33.3; 54.8 → 40.0
+- c6__otcLR_W1__R1, K records, K = 1: 3.0 → 0.0; 3.3 → 5.1; 3.5 → 0.0; 3.7 → 0.0; 4.0 → 0.0; 4.2 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcLR_W1__R1, K records, K = 2: 5.0 → 0.0; 5.7 → 5.0; 6.7 → 5.0; 7.3 → 0.0; 7.9 → 0.0; 8.7 → 0.0; 9.5 → 0.0; 10.3 → 0.0; 11.7 → 0.0; 15.3 → 0.0
+- c6__otcLR_W1__R1, K records, K = 3: 7.7 → 15.4; 9.0 → 0.0; 10.3 → 0.0; 11.6 → 0.0; 13.2 → 0.0; 14.9 → 0.0; 16.7 → 0.0; 19.2 → 0.0; 22.1 → 0.0; 29.5 → 0.0
+- c6__otcLR_W1__R1, K records, K = 5: 14.3 → 0.0; 16.7 → 12.5; 18.8 → 0.0; 19.9 → 0.0; 21.6 → 0.0; 24.0 → 0.0; 29.0 → 0.0; 34.9 → 0.0; 41.4 → 0.0; 64.4 → 0.0
+- c6__otcLR_W1__R1, K records, K = 10: 26.4 → 0.0; 32.9 → 0.0; 38.3 → 0.0; 43.8 → 0.0; 47.0 → 0.0; 54.4 → 0.0; 61.1 → 0.0; 66.1 → 0.0; 73.2 → 0.0; 83.1 → 0.0
+- c6__otcLR_W1__R1, K records, K = 20: 24.3 → 0.0; 38.0 → 0.0; 47.7 → 0.0; 52.2 → 0.0; 60.0 → 0.0; 68.7 → 0.0; 79.0 → 0.0; 85.9 → 0.0; 87.5 → 0.0; 89.6 → 0.0
+- c6__otcLR_W1__R100, K records, K = 1: 3.5 → 2.3; 4.2 → 3.8; 4.7 → 4.6; 5.2 → 4.6; 5.7 → 4.6; 6.0 → 5.3; 6.4 → 6.9; 6.8 → 7.6; 7.4 → 4.6; 9.0 → 16.8
+- c6__otcLR_W1__R100, K records, K = 2: 9.2 → 4.9; 12.7 → 3.3; 14.6 → 6.6; 16.7 → 6.6; 18.6 → 4.9; 20.6 → 8.3; 23.1 → 10.0; 26.1 → 5.0; 29.3 → 10.0; 36.8 → 8.3
+- c6__otcLR_W1__R100, K records, K = 3: 18.3 → 7.7; 24.6 → 5.1; 29.4 → 2.6; 33.1 → 10.5; 37.1 → 5.3; 40.7 → 7.9; 45.3 → 10.5; 50.5 → 10.5; 56.6 → 2.6; 68.1 → 10.5
+- c6__otcLR_W1__R100, K records, K = 5: 34.9 → 0.0; 44.8 → 5.3; 52.1 → 5.3; 57.3 → 5.3; 64.2 → 15.8; 70.1 → 16.7; 74.0 → 5.6; 80.1 → 5.6; 86.6 → 16.7; 94.0 → 11.1
+- c6__otcLR_W1__R100, K records, K = 10: 44.3 → 0.0; 65.2 → 33.3; 73.5 → 0.0; 80.5 → 0.0; 87.0 → 0.0; 95.4 → 0.0; 97.6 → 40.0; 98.7 → 20.0; 99.4 → 40.0; 99.8 → 20.0
+- c6__otcLR_W1__R100, K records, K = 20: 55.3 → 50.0; 68.4 → 50.0; 91.5 → 0.0; 97.3 → 50.0; 98.3 → 0.0; 98.5 → 0.0; 99.7 → 0.0; 99.9 → 100.0; 100.0 → 0.0; 100.0 → 100.0
+- c6__otcLR_W2__R1, K records, K = 1: 4.1 → 10.8; 4.6 → 8.1; 4.9 → 10.8; 5.2 → 2.7; 5.4 → 5.4; 5.7 → 8.1; 6.1 → 0.0; 6.6 → 2.8; 7.5 → 8.3; 10.0 → 0.0
+- c6__otcLR_W2__R1, K records, K = 2: 7.7 → 5.3; 9.1 → 15.8; 9.9 → 5.3; 11.0 → 11.1; 12.1 → 0.0; 13.2 → 5.6; 14.3 → 0.0; 17.3 → 11.1; 21.1 → 0.0; 34.2 → 0.0
+- c6__otcLR_W2__R1, K records, K = 3: 12.5 → 0.0; 15.2 → 0.0; 17.2 → 0.0; 18.3 → 8.3; 19.6 → 8.3; 22.8 → 8.3; 25.8 → 0.0; 30.2 → 8.3; 41.9 → 0.0; 60.0 → 0.0
+- c6__otcLR_W2__R1, K records, K = 5: 20.3 → 12.5; 25.4 → 0.0; 28.8 → 0.0; 31.9 → 14.3; 36.4 → 0.0; 41.2 → 14.3; 44.8 → 0.0; 50.8 → 14.3; 66.4 → 0.0; 90.4 → 0.0
+- c6__otcLR_W2__R1, K records, K = 10: 34.8 → 0.0; 40.4 → 25.0; 48.3 → 50.0; 55.7 → 0.0; 66.8 → 0.0; 76.9 → 25.0; 84.3 → 0.0; 89.4 → 0.0; 95.2 → 0.0; 99.4 → 0.0
+- c6__otcLR_W2__R1, K records, K = 20: 47.0 → 50.0; 60.0 → 0.0; 64.0 → 0.0; 80.9 → 0.0; 87.1 → 0.0; 94.4 → 0.0; 96.1 → 0.0; 98.4 → 0.0; 99.4 → 0.0; 99.5 → 0.0
+- c6__otcLR_W2__R100, K records, K = 1: 3.5 → 1.6; 4.0 → 5.7; 4.6 → 4.9; 5.2 → 1.6; 5.5 → 8.2; 5.8 → 9.0; 6.3 → 8.2; 7.5 → 4.9; 8.7 → 6.6; 10.2 → 7.4
+- c6__otcLR_W2__R100, K records, K = 2: 9.0 → 1.8; 11.4 → 5.4; 13.1 → 8.9; 15.3 → 7.1; 17.3 → 7.1; 19.4 → 8.9; 22.9 → 7.1; 28.3 → 3.6; 35.8 → 8.9; 45.6 → 5.5
+- c6__otcLR_W2__R100, K records, K = 3: 16.6 → 8.8; 21.7 → 5.9; 26.5 → 14.7; 30.0 → 11.8; 34.3 → 0.0; 39.4 → 11.8; 46.6 → 0.0; 56.3 → 2.9; 67.0 → 11.8; 79.3 → 11.8
+- c6__otcLR_W2__R100, K records, K = 5: 30.2 → 5.6; 43.2 → 5.6; 50.2 → 22.2; 56.9 → 0.0; 66.9 → 16.7; 75.1 → 5.9; 84.3 → 0.0; 90.0 → 23.5; 93.3 → 0.0; 97.7 → 11.8
+- c6__otcLR_W2__R100, K records, K = 10: 58.7 → 0.0; 74.2 → 16.7; 84.0 → 33.3; 90.1 → 33.3; 94.3 → 0.0; 98.2 → 33.3; 99.2 → 33.3; 99.6 → 20.0; 99.8 → 0.0; 100.0 → 20.0
+- c6__otcLR_W2__R100, K records, K = 20: 49.2 → 0.0; 54.9 → 0.0; 68.0 → 0.0; 93.4 → 0.0; 95.6 → 0.0; 99.9 → 100.0; 100.0 → 0.0; 100.0 → 0.0; 100.0 → 100.0; 100.0 → 0.0
+- c6__otcLR_Wmis__R1, K records, K = 1: 4.3 → 5.4; 4.9 → 5.4; 5.4 → 8.1; 5.9 → 13.5; 6.5 → 13.5; 7.1 → 24.3; 7.9 → 13.9; 8.8 → 13.9; 10.0 → 22.2; 13.3 → 41.7
+- c6__otcLR_Wmis__R1, K records, K = 2: 8.4 → 5.3; 10.4 → 10.5; 12.1 → 15.8; 13.2 → 5.6; 14.9 → 11.1; 16.8 → 11.1; 18.7 → 38.9; 21.5 → 5.6; 29.5 → 44.4; 42.8 → 44.4
+- c6__otcLR_Wmis__R1, K records, K = 3: 14.2 → 7.7; 18.3 → 0.0; 20.6 → 25.0; 23.8 → 8.3; 26.8 → 25.0; 30.3 → 33.3; 34.5 → 16.7; 38.2 → 25.0; 46.6 → 33.3; 67.3 → 58.3
+- c6__otcLR_Wmis__R1, K records, K = 5: 22.1 → 25.0; 30.7 → 12.5; 36.9 → 0.0; 45.0 → 28.6; 51.0 → 28.6; 56.3 → 57.1; 62.9 → 14.3; 71.9 → 71.4; 84.3 → 71.4; 95.7 → 71.4
+- c6__otcLR_Wmis__R1, K records, K = 10: 62.9 → 75.0; 81.5 → 50.0; 89.9 → 75.0; 95.7 → 100.0; 98.5 → 75.0; 99.6 → 75.0; 99.9 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_Wmis__R1, K records, K = 20: 98.5 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_Wmis__R100, K records, K = 1: 3.2 → 5.7; 3.6 → 6.6; 3.9 → 4.9; 4.1 → 7.4; 4.4 → 10.7; 4.8 → 6.6; 5.3 → 9.8; 5.6 → 13.9; 6.4 → 11.5; 9.4 → 14.8
+- c6__otcLR_Wmis__R100, K records, K = 2: 8.6 → 14.3; 10.6 → 14.3; 12.3 → 12.5; 14.3 → 8.9; 16.1 → 10.7; 17.9 → 8.9; 20.0 → 12.5; 23.2 → 8.9; 29.4 → 8.9; 42.9 → 12.7
+- c6__otcLR_Wmis__R100, K records, K = 3: 17.7 → 23.5; 23.0 → 11.8; 27.0 → 5.9; 31.2 → 8.8; 35.7 → 14.7; 40.1 → 26.5; 46.1 → 2.9; 54.4 → 8.8; 64.7 → 5.9; 78.3 → 17.6
+- c6__otcLR_Wmis__R100, K records, K = 5: 36.3 → 5.6; 47.8 → 11.1; 55.5 → 11.1; 64.4 → 0.0; 71.1 → 27.8; 78.2 → 5.9; 86.5 → 23.5; 93.1 → 11.8; 97.0 → 11.8; 98.6 → 11.8
+- c6__otcLR_chain100__R1, K records, K = 1: 3.9 → 4.8; 4.3 → 7.1; 4.6 → 9.5; 4.8 → 0.0; 5.1 → 7.1; 5.4 → 0.0; 5.6 → 4.8; 5.9 → 7.1; 6.4 → 7.1; 7.4 → 7.1
+- c6__otcLR_chain100__R1, K records, K = 2: 7.3 → 4.8; 8.5 → 19.0; 9.4 → 4.8; 10.1 → 0.0; 10.9 → 9.5; 11.8 → 4.8; 12.9 → 0.0; 14.1 → 19.0; 16.3 → 9.5; 22.2 → 5.0
+- c6__otcLR_chain100__R1, K records, K = 3: 11.7 → 14.3; 14.3 → 14.3; 15.4 → 21.4; 16.5 → 7.1; 18.2 → 0.0; 20.6 → 7.1; 22.7 → 7.1; 26.1 → 7.1; 31.1 → 7.1; 40.3 → 7.1
+- c6__otcLR_chain100__R1, K records, K = 5: 20.3 → 0.0; 24.7 → 11.1; 29.8 → 22.2; 33.3 → 12.5; 38.0 → 50.0; 41.9 → 25.0; 46.1 → 25.0; 51.0 → 25.0; 58.5 → 25.0; 79.3 → 25.0
+- c6__otcLR_chain100__R1, K records, K = 10: 49.7 → 80.0; 60.4 → 75.0; 72.7 → 75.0; 79.6 → 50.0; 83.1 → 75.0; 90.3 → 25.0; 94.1 → 75.0; 96.2 → 75.0; 98.7 → 100.0; 99.7 → 75.0
+- c6__otcLR_chain100__R1, K records, K = 20: 86.9 → 50.0; 98.5 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_chain100__R100, K records, K = 1: 2.2 → 2.4; 2.4 → 0.8; 2.6 → 1.6; 2.7 → 0.8; 2.8 → 4.0; 2.9 → 1.6; 3.1 → 1.6; 3.2 → 8.1; 3.5 → 6.5; 3.9 → 4.0
+- c6__otcLR_chain100__R100, K records, K = 2: 4.5 → 6.9; 5.3 → 5.2; 5.8 → 0.0; 6.2 → 0.0; 6.7 → 0.0; 7.2 → 0.0; 7.8 → 7.0; 8.7 → 7.0; 10.0 → 7.0; 12.9 → 8.8
+- c6__otcLR_chain100__R100, K records, K = 3: 7.5 → 5.7; 9.4 → 11.4; 10.5 → 5.7; 11.4 → 2.9; 12.6 → 11.4; 13.9 → 2.9; 15.4 → 14.7; 17.1 → 0.0; 20.0 → 5.9; 25.8 → 5.9
+- c6__otcLR_chain100__R100, K records, K = 5: 15.4 → 0.0; 19.3 → 29.4; 21.5 → 6.2; 24.4 → 6.2; 28.4 → 12.5; 32.0 → 18.8; 35.9 → 18.8; 42.1 → 31.2; 51.6 → 12.5; 66.0 → 18.8
+- c6__otcLR_chain50__R1, K records, K = 1: 3.5 → 4.7; 3.9 → 7.1; 4.2 → 7.1; 4.3 → 11.9; 4.5 → 7.1; 4.8 → 2.4; 5.0 → 9.5; 5.4 → 4.8; 5.8 → 4.8; 6.7 → 4.8
+- c6__otcLR_chain50__R1, K records, K = 2: 7.1 → 19.0; 8.5 → 4.8; 9.6 → 0.0; 10.6 → 23.8; 11.6 → 0.0; 12.6 → 4.8; 13.6 → 14.3; 15.1 → 14.3; 17.2 → 4.8; 21.3 → 19.0
+- c6__otcLR_chain50__R1, K records, K = 3: 13.9 → 7.1; 16.2 → 14.3; 18.4 → 7.1; 19.8 → 28.6; 21.6 → 7.1; 24.1 → 21.4; 27.0 → 21.4; 30.5 → 28.6; 35.0 → 23.1; 45.1 → 15.4
+- c6__otcLR_chain50__R1, K records, K = 5: 23.7 → 11.1; 29.2 → 44.4; 33.6 → 22.2; 38.9 → 25.0; 45.4 → 37.5; 51.0 → 37.5; 54.6 → 37.5; 64.3 → 37.5; 75.8 → 37.5; 87.3 → 37.5
+- c6__otcLR_chain50__R1, K records, K = 10: 57.5 → 80.0; 74.5 → 100.0; 92.1 → 75.0; 97.1 → 100.0; 98.5 → 100.0; 99.6 → 75.0; 99.9 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_chain50__R1, K records, K = 20: 99.9 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcLR_chain50__R100, K records, K = 1: 2.0 → 1.6; 2.2 → 4.0; 2.4 → 4.8; 2.5 → 2.4; 2.6 → 2.4; 2.7 → 1.6; 2.8 → 3.2; 2.9 → 3.2; 3.1 → 4.8; 3.7 → 3.2
+- c6__otcLR_chain50__R100, K records, K = 2: 4.8 → 7.4; 5.8 → 5.6; 6.4 → 5.6; 6.8 → 7.4; 7.2 → 9.3; 7.8 → 5.7; 8.5 → 3.8; 9.3 → 1.9; 10.6 → 5.7; 14.3 → 7.5
+- c6__otcLR_chain50__R100, K records, K = 3: 8.5 → 10.0; 10.6 → 13.3; 11.8 → 3.3; 12.9 → 13.3; 14.1 → 0.0; 15.6 → 6.9; 17.4 → 6.9; 19.9 → 6.9; 22.5 → 10.3; 29.7 → 6.9
+- c6__otcLR_chain50__R100, K records, K = 5: 17.8 → 25.0; 23.2 → 16.7; 28.5 → 25.0; 32.6 → 41.7; 35.4 → 25.0; 37.4 → 41.7; 42.6 → 33.3; 48.1 → 33.3; 54.4 → 25.0; 65.3 → 50.0
 - c6__otcL_W0__R1, K records, K = 1: 3.9 → 4.8; 4.3 → 0.0; 4.5 → 0.0; 4.8 → 0.0; 5.0 → 2.4; 5.3 → 0.0; 5.5 → 4.9; 5.8 → 0.0; 6.3 → 12.2; 7.1 → 2.4
 - c6__otcL_W0__R1, K records, K = 2: 7.7 → 4.8; 8.9 → 4.8; 9.6 → 14.3; 10.3 → 0.0; 11.1 → 23.8; 11.9 → 4.8; 12.8 → 10.0; 14.0 → 20.0; 15.3 → 5.0; 20.8 → 5.0
 - c6__otcL_W0__R1, K records, K = 3: 11.5 → 0.0; 13.8 → 7.1; 15.8 → 14.3; 18.3 → 35.7; 20.5 → 7.1; 21.9 → 0.0; 24.1 → 7.1; 28.3 → 23.1; 33.1 → 15.4; 41.2 → 7.7
@@ -3108,6 +5643,70 @@ Per row, the confidence deciles: mean confidence → hit rate.
 - c6__otcL_chain50__R100, K records, K = 2: 4.8 → 7.4; 5.8 → 5.6; 6.4 → 5.6; 6.8 → 7.4; 7.2 → 9.3; 7.8 → 5.7; 8.5 → 3.8; 9.3 → 1.9; 10.6 → 5.7; 14.3 → 7.5
 - c6__otcL_chain50__R100, K records, K = 3: 8.5 → 10.0; 10.6 → 13.3; 11.8 → 3.3; 12.9 → 13.3; 14.1 → 0.0; 15.6 → 6.9; 17.4 → 6.9; 19.9 → 6.9; 22.5 → 10.3; 29.7 → 6.9
 - c6__otcL_chain50__R100, K records, K = 5: 17.8 → 25.0; 23.2 → 16.7; 28.5 → 25.0; 32.6 → 41.7; 35.4 → 25.0; 37.4 → 41.7; 42.6 → 33.3; 48.1 → 33.3; 54.4 → 25.0; 65.3 → 50.0
+- c6__otcR_W0__R1, K records, K = 1: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 4.9; 5.5 → 2.4; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
+- c6__otcR_W0__R1, K records, K = 2: 7.6 → 0.0; 8.8 → 0.0; 9.6 → 9.5; 10.3 → 19.0; 11.0 → 9.5; 11.8 → 0.0; 12.7 → 10.0; 13.9 → 5.0; 15.7 → 15.0; 21.4 → 15.0
+- c6__otcR_W0__R1, K records, K = 3: 11.5 → 0.0; 13.9 → 14.3; 16.1 → 14.3; 17.4 → 7.1; 18.7 → 7.1; 20.3 → 14.3; 21.9 → 21.4; 24.7 → 15.4; 28.9 → 30.8; 41.6 → 15.4
+- c6__otcR_W0__R1, K records, K = 5: 23.3 → 11.1; 27.9 → 12.5; 31.0 → 0.0; 34.8 → 50.0; 38.7 → 25.0; 43.2 → 25.0; 47.4 → 37.5; 54.0 → 25.0; 63.7 → 50.0; 73.1 → 25.0
+- c6__otcR_W0__R1, K records, K = 10: 48.3 → 25.0; 62.1 → 100.0; 71.3 → 75.0; 79.4 → 100.0; 86.9 → 50.0; 89.9 → 100.0; 95.7 → 100.0; 97.7 → 100.0; 99.4 → 100.0; 99.9 → 100.0
+- c6__otcR_W0__R1, K records, K = 20: 99.7 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_W0__R100, K records, K = 1: 2.3 → 2.5; 2.5 → 3.3; 2.6 → 4.1; 2.8 → 2.5; 2.9 → 3.3; 3.0 → 2.5; 3.1 → 2.5; 3.2 → 4.1; 3.5 → 3.3; 4.2 → 2.5
+- c6__otcR_W0__R100, K records, K = 2: 4.6 → 1.8; 5.4 → 5.4; 5.9 → 0.0; 6.3 → 3.6; 6.7 → 0.0; 7.3 → 1.8; 8.1 → 1.8; 9.0 → 14.3; 10.3 → 5.4; 14.3 → 0.0
+- c6__otcR_W0__R100, K records, K = 3: 8.0 → 11.8; 9.4 → 11.8; 10.3 → 8.8; 11.3 → 5.9; 12.2 → 14.7; 13.3 → 0.0; 14.8 → 0.0; 16.7 → 9.1; 19.7 → 12.1; 29.5 → 6.1
+- c6__otcR_W0__R100, K records, K = 5: 15.4 → 12.5; 19.7 → 12.5; 22.5 → 12.5; 25.5 → 12.5; 28.9 → 37.5; 31.9 → 13.3; 36.2 → 20.0; 39.4 → 20.0; 44.8 → 20.0; 63.4 → 26.7
+- c6__otcR_W1__R1, K records, K = 1: 3.1 → 7.7; 3.3 → 0.0; 3.5 → 0.0; 3.7 → 0.0; 3.9 → 0.0; 4.2 → 0.0; 4.4 → 0.0; 4.8 → 0.0; 5.2 → 0.0; 6.0 → 0.0
+- c6__otcR_W1__R1, K records, K = 2: 4.9 → 5.0; 6.0 → 0.0; 6.7 → 0.0; 7.3 → 5.0; 8.0 → 0.0; 8.9 → 0.0; 9.8 → 0.0; 10.7 → 0.0; 11.9 → 0.0; 14.6 → 0.0
+- c6__otcR_W1__R1, K records, K = 3: 7.6 → 0.0; 9.5 → 7.7; 10.8 → 0.0; 12.0 → 0.0; 13.3 → 0.0; 14.8 → 7.7; 16.5 → 0.0; 18.0 → 0.0; 20.5 → 0.0; 29.0 → 0.0
+- c6__otcR_W1__R1, K records, K = 5: 14.0 → 0.0; 17.7 → 0.0; 19.2 → 0.0; 22.3 → 0.0; 25.1 → 12.5; 27.7 → 0.0; 30.5 → 0.0; 34.8 → 0.0; 41.4 → 0.0; 55.8 → 0.0
+- c6__otcR_W1__R1, K records, K = 10: 22.5 → 0.0; 26.9 → 0.0; 30.9 → 0.0; 36.0 → 0.0; 39.4 → 0.0; 45.2 → 0.0; 52.6 → 0.0; 63.9 → 0.0; 77.5 → 0.0; 90.9 → 0.0
+- c6__otcR_W1__R1, K records, K = 20: 33.7 → 0.0; 48.8 → 0.0; 53.2 → 0.0; 59.2 → 0.0; 61.7 → 0.0; 72.5 → 0.0; 75.2 → 0.0; 78.3 → 0.0; 91.5 → 0.0; 99.0 → 0.0
+- c6__otcR_W1__R100, K records, K = 1: 3.5 → 0.8; 4.1 → 3.8; 4.5 → 4.6; 4.7 → 9.2; 5.1 → 7.6; 5.6 → 6.9; 6.3 → 6.1; 7.0 → 13.0; 7.6 → 10.7; 8.2 → 9.2
+- c6__otcR_W1__R100, K records, K = 2: 8.7 → 8.2; 11.3 → 9.8; 13.2 → 6.6; 14.8 → 9.8; 17.1 → 4.9; 20.0 → 6.7; 22.8 → 16.7; 25.6 → 8.3; 28.5 → 13.3; 33.9 → 0.0
+- c6__otcR_W1__R100, K records, K = 3: 16.6 → 5.1; 21.4 → 5.1; 24.7 → 10.5; 28.7 → 7.9; 33.8 → 7.9; 38.8 → 7.9; 43.8 → 15.8; 49.1 → 13.2; 54.6 → 7.9; 63.0 → 0.0
+- c6__otcR_W1__R100, K records, K = 5: 30.8 → 5.3; 40.0 → 0.0; 45.1 → 5.3; 50.9 → 5.3; 59.3 → 5.3; 65.0 → 22.2; 72.6 → 22.2; 79.5 → 5.6; 84.6 → 11.1; 91.3 → 11.1
+- c6__otcR_W1__R100, K records, K = 10: 45.4 → 0.0; 61.2 → 16.7; 71.1 → 16.7; 84.5 → 16.7; 89.6 → 16.7; 94.0 → 16.7; 96.0 → 20.0; 97.9 → 20.0; 99.3 → 40.0; 99.8 → 0.0
+- c6__otcR_W1__R100, K records, K = 20: 68.7 → 0.0; 92.5 → 0.0; 97.4 → 100.0; 99.3 → 0.0; 99.7 → 100.0; 99.8 → 0.0; 99.9 → 0.0; 99.9 → 0.0; 99.9 → 100.0; 100.0 → 0.0
+- c6__otcR_W2__R1, K records, K = 1: 4.4 → 0.0; 5.0 → 2.7; 5.7 → 5.4; 6.2 → 18.9; 6.9 → 10.8; 7.5 → 16.2; 8.5 → 13.9; 9.6 → 11.1; 11.6 → 0.0; 19.7 → 0.0
+- c6__otcR_W2__R1, K records, K = 2: 8.6 → 0.0; 10.8 → 5.3; 12.5 → 15.8; 14.3 → 11.1; 16.6 → 22.2; 18.9 → 5.6; 22.5 → 16.7; 26.4 → 11.1; 32.5 → 0.0; 54.5 → 0.0
+- c6__otcR_W2__R1, K records, K = 3: 13.3 → 7.7; 16.5 → 7.7; 19.5 → 8.3; 22.5 → 0.0; 26.4 → 16.7; 31.2 → 16.7; 37.1 → 16.7; 42.9 → 16.7; 52.6 → 0.0; 78.5 → 0.0
+- c6__otcR_W2__R1, K records, K = 5: 21.3 → 0.0; 27.0 → 0.0; 31.4 → 0.0; 37.9 → 14.3; 42.7 → 14.3; 47.3 → 14.3; 56.9 → 14.3; 71.9 → 0.0; 83.0 → 14.3; 95.2 → 14.3
+- c6__otcR_W2__R1, K records, K = 10: 32.6 → 0.0; 42.6 → 25.0; 47.8 → 0.0; 53.0 → 0.0; 69.5 → 0.0; 78.3 → 0.0; 83.0 → 33.3; 89.8 → 33.3; 97.4 → 0.0; 99.7 → 0.0
+- c6__otcR_W2__R1, K records, K = 20: 38.8 → 50.0; 47.5 → 0.0; 57.9 → 0.0; 74.6 → 0.0; 88.5 → 0.0; 95.7 → 50.0; 99.2 → 0.0; 99.9 → 0.0; 100.0 → 0.0; 100.0 → 0.0
+- c6__otcR_W2__R100, K records, K = 1: 3.7 → 3.3; 4.1 → 3.3; 4.7 → 5.7; 5.2 → 3.3; 5.8 → 4.9; 6.4 → 11.5; 7.0 → 11.5; 7.8 → 9.0; 8.7 → 7.4; 12.2 → 6.6
+- c6__otcR_W2__R100, K records, K = 2: 8.6 → 3.6; 11.6 → 5.4; 13.6 → 1.8; 16.3 → 12.5; 19.3 → 12.5; 22.2 → 5.4; 25.1 → 8.9; 29.1 → 8.9; 33.8 → 5.4; 50.9 → 7.3
+- c6__otcR_W2__R100, K records, K = 3: 14.5 → 2.9; 21.0 → 2.9; 26.0 → 2.9; 31.2 → 0.0; 35.6 → 11.8; 41.8 → 5.9; 48.4 → 17.6; 53.9 → 5.9; 61.0 → 14.7; 80.9 → 5.9
+- c6__otcR_W2__R100, K records, K = 5: 29.1 → 5.6; 39.6 → 5.6; 48.0 → 16.7; 57.9 → 0.0; 65.9 → 16.7; 73.0 → 17.6; 82.3 → 5.9; 87.0 → 11.8; 92.4 → 17.6; 98.0 → 5.9
+- c6__otcR_W2__R100, K records, K = 10: 46.9 → 16.7; 64.1 → 16.7; 85.4 → 16.7; 92.9 → 33.3; 96.4 → 0.0; 98.4 → 0.0; 99.2 → 33.3; 99.7 → 20.0; 99.9 → 20.0; 100.0 → 20.0
+- c6__otcR_W2__R100, K records, K = 20: 79.5 → 0.0; 96.4 → 0.0; 97.1 → 100.0; 98.5 → 0.0; 99.7 → 0.0; 99.9 → 0.0; 100.0 → 0.0; 100.0 → 100.0; 100.0 → 0.0; 100.0 → 100.0
+- c6__otcR_Wmis__R1, K records, K = 1: 4.2 → 2.7; 4.7 → 5.4; 5.2 → 16.2; 5.8 → 29.7; 6.4 → 13.5; 7.2 → 18.9; 8.0 → 2.8; 9.2 → 19.4; 11.1 → 38.9; 14.8 → 58.3
+- c6__otcR_Wmis__R1, K records, K = 2: 8.5 → 0.0; 10.6 → 0.0; 12.4 → 5.3; 14.3 → 27.8; 15.9 → 16.7; 17.8 → 11.1; 22.0 → 22.2; 27.1 → 33.3; 33.2 → 33.3; 47.0 → 66.7
+- c6__otcR_Wmis__R1, K records, K = 3: 13.2 → 7.7; 17.2 → 0.0; 20.1 → 8.3; 23.2 → 25.0; 25.5 → 41.7; 29.8 → 25.0; 36.0 → 25.0; 43.2 → 41.7; 52.1 → 41.7; 77.4 → 75.0
+- c6__otcR_Wmis__R1, K records, K = 5: 26.9 → 25.0; 33.7 → 0.0; 37.9 → 12.5; 43.4 → 14.3; 48.7 → 42.9; 54.7 → 57.1; 61.0 → 42.9; 75.4 → 42.9; 87.4 → 71.4; 97.2 → 85.7
+- c6__otcR_Wmis__R1, K records, K = 10: 61.6 → 25.0; 87.0 → 100.0; 94.3 → 50.0; 98.4 → 100.0; 99.0 → 75.0; 99.6 → 100.0; 99.8 → 66.7; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_Wmis__R1, K records, K = 20: 99.2 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_Wmis__R100, K records, K = 1: 5.0 → 4.9; 5.8 → 4.9; 6.8 → 5.7; 7.7 → 9.0; 8.6 → 9.8; 10.2 → 9.8; 12.6 → 8.2; 14.4 → 15.6; 17.2 → 13.1; 25.2 → 14.8
+- c6__otcR_Wmis__R100, K records, K = 2: 13.0 → 8.9; 18.6 → 7.1; 23.7 → 3.6; 28.1 → 8.9; 34.2 → 8.9; 40.8 → 10.7; 47.7 → 16.1; 55.8 → 8.9; 66.8 → 12.5; 80.3 → 14.5
+- c6__otcR_Wmis__R100, K records, K = 3: 22.6 → 17.6; 34.3 → 5.9; 42.2 → 2.9; 50.6 → 8.8; 59.5 → 14.7; 68.5 → 5.9; 76.1 → 8.8; 86.3 → 14.7; 92.3 → 14.7; 96.8 → 14.7
+- c6__otcR_Wmis__R100, K records, K = 5: 42.6 → 0.0; 58.7 → 16.7; 70.5 → 0.0; 81.3 → 11.1; 89.3 → 22.2; 93.7 → 11.8; 97.8 → 17.6; 99.5 → 23.5; 99.8 → 17.6; 100.0 → 5.9
+- c6__otcR_chain100__R1, K records, K = 1: 4.1 → 9.3; 4.5 → 4.8; 4.8 → 2.4; 5.0 → 2.4; 5.2 → 4.8; 5.4 → 2.4; 5.7 → 4.8; 6.0 → 7.1; 6.5 → 2.4; 7.5 → 7.1
+- c6__otcR_chain100__R1, K records, K = 2: 7.5 → 9.5; 8.7 → 9.5; 9.7 → 9.5; 10.5 → 14.3; 11.2 → 14.3; 12.0 → 0.0; 12.8 → 4.8; 13.8 → 9.5; 15.6 → 4.8; 20.6 → 14.3
+- c6__otcR_chain100__R1, K records, K = 3: 11.6 → 0.0; 14.0 → 7.1; 15.2 → 0.0; 17.0 → 14.3; 19.0 → 0.0; 20.8 → 21.4; 23.1 → 0.0; 25.7 → 14.3; 30.0 → 21.4; 42.7 → 21.4
+- c6__otcR_chain100__R1, K records, K = 5: 19.5 → 11.1; 25.1 → 22.2; 30.1 → 44.4; 34.6 → 0.0; 37.9 → 12.5; 40.8 → 50.0; 43.8 → 12.5; 51.4 → 12.5; 62.9 → 12.5; 74.8 → 62.5
+- c6__otcR_chain100__R1, K records, K = 10: 48.1 → 40.0; 56.9 → 50.0; 63.4 → 75.0; 71.8 → 50.0; 80.4 → 25.0; 85.7 → 100.0; 90.2 → 50.0; 94.7 → 100.0; 96.7 → 50.0; 99.4 → 100.0
+- c6__otcR_chain100__R1, K records, K = 20: 86.2 → 0.0; 94.5 → 100.0; 99.9 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_chain100__R100, K records, K = 1: 2.2 → 0.0; 2.4 → 2.4; 2.6 → 2.4; 2.7 → 1.6; 2.8 → 0.8; 2.9 → 0.8; 3.1 → 5.7; 3.3 → 4.1; 3.5 → 4.1; 4.1 → 2.5
+- c6__otcR_chain100__R100, K records, K = 2: 4.8 → 7.1; 5.5 → 1.8; 6.0 → 0.0; 6.4 → 1.8; 6.8 → 0.0; 7.4 → 7.1; 8.0 → 5.5; 8.8 → 5.5; 9.7 → 7.3; 12.8 → 7.3
+- c6__otcR_chain100__R100, K records, K = 3: 7.7 → 5.9; 9.3 → 8.8; 10.4 → 2.9; 11.3 → 2.9; 12.3 → 5.9; 13.4 → 0.0; 14.7 → 11.8; 16.6 → 8.8; 19.3 → 8.8; 26.4 → 8.8
+- c6__otcR_chain100__R100, K records, K = 5: 15.0 → 17.6; 18.6 → 5.9; 22.3 → 12.5; 24.7 → 12.5; 26.9 → 6.2; 29.2 → 25.0; 33.1 → 12.5; 37.1 → 12.5; 44.6 → 18.8; 60.6 → 31.2
+- c6__otcR_chain50__R1, K records, K = 1: 3.6 → 2.3; 4.0 → 11.9; 4.2 → 0.0; 4.4 → 7.1; 4.6 → 2.4; 4.8 → 2.4; 5.0 → 2.4; 5.3 → 7.1; 5.7 → 0.0; 7.0 → 9.5
+- c6__otcR_chain50__R1, K records, K = 2: 7.9 → 4.8; 9.0 → 4.8; 9.9 → 0.0; 10.7 → 4.8; 12.0 → 14.3; 12.9 → 4.8; 13.9 → 9.5; 15.3 → 14.3; 16.9 → 14.3; 22.0 → 5.0
+- c6__otcR_chain50__R1, K records, K = 3: 13.4 → 21.4; 16.0 → 21.4; 17.7 → 14.3; 19.8 → 0.0; 22.5 → 14.3; 24.5 → 7.1; 26.9 → 7.1; 31.7 → 28.6; 40.9 → 0.0; 52.9 → 15.4
+- c6__otcR_chain50__R1, K records, K = 5: 22.9 → 22.2; 29.6 → 11.1; 34.8 → 11.1; 39.6 → 0.0; 42.4 → 25.0; 49.6 → 25.0; 57.8 → 37.5; 64.0 → 25.0; 71.1 → 25.0; 83.5 → 25.0
+- c6__otcR_chain50__R1, K records, K = 10: 66.2 → 60.0; 81.4 → 100.0; 90.5 → 75.0; 94.0 → 100.0; 96.5 → 100.0; 98.2 → 100.0; 99.2 → 100.0; 99.9 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_chain50__R1, K records, K = 20: 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0; 100.0 → 100.0
+- c6__otcR_chain50__R100, K records, K = 1: 2.1 → 1.6; 2.2 → 2.4; 2.4 → 2.4; 2.5 → 0.0; 2.6 → 3.3; 2.7 → 3.3; 2.8 → 0.8; 3.0 → 3.3; 3.2 → 2.5; 3.8 → 4.1
+- c6__otcR_chain50__R100, K records, K = 2: 4.9 → 5.7; 5.9 → 3.8; 6.5 → 1.9; 7.0 → 3.8; 7.4 → 3.8; 7.9 → 0.0; 8.7 → 0.0; 9.3 → 3.8; 10.5 → 0.0; 13.4 → 5.8
+- c6__otcR_chain50__R100, K records, K = 3: 8.8 → 10.3; 10.8 → 10.3; 12.1 → 3.4; 13.1 → 13.8; 13.7 → 6.9; 15.2 → 6.9; 16.7 → 10.3; 19.6 → 6.9; 23.8 → 3.4; 30.5 → 10.3
+- c6__otcR_chain50__R100, K records, K = 5: 16.7 → 8.3; 21.5 → 16.7; 25.7 → 33.3; 29.9 → 58.3; 33.4 → 25.0; 37.0 → 25.0; 41.0 → 8.3; 45.2 → 25.0; 56.6 → 16.7; 70.1 → 25.0
 - c6__otc_W0__R1, K records, K = 1: 4.0 → 0.0; 4.4 → 2.4; 4.6 → 0.0; 4.8 → 7.3; 5.0 → 12.2; 5.3 → 4.9; 5.5 → 2.4; 5.8 → 9.8; 6.2 → 9.8; 7.3 → 12.2
 - c6__otc_W0__R1, K records, K = 2: 7.6 → 0.0; 8.8 → 0.0; 9.6 → 9.5; 10.3 → 19.0; 11.0 → 9.5; 11.8 → 0.0; 12.7 → 10.0; 13.9 → 5.0; 15.7 → 15.0; 21.4 → 15.0
 - c6__otc_W0__R1, K records, K = 3: 11.5 → 0.0; 13.9 → 14.3; 16.1 → 14.3; 17.4 → 7.1; 18.7 → 7.1; 20.3 → 14.3; 21.9 → 21.4; 24.7 → 15.4; 28.9 → 30.8; 41.6 → 15.4
@@ -3197,3 +5796,58 @@ Per row, the confidence deciles: mean confidence → hit rate.
 - c6_issuer__iwh_withhold_L60__R1, iwh_withhold_L60: 1.9 → 0.0; 2.0 → 0.0; 2.1 → 0.0; 2.1 → 0.0; 2.1 → 0.0; 2.2 → 0.0; 2.2 → 0.0; 2.3 → 0.0; 2.4 → 0.0; 2.6 → 0.0
 - c6_issuer__iwh_withhold_L60__R100, iwh_withhold_L60: 1.0 → 0.0; 1.1 → 0.0; 1.1 → 0.0; 1.1 → 0.0; 1.1 → 0.0; 1.2 → 0.0; 1.2 → 0.0; 1.2 → 0.0; 1.3 → 0.0; 1.4 → 0.0
 
+
+## Certificates: refills, stock and revocation delay
+
+Stock: the mean number held just before a capture in the window. Revocation delay: how long certificates already issued to a revoked device stay usable, at the device's normal rate of use (capped at the two-week expiry), and for a device that keeps them.
+
+| File | Runs | Refills per run in the window | Stock | Revocation delay at normal use | Worst case |
+|---|---|---|---|---|---|
+| c6__otcLR_W0__R1 | 2 | 1273.5 | 1285.1 | 336.0 h | 336 h |
+| c6__otcLR_W0__R100 | 2 | 78.0 | 1273.1 | 336.0 h | 336 h |
+| c6__otcLR_W1__R1 | 2 | 1243.0 | 2444.7 | 336.0 h | 336 h |
+| c6__otcLR_W1__R100 | 2 | 75.5 | 3063.0 | 336.0 h | 336 h |
+| c6__otcLR_W2__R1 | 2 | 1271.0 | 2462.9 | 336.0 h | 336 h |
+| c6__otcLR_W2__R100 | 2 | 75.0 | 2682.0 | 336.0 h | 336 h |
+| c6__otcLR_Wmis__R1 | 2 | 1273.5 | 1285.1 | 336.0 h | 336 h |
+| c6__otcLR_Wmis__R100 | 2 | 75.0 | 1969.4 | 336.0 h | 336 h |
+| c6__otcLR_chain100__R1 | 2 | 873.5 | 865.9 | 336.0 h | 336 h |
+| c6__otcLR_chain100__R100 | 2 | 50.5 | 849.0 | 336.0 h | 336 h |
+| c6__otcLR_chain50__R1 | 2 | 873.5 | 865.9 | 336.0 h | 336 h |
+| c6__otcLR_chain50__R100 | 2 | 50.5 | 849.0 | 336.0 h | 336 h |
+| c6__otcL_W0__R1 | 2 | 1010.0 | 15.5 | 5.0 h | 336 h |
+| c6__otcL_W0__R100 | 2 | 60.0 | 15.0 | 5.0 h | 336 h |
+| c6__otcL_W1__R1 | 2 | 1008.0 | 15.5 | 5.0 h | 336 h |
+| c6__otcL_W1__R100 | 2 | 66.0 | 15.5 | 5.2 h | 336 h |
+| c6__otcL_W2__R1 | 2 | 1014.0 | 15.5 | 5.0 h | 336 h |
+| c6__otcL_W2__R100 | 2 | 61.0 | 15.3 | 5.1 h | 336 h |
+| c6__otcL_Wmis__R1 | 2 | 1009.0 | 15.5 | 5.0 h | 336 h |
+| c6__otcL_Wmis__R100 | 2 | 59.5 | 15.2 | 5.1 h | 336 h |
+| c6__otcL_chain100__R1 | 2 | 698.0 | 15.5 | 7.3 h | 336 h |
+| c6__otcL_chain100__R100 | 2 | 42.5 | 15.2 | 7.4 h | 336 h |
+| c6__otcL_chain50__R1 | 2 | 698.0 | 15.5 | 7.3 h | 336 h |
+| c6__otcL_chain50__R100 | 2 | 42.5 | 15.2 | 7.4 h | 336 h |
+| c6__otcR_W0__R1 | 2 | 1273.5 | 1285.1 | 336.0 h | 336 h |
+| c6__otcR_W0__R100 | 2 | 78.0 | 1273.1 | 336.0 h | 336 h |
+| c6__otcR_W1__R1 | 2 | 1243.0 | 2444.7 | 336.0 h | 336 h |
+| c6__otcR_W1__R100 | 2 | 75.5 | 3063.0 | 336.0 h | 336 h |
+| c6__otcR_W2__R1 | 2 | 1271.0 | 2462.9 | 336.0 h | 336 h |
+| c6__otcR_W2__R100 | 2 | 75.0 | 2682.0 | 336.0 h | 336 h |
+| c6__otcR_Wmis__R1 | 2 | 1273.5 | 1285.1 | 336.0 h | 336 h |
+| c6__otcR_Wmis__R100 | 2 | 75.0 | 1969.4 | 336.0 h | 336 h |
+| c6__otcR_chain100__R1 | 2 | 873.5 | 865.9 | 336.0 h | 336 h |
+| c6__otcR_chain100__R100 | 2 | 50.5 | 849.0 | 336.0 h | 336 h |
+| c6__otcR_chain50__R1 | 2 | 873.5 | 865.9 | 336.0 h | 336 h |
+| c6__otcR_chain50__R100 | 2 | 50.5 | 849.0 | 336.0 h | 336 h |
+| c6__otc_W0__R1 | 2 | 1010.0 | 15.5 | 5.0 h | 336 h |
+| c6__otc_W0__R100 | 2 | 60.0 | 15.0 | 5.0 h | 336 h |
+| c6__otc_W1__R1 | 2 | 1008.0 | 15.5 | 5.0 h | 336 h |
+| c6__otc_W1__R100 | 2 | 66.0 | 15.5 | 5.2 h | 336 h |
+| c6__otc_W2__R1 | 2 | 1014.0 | 15.5 | 5.0 h | 336 h |
+| c6__otc_W2__R100 | 2 | 61.0 | 15.3 | 5.1 h | 336 h |
+| c6__otc_Wmis__R1 | 2 | 1009.0 | 15.5 | 5.0 h | 336 h |
+| c6__otc_Wmis__R100 | 2 | 59.5 | 15.2 | 5.1 h | 336 h |
+| c6__otc_chain100__R1 | 2 | 698.0 | 15.5 | 7.3 h | 336 h |
+| c6__otc_chain100__R100 | 2 | 42.5 | 15.2 | 7.4 h | 336 h |
+| c6__otc_chain50__R1 | 2 | 698.0 | 15.5 | 7.3 h | 336 h |
+| c6__otc_chain50__R100 | 2 | 42.5 | 15.2 | 7.4 h | 336 h |

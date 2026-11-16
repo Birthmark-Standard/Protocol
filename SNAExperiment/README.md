@@ -295,7 +295,7 @@ Each run of a job writes one record per output file in `raw/`, so a job is resum
 
 **Chance**, in every table: the expected accuracy of naming, for each decision, one candidate drawn uniformly from the candidates the vantage finds feasible for it (a device with a packet the vantage's densities allow, or for C5 a record its density allows), and zero when the truth is not feasible. A variant that changes the candidate set, such as known decoys, gets its chance by the same definition from its own feasible candidates.
 
-`results/C3_dry_run/` holds a dry run of C3 on 2 runs per cell, on model seeds; `results/C6_dry_run/` one of C6.
+`results/C3_dry_run/` to `results/C6_dry_run/` hold dry runs of C3 to C6 on model seeds (2 runs per cell for C3 and C6, 1 for C4 and C5).
 
 A full run uses the evaluation seed set of C3 to C5 (`eval_seed` in `sna/stronger.py`). Add `--dry` for a dry run on model seeds; its tables are named `_dry_run` and say so on their first line:
 
@@ -337,7 +337,7 @@ The job writes `TABLES_C6.md` (and `.json`): one table per vantage with both can
 |---|---|
 | `RESULTS_C1.md`, `RESULTS_C2.md` | every finding |
 | `PREDICTIONS_C1.md` to `PREDICTIONS_C6.md` | the predictions, written and committed before the run; each of C3 to C5 lists its changes before the run |
-| `results/C3_dry_run/` | the C3 dry run: its tables, cost per run and `run_info.json` |
+| `results/C3_dry_run/` to `results/C6_dry_run/` | the dry runs on model seeds: their tables, cost per run and `run_info.json` |
 | `C1_C2_figures.csv` | every reported figure of C1 and C2, one row each, with its value in each experiment and whether it changed |
 | `results/C*/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
 | `results/C*/TABLES.md` | the full tables |

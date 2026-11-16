@@ -1,7 +1,7 @@
 {
  "jobs": {
   "c6": {
-   "hash": "281ab622930ad272",
+   "hash": "90d42da05aa5514b",
    "cells": [
     1,
     100
@@ -24,7 +24,19 @@
     "otcL_W2",
     "otcL_Wmis",
     "otcL_chain100",
-    "otcL_chain50"
+    "otcL_chain50",
+    "otcR_W0",
+    "otcR_W1",
+    "otcR_W2",
+    "otcR_Wmis",
+    "otcR_chain100",
+    "otcR_chain50",
+    "otcLR_W0",
+    "otcLR_W1",
+    "otcLR_W2",
+    "otcLR_Wmis",
+    "otcLR_chain100",
+    "otcLR_chain50"
    ],
    "runs": 2
   },
@@ -52,12 +64,12 @@
   }
  },
  "seed_set": "model (dry run)",
- "code_commit": "8c803f63d19a714afd21ce22dc81f9ac2d8dcd69",
+ "code_commit": "3e45e4a729a73c4d2ec369007a1a4feeb5b06ced",
  "predictions_commit": {
   "C3": "fb61e61ca923ce424976fdaa5497d44daef4c387",
-  "C4": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5",
+  "C4": "1ad80a6c239bf641326c9fd968debf85f867d2a8",
   "C5": "fb61e61ca923ce424976fdaa5497d44daef4c387",
-  "C6": "c162d9eb1e6e85835d4f32f982cfa36cded4ecf9"
+  "C6": "1ebe6100a5791be11071bc883328be71333a7521"
  },
  "c2_config_hash": "c54e444f07f27a7a",
  "seeds": {
@@ -75,6 +87,6 @@
  },
  "label": "dry run: 2 runs per cell",
  "elapsed_min": {
-  "c6,c6_issuer": 5.103616507848104
+  "c6,c6_issuer": 5.715843677520752
  }
 }
