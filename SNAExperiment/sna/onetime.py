@@ -72,12 +72,40 @@ def _route(r, n):
 
 class Stock:
     """Each identity's certificates under the threshold rule: the issuance time of every certificate held (used oldest
-    first), and every refill (identity, time, count)."""
+    first), and every refill (identity, time, count).
 
-    def __init__(self, cfg, rng):
+    Issuer withholding (mark_actor "issuer_withhold"): inside each window (withhold_len, one every withhold_len +
+    WITHHOLD_GAP_S from the warm-up's end) the target's issuer serves the target and refuses (withhold) or holds to
+    the window's end (delay) every other refill of its identities. A refused device asks again at each later
+    capture; a device with no certificate left gets its refill when the window ends."""
+
+    def __init__(self, cfg, rng, issuer_of=None):
         self.cfg, self.rng = cfg, rng
         self.held = {}
         self.refills = []
+        self.pending = {}                                         # identity -> the time its held refill is served
+        self.issuer_of = issuer_of or {}
+        self.attack = cfg.mark_actor == "issuer_withhold"
+
+    def _window_end(self, t):
+        """The end of the withholding window containing t, or None."""
+        cfg = self.cfg
+        if not self.attack or cfg.withhold_len <= 0:
+            return None
+        period = cfg.withhold_len + P.WITHHOLD_GAP_S
+        x = t - cfg.warmup_s
+        if x < 0 or np.mod(x, period) >= cfg.withhold_len:
+            return None
+        return cfg.warmup_s + period * np.floor(x / period) + cfg.withhold_len
+
+    def _blocked(self, ident, t):
+        cfg = self.cfg
+        if not self.attack or ident == cfg.mark_target or cfg.withhold_mode == "none":
+            return None
+        tgt = self.issuer_of.get(cfg.mark_target, -1)
+        if self.issuer_of.get(ident, -2) != tgt:
+            return None
+        return self._window_end(t)
 
     def _start(self, ident, t):
         b, k = self.cfg.otc_batch, self.cfg.otc_refill_at
@@ -94,13 +122,26 @@ class Stock:
         while h and h[0] <= t - cfg.cert_expiry_s:             # expired certificates
             h.pop(0)
         ready = t
+        tp = self.pending.get(ident)
+        if tp is not None and (tp <= t or not h):               # a held refill arrives
+            ready = max(t, tp)
+            h.extend([tp] * cfg.otc_batch)
+            self.refills.append((ident, tp, cfg.otc_batch))
+            del self.pending[ident]
         if not h:                                              # none left: the capture waits for a refill
-            h.extend([t] * cfg.otc_batch)
-            self.refills.append((ident, t, cfg.otc_batch))
-        h.pop(0)
-        if len(h) <= cfg.otc_refill_at:
-            self.refills.append((ident, ready, cfg.otc_batch))
+            end = self._blocked(ident, t)
+            ready = t if end is None else end
             h.extend([ready] * cfg.otc_batch)
+            self.refills.append((ident, ready, cfg.otc_batch))
+        h.pop(0)
+        if len(h) <= cfg.otc_refill_at and ident not in self.pending:
+            end = self._blocked(ident, ready)
+            if end is None:
+                self.refills.append((ident, ready, cfg.otc_batch))
+                h.extend([ready] * cfg.otc_batch)
+            elif cfg.withhold_mode == "delay":
+                self.pending[ident] = end
+            # withhold: refused; the device asks again at its next capture
         return ready
 
 
@@ -178,12 +219,15 @@ def simulate(cfg: P.Config, seed: int) -> S.Run:
     assert is_onetime(cfg)
     w = S.World(cfg, seed)
     grow = 1.0 + cfg.edits_per_capture
-    stock = Stock(cfg, np.random.default_rng([int(seed), 7]))          # the stocks' long-run start
     tr, sr, lr = _captures(w, w.rng_real, cfg.real_rate / grow, cfg.real_devices, 0, False)
     td, sd, ld = _captures(w, w.rng_decoy, cfg.decoy_rate / grow, cfg.decoy_sources, 100_000, True)
     issuer = {}
     for src0, n_src, srcs, dec in ((0, cfg.real_devices, sr, False), (100_000, cfg.decoy_sources, sd, True)):
         issuer[src0] = S._validator_of(w, srcs, src0, n_src, dec)
+    issuer_of = {int(a): int(b) for src0, srcs in ((0, sr), (100_000, sd)) for a, b in zip(srcs, issuer[src0])}
+    if cfg.mark_target >= 0 and cfg.mark_target not in issuer_of and cfg.n_validators > 1:
+        issuer_of[cfg.mark_target] = int(w.vkey[0][cfg.mark_target])
+    stock = Stock(cfg, np.random.default_rng([int(seed), 7]), issuer_of)   # the stocks' long-run start
     real = _transactions(w, w.rng_real, tr, sr, lr, 0, False, stock, ident=sr)
     dec = _transactions(w, w.rng_decoy, td, sd, ld, tr.size, True, stock, ident=sd)
     subs = _cat(real, dec)
@@ -224,3 +268,281 @@ def simulate(cfg: P.Config, seed: int) -> S.Run:
     run.refills = dict(src=ident, t=rf[:, 1], n=rf[:, 2].astype(np.int32),
                        issuer=np.array([key.get(int(i), 0) for i in ident], np.int8))
     return run
+
+
+# =========================================================================== attackers
+from . import attacks as AT                                      # noqa: E402
+from . import devscore as DS                                     # noqa: E402
+
+TRIGGER = 1.0                                                    # one capture per refill is the refill's own
+
+
+def _samples(run, acc):
+    """True (record, packet) pairs of one model run: y the record time after the packet's send, the first relay's
+    hold, the arrival at the destination after the send, and the record time and arrival after the capture."""
+    s, ev = run.subs, run.events
+    ok = np.nonzero(np.isfinite(s["posted"]))[0]
+    e = s["ev_pk"][ok]
+    sk = ev["t_send"][e[:, 0]]
+    u = s["posted"][ok]
+    for k, v in (("y", u - sk), ("fh_x", ev["t_send"][e[:, 1]] - ev["t_arr"][e[:, 0]]), ("cs_x", ev["t_arr"][e[:, 2]] - sk),
+                 ("ut", u - s["ready"][ok]), ("at", ev["t_arr"][e[:, 2]] - s["ready"][ok])):
+        acc.setdefault(k, []).append(v)
+
+
+def build_models(cfg, seed0=1_000_000_000, min_samples=300_000, max_runs=200) -> AT.Models:
+    """The attackers' densities for this candidate, on the model seeds: g (record after send), fh and cs (the record
+    after send given the first relay's hold, and given the arrival at the destination) with their marginals, and
+    gT and gA (the record and the arrival after the capture, for the issuer)."""
+    mc = cfg.with_(decoy_rate=0.0, real_rate=max(cfg.real_rate, 0.2), mark_actor="")
+    scale = max(1.0, cfg.max_delay_s / AT.REF_DELAY_S)
+    bw_y, bw_x = AT.BW_Y * scale, AT.BW_X * scale
+    acc, k = {}, 0
+    while True:
+        _samples(simulate(mc, seed0 + k), acc)
+        k += 1
+        if (sum(x.size for x in acc["y"]) >= min_samples and k >= 3) or k >= max_runs:
+            break
+    c = {n: np.concatenate(v) for n, v in acc.items()}
+    m = AT.Models(mc_runs=k, samples={n: int(v.size) for n, v in c.items()})
+    g = LT.EmpiricalLogPDF(c["y"], bw_y)
+    m.pdf["g"] = g
+    for name in ("fh", "cs"):
+        m.pdf[name] = AT.CondPDF(c[name + "_x"], c["y"], g, bw_x)
+        m.pdf[name + "_q"] = LT.EmpiricalLogPDF(c[name + "_x"], bw_x)
+    m.pdf["gT"] = LT.EmpiricalLogPDF(c["ut"], bw_y)
+    m.pdf["gA"] = LT.EmpiricalLogPDF(c["at"], bw_y)
+    return m
+
+
+def _issuer_terms(run, rec, cand, k, dens, at):
+    """Issuer k's evidence per record: for each of its identities, log(its rate times the share of captures that do
+    not trigger a refill + the sum over its refills of the density of `at` (the record time or the arrival) after the
+    refill). Returns (identities, per record (labels, that against the rate alone, that itself))."""
+    cfg, rf, s = run.cfg, run.refills, run.subs
+    mine = rf["issuer"] == k
+    ids = np.unique(rf["src"][mine])
+    H = max(cfg.horizon_s, 1.0)
+    out = []
+    t_by = {int(i): np.sort(rf["t"][mine & (rf["src"] == i)]) for i in ids}
+    lam = {i: max(t.size, 1) * cfg.otc_batch / H for i, t in t_by.items()}   # the long-run rate, from its refills
+    lo, hi = dens.support
+    for x in at:
+        labs, lr = [], []
+        for i, t in t_by.items():
+            j0, j1 = np.searchsorted(t, x - hi), np.searchsorted(t, x - lo, "right")
+            hit = np.exp(dens(x - t[j0:j1])).sum() * TRIGGER if j1 > j0 else 0.0
+            labs.append(i)
+            lr.append((np.log(lam[i] * (1 - 1 / cfg.otc_batch) + hit), np.log(lam[i])))
+        a = np.array(lr).reshape(-1, 2)
+        out.append((np.array(labs, np.int64), a[:, 0] - a[:, 1], a[:, 0]))
+    return ids, out
+
+
+def compute(run, m, rng, hooks=None, pick=None):
+    """Every vantage of this candidate on one run, in the tables of attacks._table:
+      observer                  the passive observer
+      first_hop                 each node as first relay: its own holds (group: the node)
+      destination               each node, on the records it was the destination of: its packet's arrival and the
+                                record (group: the node)
+      destination_keyed         the same, told each source address's issuer (an upper bound), so it competes only among
+                                the identities of the packet's issuer, which it learns from the certificate
+      first_relay_with_destination  the record's own first relay and destination: the inner packet matched exactly
+      issuer_k                  issuer k alone: its identities' refill times and rates (column own: the record's device
+                                is one of its identities)
+      issuer_k_with_observer    issuer k's evidence on its identities, added to the observer's
+      issuer_k_with_first_relay issuer k with one first relay (drawn per run by pick)
+      issuer_k_with_destination issuer k with the record's destination Registry Node, on the records whose packet it
+                                issued: the destination's evidence among issuer k's identities, with the refill times
+                                against the arrival."""
+    hooks = hooks or {}
+    pdf, s, ev = m.pdf, run.subs, run.events
+    g = pdf["g"]
+    rec = AT.records(run)
+    keep = AT.scored_mask(run, rec["sub"])
+    rec = {k: x[keep] for k, x in rec.items()}
+    cand = AT.candidates(run)
+    labels = np.unique(np.r_[cand["dev"], s["src"]])
+    tie = AT._relabel(labels, rng)
+    raw_dev = cand["dev"].copy()
+    cand["dev"], rec["dev"] = tie(cand["dev"]), tie(rec["dev"])
+    shuf = AT._relabel(np.unique(tie(labels)), rng)
+    cand["dev_shuf"] = shuf(cand["dev"])
+    srow, u, n = rec["sub"], rec["u"], rec["sub"].size
+    idx = np.arange(n)
+    truth = dict(sub=srow, dev=rec["dev"])
+    out = {}
+    col = DS.Collector(n, cand["dev"])
+    if "init" in hooks:
+        hooks["init"](cand, rec, g)
+
+    def obs_extra(nm, rows, lo_, hi_, W, is_t):
+        col(rows, lo_, hi_, W)
+        if "observer" in hooks:
+            hooks["observer"](rows, lo_, hi_, W)
+    lo, hi = AT._band(u, g)
+    res = AT.score_blocks(lo, hi, cand, lambda rows, k0, k1: dict(observer=g(u[rows][:, None] - cand["t"][None, k0:k1])),
+                          truth, ("observer",), lse=("observer",), extra=obs_extra)
+    base = res["observer"]
+    out["observer"] = AT._table(base, rec, idx, np.zeros(n), base)
+    obs_scores = [col.get(i) for i in range(n)]
+    # first relays
+    fh = pdf["fh"]
+    parts = []
+    for X in range(P.N_NODES):
+        mine = cand["node"][:, 0] == X
+        hold = np.where(mine, cand["hold"][:, 0], np.nan)
+
+        def fn(rows, k0, k1, mine=mine, hold=hold):
+            y = u[rows][:, None] - cand["t"][None, k0:k1]
+            lg = g(y)
+            own = mine[None, k0:k1] & np.isfinite(lg)
+            return dict(v=np.where(own, fh(hold[None, k0:k1], y), lg))
+        r = AT.score_blocks(lo, hi, cand, fn, truth, ("v",), lse=("v",))
+        parts.append(AT._table(r["v"], rec, idx, np.full(n, X), base, took_part=(s["A"][srow] == X).astype(np.int8)))
+    out["first_hop"] = AT._cat(parts)
+    # destination: each record scored by its own destination
+    cs, csq = pdf["cs"], pdf["cs_q"]
+    arr = s["arr"][srow]
+    clo, chi = arr - csq.support[1], arr - csq.support[0]
+    key_of = {int(a): int(b) for a, b in zip(s["src"], s["issuer"])}
+    ckey = np.array([key_of.get(int(d), -1) for d in raw_dev], np.int64)
+    rkey = s["issuer"][srow].astype(np.int64)
+    colk = DS.Collector(n, cand["dev"])
+    coli = DS.Collector(n, cand["dev"])
+
+    def dfn(rows, k0, k1):
+        x = arr[rows][:, None] - cand["t"][None, k0:k1]
+        v = cs(x, u[rows][:, None] - cand["t"][None, k0:k1]) + csq(x)
+        same = ckey[None, k0:k1] == rkey[rows][:, None]
+        return dict(destination=v, destination_keyed=np.where(same, v, -np.inf))
+
+    def dextra(nm, rows, a, b, W, is_t):
+        if nm == "destination_keyed":
+            colk(rows, a, b, W)
+    r = AT.score_blocks(clo, chi, cand, dfn, truth, ("destination", "destination_keyed"), lse=("destination", "destination_keyed"),
+                        extra=dextra)
+    grp = s["D"][srow]
+    out["destination"] = AT._table(r["destination"], rec, idx, grp, base, issuer=rkey.astype(np.int8))
+    out["destination_keyed"] = AT._table(r["destination_keyed"], rec, idx, grp, base, issuer=rkey.astype(np.int8))
+    keyed_scores = [colk.get(i) for i in range(n)]
+    # first relay with the destination on its path: the source address of the matched packet
+    out["first_relay_with_destination"] = DS.table([np.array([d]) for d in rec["dev"]], [np.zeros(1)] * n, rec, idx,
+                                                   s["A"][srow] * 32 + s["D"][srow], base, rec["dev"], shuf)
+    # issuers
+    gT, gA = pdf["gT"], pdf["gA"]
+    nk = max(1, run.cfg.n_validators)
+    X1 = pick if pick is not None else int(rng.integers(0, P.N_NODES))
+    fh_scores = None
+    for k in range(nk):
+        ids, terms = _issuer_terms(run, rec, cand, k, gT, u)
+        tids = tie(ids) if ids.size else ids
+        own = (rkey == k).astype(np.int8)
+        labs, scs, lo_, so_ = [], [], [], []
+        for i, (lab, lr, ab) in enumerate(terms):
+            tl = tie(lab) if lab.size else lab
+            o = np.argsort(tl)
+            labs.append(tl[o]); scs.append(ab[o])
+            ol, os_ = obs_scores[i]
+            add = np.zeros(ol.size)
+            pos = np.searchsorted(tl[o], ol)
+            hit = (pos < tl.size) & (tl[o][np.minimum(pos, max(tl.size - 1, 0))] == ol) if tl.size else np.zeros(ol.size, bool)
+            add[hit] = lr[o][pos[hit]]
+            lo_.append(ol); so_.append(os_ + add)
+        out[f"issuer_{k}"] = DS.table(labs, scs, rec, idx, np.full(n, k), base, rec["dev"], shuf, own=own)
+        out[f"issuer_{k}_with_observer"] = DS.table(lo_, so_, rec, idx, np.full(n, k), base, rec["dev"], shuf, own=own)
+        # with one first relay: its own holds on the observer's scores, plus the issuer's evidence
+        if fh_scores is None:
+            colf = DS.Collector(n, cand["dev"])
+            minef = cand["node"][:, 0] == X1
+            holdf = np.where(minef, cand["hold"][:, 0], np.nan)
+
+            def ffn(rows, k0, k1):
+                y = u[rows][:, None] - cand["t"][None, k0:k1]
+                lg = g(y)
+                own_ = minef[None, k0:k1] & np.isfinite(lg)
+                return dict(v=np.where(own_, fh(holdf[None, k0:k1], y), lg))
+            AT.score_blocks(lo, hi, cand, ffn, truth, ("v",), extra=lambda nm, rows, a, b, W, is_t: colf(rows, a, b, W))
+            fh_scores = [colf.get(i) for i in range(n)]
+        lf, sf = [], []
+        for i, (lab, lr, _) in enumerate(terms):
+            fl, fs = fh_scores[i]
+            tl = tie(lab) if lab.size else lab
+            o = np.argsort(tl)
+            add = np.zeros(fl.size)
+            if tl.size:
+                pos = np.searchsorted(tl[o], fl)
+                hit = (pos < tl.size) & (tl[o][np.minimum(pos, tl.size - 1)] == fl)
+                add[hit] = lr[o][pos[hit]]
+            lf.append(fl); sf.append(fs + add)
+        out[f"issuer_{k}_with_first_relay"] = DS.table(lf, sf, rec, idx, np.full(n, X1), base, rec["dev"], shuf, own=own)
+        # with the destination: on records whose packet this issuer signed, the keyed destination plus the refills
+        # against the arrival
+        _, tA = _issuer_terms(run, rec, cand, k, gA, arr)
+        ld, sd = [], []
+        for i, (lab, lr, _) in enumerate(tA):
+            kl, ks = keyed_scores[i]
+            if rkey[i] != k or kl.size == 0:
+                ld.append(np.zeros(0, np.int64)); sd.append(np.zeros(0))
+                continue
+            tl = tie(lab) if lab.size else lab
+            o = np.argsort(tl)
+            add = np.zeros(kl.size)
+            if tl.size:
+                pos = np.searchsorted(tl[o], kl)
+                hit = (pos < tl.size) & (tl[o][np.minimum(pos, tl.size - 1)] == kl)
+                add[hit] = lr[o][pos[hit]]
+            ld.append(kl); sd.append(ks + add)
+        sel = np.nonzero(rkey == k)[0]
+        out[f"issuer_{k}_with_destination"] = DS.table([ld[i] for i in sel], [sd[i] for i in sel], rec, sel, np.full(sel.size, k),
+                                                       base, rec["dev"][sel], shuf)
+    out["_cand"], out["_rec"], out["_tie"], out["_shuf"], out["_base"] = cand, rec, tie, shuf, base
+    return out
+
+
+def issuer_find(run, pdf, rng, window):
+    """Record-finding by the target's issuer: for each refill of the target inside a withholding window (the capture
+    that triggered it is known to the issuer), the record whose time best fits the density of the record after the
+    capture; right when it is that capture's record. The same fields as active.score."""
+    cfg, s, rf = run.cfg, run.subs, run.refills
+    st = Stock(cfg, None)
+    a = rf["t"][(rf["src"] == cfg.mark_target)]
+    a = a[(a >= window[0]) & (a < window[1])]
+    a = np.array([x for x in a if st._window_end(x) is not None])        # only the target's refills inside a window
+    tgt = np.array([np.nonzero((s["src"] == cfg.mark_target) & ~s["decoy"] & (np.abs(s["ready"] - x) < 1e-9))[0][:1] for x in a],
+                   dtype=object)
+    target = np.array([int(t[0]) if len(t) else -1 for t in tgt], np.int64)
+    fin = np.nonzero(np.isfinite(s["posted"]))[0]
+    o = np.argsort(s["posted"][fin], kind="stable")
+    rs, ru = fin[o], s["posted"][fin][o]
+    lo, hi = pdf.support
+    n = a.size
+    nT = AT.T_GRID.size
+    correct, nfeas, rank = np.zeros(n, np.int8), np.zeros(n, np.int32), np.full(n, -1, np.int32)
+    top1, s_true = np.full(n, -np.inf), np.full(n, -np.inf)
+    lse, ent = np.full((n, nT), np.nan), np.full((n, nT), np.nan)
+    for i in range(n):
+        b0, b1 = np.searchsorted(ru, a[i] + lo, "left"), np.searchsorted(ru, a[i] + hi, "right")
+        if b1 <= b0:
+            continue
+        sc = pdf(ru[b0:b1] - a[i])
+        ok = np.isfinite(sc)
+        nfeas[i] = int(ok.sum())
+        if not ok.any():
+            continue
+        best = np.nonzero(sc == sc[ok].max())[0]
+        correct[i] = int(target[i] >= 0 and rs[b0:b1][best[rng.integers(0, best.size)]] == target[i])
+        top1[i] = sc[ok].max()
+        is_t = (rs[b0:b1] == target[i]) & ok
+        if is_t.any():
+            s_true[i] = sc[is_t].max()
+        rank[i] = int((sc[ok] > s_true[i]).sum()) if is_t.any() else nfeas[i]
+        for k, T in enumerate(AT.T_GRID):
+            x = sc[ok] / T
+            lse[i, k] = np.log(np.exp(x - x.max()).sum()) + x.max() - top1[i] / T
+            ent[i, k] = AT._entropy(sc[ok][None, :], T)[0]
+    rand = np.where(np.isfinite(s_true) & (nfeas > 0), 1.0 / np.maximum(nfeas, 1), 0.0)
+    return dict(sub=np.maximum(target, 0).astype(np.int32), correct=correct, has_record=(target >= 0).astype(np.int8), n_feas=nfeas,
+                path=np.full(n, 5, np.int8), dev_v_correct=correct, dev_v_rand=rand.astype(np.float32), dev_n_feas=nfeas,
+                dev_top1=top1.astype(np.float32), dev_s_true=s_true.astype(np.float32), dev_lse=lse.astype(np.float16),
+                dev_ent=ent.astype(np.float16), dev_rank=rank)

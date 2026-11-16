@@ -276,7 +276,8 @@ def spread(t, out, temps):
             out["device_rate_p50"], out["device_rate_p90"] = float(np.median(rb)), float(np.percentile(rb, 90))
             out["device_rate_max"], out["device_worst_records"] = float(rb[w]), int(cb[w])
             wd = np.nonzero(big)[0][w]
-            out["device_worst_entropy_bits"] = float(np.nanmean(H[inv == wd]))
+            hw = H[inv == wd]
+            out["device_worst_entropy_bits"] = float(np.nanmean(hw)) if np.isfinite(hw).any() else math.nan
     return out
 
 
