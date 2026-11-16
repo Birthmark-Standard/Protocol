@@ -1,0 +1,80 @@
+{
+ "jobs": {
+  "c6": {
+   "hash": "281ab622930ad272",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "cp_W0",
+    "cp_W1",
+    "cp_W2",
+    "cp_Wmis",
+    "cp_chain100",
+    "cp_chain50",
+    "otc_W0",
+    "otc_W1",
+    "otc_W2",
+    "otc_Wmis",
+    "otc_chain100",
+    "otc_chain50",
+    "otcL_W0",
+    "otcL_W1",
+    "otcL_W2",
+    "otcL_Wmis",
+    "otcL_chain100",
+    "otcL_chain50"
+   ],
+   "runs": 2
+  },
+  "c6_issuer": {
+   "hash": "b040fd0f062450d4",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "iwh_none_L10",
+    "iwh_none_L30",
+    "iwh_none_L60",
+    "iwh_none_L120",
+    "iwh_withhold_L10",
+    "iwh_withhold_L30",
+    "iwh_withhold_L60",
+    "iwh_withhold_L120",
+    "iwh_delay_L10",
+    "iwh_delay_L30",
+    "iwh_delay_L60",
+    "iwh_delay_L120"
+   ],
+   "runs": 2
+  }
+ },
+ "seed_set": "model (dry run)",
+ "code_commit": "8c803f63d19a714afd21ce22dc81f9ac2d8dcd69",
+ "predictions_commit": {
+  "C3": "fb61e61ca923ce424976fdaa5497d44daef4c387",
+  "C4": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5",
+  "C5": "fb61e61ca923ce424976fdaa5497d44daef4c387",
+  "C6": "c162d9eb1e6e85835d4f32f982cfa36cded4ecf9"
+ },
+ "c2_config_hash": "c54e444f07f27a7a",
+ "seeds": {
+  "traffic": "1000300000 + 1000 R + run id (model seeds)",
+  "models": 1000000000,
+  "rates": 1000050000,
+  "operators": 15000000,
+  "coalitions": 18000000
+ },
+ "versions": {
+  "python": "3.11.17",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39"
+ },
+ "label": "dry run: 2 runs per cell",
+ "elapsed_min": {
+  "c6,c6_issuer": 5.103616507848104
+ }
+}
