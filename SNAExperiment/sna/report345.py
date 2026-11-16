@@ -207,7 +207,7 @@ def _c5_rows(name, label, recs, R, setting, rng):
     if t["sub"].size == 0:
         return []
     conf, temps = AN.calibrated_confidence(t)
-    bound = None if setting.startswith("vwh") else record_bound(R, 100.0)
+    bound = None if setting.startswith(("vwh", "iwh")) else record_bound(R, 100.0)
     row = _rate_row(name, label, t["run"], t["dev_v_correct"], t["dev_v_rand"], rng, bound=bound,
                     target_transactions=float(np.mean([r["target_transactions"] for r in recs])))
     ti = np.array([int(np.argmin(np.abs(AN.T_GRID - temps[f]))) for f in (0, 1)])[t["run"] % 2]
@@ -281,3 +281,109 @@ def write(out, rows, stem, title, dry=False):
     stem = stem + ("_dry_run" if dry else "")
     (out / f"{stem}.json").write_text(json.dumps(clean, indent=1, default=float))
     (out / f"{stem}.md").write_text(markdown(rows, title, dry))
+
+
+# --------------------------------------------------------------------------- C6: the two candidates side by side
+C6_FAMILY = {"observer": "passive observer", "first_hop": "first relay", "content_server": "destination",
+             "destination": "destination", "first_relay_with_destination": "first relay with the destination on its path"}
+C6_LABEL = {"cp": "credential path", "otc": "blind-issued one-time certificates, natural",
+            "otcL": "blind-issued one-time certificates, lengthened hold"}
+
+
+def summarize_c6(out, files, seed=12345):
+    """C6 rows: every vantage of every file (as summarize, with the issuers' rows split by whether the record's device
+    is theirs), the ceiling, the K-record attacker per K and the edit-chain attacker per length, each row tagged with
+    its candidate, workload, family and the candidate's measured latency."""
+    from . import krecord as KR
+    from .stronger import VALIDATORS
+    rng = np.random.default_rng(seed)
+    sh = VALIDATORS["real_val_split"]
+    own = {None: "all records", 1: "its own devices", 0: "other issuers' devices"}
+    classes = {f"issuer_{k}{x}": ("own", {c: f"share {100 * sh[k]:g}%, {lab}" for c, lab in own.items()})
+               for k in range(VALIDATORS["n_validators"]) for x in ("", "_with_observer", "_with_first_relay")}
+    na = {"first_relay_with_destination", "destination", "content_server", "destination_keyed",
+          *(f"issuer_{k}_with_destination" for k in range(VALIDATORS["n_validators"]))}
+    rows = summarize(out, files, classes=classes, bound_na=na, seed=seed)
+    for name in files:
+        recs = sorted(RN.load(out, name), key=lambda r: r["run"])
+        if not recs:
+            continue
+        _, variant, cell = name.split("__")
+        R = float(cell[1:])
+        run_ = np.concatenate([np.full(r["ceiling"]["correct"].size, r["run"]) for r in recs])
+        c = np.concatenate([r["ceiling"]["correct"] for r in recs])
+        ch = np.concatenate([1.0 / np.maximum(r["ceiling"]["size"].astype(float), 1) for r in recs])
+        rows.append(_rate_row(name, "ceiling", run_, c, ch, rng, bound=posting_bound(R, 100.0)))
+        w = variant.split("_", 1)[1]
+        Ks = (1, 2, 3, 5, 10, 20) if (R == 1 or w in ("W1", "W2")) else (1, 2, 3, 5)
+        _, per = KR.k_record(recs, Ks, full=True)
+        for K in Ks:
+            if per[K]:
+                a = np.array(per[K], float)
+                row = _rate_row(name, f"K records, K = {K}", a[:, 0], a[:, 1], a[:, 6], rng)
+                rows.append(_spread_rows(row, a[:, 0], a[:, 1], a[:, 2], a[:, 3], a[:, 4], a[:, 5], 2.0 ** -a[:, 5], a[:, 3] >= 0))
+        if "vec_lb" in recs[0]:
+            res = KR.chains(recs)
+            for L in sorted({L for pr in res for L in pr}):
+                num = np.array([pr.get(L, (0, 0, 0.0))[0] for pr in res], float)
+                den = np.array([pr.get(L, (0, 0, 0.0))[1] for pr in res], float)
+                chs = np.array([pr.get(L, (0, 0, 0.0))[2] for pr in res], float)
+                acc, lo, hi = AN.cluster_boot(num, den, rng)
+                chv = chs.sum() / max(den.sum(), 1)
+                rows.append(dict(file=name, vantage=f"edit chain, {L} records", runs=len(res), n=int(den.sum()), dev_accuracy=acc,
+                                 dev_ci_lo=lo, dev_ci_hi=hi, dev_random=chv, dev_lift_random=acc / chv if chv > 0 else math.nan,
+                                 dev_contribution=math.nan, bound=None,
+                                 stable=bool(num.sum() >= AN.MIN_EACH and den.sum() - num.sum() >= AN.MIN_EACH)))
+    lat = {}
+    for name in files:
+        recs = RN.load(out, name)
+        lat[name] = float(np.nanmean([r.get("latency", np.nan) for r in recs])) if recs else math.nan
+    for r in rows:
+        _, variant, cell = r["file"].split("__")
+        cand, w = variant.split("_", 1)
+        base = r["vantage"].split(" [")[0]
+        r.update(candidate=C6_LABEL[cand], workload=w, cell=cell, latency=lat.get(r["file"], math.nan),
+                 family=C6_FAMILY.get(base, base if not base.startswith(("K records", "edit chain", "ceiling")) else r["vantage"]))
+    return rows
+
+
+def markdown_c6(rows, title, dry=False):
+    """One table per vantage family, both candidates in adjacent rows for each cell and workload, the latency beside
+    each row; then the spread, calibration and reliability sections of markdown()."""
+    order = {"cp": 0, "otc": 1, "otcL": 2}
+    lines = []
+    if dry:
+        lines.append("DRY RUN: fewer runs than the full count. These numbers are not results.\n")
+    lines.append(f"# {title}\n")
+    lines.append("Chance is the expected accuracy of naming, for each decision, one candidate drawn uniformly from those "
+                 "the vantage finds feasible; zero when the truth is not feasible. Latency: the mean time from capture to "
+                 "posted record of each candidate in that cell.\n")
+    fams = []
+    for r in rows:
+        if r["family"] not in fams:
+            fams.append(r["family"])
+    for fam in fams:
+        rs = [r for r in rows if r["family"] == fam]
+        rs.sort(key=lambda r: (r["cell"], r["workload"], r["vantage"].split(" [")[-1], order.get(r["file"].split("__")[1].split("_")[0], 1)))
+        lines.append(f"\n## {fam}\n")
+        lines.append("| Cell | Workload | Candidate | Latency | Vantage | Runs | Decisions | Device named [95% CI] | Chance | Multiple | "
+                     "Lead over observer | AUC | Stable | Bound |")
+        lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+        for r in rs:
+            lead = r.get("dev_contribution", math.nan)
+            lines.append(f"| {r['cell']} | {r['workload']} | {r['candidate']} | {num(r['latency'], '{:.0f} s')} | {r['vantage']} | "
+                         f"{r['runs']} | {r['n']:,} | {pct(r['dev_accuracy'])} [{pct(r['dev_ci_lo'])}, {pct(r['dev_ci_hi'])}] | "
+                         f"{pct(r['dev_random'])} | ×{num(r['dev_lift_random'])} | "
+                         f"{num(100 * lead if math.isfinite(lead) else math.nan, '{:+.2f}')} | {num(r.get('auc', math.nan), '{:.3f}')} | "
+                         f"{'yes' if r['stable'] else 'no'} | {'not applicable' if r['bound'] is None else pct(r['bound'])} |")
+    rest = markdown(rows, title)
+    lines.append(rest[rest.index("\n## Spread of the posterior"):])
+    return "\n".join(lines) + "\n"
+
+
+def write_c6(out, rows, dry=False):
+    out = Path(out)
+    stem = "TABLES_C6" + ("_dry_run" if dry else "")
+    clean = [{k: v for k, v in r.items() if k != "temperature"} for r in rows]
+    (out / f"{stem}.json").write_text(json.dumps(clean, indent=1, default=float))
+    (out / f"{stem}.md").write_text(markdown_c6(rows, "Experiment C6: the credential path and blind-issued one-time certificates", dry))

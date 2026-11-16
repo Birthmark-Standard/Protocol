@@ -8,6 +8,7 @@ stopped and resumed. Results depend on the cell, the variant and the run id only
 from __future__ import annotations
 
 import hashlib
+import math
 import json
 import pickle
 import time
@@ -254,6 +255,105 @@ def work_c4_obs(out, R, variant, run_id):
 CEIL_SEED = 16_000_000
 
 
+# --------------------------------------------------------------------------- C6: the two candidates
+OTC_HOLD_S = 693.0                               # the lengthened-hold variant's device hold: the credential path's latency
+C6_CANDIDATES = {"cp": {}, "otc": dict(candidate=P.CANDIDATES[1]),
+                 "otcL": dict(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S)}
+C6_VARIANTS = tuple(f"{c}_{w}" for c in C6_CANDIDATES for w in C4_VARIANTS)
+OTC_MODEL_SEED0 = EX.MODEL_SEED0 + 400_000
+
+
+def c6_config(R, variant):
+    c, w = variant.split("_", 1)
+    cfg = c4_config(R, w).with_(**VALIDATORS, **C6_CANDIDATES[c])
+    return cfg
+
+
+def otc_models(out, lengthened):
+    from . import onetime as OT
+    key = ("otc", lengthened)
+    if key not in _C:
+        p = Path(out) / "models" / f"otc_{'lengthened' if lengthened else 'natural'}.pkl"
+        if p.exists():
+            _C[key] = pickle.loads(p.read_bytes())
+        else:
+            cfg = P.Config(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S if lengthened else 0.0, **VALIDATORS)
+            _C[key] = OT.build_models(cfg, seed0=OTC_MODEL_SEED0 + (10_000 if lengthened else 0))
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(pickle.dumps(_C[key]))
+    return _C[key]
+
+
+C6_ISSUER = {f"iwh_{mode}_L{int(L // 60)}": dict(withhold_mode=mode, withhold_len=float(L))
+             for mode in ("none", "withhold", "delay") for L in (600, 1800, 3600, 7200)}
+
+
+def work_c6_issuer(out, R, setting, run_id):
+    """C6 item 8: the target's issuer withholds or delays every other refill of its identities inside each window
+    (mode none: nothing withheld), then finds the record of each target capture whose refill fell in a window."""
+    from . import onetime as OT
+    target = 0 if R == 1 else int(np.random.default_rng([TARGET_SEED, int(R), run_id]).integers(0, cell_config(R).real_devices))
+    base = cell_config(R, window=C5_WINDOW, candidate=P.CANDIDATES[1], mark_actor="issuer_withhold", mark_target=target,
+                       **VALIDATORS, **C6_ISSUER[setting])
+    t = time.time()
+    run = OT.simulate(base, traffic(out, R, run_id))
+    t_sim = time.time() - t
+    t = time.time()
+    res = OT.issuer_find(run, otc_models(out, False).pdf["gT"], np.random.default_rng([CEIL_SEED + 2, int(R), run_id]),
+                         (base.warmup_s, base.warmup_s + base.measure_s))
+    s = run.subs
+    mine = (s["src"] == target) & ~s["decoy"]
+    rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=time.time() - t, target=target, marks=res,
+               target_transactions=int(res["sub"].size), target_key=int(s["issuer"][mine][0]) if mine.any() else -1,
+               waited=int((s["ready"] > s["t0"] + 1e-9).sum()))
+    return [(rec_name("c6_issuer", setting, R), rec)]
+
+
+def _latency(run, rec_sub):
+    s = run.subs
+    return float(np.mean(s["posted"][rec_sub] - s["t0"][rec_sub])) if rec_sub.size else float("nan")
+
+
+def work_c6(out, R, variant, run_id):
+    """C6: one candidate under one workload or chain setting: every vantage both candidates have, the second
+    candidate's issuers and coalitions, the observer's device scores for K records and chains, and the latency."""
+    from . import krecord as KR
+    from . import onetime as OT
+    cfg = c6_config(R, variant)
+    otc = OT.is_onetime(cfg)
+    t = time.time()
+    run = (OT.simulate if otc else S.simulate)(cfg, traffic(out, R, run_id))
+    t_sim = time.time() - t
+    t = time.time()
+    hk = _Hooks()
+    if otc:
+        m = otc_models(out, cfg.otc_hold_mean > 0)
+        pick = int(CO._pick(R, run_id, 4, 1, np.arange(P.N_NODES))[0])
+        tab = OT.compute(run, m, _rng(R, run_id), hooks=hk.dict(), pick=pick)
+    else:
+        m = models(out)
+        tab = AT.compute(run, m, _rng(R, run_id), vantages=("observer", "first_hop", "content_server"), hooks=hk.dict())
+        pc = CO.path_coalitions(run, extra(out), tab)
+        content = pc["path"] > 0
+        tab["first_relay_with_destination"] = {k: (v[content] if isinstance(v, np.ndarray) and v.shape[:1] == content.shape else v)
+                                               for k, v in pc.items()}
+    rec, tie = tab["_rec"], tab["_tie"]
+    s = run.subs
+    root = s["root"][rec["sub"]]
+    meta = dict(sub=rec["sub"].astype(np.int32), dev=rec["dev"], u=rec["u"], root=root,
+                root_dev=tie(s["src"][root].astype(np.int64) % P.MACHINE_OFFSET), gen=s["gen"][rec["sub"]])
+    r = dict(vec=KR.vectors(hk.col, rec["sub"].size), meta=meta,
+             ceiling=KR.ceiling(run, rec, np.random.default_rng([CEIL_SEED, int(R), run_id])),
+             latency=_latency(run, rec["sub"]), candidate=cfg.candidate, otc_hold_mean=cfg.otc_hold_mean)
+    if cfg.edit_share > 0:
+        par = s["parent"][rec["sub"]]
+        lb = np.where(par >= 0, s["posted"][np.maximum(par, 0)], -np.inf)
+        r["vec_lb"] = KR.lower_bound_pass(run, m, tab, lb)
+    if otc:
+        r["refills_in_window"] = int(((run.refills["t"] >= cfg.warmup_s) & (run.refills["t"] < cfg.warmup_s + cfg.measure_s)).sum())
+    return [(rec_name("c6", variant, R), _record(run_id, run, _public(tab), t_sim, time.time() - t, **r))]
+
+
 # --------------------------------------------------------------------------- C5: active attacks
 C5_WINDOW = 67 * 3600.0                        # about 200 of the target's transactions per run
 C5_DELTAS = (0, 60, 300, 600, 900, 1200, 1500, 1800, 2400, 3600)
@@ -367,6 +467,8 @@ JOBS = {
     "c5_drops": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" in k), files=("c5",)),
     "c5_withhold": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh_")), files=("c5",)),
     "c3_val": dict(fn=work_c3_val, cells=(1, 100), variants=("v3",), files=("c3_validators",)),
+    "c6": dict(fn=work_c6, cells=(1, 100), variants=C6_VARIANTS, files=("c6",)),
+    "c6_issuer": dict(fn=work_c6_issuer, cells=(1, 100), variants=tuple(C6_ISSUER), files=("c6_issuer",)),
     "c5_withhold3": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh3_")), files=("c5",)),
 }
 
@@ -397,7 +499,7 @@ def job_hash(job):
 
 
 # --------------------------------------------------------------------------- running and summarizing
-EXPERIMENT_OF = {"c3": "C3", "c4": "C4", "c5": "C5"}
+EXPERIMENT_OF = {"c3": "C3", "c4": "C4", "c5": "C5", "c6": "C6"}
 
 
 def git_commit(path=None):
@@ -432,7 +534,7 @@ def run(out, jobs, runs, workers="auto", label=None, dry=False):
     if dry:
         label = label if (label or "").startswith("dry") else "dry run" + (f": {label}" if label else "")
     info.setdefault("code_commit", git_commit())
-    info.setdefault("predictions_commit", {e: git_commit(ROOT / f"PREDICTIONS_{e}.md") for e in ("C3", "C4", "C5")})
+    info.setdefault("predictions_commit", {e: git_commit(ROOT / f"PREDICTIONS_{e}.md") for e in ("C3", "C4", "C5", "C6")})
     info.setdefault("c2_config_hash", c2_info()["config_hash"])
     info.setdefault("seeds", dict(traffic=(f"sha256 of '{EVAL_TAG}', the volume and the run id" if not dry else
                                            f"{DRY_SEED0} + 1000 R + run id (model seeds)"), models=EX.MODEL_SEED0, rates=RATE_SEED0,
@@ -468,6 +570,15 @@ def summarize(out, dry=False):
     from . import report345 as RP
     out = Path(out)
     names = sorted(p.name[:-len(".pkl.gz")] for p in (out / "raw").glob("*.pkl.gz"))
+    fs6 = [n for n in names if n.startswith("c6__")]
+    fsi = [n for n in names if n.startswith("c6_issuer__")]
+    if fs6 or fsi:
+        rows = RP.summarize_c6(out, fs6) if fs6 else []
+        for r in RP.summarize_c5(out, fsi):
+            r.update(candidate=RP.C6_LABEL["otc"], workload="W0", cell=r["file"].split("__")[2], latency=math.nan,
+                     family="issuer withholding or delaying refills")
+            rows.append(r)
+        RP.write_c6(out, rows, dry)
     for exp in ("c3", "c4", "c5"):
         fs = [n for n in names if n.startswith(exp + "_")]
         if not fs:
