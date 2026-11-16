@@ -12,45 +12,42 @@ packet across every leg the protocol puts on the wire:
                 validator (the credential packet) or one of the node's registry submissions (a content packet). The
                 origin of a submission is on the wire, because the origin floods it to every peer at once.
   validator     At the validator, each CV-1 is paired with a CV-2 reply.
-  quorum        Each reply reaching C is paired with the two submissions it leads to (F's and I's). From the reply,
-                C's legs to the three gatekeepers, the gatekeepers' postings and the boards' pushes, a node Z learns
-                of quorum at about the reply's arrival plus the second smallest, over the gatekeepers g, of the
-                latencies C to g and g to Z. The tracer measures every link's latency on the wire (the fastest
-                transit seen on it), and pairs the reply with each submission from Z by the density of the
-                submission's time after that estimate.
+  quorum        For each reply reaching C, when each node learns of quorum (known_estimate): the protocol followed
+                from the reply with every hold at its first possible release, through C's fan-out tick, the
+                gatekeepers' hold ticks and 30-second departure grids, and the boards' 10-second pushes. The joint
+                score pairs a reply with submissions by the time of each submission after that estimate.
 
 A departure that follows a hold leaves on the holding clock's 10-second grid, whose phase the tracer reads from
-that clock's own departures. Pairing an arrival with such a departure has the weight of the hold's geometric
-release at the tick it waited, with the hold's mean (60 s at a first relay, 300 s at a second, C's and the
-validator's holds before CV-1 and CV-2). A submission follows its content packet by the density of that delay on
-the model seeds. Under one release probability every complete pairing of a node's packets has the same
-likelihood, because the ticks waited sum to a total the times fix; the weights differ between positions, through
-the cap, and between a CV-1 and a submission.
+that clock's own departures; the gatekeepers' grids and the boards' push schedules have phases the tracer is given
+(a global observer reads them from the times departures and submissions leave). Pairing an arrival with such a
+departure has the weight of the hold's geometric release at the tick it waited. Under one release probability every
+complete pairing of a node's packets has the same likelihood, because the ticks waited sum to a total the times fix;
+the weights differ between positions, through the cap, and between a CV-1 and a submission.
 
 The tracer wants each packet's probability of leaving on each departure: the share, by weight, of the complete
 pairings that use it. That share is a ratio of permanents. A node's problem splits into independent pieces (the
 connected components of its possible pairings). For a piece with at most EXACT_ROWS arrivals the tracer counts
 every complete pairing exactly, by a forward and backward sum over the sets of arrivals used. A larger piece is
-approximated by matrix scaling (Sinkhorn): the weight matrix, with a "not here" column for arrivals that may not
-be paired at this step, is scaled until every departure is used once and every arrival once. brute_force
-enumerates the pairings of a small case, for checking both. At the relays, the probability that an arrival from a node stays is refined from its
-upstream: an arrival whose upstream departure carried a first-relay packet is at its second relay.
+approximated by matrix scaling (Sinkhorn). brute_force enumerates the pairings of a small case, for checking both.
+At the relays, the probability that an arrival from a node stays is refined from its upstream: an arrival whose
+upstream departure carried a first-relay packet is at its second relay.
 
-A device packet k then has a mixture of end points, each a submission whose flood has reached every node at time
-tau, with weight w: through C, the validator and quorum (the packet as a credential packet) or through its
-destination (as a content packet). A record comes from one transaction: one credential packet and two content packets from one source address,
-sent apart by the device's own holds. For packet k and record r let
-  E_c(r, k) = sum over k's credential end points m of w_km p_F(u_r - tau_m),   E_t(r, k) the same over content
-end points, with p_F the record time after a submission has reached every node (model seeds). The tracer scores a
-device by its triples of packets, any of the three being the credential packet:
-  score(r, d) = log sum over triples {a, b, c} of d's packets, and over the choice of c,
-                 p_o(s_a - s_c) p_o(s_b - s_c) E_c(r, c) E_t(r, a) E_t(r, b),
-with s the packets' send times and p_o the density of a content packet's send time after its credential packet's
-(model seeds). A device with fewer than three packets near the record is scored by
-log (sum_k E_c + e) + log (sum_k E_t + e) - 20, e = 10^-6, so it ranks below any device with a triple.
+A device packet k then has a mixture of end points with weights w: the replies it leads to as a credential packet
+and the submissions it leads to as a content packet (end_points). The tracer scores every device with at least
+three packets near the record by its triples of packets, any of the three as the credential packet (_joint):
+
+  score(r, d) = log sum over d's credential packets c, their replies rho, and pairs {a, b} of d's other packets of
+                P(a, b | c) w(c, rho) sum over submissions f_a of a and f_b of b at different nodes of
+                w(a, f_a) w(b, f_b) p_Q(f_a | rho) p_Q(f_b | rho) p_post(u_r - the later flood of f_a, f_b),
+
+with P(a, b | c) the content packets' send times after c's (density o), normalized over the pairs of d's packets,
+p_Q the submission after the reply's quorum estimate, and p_post the record time after the later submission has
+reached every node. The densities come from model seeds at the cell's load; under registry-level bundling p_Q is the
+probability of the bundle interval, and under the posting schedule p_post is flat over one period. A device with no
+such triple is scored by its content packets' end points alone and ranks below.
 
 Registry Node. A Registry Node reads each submission, so it knows the two submissions of each record. It scores
-packet k by the weight of its end points at exactly those submissions.
+devices by the same joint score with the two submissions fixed and no record-time term.
 """
 from __future__ import annotations
 
