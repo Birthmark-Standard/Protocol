@@ -156,3 +156,4 @@ The device-naming bound was first given as the record bound (9.64%, 4.87% and 2.
 
 The first-relay-with-destination rows were first predicted as a timing attack (20% to 60%, 12% to 40% and 6% to 30% with C; 60% to 85%, 45% to 75% and 30% to 65% with F or I). The reason for the change is the specification, not the dry run: its per-leg table and packet layouts carry the same CredP or ContP on every leg of a path, and its relay rule forwards what remains after the transit layer, so the first relay and the destination hold the same bytes. The pair's link is exact. For C the link to the record is still timing, now from the transaction's quorum on the match boards, which C reads as a Registry Node.
 
+Evaluation seeds were used in development. The coalition vantages were debugged on the traffic seeds of runs 1 to 4, and the path coalitions on run 2. The committed dry run used runs 0 and 1. No prediction in this file was changed because of those runs.

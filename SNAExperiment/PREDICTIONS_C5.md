@@ -240,3 +240,4 @@ Under delay, a delayed reply arrives late, and its transaction drops at the quor
 
 - Item 2 first said no actor beats the bound from the posting schedule. That holds for an actor that marks its target's own transactions, and it is now limited to those actors. An actor that withholds the other transactions changes how many records share a posting, so the bound does not apply to it. This is a modeling error in the first statement.
 - Item 11, validator withholding, and its parameters were added.
+- Evaluation seeds were used in development. Several C5 settings ran on the traffic seeds of runs 0 to 2 while the code was checked. No prediction in this file was changed because of those runs.
