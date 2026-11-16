@@ -260,14 +260,15 @@ These use C2's main configuration, its calibrated D, its windows, its traffic se
 | C4 | Link-level tracer and Registry Node | A global passive observer following every leg on the wire: relays, destinations, validator, and quorum by the protocol's schedules. Pieces of up to 10 arrivals are counted exactly, larger ones by matrix scaling. It scores every device by the joint likelihood of a transaction's three packets. The Registry Node adds the link from each record to its two submissions. Not in any job: in the main configuration it is still below the observer on model seeds. | `sna/tracer.py` |
 | C5 | Delay marks and drops | A first relay, the access network or the validator delays its target's packets, or drops one and the device resubmits. Record-finding accuracy: how often the actor picks the marked transaction's record. | `sna/active.py` |
 | C5 | Validator withholding | The validator answers its target and withholds or delays every other credential it serves over a window. | `sna/sim.py`, `sna/active.py` |
-| — | Several validators | Each identity registered with one of several validators; each validator alone, and C reading key_ref. No job uses it. | `sna/sim.py`, `sna/attacks.py` |
+| C3 | Several validators | Three validators, real devices and decoys each split 50/30/20; each validator alone on its own devices' records, and C reading key_ref. | `sna/sim.py`, `sna/attacks.py` |
+| C5 | Withholding under several validators | The target's own validator withholds or delays every other credential under its key. | `sna/sim.py` |
 
 Run a job from this directory:
 
 ```
-python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 --runs 100 --out results/C3
+python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 c3_val --runs 100 --out results/C3
 python -m sna.stronger c4_obs --runs 100 --out results/C4
-python -m sna.stronger c5_marks c5_drops c5_withhold --runs 100 --out results/C5
+python -m sna.stronger c5_marks c5_drops c5_withhold c5_withhold3 --runs 100 --out results/C5
 ```
 
 The jobs are:
@@ -282,6 +283,8 @@ The jobs are:
 | `c5_marks` | C5 delay marks, shorter quorum timeouts, the match board window | R = 1, 100 (67-hour window) |
 | `c5_drops` | C5 drops with resubmission | R = 1, 100 |
 | `c5_withhold` | C5 validator withholding | R = 1, 100 |
+| `c3_val` | C3 several validators | R = 1, 100 |
+| `c5_withhold3` | C5 withholding under several validators | R = 1, 100 |
 
 Each run of a job writes one record per output file in `raw/`, so a job is resumable as C2's is. `--workers` and `--label` work as for `python -m sna run`. After the runs, the job writes `TABLES_C3.md`, `TABLES_C4.md` or `TABLES_C5.md` (each with a `.json`), with three parts:
 
@@ -348,4 +351,3 @@ The simulation uses the 20-node pool and the transaction described above. It doe
 - a first-hop vantage that is told which destination a routing code leads to;
 - injection of packets to fill a relay. A device does not choose its second relay, and every hold is drawn per packet, so packets an attacker injects and knows do not change its posterior among the packets it does not know;
 - a validator that chooses verdicts;
-- several validators in any job (the option exists; its number of validators and split are not set).
