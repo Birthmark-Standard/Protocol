@@ -384,7 +384,7 @@ def run(out, jobs, runs, workers="auto", label=None):
     info.setdefault("predictions_commit", {e: git_commit(ROOT / f"PREDICTIONS_{e}.md") for e in ("C3", "C4", "C5")})
     info.setdefault("c2_config_hash", c2_info()["config_hash"])
     info.setdefault("seeds", dict(traffic="sha256 of the volume and run id, as C2", models=EX.MODEL_SEED0, rates=RATE_SEED0,
-                                  operators=DC.OPS_SEED))
+                                  operators=DC.OPS_SEED, coalitions=CO.COALITION_SEED))
     v = EX.versions()
     if "versions" not in info:
         info["versions"] = v
