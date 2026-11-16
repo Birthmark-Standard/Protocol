@@ -247,7 +247,7 @@ Accuracy rises with K in every row.
 
 ## 15. Random refill schedule
 
-Both variants (natural and lengthened hold) run with the random refill schedule as well as the threshold rule. Each identity's stock at the window starts from its long-run state: its refills and captures are simulated from two weeks and a day before the window. The issuer knows the schedule, so it gives refill times no weight.
+Both variants (natural and lengthened hold) run with the random refill schedule as well as the threshold rule. Each identity's stock at the window starts from its long-run state: every certificate issued in the two weeks before the window. The issuer knows the schedule, so it gives refill times no weight.
 
 **Prediction.**
 - Every vantage that does not use refills (observer, first relay, destination, destination told each address's issuer, first relay with the destination, K records, edit chains) equals the threshold variant decision by decision: the captures, paths and holds are the same, and no device runs dry.
@@ -287,3 +287,4 @@ Stated before any result, at equal latency (the lengthened-hold variant), since 
 - Logged assumptions, decided on the reasons given, before the run: both candidates keep the same capture rates (the same devices capture at the same times), not the same counts in flight; one developer's issuer serves all editing software and is not scored as a vantage; a device refused a refill asks again at each later capture, and a device with no certificate left gets its refill when the withholding window ends. Each follows the recommendation the specification's owner accepted.
 - Item 15, the random refill schedule, was added with its parameters, before its code.
 - The first C6 run is items 1 to 15. The batch sweep, the destination's drop and delay, and the issuer's 6, 12 and 24-hour windows are a second C6 run with its own predictions.
+- Item 15 first said the random schedule's stock starts from refills and captures simulated from two weeks and a day before the window. With 25% more issued than used, the queue of certificates, used oldest first, grows by 0.75 an hour and reaches its long-run size only after about 70 days, so that start-up was not the long-run state. The long-run state holds every certificate issued in the last two weeks, and the stock now starts there. This is a modeling error in the start-up; the prediction (about 1,260) is unchanged.
