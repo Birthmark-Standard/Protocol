@@ -418,3 +418,23 @@ def test_evaluation_seeds_are_fresh_and_dry_runs_use_model_seeds(tmp_path):
     other = tmp_path / "full"
     other.mkdir()
     assert ST.traffic(other, 100, 3) == ST.eval_seed(100, 3)
+
+
+# --------------------------------------------------------------------------- several validators: withholding
+def test_withholding_under_several_validators_is_the_targets_validator():
+    cfg = _cfg(R=100, hours=2.0, mark_actor="validator_withhold", mark_target=0, withhold_mode="withhold",
+               withhold_len=1800.0, **ST.VALIDATORS)
+    run = S.simulate(cfg, 31)
+    s = run.subs
+    tv = s["val"][(s["src"] == 0) & ~s["decoy"]][0]
+    held = s["withheld"]
+    assert held.any() and np.all(s["val"][held] == tv)           # only its own identities' credentials are withheld
+    assert not held[(s["src"] == 0) & ~s["decoy"]].any()           # never the target's own
+
+
+def test_several_validators_job_tables(tmp_path):
+    run = S.simulate(_cfg(R=100, hours=1.0, **ST.VALIDATORS), 32)
+    tab = AT.compute(run, ST.models(tmp_path), np.random.default_rng(1), vantages=("observer", "validator", "cred_processor"))
+    assert {"validator_0", "validator_1", "validator_2", "cred_processor_keyed"} <= set(tab)
+    for k in range(3):
+        assert not tab[f"validator_{k}"]["dev_v_correct"][tab[f"validator_{k}"]["own"] == 0].any()

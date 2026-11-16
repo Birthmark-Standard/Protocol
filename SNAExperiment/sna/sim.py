@@ -321,7 +321,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
     if mk["d_v"] is not None:                    # a validator mark: the reply leaves late
         cv2_s = cv2_s + mk["d_v"]
     if cfg.mark_actor == "validator_withhold":
-        cv2_s = _withhold(w, mk, cv2_s, src, src0, n_src, decoy)
+        cv2_s = _withhold(w, mk, cv2_s, src, src0, n_src, decoy, vi)
     cv2_a = cv2_s + lat_cv + _jit(r, S)
     ev_cv2 = w.ev.add(cv2_s, cv2_a, vnode, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
 
@@ -419,14 +419,19 @@ def _validator_of(w, src, src0, n_src, decoy):
     return np.where(own, w.vkey[src0][np.clip(k, 0, w.vkey[src0].size - 1)], 0)
 
 
-def _withhold(w, mk, cv2_s, src, src0, n_src, decoy):
+def _withhold(w, mk, cv2_s, src, src0, n_src, decoy, vi):
     """Validator withholding: inside each window the validator replies to its target and withholds, or delays to the
-    window's end, its reply to every other credential it serves (a share of identities, drawn once per run). A
-    withheld transaction fails. The target's replies inside a window are the marked transactions."""
+    window's end, its reply to every other credential it serves. A withheld transaction fails. The target's replies
+    inside a window are the marked transactions. With one validator it serves a share of identities, drawn once per
+    run (withhold_share); with several, the withholding validator is the target's own and serves exactly the
+    identities registered with it."""
     cfg = w.cfg
-    if src0 not in w.served:
-        w.served[src0] = w.rng_mark.random(max(n_src, 1)) < cfg.withhold_share
-    served = w.served[src0][np.clip(src - src0, 0, max(n_src, 1) - 1)]
+    if cfg.n_validators > 1:
+        served = vi == w.vkey[0][cfg.mark_target]
+    else:
+        if src0 not in w.served:
+            w.served[src0] = w.rng_mark.random(max(n_src, 1)) < cfg.withhold_share
+        served = w.served[src0][np.clip(src - src0, 0, max(n_src, 1) - 1)]
     period = cfg.withhold_len + P.WITHHOLD_GAP_S
     x = cv2_s - cfg.warmup_s
     inwin = (x >= 0) & (np.mod(x, period) < cfg.withhold_len)

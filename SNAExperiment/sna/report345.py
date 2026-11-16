@@ -186,26 +186,37 @@ def summarize_c5(out, files, seed=12345):
             continue
         _, setting, cell = name.split("__")
         R = float(cell[1:])
-        mk = [r["marks"] for r in recs]
-        if "dev_lse" not in mk[0]:
+        if "dev_lse" not in recs[0]["marks"]:
             continue
-        t = {k: np.concatenate([m_[k] for m_ in mk]) for k in ("sub", "dev_v_correct", "dev_v_rand", "dev_top1", "dev_s_true",
-                                                             "dev_lse", "dev_ent", "dev_rank")}
-        t["run"] = np.concatenate([np.full(m_["sub"].size, r["run"], np.int32) for m_, r in zip(mk, recs)])
-        if t["sub"].size == 0:
-            continue
-        conf, temps = AN.calibrated_confidence(t)
-        bound = None if setting.startswith("vwh_") else record_bound(R, 100.0)
-        row = _rate_row(name, setting, t["run"], t["dev_v_correct"], t["dev_v_rand"], rng, bound=bound,
-                        target_transactions=float(np.mean([r["target_transactions"] for r in recs])))
-        ti = np.array([int(np.argmin(np.abs(AN.T_GRID - temps[f]))) for f in (0, 1)])[t["run"] % 2]
-        r_ = np.arange(t["sub"].size)
-        H = t["dev_ent"][r_, ti].astype(float) / math.log(2)
-        Hmin = t["dev_lse"][r_, ti].astype(float) / math.log(2)
-        dev = np.array([r["target"] for r in recs])[np.searchsorted([r["run"] for r in recs], t["run"])] + t["run"].astype(np.int64) * 10 ** 6
-        rows.append(_spread_rows(row, t["run"], t["dev_v_correct"], dev, t["dev_rank"], H, Hmin, conf,
-                                 np.isfinite(t["dev_s_true"])))
+        groups = [(setting, recs)]
+        if setting.startswith("vwh3_"):                # by the share of the target's own validator
+            groups = [(f"{setting}, target's validator {lab}", [r for r in recs if r.get("target_key", -1) in ks])
+                      for lab, ks in (("50%", (0,)), ("30% or 20%", (1, 2)))]
+        for label, grp in groups:
+            if grp:
+                rows += _c5_rows(name, label, grp, R, setting, rng)
     return rows
+
+
+def _c5_rows(name, label, recs, R, setting, rng):
+    """One C5 row from a group of runs."""
+    mk = [r["marks"] for r in recs]
+    t = {k: np.concatenate([m_[k] for m_ in mk]) for k in ("sub", "dev_v_correct", "dev_v_rand", "dev_top1", "dev_s_true",
+                                                         "dev_lse", "dev_ent", "dev_rank")}
+    t["run"] = np.concatenate([np.full(m_["sub"].size, r["run"], np.int32) for m_, r in zip(mk, recs)])
+    if t["sub"].size == 0:
+        return []
+    conf, temps = AN.calibrated_confidence(t)
+    bound = None if setting.startswith("vwh") else record_bound(R, 100.0)
+    row = _rate_row(name, label, t["run"], t["dev_v_correct"], t["dev_v_rand"], rng, bound=bound,
+                    target_transactions=float(np.mean([r["target_transactions"] for r in recs])))
+    ti = np.array([int(np.argmin(np.abs(AN.T_GRID - temps[f]))) for f in (0, 1)])[t["run"] % 2]
+    r_ = np.arange(t["sub"].size)
+    H = t["dev_ent"][r_, ti].astype(float) / math.log(2)
+    Hmin = t["dev_lse"][r_, ti].astype(float) / math.log(2)
+    runs = [r["run"] for r in recs]
+    dev = np.array([r["target"] for r in recs])[np.searchsorted(runs, t["run"])] + t["run"].astype(np.int64) * 10 ** 6
+    return [_spread_rows(row, t["run"], t["dev_v_correct"], dev, t["dev_rank"], H, Hmin, conf, np.isfinite(t["dev_s_true"]))]
 
 
 def pct(x):

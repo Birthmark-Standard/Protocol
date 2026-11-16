@@ -182,6 +182,20 @@ def work_c3_conc(out, R, variant, run_id):
     return [(rec_name("c3_concentration", variant, R), _record(run_id, run, _public(tab), t_sim, time.time() - t, rate_model=rm))]
 
 
+VALIDATORS = dict(n_validators=3, real_val_split=(0.5, 0.3, 0.2), decoy_val_split=(0.5, 0.3, 0.2))
+
+
+def work_c3_val(out, R, variant, run_id):
+    """Item 9: three validators; the observer, the validators (all, and each alone), and C with and without key_ref."""
+    cfg = cell_config(R, **VALIDATORS)
+    t = time.time()
+    run = S.simulate(cfg, traffic(out, R, run_id))
+    t_sim = time.time() - t
+    t = time.time()
+    tab = AT.compute(run, models(out), _rng(R, run_id), vantages=("observer", "validator", "cred_processor"))
+    return [(rec_name("c3_validators", variant, R), _record(run_id, run, tab, t_sim, time.time() - t))]
+
+
 def work_c3_vol(out, R, variant, run_id):
     """Item 4: decoy volume; every vantage."""
     v = float(variant[1:])
@@ -267,6 +281,10 @@ def c5_settings():
         for mres in C5_RESUB:
             out[f"{actor}_drop_m{mres}"] = dict(mark_actor=actor, mark_mode="drop", resub_mean_s=float(mres))
     for mode in ("withhold", "delay"):
+        for L in C5_WITHHOLD_LEN:
+            out[f"vwh3_{mode}_L{int(L // 60)}"] = dict(mark_actor="validator_withhold", withhold_mode=mode,
+                                                       withhold_len=float(L), **VALIDATORS)
+    for mode in ("withhold", "delay"):
         for share in C5_WITHHOLD_SHARE:
             for L in C5_WITHHOLD_LEN:
                 out[f"vwh_{mode}_s{int(share * 100)}_L{int(L // 60)}"] = dict(
@@ -286,7 +304,7 @@ def c5_model(out, setting):
     """The attacker's model of the marked system: record time minus anchor, every real device marked, on the
     model seeds (R = 100, a 6-hour window). Withholding leaves the target's own transactions unchanged, so the
     withholding validator uses the unmarked validator's model."""
-    if setting.startswith("vwh_"):
+    if setting.startswith("vwh"):
         setting = "validator_d0_t1800"
     key = ("c5", setting)
     if key in _C:
@@ -332,6 +350,7 @@ def work_c5(out, R, setting, run_id):
     rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=time.time() - t, target=target, marks=res,
                withheld=int(held.sum()), withheld_dropped=int((held & ~np.isfinite(s["posted"])).sum()),
                target_transactions=int(mine.sum()), fixed_node_share=float(fixed.mean()) if fixed.size else float("nan"),
+               target_key=int(s["val"][(s["src"] == target) & ~s["decoy"]][0]) if ((s["src"] == target) & ~s["decoy"]).any() else -1,
                model_samples=n_model)
     return [(rec_name("c5", setting, R), rec)]
 
@@ -343,10 +362,12 @@ JOBS = {
     "c3_conc": dict(fn=work_c3_conc, cells=(1, 100), variants=("f5", "f25"), files=("c3_concentration",)),
     "c3_vol": dict(fn=work_c3_vol, cells=(1, 100), variants=("v50", "v10", "v0"), files=("c3_volume",)),
     "c4_obs": dict(fn=work_c4_obs, cells=(1, 100), variants=tuple(C4_VARIANTS), files=("c4_obs",)),
-    "c5_marks": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" not in k and not k.startswith("vwh_")),
+    "c5_marks": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" not in k and not k.startswith("vwh")),
                      files=("c5",)),
     "c5_drops": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" in k), files=("c5",)),
     "c5_withhold": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh_")), files=("c5",)),
+    "c3_val": dict(fn=work_c3_val, cells=(1, 100), variants=("v3",), files=("c3_validators",)),
+    "c5_withhold3": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh3_")), files=("c5",)),
 }
 
 
@@ -427,7 +448,7 @@ def run(out, jobs, runs, workers="auto", label=None, dry=False):
     models(out)
     if any(j.startswith("c3_kc") for j in jobs):
         extra(out)
-    c5 = sorted({("validator_d0_t1800" if v.startswith("vwh_") else v) for j in jobs if j.startswith("c5") for v in JOBS[j]["variants"]})
+    c5 = sorted({("validator_d0_t1800" if v.startswith("vwh") else v) for j in jobs if j.startswith("c5") for v in JOBS[j]["variants"]})
     if c5:
         RN.execute([(str(out), v) for v in c5 if not (out / "models" / f"c5_{v}.pkl").exists()], _build_c5_model, out,
                    workers, label="c5 models")
@@ -490,6 +511,12 @@ def _c3_summary():
     classes = {"validator_with_node": ("role", roles), "first_relay_with_destination": ("path", paths)}
     classes.update({f"{r}_relays_{k}": ("held", held) for r in ("first", "second") for k in CO_.RELAY_SIZES})
     classes.update({f"nodes_{k}": ("cls", ncls) for k in CO_.NODE_COUNTS})
+    shares = VALIDATORS["real_val_split"]
+    classes.update({f"validator_{k}": ("own", {None: f"share {100 * shares[k]:g}%, all records",
+                                              1: f"share {100 * shares[k]:g}%, its own devices", 0: "other keys' devices"})
+                    for k in range(VALIDATORS["n_validators"])})
+    took = {None: "all records", 1: "C's own transactions"}
+    classes.update({"cred_processor": ("took_part", took), "cred_processor_keyed": ("took_part", took)})
     return dict(classes=classes, decoys_of=decoys_of,
                 bound_na={"content_server", "content_server_mid", "validator_with_node [F or I]",
                           "first_relay_with_destination [F content path, D with F]",
