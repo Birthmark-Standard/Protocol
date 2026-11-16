@@ -265,11 +265,95 @@ Both variants (natural and lengthened hold) run with the random refill schedule 
 
 **Can fail.** Yes.
 
-## Not yet predicted (second C6 run)
+## Second C6 run
 
-- The batch sweep (1, 5, 20, 100).
-- The destination dropping or delaying packets.
-- The issuer's withholding attack with windows of 6, 12 and 24 hours.
+Items 16 to 19 are a second C6 run with their own jobs (`c6_batch`, `c6_dest`, and the long windows of `c6_issuer`). Cells R = 1 and 100.
+
+### Parameters of the second run
+
+| Parameter | Value | Reason |
+|---|---|---|
+| Batch sweep | Batches of 1, 5, 20 and 100; a refill when the stock falls to a quarter of the batch, rounded down (0, 1, 5, 25) | As decided |
+| Batch sweep scope | Natural variant, threshold rule, W0 | Logged assumption: under the random schedule neither the stock (about two weeks of issuance) nor the issuer's chance-level result depends on the batch (item 15) |
+| Resubmission | A device that sees no record of its ContentHash resubmits with a new certificate after waiting just past its candidate's longest natural delay, then an exponential delay with mean 30 minutes, 1 hour, 2 hours or 6 hours, as C5 | As decided. Waits: 2,400 s for the credential path (C5's), 1,400 s for blind-issued one-time certificates natural (longest natural delay 180 + 900 + 120 + 120 s plus links), 3,500 s with the lengthened hold (its 2,079-s hold cap added) |
+| Dropping or delaying destination | One node per run, drawn from the cell and the run id, drops (or delays by Δ = 600 or 1,800 s before submitting) every packet it is the destination of: in the credential path every content packet it receives as F or I, so the transaction fails and the device resubmits it; in the other candidate every packet it receives | Logged assumption: a destination cannot single out a device, so it acts on everything it receives. The C5 windows (67 hours) |
+| Issuer windows | 6, 12 and 24 hours, withhold, delay, and nothing withheld | As decided |
+
+## 16. Batch sweep: the issuer and the revocation delay
+
+**Prediction.** The issuer alone on its own devices' records, natural variant, W0:
+
+| Batch | R = 1, shares 50% / 30% / 20% | R = 100, shares 50% / 30% / 20% |
+|---|---|---|
+| 1 | 1.8–10.2% / 2.9–14.9% / 4.3–20.3% | 0.9–5.2% / 1.5–8.0% / 2.2–11.2% |
+| 5 | 2.7–9.0% / 4.4–13.4% / 6.2–16.7% | 1.3–4.9% / 2.2–7.7% / 3.3–10.8% |
+| 20 | as item 5 | as item 5 |
+| 100 | 0.7–2.1% / 0.7–2.3% / 0.7–2.3% | 0.65–1.8% / 0.7–2.0% / 0.7–2.2% |
+
+Stock just before a capture, and the revocation delay (the stock at the device's normal rate of 3 an hour; for a device that keeps them, two weeks):
+
+| Batch | Stock | At normal use | Kept |
+|---|---|---|---|
+| 1 | 1.0 | 0.33 h | two weeks |
+| 5 | 4.0 | 1.33 h | two weeks |
+| 20 | 15.5 | 5.2 h | two weeks |
+| 100 | 75.5 | 25.2 h | two weeks |
+
+Each stock within 5%.
+
+**Basis.**
+- One capture in b triggers a refill, which tells the issuer that capture's time. Smaller batches tell it more captures, but the more of its identities refill near any moment, the less each refill singles one out. Two methods bracket each cell: item 5's count of competing refills, and, for the triggered records, the Gaussian score model with the observer's single-packet d among the identities that refill nearby. The ranges are 0.6 times the lower and 1.5 times the upper.
+- The stock just before a capture is uniform over k + 1 to k + b, with k the threshold: its mean is k + (b + 1) / 2.
+
+**Fails if** a cell lies outside its range or a stock differs by more than 5%.
+
+**Can fail.** Yes.
+
+## 17. A destination that drops packets
+
+**Prediction.** The dropping node names the device of a dropped transaction, once its resubmission posts, from two looks: the dropped packet's arrival and the resubmission's record time.
+
+| Candidate | R = 1 | R = 100 |
+|---|---|---|
+| Credential path | 8.7% (6.1% to 11.3%) | 4.4% (3.1% to 5.7%) |
+| Blind-issued one-time certificates, natural | 6.7% to 16.4% | 3.4% to 8.5% |
+| Lengthened hold | 2.0% to 4.4% | 1.0% to 2.2% |
+
+In every candidate this is above the destination alone on its normal records (item 3), and it does not change with the resubmission's mean delay beyond its interval. The dropping node causes a resubmission of 2 / 17 of transactions in the credential path (11.8%) and 1 / 20 in the other (5%).
+
+**Basis.** The node knows the dropped packet's ContentHash, so it recognizes the resubmission's record. The two looks are independent timing evidence of one device: in the Gaussian score model their advantages add in quadrature, d = √(d_destination² + d_observer²), with each candidate's d from items 1 and 3.
+
+**Fails if** a row lies outside its range, or a row is not above the destination alone.
+
+**Can fail.** The two looks are not fully independent when the device's packets cluster in time.
+
+## 18. A destination that delays its submissions
+
+**Prediction.** At Δ = 600 and 1,800 s, in both candidates, the delaying node's own accuracy on its records equals the destination's (item 3) within its interval: the delay changes nothing it knows. The passive observer on those records falls below its rate on the others.
+
+**Basis.** The node knows its packet's arrival and, by the ContentHash, its record; it also knows its own Δ. Every other party sees a record later than its packets imply.
+
+**Fails if** the node's accuracy leaves item 3's interval, or the observer's rate on the delayed records is not below its rate on the others.
+
+**Can fail.** Yes.
+
+## 19. The issuer's long withholding windows
+
+**Prediction.** Record-finding from the target's refills (natural variant):
+
+| Window | Nothing withheld, R = 1 | Withhold or delay, R = 1, target's issuer 50% | 30% or 20% | Nothing withheld, R = 100 | Withhold or delay, R = 100, 50% | 30% or 20% |
+|---|---|---|---|---|---|---|
+| 6 h | 1.0% to 4.0% | 1.0% to 4.7% | 1.0% to 4.4% | 0.5% to 2.5% | 0.5% to 3.0% | 0.5% to 2.8% |
+| 12 h | 1.0% to 4.0% | 1.0% to 5.7% | 1.0% to 4.9% | 0.5% to 2.5% | 0.5% to 3.6% | 0.5% to 3.0% |
+| 24 h | 1.0% to 4.0% | 1.0% to 6.7% | 1.0% to 5.3% | 0.5% to 2.5% | 0.5% to 4.2% | 0.5% to 3.0% |
+
+Under withhold, the share of the issuer's other identities' captures that wait for a certificate inside a window is 20% to 40% at 6 hours, 45% to 70% at 12 hours and 65% to 90% at 24 hours.
+
+**Basis.** A device's stock (6 to 25) lasts 2 to 8 hours at 3 captures an hour, so over a window of L hours the issuer's other identities are dry for a share f of it: about 0.3, 0.6 and 0.8 at 6, 12 and 24 hours. Their records then leave the postings, which thins the competitors of a target record by the issuer's share s times f: record-finding rises by 1 / (1 − s f) over nothing withheld. Item 8 gives the baseline.
+
+**Fails if** a row lies outside its range, or the waiting share lies outside its range.
+
+**Can fail.** Yes.
 
 ## What would favor each candidate
 
@@ -288,3 +372,4 @@ Stated before any result, at equal latency (the lengthened-hold variant), since 
 - Item 15, the random refill schedule, was added with its parameters, before its code.
 - The first C6 run is items 1 to 15. The batch sweep, the destination's drop and delay, and the issuer's 6, 12 and 24-hour windows are a second C6 run with its own predictions.
 - Item 15 first said the random schedule's stock starts from refills and captures simulated from two weeks and a day before the window. With 25% more issued than used, the queue of certificates, used oldest first, grows by 0.75 an hour and reaches its long-run size only after about 70 days, so that start-up was not the long-run state. The long-run state holds every certificate issued in the last two weeks, and the stock now starts there. This is a modeling error in the start-up; the prediction (about 1,260) is unchanged.
+- Items 16 to 19, the second C6 run, were added with their parameters and logged assumptions (batch sweep scope; a dropping or delaying destination acts on every packet it receives; the resubmission waits per candidate), before their code.
