@@ -218,7 +218,22 @@ def _empty(n, want_lse):
              n_feas=np.zeros(n, np.int32), n_true=np.zeros(n, np.int32))
     if want_lse:
         o["lse"] = np.full((n, T_GRID.size), np.nan)
+        o["ent"] = np.full((n, T_GRID.size), np.nan)
+        o["rank"] = np.full(n, -1, np.int32)
     return o
+
+
+def _entropy(W, T):
+    """Shannon entropy (nats) of the posterior softmax(W / T) per row; -inf scores have zero weight."""
+    x = W / T
+    mx = np.max(x, 1, keepdims=True)
+    mx = np.where(np.isfinite(mx), mx, 0.0)
+    e = np.where(np.isfinite(x), np.exp(x - mx), 0.0)
+    z = e.sum(1, keepdims=True)
+    p = e / np.where(z > 0, z, 1.0)
+    with np.errstate(invalid="ignore"):
+        return np.where(z[:, 0] > 0, np.log(np.where(z[:, 0] > 0, z[:, 0], 1.0)) - np.where(p > 0, p * (x - mx), 0.0).sum(1),
+                        np.nan)
 
 
 def _stats(W, lab, is_t, o, rows, want_lse):
@@ -243,6 +258,9 @@ def _stats(W, lab, is_t, o, rows, want_lse):
         top = np.where(np.isfinite(top1), top1, 0.0)
         for i, T in enumerate(T_GRID):
             o["lse"][rows, i] = _lse(W / T) - top / T
+            o["ent"][rows, i] = _entropy(W, T)
+        # the true device's rank: devices scored above it (0 = first); a true device not feasible ranks last
+        o["rank"][rows] = np.where(np.isfinite(st), (W > st[:, None]).sum(1), fin.sum(1))
 
 
 def _groups(lab):
@@ -546,6 +564,9 @@ def _table(o, rec, ri, grp, base, **extra):
     t["dev_s_true"] = o["dev"]["s_true"].astype(np.float32)
     if "lse" in o["dev"]:
         t["dev_lse"] = np.where(np.isfinite(o["dev"]["lse"]), o["dev"]["lse"], np.nan).astype(np.float16)
+        t["dev_ent"] = o["dev"]["ent"].astype(np.float16)
+        t["dev_rank"] = o["dev"]["rank"].astype(np.int32)
+        t["dev"] = np.asarray(rec["dev"])[ri].astype(np.int64)
     t["dev_s_correct"] = o["shuf"]["correct"].astype(np.int8)
     t["dev_s_rand"] = _random_rate(o["shuf"], "dev").astype(np.float32)
     for k, x in extra.items():

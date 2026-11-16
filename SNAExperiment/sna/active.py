@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from . import attacks as AT
 from . import lottery as LT
 from . import sim as S
 
@@ -79,6 +80,10 @@ def score(run, pdf, rng, window):
     correct = np.zeros(m.size, np.int8)
     found = ((target >= 0) & np.isfinite(s["posted"][np.maximum(target, 0)])).astype(np.int8)
     nfeas = np.zeros(m.size, np.int32)
+    nT = AT.T_GRID.size
+    top1, s_true = np.full(m.size, -np.inf), np.full(m.size, -np.inf)
+    lse, ent = np.full((m.size, nT), np.nan), np.full((m.size, nT), np.nan)
+    rank = np.full(m.size, -1, np.int32)
     for i in range(m.size):
         if not np.isfinite(a[i]):
             continue
@@ -93,5 +98,18 @@ def score(run, pdf, rng, window):
         best = np.nonzero(sc == sc[ok].max())[0]
         pick = rs[b0:b1][best[rng.integers(0, best.size)]]
         correct[i] = int(target[i] >= 0 and pick == target[i])
+        # the posterior over the candidate records, for the spread metrics (the decision above is unchanged)
+        top1[i] = sc[ok].max()
+        is_t = (rs[b0:b1] == target[i]) & ok
+        if is_t.any():
+            s_true[i] = sc[is_t].max()
+        rank[i] = int((sc[ok] > s_true[i]).sum()) if is_t.any() else nfeas[i]
+        for k, T in enumerate(AT.T_GRID):
+            x = sc[ok] / T
+            lse[i, k] = np.log(np.exp(x - x.max()).sum()) + x.max() - top1[i] / T
+            ent[i, k] = AT._entropy(sc[ok][None, :], T)[0]
+    rand = np.where(np.isfinite(s_true) & (nfeas > 0), 1.0 / np.maximum(nfeas, 1), 0.0)
     return dict(sub=m.astype(np.int32), correct=correct, has_record=found, n_feas=nfeas,
-                path=s["mark_path"][m].astype(np.int8))
+                path=s["mark_path"][m].astype(np.int8), dev_v_correct=correct, dev_v_rand=rand.astype(np.float32),
+                dev_n_feas=nfeas, dev_top1=top1.astype(np.float32), dev_s_true=s_true.astype(np.float32),
+                dev_lse=lse.astype(np.float16), dev_ent=ent.astype(np.float16), dev_rank=rank)

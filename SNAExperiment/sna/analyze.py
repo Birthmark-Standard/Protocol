@@ -196,10 +196,8 @@ def metrics(records, v, spec, rng, t=None, name=None):
     for q in (50, 90, 99):
         out[f"conf_p{q}"] = float(np.percentile(conf, q))
     out["conf_max"] = float(conf.max())
-    order = np.argsort(conf, kind="stable")
-    bins = np.array_split(order, 10)
-    out["reliability"] = [dict(conf=float(conf[b].mean()), hit=float(c[b].mean()), n=int(b.size)) for b in bins if b.size]
-    out["calibration_error"] = float(sum(abs(x["conf"] - x["hit"]) * x["n"] for x in out["reliability"]) / conf.size)
+    out["reliability"], out["calibration_error"] = reliability(conf, c)
+    spread(t, out, temps)
     perm = c.copy()
     for rid in np.unique(t["run"]):
         m = np.nonzero(t["run"] == rid)[0]
@@ -209,6 +207,64 @@ def metrics(records, v, spec, rng, t=None, name=None):
     if "claim" in t:
         _claims(t, rng, out)
     out["_per_run"] = dict(dev=(num, den), sub=(nums, dens))
+    return out
+
+
+def reliability(conf, correct):
+    """Reliability table (confidence deciles: mean confidence, hit rate, decisions) and its summary, the
+    decision-weighted mean gap between confidence and hit rate."""
+    order = np.argsort(conf, kind="stable")
+    rows = [dict(conf=float(conf[b].mean()), hit=float(correct[b].mean()), n=int(b.size)) for b in np.array_split(order, 10) if b.size]
+    return rows, float(sum(abs(x["conf"] - x["hit"]) * x["n"] for x in rows) / max(conf.size, 1))
+
+
+MIN_DEVICE_RECORDS = 10       # a device enters the per-device spread with at least this many records
+TOP_K = (1, 5, 10)
+
+
+def miscalibrated(err, accuracy, conf_mean):
+    """A vantage is badly miscalibrated when its calibration error exceeds both 2 points and a quarter of the larger
+    of its accuracy and its mean confidence."""
+    return bool(err > max(0.02, 0.25 * max(accuracy, conf_mean)))
+
+
+def spread(t, out, temps):
+    """How spread the vantage's posterior is, at its calibrated temperature (each run parity at the temperature
+    fitted on the other): Shannon entropy and min-entropy in bits, the effective anonymity-set size 2^H, top-k
+    accuracy, the naming rate over true devices (devices with MIN_DEVICE_RECORDS records or more: median, 90th
+    percentile, and the worst-off device, the one named most often), and the miscalibration flag. Rows without
+    the posterior terms (tables written before they existed) get none of these."""
+    out["miscalibrated"] = miscalibrated(out["calibration_error"], out.get("dev_accuracy", 0.0), out.get("conf_mean", 0.0))
+    if "dev_ent" not in t or "dev_rank" not in t:
+        return out
+    ln2 = math.log(2.0)
+    ti = np.array([int(np.argmin(np.abs(T_GRID - temps[f]))) for f in (0, 1)])[t["run"] % 2]
+    r = np.arange(t["sub"].shape[0])
+    H = t["dev_ent"][r, ti].astype(float) / ln2
+    Hmin = t["dev_lse"][r, ti].astype(float) / ln2
+    ok = np.isfinite(H)
+    out["entropy_bits"] = float(np.mean(H[ok])) if ok.any() else math.nan
+    out["entropy_bits_p50"] = float(np.median(H[ok])) if ok.any() else math.nan
+    out["anonymity_set"] = float(np.mean(2.0 ** H[ok])) if ok.any() else math.nan
+    out["anonymity_set_p50"] = float(np.median(2.0 ** H[ok])) if ok.any() else math.nan
+    okm = np.isfinite(Hmin)
+    out["min_entropy_bits"] = float(np.mean(Hmin[okm])) if okm.any() else math.nan
+    feas = np.isfinite(t["dev_s_true"])
+    for k in TOP_K:
+        out[f"top{k}"] = float(np.mean(feas & (t["dev_rank"] < k)))
+    if "dev" in t:
+        d = t["dev"].astype(np.int64)
+        u, inv, cnt = np.unique(d, return_inverse=True, return_counts=True)
+        rate = np.bincount(inv, weights=t["dev_v_correct"].astype(float)) / cnt
+        big = cnt >= MIN_DEVICE_RECORDS
+        out["devices"] = int(big.sum())
+        if big.any():
+            rb, cb = rate[big], cnt[big]
+            w = int(np.argmax(rb))
+            out["device_rate_p50"], out["device_rate_p90"] = float(np.median(rb)), float(np.percentile(rb, 90))
+            out["device_rate_max"], out["device_worst_records"] = float(rb[w]), int(cb[w])
+            wd = np.nonzero(big)[0][w]
+            out["device_worst_entropy_bits"] = float(np.nanmean(H[inv == wd]))
     return out
 
 

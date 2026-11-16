@@ -84,12 +84,14 @@ def _posterior(lab, sc, T):
     return x - (np.log(np.exp(x - mx).sum()) + mx)
 
 
-def decide(recs, T, dev):
+def decide(recs, T, dev, full=False):
     """One decision on a group of records [(labels, scores)] known to share a device: the summed calibrated log
-    posteriors, floored at 10^-6 per record. Returns (correct, devices feasible in every record, truth among them)."""
+    posteriors, floored at 10^-6 per record. Returns (correct, devices feasible in every record, truth among them);
+    with full, also the true device's rank under the summed score and the entropy and min-entropy (bits) of the
+    group's posterior, the softmax of the sum."""
     recs = [(lab, sc) for lab, sc in recs if lab.size]
     if not recs:
-        return False, 0, False
+        return (False, 0, False, -1, np.nan, np.nan) if full else (False, 0, False)
     U = np.unique(np.concatenate([lab for lab, _ in recs]))
     M = np.full((len(recs), U.size), FLOOR)
     present = np.zeros((len(recs), U.size), bool)
@@ -100,7 +102,14 @@ def decide(recs, T, dev):
     tot = M.sum(0)
     pick = U[int(np.argmax(tot))]
     allp = present.all(0)
-    return bool(pick == dev), int(allp.sum()), bool(allp[U == dev].any()) if (U == dev).any() else False
+    res = (bool(pick == dev), int(allp.sum()), bool(allp[U == dev].any()) if (U == dev).any() else False)
+    if not full:
+        return res
+    t = U == dev
+    rank = int((tot > tot[t].max()).sum()) if t.any() else U.size
+    H = AT._entropy(tot[None, :], 1.0)[0] / np.log(2.0)
+    Hmin = (np.log(np.exp(tot - tot.max()).sum())) / np.log(2.0)
+    return res + (rank, float(H), float(Hmin))
 
 
 def temperatures(recs):
@@ -122,10 +131,12 @@ def k_groups(recs_meta, K, key="dev"):
     return out
 
 
-def k_record(recs, Ks, vec="vec"):
-    """Accuracy of the K-record attacker per K over a cell's runs: per run, (correct, decisions, chance sum)."""
+def k_record(recs, Ks, vec="vec", full=False):
+    """Accuracy of the K-record attacker per K over a cell's runs: per run, (correct, decisions, chance sum). With
+    full, also per K the decisions' rows: run, correct, device, rank, entropy and min-entropy (bits)."""
     temps = temperatures(recs)
     res = {K: [] for K in Ks}
+    rows_ = {K: [] for K in Ks}
     for r in recs:
         T = temps[r["run"] % 2]
         labs, scs = r[vec]
@@ -133,12 +144,13 @@ def k_record(recs, Ks, vec="vec"):
         for K in Ks:
             c = n = ch = 0
             for rows, d in k_groups(meta, K):
-                ok, nall, tin = decide([(labs[i], scs[i]) for i in rows], T, d)
+                ok, nall, tin, rank, H, Hmin = decide([(labs[i], scs[i]) for i in rows], T, d, full=True)
                 c += ok
                 n += 1
                 ch += (1.0 / nall) if (tin and nall) else 0.0
+                rows_[K].append((r["run"], int(ok), int(d), rank, H, Hmin, (1.0 / nall) if (tin and nall) else 0.0))
             res[K].append((c, n, ch))
-    return res
+    return (res, rows_) if full else res
 
 
 def chains(recs, vec="vec_lb"):
