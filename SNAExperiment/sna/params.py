@@ -119,6 +119,8 @@ class Config:
     otc_batch: int = 20                # certificates per refill
     otc_refill_at: int = 5             # threshold rule: a refill when the stock falls to this many
     cert_expiry_s: float = 14 * 86400.0  # an unused certificate expires this long after issuance
+    otc_refill_rule: str = "threshold" # "threshold" (at otc_refill_at) or "random" (a Poisson schedule independent of captures)
+    otc_random_factor: float = 1.25    # random schedule: refills at this factor x the identity's long-run rate / otc_batch
 
     @property
     def max_delay_s(self) -> float:
@@ -179,4 +181,4 @@ class Config:
 NEW_FIELDS = ("decoy_factor", "workload", "edit_share", "edit_same_source", "quorum_timeout_s", "board_window_s", "grid_off",
               "mark_actor", "mark_mode", "mark_delta", "mark_target", "resub_mean_s", "withhold_share", "withhold_len",
               "withhold_mode", "n_validators", "real_val_split", "decoy_val_split", "candidate", "otc_hold_mean",
-              "otc_batch", "otc_refill_at", "cert_expiry_s")
+              "otc_batch", "otc_refill_at", "cert_expiry_s", "otc_refill_rule", "otc_random_factor")

@@ -39,6 +39,7 @@ from . import sim as S
 PK1, PK2, PK3, REG_PK = 20, 21, 22, 23          # the packet's three legs and its registry submission (truth only)
 S.LEG_NAMES.update({PK1: "Pkt-1", PK2: "Pkt-2", PK3: "Pkt-3", REG_PK: "Reg"})
 NAME = P.CANDIDATES[1]
+LAST_LAM = {}                                   # the last run's long-run rate of each identity (for checks)
 
 
 def is_onetime(cfg) -> bool:
@@ -53,12 +54,33 @@ def _captures(w, r, rate, n_src, src0, decoy):
         n = int(r.poisson(rate * H)) if rate > 0 else 0
         t0 = np.sort(r.uniform(0, H, n))
         src = src0 + r.integers(0, max(n_src, 1), n)
+        lam = np.full(max(n_src, 1), rate / max(n_src, 1))
     else:
+        lam = _long_run_rates(w, rate, n_src, decoy, kind)
         t0, src = S._workload(w, rate, n_src, decoy, kind)
         src = src0 + src
     lat_src = r.uniform(*P.LAT_EXT_MS, size=(max(n_src, 1), P.N_NODES)) / 1000
     w.lat_tab[src0] = lat_src
+    w.lam = getattr(w, "lam", {})
+    w.lam.update({src0 + i: float(x) for i, x in enumerate(lam)})
     return t0, src, lat_src[src - src0]
+
+
+def _long_run_rates(w, rate, n_src, decoy, kind):
+    """Each identity's long-run capture rate under W1 or W2: the rate factors and sessions sim._workload draws, read
+    from a copy of its stream, so the run itself is unchanged."""
+    import copy
+    rg, n = copy.deepcopy(w.rng_work), max(n_src, 1)
+    if rate <= 0:
+        return np.zeros(n)
+    m = np.exp(rg.normal(-P.W_SIGMA ** 2 / 2, P.W_SIGMA, n))
+    m = np.ones(n) if n == 1 else m / m.mean()
+    sess = np.zeros(n, bool)
+    if kind == "W2":
+        sess = np.ones(n, bool) if (n == 1 and not decoy) else rg.random(n) < P.SESSION_SHARE
+    boost = 1.0 + (P.SESSION_MULT - 1) * np.mean(P.SESSION_MIN) * 60 * P.SESSION_PER_S
+    base = rate * m / np.sum(m * np.where(sess, boost, 1.0))
+    return base * np.where(sess, boost, 1.0)
 
 
 def _route(r, n):
@@ -79,10 +101,13 @@ class Stock:
     the window's end (delay) every other refill of its identities. A refused device asks again at each later
     capture; a device with no certificate left gets its refill when the window ends."""
 
-    def __init__(self, cfg, rng, issuer_of=None):
+    def __init__(self, cfg, rng, issuer_of=None, lam=None):
         self.cfg, self.rng = cfg, rng
         self.held = {}
         self.refills = []
+        self.lam = lam or {}
+        self.sched = {}                                           # random schedule: identity -> (refill times, next index)
+        self.stock_seen = []                                      # the stock before each capture inside the window
         self.pending = {}                                         # identity -> the time its held refill is served
         self.issuer_of = issuer_of or {}
         self.attack = cfg.mark_actor == "issuer_withhold"
@@ -108,9 +133,46 @@ class Stock:
         return self._window_end(t)
 
     def _start(self, ident, t):
-        b, k = self.cfg.otc_batch, self.cfg.otc_refill_at
-        n = int(self.rng.integers(k + 1, k + b + 1))          # long-run state: uniform over the stocks before a capture
-        self.held[ident] = list(np.full(n, t - 1.0))
+        cfg = self.cfg
+        b, k = cfg.otc_batch, cfg.otc_refill_at
+        if cfg.otc_refill_rule != "random":
+            n = int(self.rng.integers(k + 1, k + b + 1))      # long-run state: uniform over the stocks before a capture
+            self.held[ident] = list(np.full(n, t - 1.0))
+            return
+        # random schedule, long-run state: with more issued than used, the queue of certificates (used oldest
+        # first) grows until its oldest reach the expiry age, after which every certificate issued in the last two
+        # weeks is still held. So the stock starts as the refills of the two weeks before the window.
+        lam = self.lam.get(ident, 0.0)
+        t_lo, H = -cfg.cert_expiry_s, cfg.horizon_s
+        rho = cfg.otc_random_factor * lam / b
+        rt = np.sort(self.rng.uniform(t_lo, H, int(self.rng.poisson(rho * (H - t_lo)))))
+        j = int(np.searchsorted(rt, 0.0))
+        h = [x for x in rt[:j] for _ in range(b)]
+        self.held[ident] = h
+        self.sched[ident] = [rt, j]
+        self.refills.extend((ident, float(x), b) for x in rt[(rt >= 0.0)])     # the issuer sees every request
+
+    def _scheduled(self, ident, t):
+        """Random schedule: every refill due by t arrives; with none held, the capture waits for the next one."""
+        rt, j = self.sched[ident]
+        h = self.held[ident]
+        while j < rt.size and rt[j] <= t:
+            h.extend([rt[j]] * self.cfg.otc_batch)
+            j += 1
+        ready = t
+        while not (h and h[-1] > t - self.cfg.cert_expiry_s) and j < rt.size:    # held in order of issuance
+            ready = rt[j]
+            h.extend([rt[j]] * self.cfg.otc_batch)
+            j += 1
+        self.sched[ident][1] = j
+        return ready
+
+    def finish(self, idents):
+        """Random schedule: start the identities that made no capture in the run, so their requests are seen too."""
+        if self.cfg.otc_refill_rule == "random":
+            for i in idents:
+                if i not in self.held:
+                    self._start(i, 0.0)
 
     def take(self, ident, t):
         """A capture at t: the time a certificate is available (t, or the next refill), after which the stock is
@@ -119,8 +181,19 @@ class Stock:
         if ident not in self.held:
             self._start(ident, t)
         h = self.held[ident]
+        if cfg.otc_refill_rule == "random":
+            ready = self._scheduled(ident, t)
+            while h and h[0] <= ready - cfg.cert_expiry_s:
+                h.pop(0)
+            if cfg.warmup_s <= t < cfg.warmup_s + cfg.measure_s:
+                self.stock_seen.append(len(h))
+            if h:
+                h.pop(0)
+            return ready
         while h and h[0] <= t - cfg.cert_expiry_s:             # expired certificates
             h.pop(0)
+        if cfg.warmup_s <= t < cfg.warmup_s + cfg.measure_s:
+            self.stock_seen.append(len(h))
         ready = t
         tp = self.pending.get(ident)
         if tp is not None and (tp <= t or not h):               # a held refill arrives
@@ -227,7 +300,7 @@ def simulate(cfg: P.Config, seed: int) -> S.Run:
     issuer_of = {int(a): int(b) for src0, srcs in ((0, sr), (100_000, sd)) for a, b in zip(srcs, issuer[src0])}
     if cfg.mark_target >= 0 and cfg.mark_target not in issuer_of and cfg.n_validators > 1:
         issuer_of[cfg.mark_target] = int(w.vkey[0][cfg.mark_target])
-    stock = Stock(cfg, np.random.default_rng([int(seed), 7]), issuer_of)   # the stocks' long-run start
+    stock = Stock(cfg, np.random.default_rng([int(seed), 7]), issuer_of, getattr(w, "lam", {}))   # the stocks' long-run start
     real = _transactions(w, w.rng_real, tr, sr, lr, 0, False, stock, ident=sr)
     dec = _transactions(w, w.rng_decoy, td, sd, ld, tr.size, True, stock, ident=sd)
     subs = _cat(real, dec)
@@ -262,7 +335,12 @@ def simulate(cfg: P.Config, seed: int) -> S.Run:
     run = S.Run(cfg=cfg, events=events, subs=subs, phase=w.phase, gk_phase=w.gk_phase, gk_set=np.zeros(0, np.int64),
                 bundle_phase=w.bundle_phase, push_phase=w.push_phase, reg_phase=w.reg_phase, post_phase=w.post_phase,
                 horizon=cfg.horizon_s)
+    stock.finish(list(getattr(w, "lam", {})))
+    LAST_LAM.clear()
+    LAST_LAM.update(getattr(w, "lam", {}))
+    run.stock_seen = np.array(stock.stock_seen, np.int32)
     rf = np.array(stock.refills, float).reshape(-1, 3)
+    rf = rf[np.argsort(rf[:, 1], kind="stable")] if rf.size else rf
     ident = rf[:, 0].astype(np.int64)
     key = {int(s_): int(k) for s_, k in zip(subs["src"], subs["issuer"]) if k >= 0}
     run.refills = dict(src=ident, t=rf[:, 1], n=rf[:, 2].astype(np.int32),
@@ -326,12 +404,18 @@ def _issuer_terms(run, rec, cand, k, dens, at):
     out = []
     t_by = {int(i): np.sort(rf["t"][mine & (rf["src"] == i)]) for i in ids}
     lam = {i: max(t.size, 1) * cfg.otc_batch / H for i, t in t_by.items()}   # the long-run rate, from its refills
+    if cfg.otc_refill_rule == "random":
+        lam = {i: v / cfg.otc_random_factor for i, v in lam.items()}
     lo, hi = dens.support
     for x in at:
         labs, lr = [], []
         for i, t in t_by.items():
             j0, j1 = np.searchsorted(t, x - hi), np.searchsorted(t, x - lo, "right")
             hit = np.exp(dens(x - t[j0:j1])).sum() * TRIGGER if j1 > j0 else 0.0
+            if cfg.otc_refill_rule == "random":                # refills say nothing about captures
+                labs.append(i)
+                lr.append((np.log(lam[i]), np.log(lam[i])))
+                continue
             labs.append(i)
             lr.append((np.log(lam[i] * (1 - 1 / cfg.otc_batch) + hit), np.log(lam[i])))
         a = np.array(lr).reshape(-1, 2)

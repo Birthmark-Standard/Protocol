@@ -485,3 +485,37 @@ def test_onetime_threshold_refills():
     # a refill fires at the time of a capture of the same identity
     for i, t in zip(rf["src"][:50], rf["t"][:50]):
         assert np.any((s["src"] == i) & (np.abs(s["t0"] - t) < 1e-9))
+
+
+def test_random_refills_leave_every_other_vantage_unchanged():
+    from sna import onetime as OT
+    cfg = _otc(R=100, hours=2.0)
+    a = OT.simulate(cfg, 57)
+    b = OT.simulate(cfg.with_(otc_refill_rule="random"), 57)
+    for k in ("t0", "src", "ready", "posted", "A", "B", "D"):
+        assert np.array_equal(a.subs[k], b.subs[k], equal_nan=True), k
+    rf = b.run_refills if hasattr(b, "run_refills") else b.refills
+    caps = set(np.round(b.subs["t0"], 9))
+    assert np.mean([round(t, 9) in caps for t in rf["t"]]) < 0.01     # refills are not at captures
+    assert 1100 < b.stock_seen.mean() < 1400                          # about 1.25 x 3 per hour x 336 hours
+    assert 6 <= a.stock_seen.min() and a.stock_seen.max() <= 25         # the threshold rule: 6 to 25 before a capture
+    m = OT.build_models(cfg, seed0=EX.MODEL_SEED0 + 400_000, min_samples=20_000)
+    out = OT.compute(b, m, np.random.default_rng(0))
+    for k in range(3):                                                # the issuer adds nothing to the observer
+        assert np.array_equal(out[f"issuer_{k}_with_observer"]["dev_v_correct"], out["observer"]["dev_v_correct"])
+
+
+def test_long_run_rates_follow_the_workload():
+    from sna import onetime as OT
+    run = OT.simulate(_otc(R=100, hours=48.0, workload="W1"), 58)
+    s = run.subs
+    lam = []
+    for i in np.unique(s["src"][~s["decoy"]])[:40]:
+        lam.append(((s["src"] == i).sum() / run.cfg.horizon_s, run_lam(run, i)))
+    a = np.array(lam)
+    assert np.corrcoef(a[:, 0], a[:, 1])[0, 1] > 0.8
+
+
+def run_lam(run, i):
+    from sna import onetime as OT
+    return OT.LAST_LAM.get(int(i), np.nan)

@@ -258,7 +258,9 @@ CEIL_SEED = 16_000_000
 # --------------------------------------------------------------------------- C6: the two candidates
 OTC_HOLD_S = 693.0                               # the lengthened-hold variant's device hold: the credential path's latency
 C6_CANDIDATES = {"cp": {}, "otc": dict(candidate=P.CANDIDATES[1]),
-                 "otcL": dict(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S)}
+                 "otcL": dict(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S),
+                 "otcR": dict(candidate=P.CANDIDATES[1], otc_refill_rule="random"),
+                 "otcLR": dict(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S, otc_refill_rule="random")}
 C6_VARIANTS = tuple(f"{c}_{w}" for c in C6_CANDIDATES for w in C4_VARIANTS)
 OTC_MODEL_SEED0 = EX.MODEL_SEED0 + 400_000
 
@@ -351,6 +353,9 @@ def work_c6(out, R, variant, run_id):
         r["vec_lb"] = KR.lower_bound_pass(run, m, tab, lb)
     if otc:
         r["refills_in_window"] = int(((run.refills["t"] >= cfg.warmup_s) & (run.refills["t"] < cfg.warmup_s + cfg.measure_s)).sum())
+        r["stock_mean"] = float(run.stock_seen.mean()) if run.stock_seen.size else float("nan")
+        r["device_rate"] = cfg.real_rate / (1.0 + cfg.edits_per_capture) / max(cfg.real_devices, 1)
+        r["refill_rule"] = cfg.otc_refill_rule
     return [(rec_name("c6", variant, R), _record(run_id, run, _public(tab), t_sim, time.time() - t, **r))]
 
 
@@ -578,7 +583,7 @@ def summarize(out, dry=False):
             r.update(candidate=RP.C6_LABEL["otc"], workload="W0", cell=r["file"].split("__")[2], latency=math.nan,
                      family="issuer withholding or delaying refills")
             rows.append(r)
-        RP.write_c6(out, rows, dry)
+        RP.write_c6(out, rows, dry, files=fs6)
     for exp in ("c3", "c4", "c5"):
         fs = [n for n in names if n.startswith(exp + "_")]
         if not fs:

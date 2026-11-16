@@ -287,7 +287,9 @@ def write(out, rows, stem, title, dry=False):
 C6_FAMILY = {"observer": "passive observer", "first_hop": "first relay", "content_server": "destination",
              "destination": "destination", "first_relay_with_destination": "first relay with the destination on its path"}
 C6_LABEL = {"cp": "credential path", "otc": "blind-issued one-time certificates, natural",
-            "otcL": "blind-issued one-time certificates, lengthened hold"}
+            "otcL": "blind-issued one-time certificates, lengthened hold",
+            "otcR": "blind-issued one-time certificates, natural, random refills",
+            "otcLR": "blind-issued one-time certificates, lengthened hold, random refills"}
 
 
 def summarize_c6(out, files, seed=12345):
@@ -350,7 +352,7 @@ def summarize_c6(out, files, seed=12345):
 def markdown_c6(rows, title, dry=False):
     """One table per vantage family, both candidates in adjacent rows for each cell and workload, the latency beside
     each row; then the spread, calibration and reliability sections of markdown()."""
-    order = {"cp": 0, "otc": 1, "otcL": 2}
+    order = {"cp": 0, "otc": 1, "otcL": 2, "otcR": 3, "otcLR": 4}
     lines = []
     if dry:
         lines.append("DRY RUN: fewer runs than the full count. These numbers are not results.\n")
@@ -381,9 +383,34 @@ def markdown_c6(rows, title, dry=False):
     return "\n".join(lines) + "\n"
 
 
-def write_c6(out, rows, dry=False):
+def stock_rows(out, files):
+    """Per second-candidate file: refills in the window per run, the mean stock just before a capture, and the
+    revocation delay: the stock at the device's rate of use (capped at the expiry), and the expiry itself."""
+    rows = []
+    for name in files:
+        recs = RN.load(out, name)
+        if not recs or "stock_mean" not in recs[0]:
+            continue
+        st = float(np.nanmean([r["stock_mean"] for r in recs]))
+        rate = float(np.mean([r["device_rate"] for r in recs]))
+        rows.append(dict(file=name, runs=len(recs), refills=float(np.mean([r["refills_in_window"] for r in recs])), stock=st,
+                         use_h=min(st / rate, 14 * 86400.0) / 3600 if rate > 0 else math.nan, worst_h=14 * 24.0))
+    return rows
+
+
+def write_c6(out, rows, dry=False, files=()):
     out = Path(out)
     stem = "TABLES_C6" + ("_dry_run" if dry else "")
     clean = [{k: v for k, v in r.items() if k != "temperature"} for r in rows]
-    (out / f"{stem}.json").write_text(json.dumps(clean, indent=1, default=float))
-    (out / f"{stem}.md").write_text(markdown_c6(rows, "Experiment C6: the credential path and blind-issued one-time certificates", dry))
+    st = stock_rows(out, files)
+    (out / f"{stem}.json").write_text(json.dumps(dict(rows=clean, stock=st), indent=1, default=float))
+    md = markdown_c6(rows, "Experiment C6: the credential path and blind-issued one-time certificates", dry)
+    if st:
+        md += "\n## Certificates: refills, stock and revocation delay\n\n"
+        md += ("Stock: the mean number held just before a capture in the window. Revocation delay: how long certificates "
+               "already issued to a revoked device stay usable, at the device's normal rate of use (capped at the two-week "
+               "expiry), and for a device that keeps them.\n\n")
+        md += "| File | Runs | Refills per run in the window | Stock | Revocation delay at normal use | Worst case |\n|---|---|---|---|---|---|\n"
+        for r in st:
+            md += f"| {r['file']} | {r['runs']} | {r['refills']:.1f} | {r['stock']:.1f} | {r['use_h']:.1f} h | {r['worst_h']:.0f} h |\n"
+    (out / f"{stem}.md").write_text(md)
