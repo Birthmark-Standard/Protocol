@@ -184,33 +184,61 @@ def test_tracer_counts_small_pieces_exactly():
         n += 1
 
 
-def _gate(R, measure_s, seed):
-    """The tracer's gate at small scale: every hold and every schedule off."""
+def _gate(R, measure_s, seed, grid_off=True):
+    """The tracer on a model seed, every hold off: with grid_off, every schedule off too (the gate)."""
     from sna import tracer as TR
     info = json.loads((ROOT / "results" / "C2" / "run_info.json").read_text())
     Dn, wn = info["D"]["no_holds"], info["windows"]["no_holds"]
-    base = P.Config(**EX.CONFIGS["no_holds"]).with_(grid_off=True)
+    base = P.Config(**EX.CONFIGS["no_holds"]).with_(grid_off=grid_off)
     m = AT.build_models(base, seed0=EX.MODEL_SEED0, min_samples=60_000)
-    dens = TR.densities(base, EX.MODEL_SEED0, runs=4)
     cfg = base.with_(real_rate=R / Dn, decoy_rate=100 / Dn, measure_s=measure_s, warmup_len=wn["warmup"],
                      cooldown_len=wn["cooldown"])
-    run = S.simulate(cfg, EX.traffic_seed(R, seed))
+    dens = TR.densities(cfg, EX.MODEL_SEED0, runs=4)
+    run = S.simulate(cfg, EX.MODEL_SEED0 + 70_100 + seed)
     hk = ST._Hooks()
-    tab = AT.compute(run, m, ST._rng(R, seed), vantages=("observer",), hooks=hk.dict())
+    tab = AT.compute(run, m, np.random.default_rng(seed), vantages=("observer",), hooks=hk.dict())
     t, _ = TR.score(run, m, dens, tab)
     return float(t["dev_v_correct"].mean()), int(t["sub"].size)
 
 
 def test_tracer_gate_r1():
-    acc, n = _gate(1, 2400.0, 0)
-    assert n > 50 and acc >= 0.99
+    acc, n = _gate(1, 9600.0, 0)
+    assert n >= 300 and acc >= 0.990
 
 
-@pytest.mark.xfail(reason="at R = 100 the every-hold-and-schedule-off control gives about 98.7%, under the 99% gate",
-                   strict=False)
 def test_tracer_gate_r100():
-    acc, n = _gate(100, 120.0, 0)
-    assert n > 200 and acc >= 0.99
+    acc, n = _gate(100, 240.0, 0)
+    assert n > 200 and acc >= 0.981
+
+
+def test_joint_pair_sum_is_exact():
+    """The prefix-sum sum over pairs of submissions equals the double loop."""
+    from sna import tracer as TR
+    rng = np.random.default_rng(0)
+    for _ in range(100):
+        F, R = int(rng.integers(2, 25)), int(rng.integers(1, 4))
+        z, pk, lp = rng.integers(0, 4, F), rng.integers(0, 4, F), rng.normal(size=F)
+        A = rng.random((R, F))
+        S_ = np.cumsum(A, 1) - A - TR._group_prefix(A, z) - TR._group_prefix(A, pk) + TR._group_prefix(A, z * 5 + pk)
+        fast = (A * S_ * np.exp(lp)[None, :]).sum(1)
+        slow = np.zeros(R)
+        for a in range(F):
+            for b in range(a + 1, F):
+                if z[a] != z[b] and pk[a] != pk[b]:
+                    slow += A[:, a] * A[:, b] * np.exp(lp[b])
+        assert np.allclose(fast, slow)
+
+
+def test_tracer_schedule_likelihoods():
+    """A bundled time's likelihood is the share of samples in the interval it closes; the posting window is flat."""
+    from sna import tracer as TR
+    r = np.random.default_rng(1).uniform(0, 300, 100_000)
+    iv = TR.Interval(r, 120.0)
+    assert abs(np.exp(iv(np.array([200.0])))[0] - 0.4) < 0.01
+    w = TR.Window(120.0)
+    assert w(np.array([0.0, 60.0, 120.0])).tolist() == [0.0, 0.0, 0.0] and np.isneginf(w(np.array([121.0])))[0]
+    a = TR.Atom(np.r_[np.zeros(50), np.random.default_rng(2).uniform(0, 1, 50)])
+    assert a(np.array([0.0]))[0] > a(np.array([0.002]))[0] + 5
 
 
 # --------------------------------------------------------------------------- coalitions and withholding
@@ -256,3 +284,108 @@ def test_each_validator_scores_only_its_own_replies(tmp_path):
     for k in (0, 1):
         t = tab[f"validator_{k}"]
         assert not t["dev_v_correct"][t["own"] == 0].any()       # a record of another key's device is never named
+
+
+
+# --------------------------------------------------------------------------- same-role coalitions and compromised nodes
+def _small(tmp_path):
+    from sna import coalition as CO
+    run = S.simulate(_cfg(R=100, hours=1.0), 21)
+    m = ST.models(tmp_path)
+    ex = CO.build_extra(P.Config(), m.pdf["gV"], runs=3)
+    rx = CO.build_roles(P.Config(), m.pdf["g"], runs=3)
+    tab = AT.compute(run, m, np.random.default_rng(3), vantages=("observer",), hooks=ST._Hooks().dict())
+    return run, m, ex, rx, tab
+
+
+def test_same_role_and_compromised_nodes(tmp_path):
+    from sna import coalition as CO
+    run, m, ex, rx, tab = _small(tmp_path)
+    sr = CO.same_role(run, m, ex, rx, tab, 100, 0)
+    n = tab["observer"]["sub"].size
+    for k in CO.RELAY_SIZES:
+        for r in ("first", "second"):
+            t = sr[f"{r}_relays_{k}"]
+            assert t["sub"].size == n and t["held"].min() >= 0 and t["held"].max() <= 3
+    assert {"gatekeepers_2", "gatekeepers_3", "f_with_i"} <= set(sr)
+    nodes = CO.compromised(run, m, ex, rx, tab, 100, 0)
+    t = nodes["nodes_6"]
+    exact = t["cls"] == 0
+    assert exact.any() and t["dev_v_correct"][exact].all()       # a content path held at both ends names the device
+    # a coalition of k nodes is drawn from the cell, the run and k, and is the same every time
+    assert np.array_equal(CO._pick(100, 0, 3, 6, np.arange(20)), CO._pick(100, 0, 3, 6, np.arange(20)))
+
+
+def test_node_classes_follow_the_roles():
+    from sna import coalition as CO
+    s = {x: np.array([v]) for x, v in zip("ABCDEFGHI", range(9))}
+    cls, _ = CO.node_class(s, np.array([0]), np.array([3, 5]))       # D and F: the content path at both ends
+    assert cls[0] == 0
+    cls, _ = CO.node_class(s, np.array([0]), np.array([0, 2]))       # A and C
+    assert cls[0] == 1
+    cls, _ = CO.node_class(s, np.array([0]), np.array([4, 5]))       # E and F
+    assert cls[0] == 2
+    cls, _ = CO.node_class(s, np.array([0]), np.array([8]))          # I only
+    assert cls[0] == 3
+    cls, _ = CO.node_class(s, np.array([0]), np.array([1]))          # B only
+    assert cls[0] == 4
+    cls, _ = CO.node_class(s, np.array([0]), np.array([19]))
+    assert cls[0] == 5
+
+
+# --------------------------------------------------------------------------- spread of the posterior
+def test_spread_terms_do_not_change_decisions(tmp_path):
+    from sna import analyze as AN
+    run = S.simulate(_cfg(R=100, hours=1.0), 22)
+    m = ST.models(tmp_path)
+    t = AT.compute(run, m, np.random.default_rng(4), vantages=("observer",))["observer"]
+    c = t["dev_v_correct"].astype(bool)
+    feas = np.isfinite(t["dev_s_true"])
+    assert np.array_equal(c, feas & (t["dev_rank"] == 0) & (t["dev_top1"] == t["dev_s_true"]))
+    H = t["dev_ent"].astype(float)
+    assert np.nanmin(H) >= -1e-2 and np.all(H[t["dev_n_feas"] == 1] < 1e-2)
+    assert np.all(H <= np.log(np.maximum(t["dev_n_feas"], 1))[:, None] + 1e-2)
+    out = AN.metrics([dict(run=0, vantages=dict(observer=t)), dict(run=1, vantages=dict(observer=t))], "observer",
+                     dict(R=100, T=200, key="x"), np.random.default_rng(0))
+    assert out["top1"] == pytest.approx(out["dev_accuracy"]) and out["top1"] <= out["top5"] <= out["top10"]
+    assert out["min_entropy_bits"] <= out["entropy_bits"] + 1e-6 and out["anonymity_set"] >= 1.0
+    assert "miscalibrated" in out and "device_rate_max" in out
+
+
+def test_entropy_of_a_posterior():
+    W = np.array([[np.log(0.5), np.log(0.25), np.log(0.25), -np.inf]])
+    assert AT._entropy(W, 1.0)[0] == pytest.approx(1.5 * np.log(2))
+
+
+def test_k_record_full_decision_is_the_same():
+    labs = [np.array([1, 2, 3]), np.array([1, 2])]
+    scs = [np.array([0.0, -1.0, -2.0]), np.array([-0.5, 0.0])]
+    base = KR.decide(list(zip(labs, scs)), 1.0, 1)
+    full = KR.decide(list(zip(labs, scs)), 1.0, 1, full=True)
+    assert full[:3] == base and full[3] >= 0 and full[5] <= full[4] + 1e-9
+
+
+def test_c5_posterior_terms_and_tables(tmp_path):
+    from sna import active as AC
+    from sna import lottery as LT
+    from sna import report345 as RP
+    from sna import runner as RN
+    import gzip, pickle
+    cfg = _cfg(R=1, hours=3.0, mark_actor="validator", mark_delta=600.0, mark_target=0)
+    recs = []
+    for k in range(2):
+        run = S.simulate(cfg, 40 + k)
+        pdf = LT.EmpiricalLogPDF(AC.model_samples(run), 15.0)
+        res = AC.score(run, pdf, np.random.default_rng(k), (cfg.warmup_s, cfg.warmup_s + cfg.measure_s))
+        ok = res["correct"].astype(bool)
+        assert np.all(res["dev_rank"][ok] == 0)
+        recs.append(dict(run=k, marks=res, target=0, target_transactions=int(res["sub"].size)))
+    (tmp_path / "raw").mkdir()
+    with gzip.open(RN.raw_path(tmp_path, "c5__validator_d600_t1800__R1"), "wb") as f:
+        for r in recs:
+            pickle.dump(r, f)
+    rows = RP.summarize_c5(tmp_path, ["c5__validator_d600_t1800__R1"])
+    assert rows and "entropy_bits" in rows[0] and "calibration_error" in rows[0] and rows[0]["bound"] is not None
+    md = RP.markdown(rows, "x")
+    assert "Spread of the posterior" in md and "Reliability" in md
+

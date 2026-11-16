@@ -65,6 +65,12 @@ def extra(out):
     return _C["extra"]
 
 
+def roles(out):
+    if "roles" not in _C:
+        _C["roles"] = CO.load_roles(Path(out) / "models" / "roles_main.pkl", P.Config(**EX.CONFIGS[EX.MAIN]), models(out).pdf["g"])
+    return _C["roles"]
+
+
 def rate_model(cfg, key):
     if ("rate", key) not in _C:
         _C[("rate", key)] = DC.rate_model(cfg, [RATE_SEED0 + k for k in range(3)])
@@ -120,10 +126,13 @@ def work_c3_kc(out, R, variant, run_id):
     tab = AT.compute(run, m, _rng(R, run_id), hooks=hk.dict())
     vx = CO.validator_with_node(run, m, ex, tab, hk.nodelr)
     pc = CO.path_coalitions(run, ex, tab)
+    rx = roles(out)
+    same = CO.same_role(run, m, ex, rx, tab, R, run_id)            # item 7
+    nodes = CO.compromised(run, m, ex, rx, tab, R, run_id)          # item 8
     t1 = time.time() - t
     res.append((rec_name("c3_knowledge", "none", R), _record(run_id, run, _public(tab), t_sim, t1)))
-    res.append((rec_name("c3_coalition", "all", R), _record(run_id, run, {"validator_with_node": vx, "first_relay_with_destination": pc},
-                                                            t_sim, 0.0)))
+    res.append((rec_name("c3_coalition", "all", R), _record(run_id, run, {"validator_with_node": vx, "first_relay_with_destination": pc,
+                                                                          **same, **nodes}, t_sim, 0.0)))
     op_a, op_b = DC.operators(run, R, run_id)
     decoy_ids = np.r_[op_a, op_b]
     for v, kw in (("one", dict(drop_dev=op_a, drop_dev_validator=op_a)), ("both", dict(drop_dev=decoy_ids, drop_dev_validator=decoy_ids)),
@@ -409,9 +418,14 @@ def summarize(out, dry=False):
     names = sorted(p.name[:-len(".pkl.gz")] for p in (out / "raw").glob("*.pkl.gz"))
     for exp in ("c3", "c4", "c5"):
         fs = [n for n in names if n.startswith(exp + "_")]
-        if not fs or exp not in SUMMARY:
+        if not fs:
             continue
-        rows = RP.summarize(out, fs, **SUMMARY[exp]())
+        if exp == "c3":
+            rows = RP.summarize(out, fs, **_c3_summary())
+        elif exp == "c4":
+            rows = RP.summarize_c4(out, fs)
+        else:
+            rows = RP.summarize_c5(out, fs)
         RP.write(out, rows, f"TABLES_{exp.upper()}", f"Experiment {exp.upper()}", dry)
 
 
@@ -440,14 +454,17 @@ def _c3_summary():
 
     def decoys_of(job, variant):
         return float(variant[1:]) if job == "c3_volume" else 100.0
-    return dict(classes={"validator_with_node": ("role", roles), "first_relay_with_destination": ("path", paths)},
-                decoys_of=decoys_of,
+    held = {None: "all records", 0: "none held", 1: "one held", 2: "two held", 3: "three held"}
+    ncls = {None: "all records", **{i: c for i, c in enumerate(CO_.NODE_CLASSES)}}
+    classes = {"validator_with_node": ("role", roles), "first_relay_with_destination": ("path", paths)}
+    classes.update({f"{r}_relays_{k}": ("held", held) for r in ("first", "second") for k in CO_.RELAY_SIZES})
+    classes.update({f"nodes_{k}": ("cls", ncls) for k in CO_.NODE_COUNTS})
+    return dict(classes=classes, decoys_of=decoys_of,
                 bound_na={"content_server", "content_server_mid", "validator_with_node [F or I]",
                           "first_relay_with_destination [F content path, D with F]",
-                          "first_relay_with_destination [I content path, G with I]"})
+                          "first_relay_with_destination [I content path, G with I]", "f_with_i",
+                          *(f"nodes_{k} [all records]" for k in CO_.NODE_COUNTS)})
 
-
-SUMMARY = {"c3": _c3_summary}
 
 
 def main(argv=None):
