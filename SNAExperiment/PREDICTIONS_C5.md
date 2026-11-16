@@ -226,6 +226,23 @@ Under delay, a delayed reply arrives late, and its transaction drops at the quor
 
 **Can fail.** The arithmetic treats records as independent of one another and ignores the timeout's effect on records posting after the window.
 
+## 12. Validator withholding under several validators
+
+Three validators, split 50%, 30% and 20% for real devices and for decoys, as in `PREDICTIONS_C3.md` item 9. The withholding validator is the target's own. It serves exactly the identities registered with it, so the share it withholds from is its share: 50%, 30% or 20%, by the target's draw.
+
+**Prediction.** Record-finding for the target's transactions answered inside a window, each window length (10, 30, 60 and 120 minutes), withhold or delay:
+
+| Target's validator's share | R = 1 | R = 100 |
+|---|---|---|
+| 50% | each 1.5% to 5% | each 0.6% to 2.5% |
+| 30% or 20% | each 0.8% to 3.5% | each 0.4% to 2.0% |
+
+**Basis.** Item 11's arithmetic at the same share served: at a share of 50% or less the other validators' traffic still fills each posting, so withholding changes little. Item 11's 25% row covers 30% and 20%; its 50% row covers 50%.
+
+**Fails if** a row lies outside its range.
+
+**Can fail.** As item 11.
+
 ## 10. Sanity
 
 **Prediction.** Δ = 0 reproduces the unmarked run, transaction by transaction. With default options the code reproduces C2's R = 1 decisions exactly.
@@ -243,3 +260,4 @@ Under delay, a delayed reply arrives late, and its transaction drops at the quor
 - Evaluation seeds were used in development. Several C5 settings ran on the traffic seeds of runs 0 to 2 while the code was checked. No prediction in this file was changed because of those runs.
 - A fresh evaluation seed set replaces C2's traffic seeds for every full run of C3 to C5, because C2's were used in development (logged above). A run's traffic seed is the first 8 bytes of SHA-256 of `sna-c3-c5-fresh|R=<R>|run=<run id>`, little-endian, shifted right by one bit. No code ran on these seeds before this entry was committed. From here on, development, debugging and dry runs use model seeds only: a dry run's traffic seed is 1,000,300,000 + 1,000 R + the run id.
 - The flag for a badly miscalibrated attacker first fired when the calibration error exceeded both 2 points and a quarter of the larger of the accuracy and the mean confidence. A dry run showed that rule flagged sampling noise: with about 60 decisions per confidence decile and hit rates near 4%, sampling alone gives an error near 2 points. The flag now also requires the error to exceed the 99th percentile a perfectly calibrated attacker would reach by sampling at the same confidences. This is a modeling error in the rule; no prediction depends on the flag.
+- Item 12, validator withholding under several validators, was added with its parameters, before its job and its tests.

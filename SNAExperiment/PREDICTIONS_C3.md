@@ -215,6 +215,35 @@ The shares at k = 2 are 1.1%, 0.5%, 1.0%, 17.4%, 56.4% and 23.6%; at k = 4 they 
 
 **Can fail.** The destination-and-second-relay range rests on a rough count. Classes at small k are rare and may not meet the stability rule; they are then reported as unstable, not judged.
 
+## 9. Several validators
+
+Three validators, each with its own Token Key. Each identity registers with one, drawn once: real devices 50%, 30% and 20%; decoy identities the same. Each validator sees only the credentials under its own key. C reads key_ref, so it knows which validator each of its transactions went to; the keyed C vantage is also told each source address's key, an upper bound on what C can learn.
+
+**Prediction.**
+
+| Vantage | Records | R = 1 | R = 100 |
+|---|---|---|---|
+| Passive observer | every record | equal to the one-validator run within its interval | equal to the one-validator run within its interval |
+| Validator k alone, share 50% | records of its own devices | 10.0% (7.5% to 12.5%), chance 2.2% | 5.2% (3.9% to 6.5%), chance 1.09% |
+| Validator k alone, share 30% | the same | 15.6% (11.7% to 19.5%), chance 3.6% | 8.4% (6.3% to 10.5%), chance 1.81% |
+| Validator k alone, share 20% | the same | 21.7% (16.3% to 27.1%), chance 5.3% | 12.0% (9.0% to 15.0%), chance 2.70% |
+| Validator k alone | records of other keys' devices | 0% | 0% |
+| C reading key_ref | records of transactions C handled | lead over C without key_ref on the same records −0.3 to +5.0 points | −0.2 to +2.5 points |
+
+At R = 1 the one real device has one validator, so only that validator's row has records; its share is drawn per run.
+
+**Basis.**
+- A validator names device identities directly, and its candidates are its own replies. With one validator, C2 gives 5.26% at R = 1 and 2.66% at R = 100. The competition formula 1 / (1 + N b) gives b = 0.180 at R = 1 (N = 100) and 0.179 at R = 100 (N = 205).
+- A validator with share s competes among s N identities on its own devices' records: 1 / (1 + s N b). The ranges are ±25%.
+- Chance on its own records follows the feasibility formula with n = s N: p = 0.892 at R = 1 and 0.883 at R = 100.
+- A record of a device with another key has the wrong device among none of the validator's candidates, so it is never named.
+- C reading key_ref: C's evidence on its own transactions moves the observer by +0.01 points in C2. Knowing each transaction's key removes the other keys' identities from that transaction's explanation, at most the competition formula with s N identities for the observer's b (0.1996 at R = 1, 0.2045 at R = 100): +4.3 points at s = 50% at R = 1 and +2.3 points at R = 100. The ranges run from a little below no change to a little above that.
+- The observer's view of the wire changes only in which validator node each CV-1 goes to.
+
+**Fails if** a row lies outside its range, or a validator names a device of another key.
+
+**Can fail.** The competition formula treats every identity as an equal competitor.
+
 ## Reporting the bound
 
 Every table shows the bound from the posting schedule beside each row it applies to. Rows with a link from a record to its transaction (F, I, a first relay with F or I, F with I, and the classes of item 8 that hold a destination or both ends of the credential path) are marked not applicable.
@@ -232,3 +261,5 @@ Items 7 and 8 were added after the dry run, to answer reviewers who found the at
 A fresh evaluation seed set replaces C2's traffic seeds for every full run of C3 to C5, because C2's were used in development (logged above). A run's traffic seed is the first 8 bytes of SHA-256 of `sna-c3-c5-fresh|R=<R>|run=<run id>`, little-endian, shifted right by one bit. No code ran on these seeds before this entry was committed. From here on, development, debugging and dry runs use model seeds only: a dry run's traffic seed is 1,000,300,000 + 1,000 R + the run id.
 
 The flag for a badly miscalibrated attacker first fired when the calibration error exceeded both 2 points and a quarter of the larger of the accuracy and the mean confidence. A dry run showed that rule flagged sampling noise: with about 60 decisions per confidence decile and hit rates near 4%, sampling alone gives an error near 2 points. The flag now also requires the error to exceed the 99th percentile a perfectly calibrated attacker would reach by sampling at the same confidences. This is a modeling error in the rule; no prediction depends on the flag.
+
+Item 9, several validators, was added with its parameters, before its job and its tests.
