@@ -529,3 +529,56 @@ def test_c5_mark_longer_than_the_timeout_finds_nothing():
     run = S.simulate(cfg.with_(mark_target=0), 62)
     res = AC.score(run, None, np.random.default_rng(0), (cfg.warmup_s, cfg.warmup_s + cfg.measure_s))
     assert not res["correct"].any()
+
+
+# --------------------------------------------------------------------------- C6, second run
+def test_dropping_destination_in_both_candidates(tmp_path):
+    from sna import onetime as OT
+    for otc in (False, True):
+        kw = dict(candidate=OT.NAME, resub_wait_s=1400.0) if otc else {}
+        cfg = _cfg(R=100, hours=3.0, mark_actor="destination", mark_mode="drop", mark_node=3, resub_mean_s=1800.0,
+                   **ST.VALIDATORS, **kw).with_(cooldown_len=2616.75 + 4 * 3600)
+        run = (OT.simulate if otc else S.simulate)(cfg, 72)
+        s = run.subs
+        node = s["D"] if otc else None
+        dropped = s["dropped"]
+        assert dropped.any() and not np.isfinite(s["posted"][dropped]).any()
+        if otc:
+            assert np.all(node[dropped] == 3)
+        else:
+            assert np.all((s["F"][dropped] == 3) | (s["I"][dropped] == 3))
+        kids = s["gen"] > 0
+        par = s["parent"][kids]
+        assert kids.any() and np.all(dropped[par])                             # every resubmission is of a dropped one
+        assert np.all(s["t0"][kids] - s["t0"][par] >= cfg.resub_wait_s)
+        assert np.array_equal(s["src"][kids], s["src"][par])                   # from the same address
+        m = (OT.build_models(cfg.with_(mark_actor=""), seed0=EX.MODEL_SEED0 + 400_000, min_samples=20_000) if otc
+             else ST.models(tmp_path))
+        out = (OT.compute(run, m, np.random.default_rng(0)) if otc else
+               AT.compute(run, m, np.random.default_rng(0), vantages=("observer",), hooks=ST._Hooks().dict()))
+        t = ST.drop_link(run, m, out, 3)
+        assert t["sub"].size > 0 and "dev_ent" in t
+
+
+def test_delaying_destination():
+    from sna import onetime as OT
+    cfg = _otc(R=100, hours=2.0, mark_actor="destination", mark_mode="delay", mark_node=4, mark_delta=1800.0)
+    base = OT.simulate(cfg.with_(mark_actor=""), 73)
+    run = OT.simulate(cfg, 73)
+    s, b = run.subs, base.subs
+    hit = s["D"] == 4
+    assert np.all(s["reg"][hit] >= b["reg"][hit] + 1800.0 - 1e-6) and np.array_equal(s["reg"][~hit], b["reg"][~hit])
+    m = OT.build_models(cfg.with_(mark_actor=""), seed0=EX.MODEL_SEED0 + 400_000, min_samples=20_000)
+    out = OT.compute(run, m, np.random.default_rng(0))
+    t = ST.delaying_destination(run, m, out, 4, 1800.0)
+    assert t["sub"].size == (s["D"][out["_rec"]["sub"]] == 4).sum()
+
+
+def test_batch_thresholds():
+    from sna import onetime as OT
+    for b in ST.C6_BATCHES:
+        run = OT.simulate(_otc(R=1, hours=24.0, otc_batch=b, otc_refill_at=b // 4), 74)
+        k = b // 4
+        assert run.stock_seen.min() >= k + 1 and run.stock_seen.max() <= k + b
+        caps = int(((run.subs["src"] == 0) & (run.subs["gen"] == 0)).sum())
+        assert abs((run.refills["src"] == 0).sum() - caps / b) <= 1.5

@@ -295,7 +295,8 @@ C6_FAMILY = {"observer": "passive observer", "first_hop": "first relay", "conten
 C6_LABEL = {"cp": "credential path", "otc": "blind-issued one-time certificates, natural",
             "otcL": "blind-issued one-time certificates, lengthened hold",
             "otcR": "blind-issued one-time certificates, natural, random refills",
-            "otcLR": "blind-issued one-time certificates, lengthened hold, random refills"}
+            "otcLR": "blind-issued one-time certificates, lengthened hold, random refills",
+            **{f"otcB{b}": f"blind-issued one-time certificates, natural, batch {b}" for b in (1, 5, 20, 100)}}
 
 
 def summarize_c6(out, files, seed=12345):
@@ -358,7 +359,7 @@ def summarize_c6(out, files, seed=12345):
 def markdown_c6(rows, title, dry=False):
     """One table per vantage family, both candidates in adjacent rows for each cell and workload, the latency beside
     each row; then the spread, calibration and reliability sections of markdown()."""
-    order = {"cp": 0, "otc": 1, "otcL": 2, "otcR": 3, "otcLR": 4}
+    order = {"cp": 0, "otc": 1, "otcL": 2, "otcR": 3, "otcLR": 4, "otcB1": 5, "otcB5": 6, "otcB20": 7, "otcB100": 8}
     lines = []
     if dry:
         lines.append("DRY RUN: fewer runs than the full count. These numbers are not results.\n")

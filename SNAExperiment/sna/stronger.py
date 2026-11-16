@@ -262,6 +262,14 @@ C6_CANDIDATES = {"cp": {}, "otc": dict(candidate=P.CANDIDATES[1]),
                  "otcR": dict(candidate=P.CANDIDATES[1], otc_refill_rule="random"),
                  "otcLR": dict(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S, otc_refill_rule="random")}
 C6_VARIANTS = tuple(f"{c}_{w}" for c in C6_CANDIDATES for w in C4_VARIANTS)
+# the second C6 run: the batch sweep (natural, threshold rule, W0; refill at a quarter of the batch)
+C6_BATCHES = (1, 5, 20, 100)
+C6_CANDIDATES.update({f"otcB{b}": dict(candidate=P.CANDIDATES[1], otc_batch=b, otc_refill_at=b // 4) for b in C6_BATCHES})
+C6_BATCH_VARIANTS = tuple(f"otcB{b}_W0" for b in C6_BATCHES)
+# resubmission waits, just past each candidate's longest natural delay
+C6_RESUB_WAIT = {"cp": 2400.0, "otc": 1400.0, "otcL": 3500.0}
+C6_DEST = {f"{c}_{m}": dict(mode=m) for c in C6_RESUB_WAIT
+           for m in ("drop_m1800", "drop_m3600", "drop_m7200", "drop_m21600", "delay600", "delay1800")}
 OTC_MODEL_SEED0 = EX.MODEL_SEED0 + 400_000
 
 
@@ -288,6 +296,107 @@ def otc_models(out, lengthened):
 
 C6_ISSUER = {f"iwh_{mode}_L{int(L // 60)}": dict(withhold_mode=mode, withhold_len=float(L))
              for mode in ("none", "withhold", "delay") for L in (600, 1800, 3600, 7200)}
+C6_ISSUER_LONG = {f"iwh_{mode}_L{int(L // 60)}": dict(withhold_mode=mode, withhold_len=float(L))
+                  for mode in ("none", "withhold", "delay") for L in (6 * 3600, 12 * 3600, 24 * 3600)}
+
+
+def _dest_arrival(run, sub, node):
+    s = run.subs
+    if "arr" in s:
+        return s["arr"][sub]
+    return np.where(s["F"][sub] == node, s["arr_f"][sub], s["arr_i"][sub])
+
+
+def drop_link(run, m, out, node):
+    """Item 17: for each real first transaction the node dropped, captured in the window, whose resubmission posted a
+    record among the scored records: each device scored by its packets' fit to the dropped packet's arrival at the node
+    and to the resubmission's record time."""
+    s, rec, cand = run.subs, out["_rec"], out["_cand"]
+    row_of = {int(x): i for i, x in enumerate(rec["sub"])}
+    kids = {}
+    for c, par in enumerate(s["parent"]):
+        if par >= 0 and s["gen"][c] > 0:
+            kids.setdefault(int(par), []).append(c)
+    cfg = run.cfg
+    d0 = np.nonzero(s["dropped"] & (s["gen"] == 0) & ~s["decoy"] & (s["t0"] >= cfg.warmup_s)
+                    & (s["t0"] < cfg.warmup_s + cfg.measure_s))[0]
+    labs, scs, ri = [], [], []
+    for d in d0:
+        x = int(d)
+        while x in kids and not np.isfinite(s["posted"][x]):
+            x = kids[x][0]
+        if not np.isfinite(s["posted"][x]) or x not in row_of:
+            continue
+        i = row_of[x]
+        a = float(_dest_arrival(run, np.array([d]), node)[0])
+        lab, sc = CO._add([CO._arrival(cand, a, m.pdf["cs_q"]), CO._arrival(cand, rec["u"][i], m.pdf["g"])])
+        labs.append(lab); scs.append(sc); ri.append(i)
+    ri = np.array(ri, np.int64)
+    return DS.table(labs, scs, rec, ri, np.full(ri.size, node), out["_base"], rec["dev"][ri], out["_shuf"])
+
+
+def delaying_destination(run, m, out, node, delta):
+    """Item 18: the delaying node on the records of the packets it was the destination of: its packet's arrival and
+    the record time less its own delay."""
+    s, rec, cand = run.subs, out["_rec"], out["_cand"]
+    if "arr" in s:
+        mine = s["D"][rec["sub"]] == node
+    else:
+        mine = (s["F"][rec["sub"]] == node) | (s["I"][rec["sub"]] == node)
+    ri = np.nonzero(mine)[0]
+    a = _dest_arrival(run, rec["sub"][ri], node)
+    u = rec["u"][ri] - delta
+    cs, csq = m.pdf["cs"], m.pdf["cs_q"]
+    col = DS.Collector(ri.size, cand["dev"])
+
+    def fn(rows, k0, k1):
+        x = a[rows][:, None] - cand["t"][None, k0:k1]
+        return dict(v=cs(x, u[rows][:, None] - cand["t"][None, k0:k1]) + csq(x))
+    AT.score_blocks(a - csq.support[1], a - csq.support[0], cand, fn, dict(sub=rec["sub"][ri], dev=rec["dev"][ri]), ("v",),
+                    extra=lambda nm, rows, lo, hi, W, is_t: col(rows, lo, hi, W))
+    sc = [col.get(i) for i in range(ri.size)]
+    return DS.table([x for x, _ in sc], [y for _, y in sc], rec, ri, np.full(ri.size, node), out["_base"], rec["dev"][ri],
+                    out["_shuf"])
+
+
+def work_c6_dest(out, R, setting, run_id):
+    """Items 17 and 18: one node, drawn among the nodes that can be a destination in both candidates, drops (or
+    delays) every packet it is the destination of; the device resubmits a dropped transaction."""
+    from . import onetime as OT
+    cand, mode = setting.split("_", 1)
+    kw = dict(mark_actor="destination", resub_wait_s=C6_RESUB_WAIT[cand])
+    if mode.startswith("drop"):
+        kw.update(mark_mode="drop", resub_mean_s=float(mode[6:]))
+    else:
+        kw.update(mark_mode="delay", mark_delta=float(mode[5:]))
+    cfg = cell_config(R, window=C5_WINDOW, **VALIDATORS, **C6_CANDIDATES[cand], **kw)
+    cfg = cfg.with_(cooldown_len=cfg.cooldown_len + cfg.resub_wait_s + 4 * cfg.resub_mean_s)
+    seed = traffic(out, R, run_id)
+    gk = S.World(cfg, seed).gk_set
+    node = int(CO._pick(R, run_id, 5, 1, np.setdiff1d(np.arange(P.N_NODES), gk))[0])
+    cfg = cfg.with_(mark_node=node)
+    otc = OT.is_onetime(cfg)
+    t = time.time()
+    run = (OT.simulate if otc else S.simulate)(cfg, seed)
+    t_sim = time.time() - t
+    t = time.time()
+    m = otc_models(out, cfg.otc_hold_mean > 0) if otc else models(out)
+    if otc:
+        tab = OT.compute(run, m, _rng(R, run_id))
+    else:
+        tab = AT.compute(run, m, _rng(R, run_id), vantages=("observer",), hooks=_Hooks().dict())
+    s = run.subs
+    rsub = tab["_rec"]["sub"]
+    delayed = (s["D"][rsub] == node) if otc else ((s["F"][rsub] == node) | (s["I"][rsub] == node))
+    obs = dict(tab["observer"], delayed=delayed.astype(np.int8))
+    tables = {"observer": obs}
+    if cfg.mark_mode == "drop":
+        tables["drop_link"] = drop_link(run, m, tab, node)
+    else:
+        tables["delaying_destination"] = delaying_destination(run, m, tab, node, cfg.mark_delta)
+    g0 = s["gen"] == 0
+    return [(rec_name("c6_dest", setting, R), _record(run_id, run, tables, t_sim, time.time() - t, node=node,
+                                                     latency=_latency(run, rsub), dropped_share=float(s["dropped"][g0].mean())))]
 
 
 def work_c6_issuer(out, R, setting, run_id):
@@ -296,7 +405,7 @@ def work_c6_issuer(out, R, setting, run_id):
     from . import onetime as OT
     target = 0 if R == 1 else int(np.random.default_rng([TARGET_SEED, int(R), run_id]).integers(0, cell_config(R).real_devices))
     base = cell_config(R, window=C5_WINDOW, candidate=P.CANDIDATES[1], mark_actor="issuer_withhold", mark_target=target,
-                       **VALIDATORS, **C6_ISSUER[setting])
+                       **VALIDATORS, **{**C6_ISSUER, **C6_ISSUER_LONG}[setting])
     t = time.time()
     run = OT.simulate(base, traffic(out, R, run_id))
     t_sim = time.time() - t
@@ -474,6 +583,10 @@ JOBS = {
     "c3_val": dict(fn=work_c3_val, cells=(1, 100), variants=("v3",), files=("c3_validators",)),
     "c6": dict(fn=work_c6, cells=(1, 100), variants=C6_VARIANTS, files=("c6",)),
     "c6_issuer": dict(fn=work_c6_issuer, cells=(1, 100), variants=tuple(C6_ISSUER), files=("c6_issuer",)),
+    # the second C6 run
+    "c6_batch": dict(fn=work_c6, cells=(1, 100), variants=C6_BATCH_VARIANTS, files=("c6",)),
+    "c6_dest": dict(fn=work_c6_dest, cells=(1, 100), variants=tuple(C6_DEST), files=("c6_dest",)),
+    "c6_issuer_long": dict(fn=work_c6_issuer, cells=(1, 100), variants=tuple(C6_ISSUER_LONG), files=("c6_issuer",)),
     "c5_withhold3": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh3_")), files=("c5",)),
 }
 
@@ -577,8 +690,18 @@ def summarize(out, dry=False):
     names = sorted(p.name[:-len(".pkl.gz")] for p in (out / "raw").glob("*.pkl.gz"))
     fs6 = [n for n in names if n.startswith("c6__")]
     fsi = [n for n in names if n.startswith("c6_issuer__")]
-    if fs6 or fsi:
+    if fs6 or fsi or any(n.startswith("c6_dest__") for n in names):
         rows = RP.summarize_c6(out, fs6) if fs6 else []
+        fsd = [n for n in names if n.startswith("c6_dest__")]
+        if fsd:
+            dl = {None: "all records", 1: "records the node delayed", 0: "other records"}
+            for r in RP.summarize(out, fsd, classes={"observer": ("delayed", dl)},
+                                  bound_na={"drop_link", "delaying_destination"}):
+                cand_, mode = r["file"].split("__")[1].split("_", 1)
+                r.update(candidate=RP.C6_LABEL[cand_], workload=mode, cell=r["file"].split("__")[2],
+                         latency=float("nan"), family=f"destination that {'drops' if mode.startswith('drop') else 'delays'}: "
+                                                         + r["vantage"].split(" [")[0])
+                rows.append(r)
         for r in RP.summarize_c5(out, fsi):
             r.update(candidate=RP.C6_LABEL["otc"], workload="W0", cell=r["file"].split("__")[2], latency=math.nan,
                      family="issuer withholding or delaying refills")

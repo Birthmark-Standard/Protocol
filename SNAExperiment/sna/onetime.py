@@ -231,12 +231,17 @@ def _transactions(w, r, t0, src, lat, sub0, decoy, stock, gen=0, ident=None):
     first, second, dest = _route(r, n)
     (_, _, arr), ev = S._chain(w, r, ready, src, lat, first, second, dest, (PK1, PK2, PK3), sub, cfg.otc_hold_mean)
     reg = arr + S._proc(r, n)
+    hit = (dest == cfg.mark_node) if cfg.mark_actor == "destination" else np.zeros(n, bool)
+    if cfg.mark_mode == "delay":                               # a delaying destination holds its submission by mark_delta
+        reg = np.where(hit, reg + cfg.mark_delta, reg)
     if cfg.reg_bundle_s > 0:                                   # the registry's shared submission schedule
         ph = w.reg_phase
         reg = ph + cfg.reg_bundle_s * np.ceil((reg - ph) / cfg.reg_bundle_s)
     reg = reg + S._proc(r, n)
+    dropped = hit & (cfg.mark_mode == "drop")
+    reg = np.where(dropped, np.nan, reg)                       # a dropping destination never submits
     return dict(t0=t0, ready=ready, src=src, decoy=np.full(n, decoy), A=first, B=second, D=dest, arr=arr, reg=reg,
-                ev_pk=ev, gen=np.full(n, gen, np.int8))
+                ev_pk=ev, gen=np.full(n, gen, np.int8), dropped=dropped)
 
 
 def _register(w, subs, lo, hi, split, gen):
@@ -245,7 +250,9 @@ def _register(w, subs, lo, hi, split, gen):
     cfg = w.cfg
     sub = np.arange(lo, hi)
     ev_r, reach = np.full(hi - lo, -1, np.int64), np.full(hi - lo, np.nan)
+    sent = np.isfinite(subs["reg"][lo:hi])
     for stream, part in enumerate((sub < split, sub >= split)):
+        part = part & sent
         if not part.any():
             continue
         oids, rch = S._gossip(w, subs["D"][lo:hi][part], subs["reg"][lo:hi][part], sub[part],
@@ -328,6 +335,31 @@ def simulate(cfg: P.Config, seed: int) -> S.Run:
         lo, hi = hi, hi + par.size
         split = hi                                               # one gossip stream per generation
         _register(w, subs, lo, hi, split, gen)
+    while cfg.mark_actor == "destination" and cfg.mark_mode == "drop":
+        # a device that sees no record of its ContentHash resubmits from the same address, after resub_wait_s and an
+        # exponential delay, with a new certificate and a new route; the dropping destination drops it again if it is
+        # its destination too
+        par = np.arange(lo, hi)[subs["dropped"][lo:hi]]
+        t0 = subs["t0"][par] + cfg.resub_wait_s + w.rng_mark.exponential(cfg.resub_mean_s, par.size)
+        keep = t0 < cfg.horizon_s
+        par, t0 = par[keep], t0[keep]
+        if par.size == 0:
+            break
+        o = np.argsort(t0, kind="stable")
+        par, t0 = par[o], t0[o]
+        src = subs["src"][par]
+        lat = np.array([w.lat_tab[0 if x < 100_000 else 100_000][x - (0 if x < 100_000 else 100_000)] for x in src])
+        gen += 1
+        x = _transactions(w, w.rng_mark, t0, src, lat, hi, False, stock, gen=gen, ident=src)
+        x["decoy"] = subs["decoy"][par]
+        x["issuer"] = subs["issuer"][par]
+        x["parent"], x["root"] = par, subs["root"][par]
+        x["edits_left"] = np.zeros(par.size, subs["edits_left"].dtype)
+        for k in subs:
+            if k in x:
+                subs[k] = np.r_[subs[k], x[k]]
+        lo, hi = hi, hi + par.size
+        _register(w, subs, lo, hi, hi, gen)
     events, rank = w.ev.finalize()
     for k, v in subs.items():
         if k.startswith("ev_"):

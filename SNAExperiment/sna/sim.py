@@ -363,6 +363,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
     # content servers: hold on the node clock; confirm once the hold has released and the board
     # pushes have shown quorum, whichever is later; drop after 30 minutes without quorum
     out = {}
+    dest_drop = np.zeros(S, bool)
     for name, arr, node in (("f", arr_f, F), ("i", arr_i, I)):
         hold = LT.hold(r, arr, w.phase[node], cfg.cs_mean)
         known = _pushed(w, posts, node)
@@ -372,6 +373,10 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
             ok &= det - quorum <= cfg.board_window_s
         if mk["drop"] is not None:               # a dropped packet never confirms
             ok &= ~mk["drop"]
+        hit = (node == cfg.mark_node) if cfg.mark_actor == "destination" else np.zeros(S, bool)
+        if cfg.mark_mode == "drop" and hit.any():        # a dropping destination never submits
+            ok &= ~hit
+            dest_drop |= hit
         det = np.where(ok, det, np.nan)
         ready = det
         if cfg.post_match:
@@ -379,6 +384,8 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
             # confirms quorum
             ready = LT.hold(w.rng_post, np.where(ok, det, 0.0), None, cfg.pm_mean)
             ready = np.where(ok, ready, np.nan)
+        if cfg.mark_mode == "delay" and hit.any():       # a delaying destination holds its submission by mark_delta
+            ready = np.where(hit, ready + cfg.mark_delta, ready)
         dep = ready
         if cfg.reg_bundle_s > 0:
             # registry-level bundling: a confirmed submission waits for the next boundary of one
@@ -399,7 +406,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
                 ready_f=out["f"][4], ready_i=out["i"][4], known_f=out["f"][5], known_i=out["i"][5],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk,
-                marked=mk["marked"], mark_path=mk["path"], dropped=mk["drop"] if mk["drop"] is not None else np.zeros(S, bool),
+                marked=mk["marked"], mark_path=mk["path"], dropped=(mk["drop"] if mk["drop"] is not None else np.zeros(S, bool)) | dest_drop,
                 withheld=mk.get("withheld", np.zeros(S, bool)), val=vi)
 
 
@@ -455,6 +462,8 @@ def _marks(w, S, src, decoy, gen):
     none = dict(marked=np.zeros(S, bool), path=np.full(S, -1, np.int8), d=[(None, None)] * 3, d_v=None, drop=None)
     if cfg.mark_actor == "validator_withhold":
         return dict(none, withheld=np.zeros(S, bool))
+    if cfg.mark_actor == "destination":                # acted on at F and I, every transaction (see gen_transactions)
+        return none
     if not cfg.mark_actor or decoy or gen > 0 or cfg.mark_target == -1:
         return none
     marked = (src == cfg.mark_target) if cfg.mark_target >= 0 else np.ones(S, bool)   # -2: every real device (models)
@@ -582,15 +591,23 @@ def _children(w, subs, lo, hi):
             out.append((decoy, (p_[o], t_[o], src[o], src0, lat[o], e)))
         return out if any(x[1][0].size for x in out) else None
     if cfg.mark_actor and cfg.mark_mode == "drop":
-        par = idx[subs["dropped"][idx] & (subs["gen"][idx] == 0)]
+        # a dropped transaction is resubmitted; a dropping destination drops resubmissions too, so any generation
+        par = idx[subs["dropped"][idx] & ((subs["gen"][idx] == 0) | (cfg.mark_actor == "destination"))]
         if par.size == 0:
             return None
-        t0 = subs["t0"][par] + P.RESUB_WAIT_S + w.rng_mark.exponential(cfg.resub_mean_s, par.size)
+        t0 = subs["t0"][par] + cfg.resub_wait_s + w.rng_mark.exponential(cfg.resub_mean_s, par.size)
         keep = t0 < H
         par, t0 = par[keep], t0[keep]
-        src = subs["src"][par]
-        o = np.argsort(t0, kind="stable")
-        return [(False, (par[o], t0[o], src[o], 0, _latency(w, src, 0)[o], w.rng_mark))] if par.size else None
+        out = []
+        for decoy, src0 in ((False, 0), (True, 100_000)):       # C5 drops only its real target: one stream, as before
+            sel = subs["decoy"][par] == decoy
+            if not sel.any():
+                continue
+            p_, t_ = par[sel], t0[sel]
+            src = subs["src"][p_]
+            o = np.argsort(t_, kind="stable")
+            out.append((decoy, (p_[o], t_[o], src[o], src0, _latency(w, src, src0)[o], w.rng_mark)))
+        return out or None
     return None
 
 
