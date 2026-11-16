@@ -197,6 +197,7 @@ def metrics(records, v, spec, rng, t=None, name=None):
         out[f"conf_p{q}"] = float(np.percentile(conf, q))
     out["conf_max"] = float(conf.max())
     out["reliability"], out["calibration_error"] = reliability(conf, c)
+    out["calibration_null"] = calibration_null(conf)
     spread(t, out, temps)
     perm = c.copy()
     for rid in np.unique(t["run"]):
@@ -222,10 +223,20 @@ MIN_DEVICE_RECORDS = 10       # a device enters the per-device spread with at le
 TOP_K = (1, 5, 10)
 
 
-def miscalibrated(err, accuracy, conf_mean):
-    """A vantage is badly miscalibrated when its calibration error exceeds both 2 points and a quarter of the larger
-    of its accuracy and its mean confidence."""
-    return bool(err > max(0.02, 0.25 * max(accuracy, conf_mean)))
+def calibration_null(conf, draws=200, q=99, seed=0):
+    """The calibration error a perfectly calibrated attacker would show at these confidences by sampling alone:
+    the q-th percentile over draws of hits drawn as Bernoulli(conf)."""
+    rng = np.random.default_rng(seed)
+    conf = np.asarray(conf, float)
+    errs = [reliability(conf, rng.random(conf.size) < conf)[1] for _ in range(draws)]
+    return float(np.percentile(errs, q))
+
+
+def miscalibrated(err, accuracy, conf_mean, null):
+    """A vantage is badly miscalibrated when its calibration error is above what sampling explains (null, the 99th
+    percentile under perfect calibration) and exceeds both 2 points and a quarter of the larger of its accuracy and
+    its mean confidence."""
+    return bool(err > null and err > max(0.02, 0.25 * max(accuracy, conf_mean)))
 
 
 def spread(t, out, temps):
@@ -234,7 +245,8 @@ def spread(t, out, temps):
     accuracy, the naming rate over true devices (devices with MIN_DEVICE_RECORDS records or more: median, 90th
     percentile, and the worst-off device, the one named most often), and the miscalibration flag. Rows without
     the posterior terms (tables written before they existed) get none of these."""
-    out["miscalibrated"] = miscalibrated(out["calibration_error"], out.get("dev_accuracy", 0.0), out.get("conf_mean", 0.0))
+    out["miscalibrated"] = miscalibrated(out["calibration_error"], out.get("dev_accuracy", 0.0), out.get("conf_mean", 0.0),
+                                         out.get("calibration_null", 0.0))
     if "dev_ent" not in t or "dev_rank" not in t:
         return out
     ln2 = math.log(2.0)

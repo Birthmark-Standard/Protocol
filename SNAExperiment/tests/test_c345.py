@@ -389,3 +389,16 @@ def test_c5_posterior_terms_and_tables(tmp_path):
     md = RP.markdown(rows, "x")
     assert "Spread of the posterior" in md and "Reliability" in md
 
+
+def test_calibration_flag_ignores_sampling_noise():
+    from sna import analyze as AN
+    rng = np.random.default_rng(5)
+    conf = rng.uniform(0.02, 0.06, 600)
+    hits = rng.random(600) < conf                                # calibrated: only sampling noise
+    err = AN.reliability(conf, hits)[1]
+    assert not AN.miscalibrated(err, hits.mean(), conf.mean(), AN.calibration_null(conf))
+    bad = np.zeros(600, bool)                                    # confident and never right
+    conf2 = np.full(600, 0.5)
+    err2 = AN.reliability(conf2, bad)[1]
+    assert AN.miscalibrated(err2, 0.0, 0.5, AN.calibration_null(conf2))
+

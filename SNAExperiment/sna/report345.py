@@ -118,7 +118,8 @@ def _spread_rows(row, run, correct, dev, rank, H, Hmin, conf, feas):
     c = np.asarray(correct, bool)
     row["reliability"], row["calibration_error"] = AN.reliability(np.asarray(conf, float), c)
     row["conf_mean"] = float(np.mean(conf))
-    row["miscalibrated"] = AN.miscalibrated(row["calibration_error"], row["dev_accuracy"], row["conf_mean"])
+    row["calibration_null"] = AN.calibration_null(np.asarray(conf, float))
+    row["miscalibrated"] = AN.miscalibrated(row["calibration_error"], row["dev_accuracy"], row["conf_mean"], row["calibration_null"])
     if len(c) >= 10 and 0 < c.sum() < len(c):
         row["auc"] = AN.auc_clustered(np.asarray(conf, float), c.astype(int), np.asarray(run))["auc"]
     d = np.asarray(dev, np.int64)
@@ -239,11 +240,12 @@ def markdown(rows, title, dry=False):
     lines.append("Entropy and min-entropy in bits at the calibrated temperature; the effective anonymity set is 2 to the "
                  "entropy. Devices: the naming rate over true devices with at least "
                  f"{AN.MIN_DEVICE_RECORDS} records (median, 90th percentile, and the worst-off device with its records). "
-                 "Flag: the calibration error exceeds both 2 points and a quarter of the larger of the accuracy and the "
-                 "mean confidence.\n")
+                 "Sampling: the calibration error a perfectly calibrated attacker would reach at the 99th percentile "
+                 "by sampling alone, at the same confidences. Flag: the calibration error is above that and exceeds both "
+                 "2 points and a quarter of the larger of the accuracy and the mean confidence.\n")
     lines.append("| File | Vantage | Entropy | Effective set | Min-entropy | Top-1 | Top-5 | Top-10 | Devices: median, p90, worst (records) | "
-                 "Calibration error | Flag |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
+                 "Calibration error | Sampling | Flag |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
     for r in rows:
         if "top1" not in r and "calibration_error" not in r:
             continue
@@ -251,7 +253,7 @@ def markdown(rows, title, dry=False):
               if "device_rate_max" in r else "—")
         lines.append(f"| {r['file']} | {r['vantage']} | {num(r.get('entropy_bits', math.nan))} | {num(r.get('anonymity_set', math.nan), '{:.1f}')} | "
                      f"{num(r.get('min_entropy_bits', math.nan))} | {pct(r.get('top1', r['dev_accuracy']))} | {pct(r.get('top5'))} | "
-                     f"{pct(r.get('top10'))} | {dv} | {pct(r.get('calibration_error'))} | "
+                     f"{pct(r.get('top10'))} | {dv} | {pct(r.get('calibration_error'))} | {pct(r.get('calibration_null'))} | "
                      f"{'badly miscalibrated' if r.get('miscalibrated') else ''} |")
     lines.append("\n## Reliability\n")
     lines.append("Per row, the confidence deciles: mean confidence → hit rate.\n")
