@@ -228,3 +228,7 @@ The first-relay-with-destination rows were first predicted as a timing attack (2
 Evaluation seeds were used in development. The coalition vantages were debugged on the traffic seeds of runs 1 to 4, and the path coalitions on run 2. The committed dry run used runs 0 and 1. No prediction in this file was changed because of those runs.
 
 Items 7 and 8 were added after the dry run, to answer reviewers who found the attacker too weak. They were written before their code and before any run of them.
+
+A fresh evaluation seed set replaces C2's traffic seeds for every full run of C3 to C5, because C2's were used in development (logged above). A run's traffic seed is the first 8 bytes of SHA-256 of `sna-c3-c5-fresh|R=<R>|run=<run id>`, little-endian, shifted right by one bit. No code ran on these seeds before this entry was committed. From here on, development, debugging and dry runs use model seeds only: a dry run's traffic seed is 1,000,300,000 + 1,000 R + the run id.
+
+The flag for a badly miscalibrated attacker first fired when the calibration error exceeded both 2 points and a quarter of the larger of the accuracy and the mean confidence. A dry run showed that rule flagged sampling noise: with about 60 decisions per confidence decile and hit rates near 4%, sampling alone gives an error near 2 points. The flag now also requires the error to exceed the 99th percentile a perfectly calibrated attacker would reach by sampling at the same confidences. This is a modeling error in the rule; no prediction depends on the flag.
