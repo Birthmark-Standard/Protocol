@@ -250,12 +250,14 @@ These use C2's main configuration, its calibrated D, its windows, its traffic se
 |---|---|---|---|
 | C3 | Decoy knowledge | A party that knows one decoy operator's decoys, or both, removes their packets and replies from its candidates. A validator of a manufacturer that keeps records of its credentials has real credentials only as candidates. | `sna/decoys.py` |
 | C3 | Coalitions | The validator with each node, classed by the node's role in the record's transaction. A first relay with the destination on its own path: the inner packet (CredP, ContP_F or ContP_I) is byte-identical at both, so the pair links source address to packet exactly; for a content path that names the record's device, for the credential path the record still follows by timing from the transaction's quorum on the match boards. | `sna/coalition.py` |
+| C3 | Same-role coalitions | Several nodes in one role, pooled on top of the observer: first relays (2, 3 or 6 nodes, their own holds), second relays (2, 3 or 6 nodes, when each packet they relayed reached its destination), two or three gatekeepers (the later of two postings, or the quorum), and the record's F with I (both content arrivals). | `sna/coalition.py` |
+| C3 | Compromised nodes | k = 1 to 6 nodes, each in every role it holds. A record is scored by what the coalition holds of it: a content path at both ends is exact; the credential path at both ends links C's transactions through A by the time after quorum; a destination uses its arrival, through its path's second relay when held; otherwise the observer with every relay, C and gatekeeper role pooled. | `sna/coalition.py` |
 | C3 | Decoy concentration | Fewer decoy identities, each at a multiple of a device's rate; the observer with and without a discount for an address's capture rate. | `sna/decoys.py` |
 | C3 | Decoy volume | 100, 50, 10 and 0 decoys in flight; every vantage. | `sna/stronger.py` |
 | C4 | Ceiling attacker | Told each transaction's true posting, it picks one of that posting's records. | `sna/krecord.py` |
 | C4 | K records and edit chains | Told that K records share a device, or told an edit chain, it sums the observer's calibrated log posteriors over the records. | `sna/krecord.py` |
 | C4 | Workloads | W1 (lognormal rates), W2 (W1 with sessions), W-mismatch (real devices W2, decoys one rate). | `sna/sim.py` |
-| C4 | Link-level tracer and Registry Node | A global passive observer following every leg on the wire: relays, destinations, validator, quorum. Pieces of up to 10 arrivals are counted exactly, larger ones by matrix scaling. The Registry Node adds the link from each record to its two submissions. Not in any job. | `sna/tracer.py` |
+| C4 | Link-level tracer and Registry Node | A global passive observer following every leg on the wire: relays, destinations, validator, and quorum by the protocol's schedules. Pieces of up to 10 arrivals are counted exactly, larger ones by matrix scaling. It scores every device by the joint likelihood of a transaction's three packets. The Registry Node adds the link from each record to its two submissions. Not in any job: in the main configuration it is still below the observer on model seeds. | `sna/tracer.py` |
 | C5 | Delay marks and drops | A first relay, the access network or the validator delays its target's packets, or drops one and the device resubmits. Record-finding accuracy: how often the actor picks the marked transaction's record. | `sna/active.py` |
 | C5 | Validator withholding | The validator answers its target and withholds or delays every other credential it serves over a window. | `sna/sim.py`, `sna/active.py` |
 | — | Several validators | Each identity registered with one of several validators; each validator alone, and C reading key_ref. No job uses it. | `sna/sim.py`, `sna/attacks.py` |
@@ -281,7 +283,15 @@ The jobs are:
 | `c5_drops` | C5 drops with resubmission | R = 1, 100 |
 | `c5_withhold` | C5 validator withholding | R = 1, 100 |
 
-Each run of a job writes one record per output file in `raw/`, so a job is resumable as C2's is. `--workers` and `--label` work as for `python -m sna run`. After the runs, the job writes `TABLES_C3.md` (and `.json`) with every row: accuracy and its interval, chance, the multiple of chance, the lead over the observer, `count_p50`, `coverage_p50`, AUC, the stability rule, and the bound from the posting schedule where it applies. C4 and C5 jobs write their raw files only; the code that makes their tables is not written. `results/C3_dry_run/` holds a dry run of C3 on 2 runs per cell.
+Each run of a job writes one record per output file in `raw/`, so a job is resumable as C2's is. `--workers` and `--label` work as for `python -m sna run`. After the runs, the job writes `TABLES_C3.md`, `TABLES_C4.md` or `TABLES_C5.md` (each with a `.json`), with three parts:
+
+- **Main table.** Accuracy and its interval over runs, chance, the multiple of chance, the lead over the observer on the same records, `count_p50`, `coverage_p50`, AUC, the stability rule, and the bound from the posting schedule where it applies. C4 adds the ceiling attacker, the K-record attacker per K and the edit-chain attacker per chain length. C5 has one row per setting: how often the attacker finds the target's record.
+- **Spread of the posterior and calibration.** At the calibrated temperature: Shannon entropy and min-entropy in bits, the effective anonymity set (2 to the entropy), and top-1, top-5 and top-10 accuracy. The naming rate over true devices with at least 10 records: the median, the 90th percentile, and the worst-off device (the one named most often) with its records. The calibration error, and a flag when the attacker is badly miscalibrated: its calibration error exceeds both 2 points and a quarter of the larger of its accuracy and its mean confidence.
+- **Reliability.** For each row, the confidence deciles: mean confidence against hit rate.
+
+**Chance**, in every table: the expected accuracy of naming, for each decision, one candidate drawn uniformly from the candidates the vantage finds feasible for it (a device with a packet the vantage's densities allow, or for C5 a record its density allows), and zero when the truth is not feasible. A variant that changes the candidate set, such as known decoys, gets its chance by the same definition from its own feasible candidates.
+
+`results/C3_dry_run/` holds a dry run of C3 on 2 runs per cell.
 
 ## Scripts
 
@@ -330,7 +340,6 @@ The simulation uses the 20-node pool and the transaction described above. It doe
 - the jurisdiction filter or the skew in the device's choice of destinations;
 - the grouping of device-table lines by destination pseudonym;
 - a first-hop vantage that is told which destination a routing code leads to;
-- a compromised second relay as a vantage (the tracer uses every link a global observer sees, second relays' included);
 - injection of packets to fill a relay. A device does not choose its second relay, and every hold is drawn per packet, so packets an attacker injects and knows do not change its posterior among the packets it does not know;
 - a validator that chooses verdicts;
 - several validators in any job (the option exists; its number of validators and split are not set).
