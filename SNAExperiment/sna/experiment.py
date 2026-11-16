@@ -103,7 +103,7 @@ def traffic_seed(R, run_id):
 def config_hash():
     """Fingerprint of every configuration and the cells, written to run_info.json; a results
     directory written under other settings is never resumed."""
-    blob = json.dumps(dict(configs={k: P.Config(**v).__dict__ for k, v in CONFIGS.items()}, R=REAL_R, decoys=DECOYS,
+    blob = json.dumps(dict(configs={k: P.Config(**v).hash_dict() for k, v in CONFIGS.items()}, R=REAL_R, decoys=DECOYS,
                            window=WINDOW_MAIN_S, margin=MARGIN_S, min_real=P.MIN_REAL_PER_RUN),
                       sort_keys=True, default=str)
     return hashlib.sha256(blob.encode()).hexdigest()[:16]
@@ -117,10 +117,10 @@ def versions():
 
 
 # --------------------------------------------------------------------------- in flight
-def leaves(s):
+def leaves(s, cfg=None):
     """When each transaction leaves the system: the registry posting its record, or, for one that never
     reaches quorum, the content server dropping it 30 minutes after its content arrived."""
-    drop = np.fmax(s["arr_f"], s["arr_i"]) + P.QUORUM_TIMEOUT_S
+    drop = np.fmax(s["arr_f"], s["arr_i"]) + P.QUORUM_TIMEOUT_S if cfg is None else np.fmax(s["arr_f"], s["arr_i"]) + cfg.quorum_timeout_s
     return np.where(np.isfinite(s["final"]), s["final"], drop)
 
 

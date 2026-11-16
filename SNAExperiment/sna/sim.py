@@ -100,6 +100,10 @@ class World:
         self.reg_phase = float(rng_reg.uniform(0, max(cfg.reg_bundle_s, 1.0)))
         # the registry's own posting schedule, on an independent phase
         self.post_phase = float(rng_regpost.uniform(0, max(cfg.reg_post_s, 1.0)))
+        # streams for the C3 to C5 options, spawned after the fifteen above so those are unchanged: the
+        # workloads, the edit chains, and the active attacks with their resubmissions
+        self.rng_work, self.rng_edit, self.rng_mark, _ = (np.random.default_rng(s) for s in ss.spawn(4))
+        self.lat_tab = {}
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -181,7 +185,7 @@ def cross_path_overlap(roles):
     return out
 
 
-def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, device_mean):
+def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, device_mean, d_access=None, d_first=None):
     """Device (or decoy source) -> addressed hop -> random hop -> destination. The device holds on a
     fresh clock phase for this channel with its own mean; each relay hop holds on its node clock, with
     the mean of its hop position (first or second). Nothing here depends on the path: a relay cannot
@@ -189,12 +193,16 @@ def _chain(w, r, t0, src_id, lat_src, first, second, dest, legs, sub, device_mea
     n = t0.shape[0]
     dep = LT.hold(r, t0, None, device_mean) + _proc(r, n)
     arr = dep + lat_src[np.arange(n), first] + _jit(r, n)
+    if d_access is not None:                     # an access-network mark: the packet reaches the first relay late
+        arr = arr + d_access
     ids = [w.ev.add(dep, arr, EXT, first, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, legs[0], sub,
                     ext_src=src_id)]
     arrs = [arr]
     cur = first
-    for nxt, leg, mean in ((second, legs[1], w.cfg.relay1_mean), (dest, legs[2], w.cfg.relay2_mean)):
+    for hop, (nxt, leg, mean) in enumerate(((second, legs[1], w.cfg.relay1_mean), (dest, legs[2], w.cfg.relay2_mean))):
         rel = LT.hold(r, arr, w.phase[cur], mean) + _proc(r, n)
+        if hop == 0 and d_first is not None:     # a first-relay mark: the relay holds the packet longer
+            rel = rel + d_first
         arr = rel + w.lat_int[cur, nxt] + _jit(r, n)
         ids.append(w.ev.add(rel, arr, cur, nxt, w.size(r, "relay", n), P.RT_APPDATA, K_BIRTHMARK, leg, sub))
         arrs.append(arr)
@@ -220,27 +228,74 @@ def _pushed(w, posts, node):
     for j in range(posts.shape[1]):
         g = int(w.gk_set[j])
         ph = w.push_phase[g]
-        push = ph + P.BOARD_PUSH_S * np.ceil((posts[:, j] - ph) / P.BOARD_PUSH_S)
+        push = posts[:, j] if w.cfg.grid_off else ph + P.BOARD_PUSH_S * np.ceil((posts[:, j] - ph) / P.BOARD_PUSH_S)
         known[:, j] = push + w.lat_int[g, node]
     return np.sort(known, axis=1)[:, 1]
 
 
-def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
+def _workload(w, rate, n_src, decoy, kind):
+    """Capture times and sources under W1 or W2 (rng_work): each identity a Poisson process at its own
+    rate, a lognormal factor of the device rate scaled to mean 1 over the population; under W2 a share of
+    identities also has sessions at SESSION_MULT times its rate. The population's total rate is kept. A
+    single real device (R = 1) keeps the cell's rate under W1, and has sessions under W2."""
+    rg, H, n = w.rng_work, w.cfg.horizon_s, max(n_src, 1)
+    if rate <= 0:
+        return np.zeros(0), np.zeros(0, np.int64)
+    m = np.exp(rg.normal(-P.W_SIGMA ** 2 / 2, P.W_SIGMA, n))
+    m = np.ones(n) if n == 1 else m / m.mean()
+    sess = np.zeros(n, bool)
+    if kind == "W2":
+        sess = np.ones(n, bool) if (n == 1 and not decoy) else rg.random(n) < P.SESSION_SHARE
+    mean_len = np.mean(P.SESSION_MIN) * 60
+    boost = 1.0 + (P.SESSION_MULT - 1) * mean_len * P.SESSION_PER_S      # mean rate multiple of a session identity
+    base = rate * m / np.sum(m * np.where(sess, boost, 1.0))              # each identity's rate between sessions
+    ts, ss = [], []
+    for i in range(n):
+        k = rg.poisson(base[i] * H)
+        ts.append(rg.uniform(0, H, k))
+        ss.append(np.full(k, i))
+        if sess[i]:
+            lead = 2 * P.SESSION_MIN[1] * 60
+            for st in rg.uniform(-lead, H, rg.poisson(P.SESSION_PER_S * (H + lead))):
+                ln = rg.uniform(*P.SESSION_MIN) * 60
+                a, b = max(st, 0.0), min(st + ln, H)
+                if b > a:
+                    k = rg.poisson(base[i] * (P.SESSION_MULT - 1) * (b - a))
+                    ts.append(rg.uniform(a, b, k))
+                    ss.append(np.full(k, i))
+    t0, src = np.concatenate(ts), np.concatenate(ss).astype(np.int64)
+    o = np.argsort(t0, kind="stable")
+    return t0[o], src[o]
+
+
+def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None, src=None, lat=None, gen=0):
     """One stream of transactions (real devices, or the decoy infrastructure's identities) up to
-    the horizon. Both streams run the same code; the decoy flag is truth only."""
+    the horizon. Both streams run the same code; the decoy flag is truth only. t0, src and lat (one row
+    of first-hop latencies per transaction) are given for edits and resubmissions."""
     cfg, H = w.cfg, w.cfg.horizon_s
-    S = int(r.poisson(rate * H)) if rate > 0 else 0
-    t0 = np.sort(r.uniform(0, H, S))
-    src = src0 + r.integers(0, max(n_src, 1), S)
-    lat_src = r.uniform(*P.LAT_EXT_MS, size=(max(n_src, 1), P.N_NODES)) / 1000
-    lat = lat_src[src - src0]
+    if t0 is None:
+        kind = "W0" if (cfg.workload == "Wmis" and decoy) else ("W2" if cfg.workload == "Wmis" else cfg.workload)
+        if kind == "W0":
+            S = int(r.poisson(rate * H)) if rate > 0 else 0
+            t0 = np.sort(r.uniform(0, H, S))
+            src = src0 + r.integers(0, max(n_src, 1), S)
+        else:
+            t0, src = _workload(w, rate, n_src, decoy, kind)
+            src = src0 + src
+            S = t0.shape[0]
+        lat_src = r.uniform(*P.LAT_EXT_MS, size=(max(n_src, 1), P.N_NODES)) / 1000
+        w.lat_tab[src0] = lat_src
+        lat = lat_src[src - src0]
+    else:
+        S = t0.shape[0]
     sub = sub0 + np.arange(S)
     C, F, I, A, B, D, E, G, Hh = _roles(r, S, w.gk_set, rng_relays=w.rng_relays if cfg.overlap else None)
 
-    (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, cfg.dev_cred_mean)
-    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.dev_content_mean)
+    mk = _marks(w, S, src, decoy, gen)
+    (_, _, arr_c), ev_cred = _chain(w, r, t0, src, lat, A, B, C, (CRED1, CRED2, CRED3), sub, cfg.dev_cred_mean, *mk["d"][0])
+    (_, _, arr_f), ev_ca = _chain(w, r, t0, src, lat, D, E, F, (CA1, CA2, CA3), sub, cfg.dev_content_mean, *mk["d"][1])
     dev_i = cfg.dev_content_mean if cfg.dev_content_i_mean < 0 else cfg.dev_content_i_mean
-    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, dev_i)
+    (_, _, arr_i), ev_cb = _chain(w, r, t0, src, lat, G, Hh, I, (CB1, CB2, CB3), sub, dev_i, *mk["d"][2])
 
     # C -> V -> C: C holds on its node clock, then sends CV-1; V processes, holds on its own clock,
     # and replies (APPROVED with sigma_V; the reply is padded in the relay class either way)
@@ -249,6 +304,8 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
     ev_cv1 = w.ev.add(cv1_s, cv1_a, C, VAL, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV1, sub)
     cv2_s = cv1_a + r.uniform(*P.VALIDATOR_PROC_MS, S) / 1000
     cv2_s = LT.hold(r, cv2_s, w.v_phase, cfg.v_hold_mean)
+    if mk["d_v"] is not None:                    # a validator mark: the reply leaves late
+        cv2_s = cv2_s + mk["d_v"]
     cv2_a = cv2_s + w.lat_int[VAL, C] + _jit(r, S)
     ev_cv2 = w.ev.add(cv2_s, cv2_a, VAL, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
 
@@ -275,7 +332,9 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         rel_gk = LT.hold(r, chk, w.gk_phase[g], cfg.gk_mean)
         gk_rel[:, j] = rel_gk
         ph = w.bundle_phase[g]
-        if cfg.gk_inclusion:
+        if cfg.grid_off:
+            pass                                 # no departure grid: the posting leaves when ready
+        elif cfg.gk_inclusion:
             # inclusion lottery: at each boundary of this gatekeeper's grid the ready posting draws
             # for a place in that boundary's bundle; boarding is forced at the 12th boundary
             rel_gk = LT.inclusion_departure(w.rng_incl, rel_gk, ph, P.BUNDLE_S, P.INCLUSION_P, P.INCLUSION_MAX)
@@ -292,7 +351,11 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
         hold = LT.hold(r, arr, w.phase[node], cfg.cs_mean)
         known = _pushed(w, posts, node)
         det = np.maximum(hold, known)
-        ok = np.isfinite(quorum) & (det - arr <= P.QUORUM_TIMEOUT_S)
+        ok = np.isfinite(quorum) & (det - arr <= cfg.quorum_timeout_s)
+        if cfg.board_window_s > 0:               # the boards no longer hold the postings when F or I checks
+            ok &= det - quorum <= cfg.board_window_s
+        if mk["drop"] is not None:               # a dropped packet never confirms
+            ok &= ~mk["drop"]
         det = np.where(ok, det, np.nan)
         ready = det
         if cfg.post_match:
@@ -319,7 +382,44 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool):
                 hold_f=out["f"][0], det_f=out["f"][1], reg_f=out["f"][2], ok_f=out["f"][3],
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
                 ready_f=out["f"][4], ready_i=out["i"][4], known_f=out["f"][5], known_i=out["i"][5],
-                ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk)
+                ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk,
+                marked=mk["marked"], mark_path=mk["path"], dropped=mk["drop"] if mk["drop"] is not None else np.zeros(S, bool))
+
+
+def _marks(w, S, src, decoy, gen):
+    """The active attack on one generation of transactions: which are the target's and marked, on which path
+    (0 credential, 1 F content, 2 I content, 3 all three, 4 the validator's reply), and the delays or the drop.
+    Only the target's own first transactions are marked; resubmissions and edits are not."""
+    cfg = w.cfg
+    none = dict(marked=np.zeros(S, bool), path=np.full(S, -1, np.int8), d=[(None, None)] * 3, d_v=None, drop=None)
+    if not cfg.mark_actor or decoy or gen > 0 or cfg.mark_target == -1:
+        return none
+    marked = (src == cfg.mark_target) if cfg.mark_target >= 0 else np.ones(S, bool)   # -2: every real device (models)
+    one = w.rng_mark.integers(0, 3, S)           # the first relay that holds it, or the one packet marked
+    path = np.full(S, -1, np.int8)
+    if cfg.mark_actor in ("first_relay", "access_one"):
+        path = np.where(marked, one, -1).astype(np.int8)
+    elif cfg.mark_actor == "access":
+        path = np.where(marked, 3, -1).astype(np.int8)
+    elif cfg.mark_actor == "validator":
+        path = np.where(marked, 4, -1).astype(np.int8)
+    else:
+        raise ValueError(cfg.mark_actor)
+    out = dict(marked=marked, path=path, d=[(None, None)] * 3, d_v=None, drop=None)
+    if cfg.mark_mode == "drop":
+        if cfg.mark_actor == "validator":
+            raise ValueError("the validator does not drop")
+        out["drop"] = path >= 0
+        return out
+    dl = []
+    for k in range(3):
+        hit = (path == k) | (path == 3)
+        d = np.where(hit, cfg.mark_delta, 0.0)
+        dl.append((d, None) if cfg.mark_actor.startswith("access") else (None, d))
+    out["d"] = dl
+    if cfg.mark_actor == "validator":
+        out["d_v"] = np.where(path == 4, cfg.mark_delta, 0.0)
+    return out
 
 
 def _gossip(w: World, origin, t_origin, sub, origin_leg, stream=0):
@@ -355,44 +455,138 @@ def _gossip(w: World, origin, t_origin, sub, origin_leg, stream=0):
 
 def gen_birthmark(w: World):
     cfg = w.cfg
-    real = gen_transactions(w, w.rng_real, cfg.real_rate, cfg.real_devices, 0, 0, decoy=False)
+    grow = 1.0 + cfg.edits_per_capture           # edits are transactions too: captures slow so the volume holds
+    real = gen_transactions(w, w.rng_real, cfg.real_rate / grow, cfg.real_devices, 0, 0, decoy=False)
     S_r = real["t0"].shape[0]
-    dec = gen_transactions(w, w.rng_decoy, cfg.decoy_rate, cfg.decoy_sources, 100_000, S_r, decoy=True)
+    dec = gen_transactions(w, w.rng_decoy, cfg.decoy_rate / grow, cfg.decoy_sources, 100_000, S_r, decoy=True)
     subs = {k: np.concatenate([real[k], dec[k]]) for k in real}
     S = subs["t0"].shape[0]
-    sub = np.arange(S)
+    subs["parent"] = np.full(S, -1, np.int64)
+    subs["root"] = np.arange(S)
+    subs["gen"] = np.zeros(S, np.int8)
+    _register(w, subs, 0, S, S_r, 0)
+    if cfg.edit_share > 0:
+        e = w.rng_edit
+        edited = e.random(S) < cfg.edit_share
+        subs["edits_left"] = np.where(edited, 1 + np.minimum(e.poisson(P.EDIT_EXTRA_MEAN, S), P.EDIT_MAX - 1), 0)
+    gen, lo = 0, 0
+    while True:
+        kids = _children(w, subs, lo, S)
+        if kids is None or gen >= 6:
+            break
+        gen += 1
+        parts, sub0 = [], S
+        for decoy, (par, t0, src, src0, lat, r) in kids:
+            if par.size == 0:
+                continue
+            x = gen_transactions(w, r, 0.0, 0, src0, sub0, decoy=decoy, t0=t0, src=src, lat=lat, gen=gen)
+            x["parent"], x["root"], x["gen"] = par, subs["root"][par], np.full(par.size, gen, np.int8)
+            if "edits_left" in subs:
+                x["edits_left"] = subs["edits_left"][par] - 1
+            parts.append(x)
+            sub0 += par.size
+        if not parts:
+            break
+        n_real = parts[0]["t0"].size if not parts[0]["decoy"][0] else 0
+        for k in parts[0]:
+            subs[k] = np.concatenate([subs[k]] + [x[k] for x in parts])
+        lo, S = S, subs["t0"].shape[0]
+        _register(w, subs, lo, S, lo + n_real, gen)
+    return subs
+
+
+def _children(w, subs, lo, hi):
+    """The next generation: edits of the transactions in [lo, hi) that posted and have edits left, or the
+    resubmissions of dropped transactions. Returns [(decoy, (parents, t0, src, src0, latency rows, rng))]
+    for the real and the decoy children, or None."""
+    cfg, H = w.cfg, w.cfg.horizon_s
+    idx = np.arange(lo, hi)
+    out = []
+    if cfg.edit_share > 0:
+        e = w.rng_edit
+        par = idx[(subs["edits_left"][idx] > 0) & np.isfinite(subs["posted"][idx])]
+        t0 = subs["posted"][par] + P.EDIT_DELAY_MIN_S + e.exponential(P.EDIT_DELAY_MEAN_S, par.size)
+        same = e.random(par.size) < cfg.edit_same_source
+        keep = t0 < H
+        par, t0, same = par[keep], t0[keep], same[keep]
+        for decoy, src0 in ((False, 0), (True, 100_000)):
+            m = subs["decoy"][par] == decoy
+            p_, t_, sm = par[m], t0[m], same[m]
+            dev = subs["src"][p_] % P.MACHINE_OFFSET            # the capture device's own address
+            src = np.where(sm, dev, dev + P.MACHINE_OFFSET)
+            lat = _latency(w, src, src0)
+            o = np.argsort(t_, kind="stable")
+            out.append((decoy, (p_[o], t_[o], src[o], src0, lat[o], e)))
+        return out if any(x[1][0].size for x in out) else None
+    if cfg.mark_actor and cfg.mark_mode == "drop":
+        par = idx[subs["dropped"][idx] & (subs["gen"][idx] == 0)]
+        if par.size == 0:
+            return None
+        t0 = subs["t0"][par] + P.RESUB_WAIT_S + w.rng_mark.exponential(cfg.resub_mean_s, par.size)
+        keep = t0 < H
+        par, t0 = par[keep], t0[keep]
+        src = subs["src"][par]
+        o = np.argsort(t0, kind="stable")
+        return [(False, (par[o], t0[o], src[o], 0, _latency(w, src, 0)[o], w.rng_mark))] if par.size else None
+    return None
+
+
+def _latency(w, src, src0):
+    """First-hop latency rows for these sources: a device's own row, or for a user's machine a row of its
+    own, drawn once per run from the edit stream."""
+    out = np.empty((src.size, P.N_NODES))
+    own = src < src0 + P.MACHINE_OFFSET
+    out[own] = w.lat_tab[src0][src[own] - src0]
+    if (~own).any():
+        key = src0 + P.MACHINE_OFFSET
+        if key not in w.lat_tab:
+            w.lat_tab[key] = w.rng_edit.uniform(*P.LAT_EXT_MS, size=(w.lat_tab[src0].shape[0], P.N_NODES)) / 1000
+        out[~own] = w.lat_tab[key][src[~own] - key]
+    return out
+
+
+def _register(w, subs, lo, hi, split, gen):
+    """Registry submissions and records of the transactions in [lo, hi): real ones below split, decoys from
+    it. Gossip streams 2 gen and 2 gen + 1, so generation 0 draws exactly as before."""
+    cfg = w.cfg
+    S = hi - lo
+    sub = np.arange(lo, hi)
     # registry submissions: every transaction. A decoy is a genuine transaction from a registered
     # credential held by the decoy infrastructure; it is approved, fanned out, posted and
     # finalized exactly as a real one. The decoy flag is truth only, for scoring real records.
-    okf, oki = subs["ok_f"], subs["ok_i"]
+    okf, oki = subs["ok_f"][lo:hi], subs["ok_i"][lo:hi]
     ev_rf, ev_ri = np.full(S, -1, np.int64), np.full(S, -1, np.int64)
     reach = np.full((2, S), np.nan)
-    for stream, part in enumerate((sub < S_r, sub >= S_r)):
+    F, I, rf, ri = subs["F"][lo:hi], subs["I"][lo:hi], subs["reg_f"][lo:hi], subs["reg_i"][lo:hi]
+    for stream, part in enumerate((sub < split, sub >= split)):
         f_, i_ = okf & part, oki & part
-        origin = np.concatenate([subs["F"][f_], subs["I"][i_]])
-        t_org = np.concatenate([subs["reg_f"][f_], subs["reg_i"][i_]])
+        origin = np.concatenate([F[f_], I[i_]])
+        t_org = np.concatenate([rf[f_], ri[i_]])
         osub = np.concatenate([sub[f_], sub[i_]])
         legs = np.concatenate([np.full(f_.sum(), REG_F), np.full(i_.sum(), REG_I)])
-        oids, rch = _gossip(w, origin, t_org, osub, legs, stream)
+        oids, rch = _gossip(w, origin, t_org, osub, legs, 2 * gen + stream)
         ev_rf[f_] = oids[:f_.sum()]
         ev_ri[i_] = oids[f_.sum():]
         reach[0, f_] = rch[:f_.sum()]
         reach[1, i_] = rch[f_.sum():]
-    subs["ev_reg_f"], subs["ev_reg_i"] = ev_rf, ev_ri
     # the registry merges F's and I's submissions into one record at intake, once both have
     # reached every node, and posts it at the next boundary of its own posting schedule; the
     # posted time is the public record time
     intake = np.where(okf & oki, np.fmax(reach[0], reach[1]), np.nan)
-    subs["intake"] = intake
     if cfg.reg_post_s > 0:
         ph = w.post_phase
-        subs["posted"] = ph + cfg.reg_post_s * np.ceil((intake - ph) / cfg.reg_post_s)
+        posted = ph + cfg.reg_post_s * np.ceil((intake - ph) / cfg.reg_post_s)
     else:
-        subs["posted"] = intake
-    subs["final"] = subs["posted"]
+        posted = intake
     # the midpoint of F's and I's registry submissions (used only by a scoring diagnostic)
-    subs["mid"] = np.where(okf & oki, 0.5 * (subs["reg_f"] + subs["reg_i"]), np.nan)
-    return subs
+    mid = np.where(okf & oki, 0.5 * (rf + ri), np.nan)
+    for k, v in (("ev_reg_f", ev_rf), ("ev_reg_i", ev_ri), ("intake", intake), ("posted", posted), ("final", posted),
+                 ("mid", mid)):
+        if k not in subs:
+            subs[k] = np.full(subs["t0"].shape[0], -1 if k.startswith("ev_") else np.nan, v.dtype)
+        elif subs[k].shape[0] < hi:
+            subs[k] = np.r_[subs[k], np.full(hi - subs[k].shape[0], -1 if k.startswith("ev_") else np.nan, v.dtype)]
+        subs[k][lo:hi] = v
 
 
 # --------------------------------------------------------------------------- run

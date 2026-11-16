@@ -50,6 +50,19 @@ MEASURE_S = 3 * 60 * 60    # scored window (extended at small real volume)
 MIN_REAL_PER_RUN = 200     # the scored window is extended until it holds this many real
                            #   transactions on average
 
+# --------------------------------------------------------------------------- C3 to C5 options
+W_SIGMA = 0.90             # W1: lognormal spread of identity rate factors (10th to 90th percentile: a factor of 10)
+SESSION_SHARE = 0.20       # W2: share of identities with sessions
+SESSION_PER_S = 1 / (12 * 3600)   # W2: sessions start at 1 per 12 hours
+SESSION_MIN = (10.0, 60.0) # W2: session length, uniform (minutes)
+SESSION_MULT = 10.0        # W2: rate multiple during a session
+EDIT_EXTRA_MEAN = 0.5      # edit chains: edits per edited capture are 1 + Poisson(0.5)
+EDIT_MAX = 4               #   at most 4
+EDIT_DELAY_MIN_S = 300.0   # an edit's capture follows its parent's posting by 5 minutes
+EDIT_DELAY_MEAN_S = 1800.0 #   plus an exponential with mean 30 minutes
+MACHINE_OFFSET = 200_000   # source address of a user's machine: the device's address plus this
+RESUB_WAIT_S = 2400.0      # a device that sees no record by this long after capture resubmits
+
 # --------------------------------------------------------------------------- record types
 RT_APPDATA = 0x17
 RT_NOISE = 1
@@ -79,6 +92,19 @@ class Config:
     overlap: bool = True               # relays drawn under the routing design's guarantees only (see sim._roles)
     warmup_len: float = -1.0           # warm-up before the scored window (s); below 0: the longest possible delay
     cooldown_len: float = -1.0         # cool-down after the window (s), with arrivals going on; below 0: as above
+    # options added for C3 to C5; every default is C2's behavior
+    decoy_factor: float = 1.0          # decoy concentration: fewer decoy identities, each at this multiple of a device's rate
+    workload: str = "W0"               # W0 one rate; W1 lognormal rates; W2 W1 with sessions; Wmis real devices W2, decoys W0
+    edit_share: float = 0.0            # share of captures that are edited (edit chains); 0 = no edits
+    edit_same_source: float = 1.0      # share of edits sent from the capture's own source address
+    quorum_timeout_s: float = QUORUM_TIMEOUT_S
+    board_window_s: float = 0.0        # a match board keeps postings this long; 0 = as C2, no limit
+    grid_off: bool = False             # no departure grid and no push schedule: postings leave when ready, quorum known at once
+    mark_actor: str = ""               # first_relay, access, access_one or validator; "" = no active attack
+    mark_mode: str = "delay"           # delay: hold the target's packets Δ longer; drop: drop one and the device resubmits
+    mark_delta: float = 0.0            # Δ (s)
+    mark_target: int = -1              # the target's real device index; -1 = none; -2 = every real device (the attacker's models)
+    resub_mean_s: float = 1800.0       # mean of the exponential resubmission delay after RESUB_WAIT_S
 
     @property
     def max_delay_s(self) -> float:
@@ -111,7 +137,30 @@ class Config:
         if self.decoy_rate <= 0:
             return 0
         per_device = self.real_rate / self.real_devices if self.real_rate > 0 else 1.0 / (INTERVAL_MIN * 60)
-        return max(1, int(round(self.decoy_rate / per_device)))
+        return max(1, int(round(self.decoy_rate / per_device / self.decoy_factor)))
+
+    @property
+    def edits_per_capture(self) -> float:
+        """Mean transactions an edited or unedited capture adds as edits."""
+        if self.edit_share <= 0:
+            return 0.0
+        import math
+        lam, m = EDIT_EXTRA_MEAN, EDIT_MAX - 1
+        mean_extra = sum(min(k, m) * math.exp(-lam) * lam ** k / math.factorial(k) for k in range(40))
+        return self.edit_share * (1.0 + mean_extra)
+
+    def hash_dict(self) -> dict:
+        """The fields for a configuration hash: the C3 to C5 options only when they differ from their defaults,
+        so a C2 configuration hashes as it did."""
+        d = dict(self.__dict__)
+        for f in NEW_FIELDS:
+            if d[f] == getattr(Config, f):
+                del d[f]
+        return d
 
     def with_(self, **kw) -> "Config":
         return replace(self, **kw)
+
+
+NEW_FIELDS = ("decoy_factor", "workload", "edit_share", "edit_same_source", "quorum_timeout_s", "board_window_s", "grid_off",
+              "mark_actor", "mark_mode", "mark_delta", "mark_target", "resub_mean_s")
