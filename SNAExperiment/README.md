@@ -291,7 +291,13 @@ Each run of a job writes one record per output file in `raw/`, so a job is resum
 
 **Chance**, in every table: the expected accuracy of naming, for each decision, one candidate drawn uniformly from the candidates the vantage finds feasible for it (a device with a packet the vantage's densities allow, or for C5 a record its density allows), and zero when the truth is not feasible. A variant that changes the candidate set, such as known decoys, gets its chance by the same definition from its own feasible candidates.
 
-`results/C3_dry_run/` holds a dry run of C3 on 2 runs per cell.
+`results/C3_dry_run/` holds a dry run of C3 on 2 runs per cell, on model seeds.
+
+A full run uses the evaluation seed set of C3 to C5 (`eval_seed` in `sna/stronger.py`). Add `--dry` for a dry run on model seeds; its tables are named `_dry_run` and say so on their first line:
+
+```
+python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 --runs 2 --dry --out results/C3_dry_run
+```
 
 ## Scripts
 

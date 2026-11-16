@@ -47,15 +47,16 @@
    "runs": 2
   }
  },
- "code_commit": "3ecf0f1c5b4fa994d9e187f352414b43c6bc4efc",
+ "seed_set": "model (dry run)",
+ "code_commit": "f345c1d47b6bf17322ec6731b78bde52cecd6739",
  "predictions_commit": {
-  "C3": "ac27759ac81f7008a0d4e4f78965082038d9c377",
-  "C4": "767627d203f6377dd54ad61c823a0848542624a9",
-  "C5": "94309f5e0e9f5023c9a5726738822f82717e7db7"
+  "C3": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5",
+  "C4": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5",
+  "C5": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5"
  },
  "c2_config_hash": "c54e444f07f27a7a",
  "seeds": {
-  "traffic": "sha256 of the volume and run id, as C2",
+  "traffic": "1000300000 + 1000 R + run id (model seeds)",
   "models": 1000000000,
   "rates": 1000050000,
   "operators": 15000000,
@@ -69,6 +70,6 @@
  },
  "label": "dry run: 2 runs per cell",
  "elapsed_min": {
-  "c3_kc,c3_conc,c3_vol,c3_kc_r300": 8.341995127995808
+  "c3_kc,c3_conc,c3_vol,c3_kc_r300": 8.129115172227223
  }
 }
