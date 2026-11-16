@@ -11,6 +11,9 @@ C3 has cells R = 1 and 100 for every item, and R = 300 for items 1 and 2. Traffi
 | Decoy operators | Two. Each decoy identity belongs to one, drawn with probability one half from a seed set by the configuration and the run id | As the protocol describes the decoy infrastructure |
 | Decoy concentration factors | 1, 5 and 25 | 1 is C2. 5 and 25 give 20 and 4 decoy identities at R = 1 |
 | Decoy volume | 100, 50, 10 and 0 decoys in flight | 100 is C2. 0 is no cover |
+| Same-role coalitions | First relays and second relays: 2, 3 and 6 nodes. Gatekeepers: two of the three active, and all three. F with I: the record's own F and I | Several nodes in one role. 6 of 20 is about one third |
+| Compromised nodes | k = 1 to 6 nodes, each in every role it holds | Up to about one third of 20 nodes |
+| Choice of the nodes | One set per run, per vantage and per k, uniform over the nodes the role allows, from a seed set by the configuration, the cell and the run id | Every node is as likely as any other |
 | Rate model of the discounting attacker | Poisson counts of captures per source address over the run's observed span, with one rate for a real device and one for a decoy identity, both built on the model seeds | The attacker knows the rates, as it knows the hold distributions |
 
 ## Sources of numbers
@@ -146,9 +149,75 @@ Every component vantage moves by the same multiple as the observer, within ±20%
 
 **Can fail.** A new option that draws from a C2 stream would change every later draw.
 
+## 7. Same-role coalitions
+
+Each coalition pools what its nodes see in one role, on top of the passive observer's view of the wire.
+- **First relays.** Each node knows its own hold of every packet it relayed first. The holds of different nodes are of different packets, so they add.
+- **Second relays.** Each node knows, for every packet it relayed second, which node it came from, when it arrived, and when it left. With the wire this gives the time the packet reached its destination. The coalition does not know which device packet it was: that is the first relay's hold, which it weighs by the hold density.
+- **Gatekeepers.** Two gatekeepers know the later of their two postings of every transaction; three know every transaction's quorum (the second posting). A transaction is linked to a device packet only by timing, as for one gatekeeper.
+- **F with I.** The record's own F and I each know their content packet's arrival and, by the content hash, that it is this record's. Together they know both content packets' arrivals. Each device is scored by the density of each arrival after one of its packets' sends.
+
+**Prediction.** Device-named accuracy, as the lead over the passive observer on the same records, or as a rate:
+
+| Coalition | Records | R = 1 | R = 100 |
+|---|---|---|---|
+| First relays, 2, 3 or 6 | every class | lead −0.3 to +0.5 points | lead −0.2 to +0.3 points |
+| Second relays, 2, 3 or 6 | at least one of the record's second relays held | lead −0.3 to +1.0 points | lead −0.2 to +0.6 points |
+| Second relays, 2, 3 or 6 | none held | lead −0.3 to +0.3 points | lead −0.2 to +0.2 points |
+| Gatekeepers, two or three | every record | lead −0.3 to +1.5 points | lead −0.2 to +0.8 points |
+| F with I | every record | 6.5% to 12.5% (point 9.5%) | 3.3% to 6.5% (point 4.9%) |
+
+Every relay and gatekeeper row stays at or below the bound from the posting schedule (10.5% and 5.3%). F with I is not bound by it.
+
+**Basis.**
+- The spread of the record time after a packet's send is 314 s (standard deviation, development seeds). Knowing a first relay's hold removes its variance (51 s), knowing when the packet reached its destination leaves 290 s, and knowing the quorum leaves 266 s.
+- The Gaussian score model of `PREDICTIONS_C4.md` item 4 (d = 0.66 at R = 1 and 0.58 at R = 100, fitted to the observer's C2 rates) gives, with d scaled by 314 over the spread that is left: 4.85% and 2.37% for all three first holds known, 5.30% and 2.59% for all three destination arrivals, 5.98% and 2.94% for the quorum. These are upper estimates: they assume the coalition knows which device packet each of its events belongs to. For relays and gatekeepers that link is itself timing, and C2 shows how much that costs: one first hop leads the observer by −0.00 points [−0.03, +0.03] at R = 1, and one gatekeeper by +0.03 [−0.07, +0.10].
+- So each relay or gatekeeper range runs from a little below the observer to a little above its upper estimate.
+- F with I. C2's content server names the device on 5.53% and 2.78% of the records naming it: d = 0.74 and 0.66 in the same model. Two independent arrivals of one device's packets add their evidence: d √2, which gives 9.5% and 4.9%. The ranges are 0.7 to 1.3 times that.
+
+**Fails if** a row lies outside its range, or a relay or gatekeeper row is above the bound by more than its interval.
+
+**Can fail.** The Gaussian model treats evidence as additive. If the second relays' or gatekeepers' timing links are sharper than one gatekeeper's in C2, their rows can exceed the upper end.
+
+## 8. Compromised nodes
+
+A coalition of k nodes, k = 1 to 6, each in every role it holds in each transaction. It pools everything items 3 and 7 give, and its byte-identical links:
+- **Content path held at both ends.** A node is the record's F (or I) and another is that path's first relay. The inner packet is byte-identical at the first relay and the destination, so the pair names the device exactly.
+- **Credential path held at both ends.** A node is C and another is A. As item 3: the device of each of C's transactions through A, linked to the record by the time after quorum on the match boards.
+- **Destination and second relay.** A node is the record's F (or I) and another is that path's second relay, but not its first relay. The second relay knows the first relay it came from and when. The coalition weighs the device packets that arrived at that first relay by the first relay's hold.
+- **Destination only.** A node is the record's F or I, or both, without the above. As F with I in item 7, with one or both arrivals.
+- **Timing roles only.** The coalition holds a relay, C or gatekeeper role in the transaction, and none of the above. As items 7 and C2's combined view.
+- **No role.** The observer.
+
+**Prediction.** Device-named accuracy per class, with the class's expected share of records at k = 6:
+
+| Class | Share at k = 6 | R = 1 | R = 100 |
+|---|---|---|---|
+| Content path held at both ends | 15.2% | 100% | 100% |
+| Credential path held at both ends | 6.9% | 88% to 100% | 80% to 99% |
+| Destination and second relay | 10.2% | 45% to 90% | 30% to 75% |
+| Destination only | 23.8% | 5.0% to 12.5% | 2.4% to 6.5% |
+| Timing roles only | 43.2% | lead −0.3 to +1.5 points | lead −0.2 to +0.8 points |
+| No role | 0.7% | lead −0.3 to +0.3 points | lead −0.2 to +0.2 points |
+
+The shares at k = 2 are 1.1%, 0.5%, 1.0%, 17.4%, 56.4% and 23.6%; at k = 4 they are 6.2%, 3.0%, 5.2%, 24.7%, 56.3% and 4.6%. Over every record, the rate at k = 6 is 29% to 37% at R = 1 and 25% to 33% at R = 100, and it rises with k.
+
+**Basis.**
+- Shares: the simulator's path rules (C, F and I from the 17 nodes outside the active gatekeepers; six distinct relays from the other 17), 200,000 draws per k.
+- Content path at both ends: the exact link of item 3.
+- Credential path at both ends: item 3's range.
+- Destination and second relay: device packets reach a first relay at 3 (R + 100) / D / 20 per second. Within its mean hold (60 s) that is 0.78 other packets at R = 1 and 1.54 at R = 100. With equal weights the rate would be (1 − e^(−x)) / x: 69% and 51%. The hold density separates some and confuses others, so the ranges run about 20 points either side.
+- Destination only: from C2's content server (5.53% and 2.78%) for one arrival to item 7's F with I for two.
+- Timing roles only and no role: item 7 and C2.
+- The overall rate is the share-weighted sum of the class ranges.
+
+**Fails if** a class with at least 50 right and 50 wrong decisions lies outside its range, the content-path class is below 100%, or the overall rate does not rise with k.
+
+**Can fail.** The destination-and-second-relay range rests on a rough count. Classes at small k are rare and may not meet the stability rule; they are then reported as unstable, not judged.
+
 ## Reporting the bound
 
-Every table shows the bound from the posting schedule beside each row it applies to. Rows with a link from a record to its transaction (F, I, and a first relay with F or I) are marked not applicable.
+Every table shows the bound from the posting schedule beside each row it applies to. Rows with a link from a record to its transaction (F, I, a first relay with F or I, F with I, and the classes of item 8 that hold a destination or both ends of the credential path) are marked not applicable.
 
 ## Changes before the run
 
@@ -157,3 +226,5 @@ The device-naming bound was first given as the record bound (9.64%, 4.87% and 2.
 The first-relay-with-destination rows were first predicted as a timing attack (20% to 60%, 12% to 40% and 6% to 30% with C; 60% to 85%, 45% to 75% and 30% to 65% with F or I). The reason for the change is the specification, not the dry run: its per-leg table and packet layouts carry the same CredP or ContP on every leg of a path, and its relay rule forwards what remains after the transit layer, so the first relay and the destination hold the same bytes. The pair's link is exact. For C the link to the record is still timing, now from the transaction's quorum on the match boards, which C reads as a Registry Node.
 
 Evaluation seeds were used in development. The coalition vantages were debugged on the traffic seeds of runs 1 to 4, and the path coalitions on run 2. The committed dry run used runs 0 and 1. No prediction in this file was changed because of those runs.
+
+Items 7 and 8 were added after the dry run, to answer reviewers who found the attacker too weak. They were written before their code and before any run of them.
