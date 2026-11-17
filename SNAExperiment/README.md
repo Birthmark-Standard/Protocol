@@ -295,7 +295,7 @@ Each run of a job writes one record per output file in `raw/`, so a job is resum
 
 **Chance**, in every table: the expected accuracy of naming, for each decision, one candidate drawn uniformly from the candidates the vantage finds feasible for it (a device with a packet the vantage's densities allow, or for C5 a record its density allows), and zero when the truth is not feasible. A variant that changes the candidate set, such as known decoys, gets its chance by the same definition from its own feasible candidates.
 
-`results/C3_dry_run/` to `results/C6_dry_run/` hold dry runs of C3 to C6 on model seeds (2 runs per cell for C3 and C6, 1 for C4 and C5).
+`results/C3_dry_run/` to `results/C6_dry_run/` hold dry runs of C3 to C6 on model seeds (2 runs per cell for C3 and C6, 1 for C4 and C5), and `results/C6_second_dry_run/` one of the second C6 run (1 run per cell).
 
 A full run uses the evaluation seed set of C3 to C5 (`eval_seed` in `sna/stronger.py`). Add `--dry` for a dry run on model seeds; its tables are named `_dry_run` and say so on their first line:
 
@@ -319,6 +319,18 @@ python -m sna.stronger c6 c6_issuer --runs 100 --out results/C6
 |---|---|---|
 | `c6` | both candidates (`cp`; `otc` natural and `otcL` lengthened hold, each with threshold refills or, as `otcR` and `otcLR`, the random schedule) under W0, W1, W2, W-mismatch and the two edit-chain settings | R = 1, 100 (2-hour window at R = 100) |
 | `c6_issuer` | the target's issuer withholding, delaying, or not touching refills, windows of 10 to 120 minutes | R = 1, 100 (67-hour window) |
+
+A second C6 run, in its own folder, adds the batch sweep (1, 5, 20 and 100 certificates, natural variant), a destination that drops or delays every packet it receives (the device resubmits a dropped transaction after a wait just past its candidate's longest natural delay), and the issuer's withholding windows of 6, 12 and 24 hours:
+
+```
+python -m sna.stronger c6_batch c6_dest c6_issuer_long --runs 100 --out results/C6_second
+```
+
+| Job | What | Cells |
+|---|---|---|
+| `c6_batch` | the batch sweep: the issuer, the stock and the revocation delay per batch | R = 1, 100 |
+| `c6_dest` | a dropping destination (resubmission means 30 minutes to 6 hours) or a delaying one (600 or 1,800 s), in both candidates | R = 1, 100 (67-hour window) |
+| `c6_issuer_long` | the issuer withholding or delaying refills over 6, 12 or 24 hours | R = 1, 100 (67-hour window) |
 
 The job writes `TABLES_C6.md` (and `.json`): one table per vantage with both candidates in adjacent rows for each cell and workload, and each candidate's measured latency beside it; then the spread, calibration and reliability sections of the C3 to C5 tables. `C6_PARTIES.md` lists what each party holds in each candidate, from the design descriptions only.
 
