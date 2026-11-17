@@ -5,7 +5,7 @@ its act, the one most likely to be the marked transaction's. Its anchor is a tim
   first relay        when it released the packet it held (delay), or when the packet reached it (drop)
   access network     the latest of the times it released the target's packets (delay), or when the first
                      packet left the device (drop)
-  validator          when it sent the reply
+  validator          when it sent the reply (also when it withholds the other credentials' replies)
 It scores every record by the density of (record time minus anchor) under the marked system, built on the model
 seeds with every real device marked (a histogram with 15-second bins), and picks the highest; records of one posting tie, and a tie breaks at
 random. Record-finding accuracy is the share of marked transactions whose record (for a drop, the
@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from . import attacks as AT
 from . import lottery as LT
 from . import sim as S
 
@@ -41,7 +42,7 @@ def anchors(run):
         elif cfg.mark_actor == "access":
             t = ts[e[:, 0]] if drop else ta[e[:, 0]]
             a = np.fmin(a, t) if drop else np.fmax(a, t)
-    if cfg.mark_actor == "validator":
+    if cfg.mark_actor.startswith("validator"):          # marking its target's reply, or withholding the others
         a = s["cv2_s"][m]
     target = m.copy()
     if drop:
@@ -62,8 +63,10 @@ def model_samples(run):
 
 
 def build_model(cfg, seeds, bw=15.0):
+    """The density of the record time after the anchor; None when no marked transaction ever posts a record (a
+    mark longer than the quorum timeout drops every one), and the attacker then finds nothing."""
     x = np.concatenate([model_samples(S.simulate(cfg, sd)) for sd in seeds])
-    return LT.EmpiricalLogPDF(x, bw), int(x.size)
+    return (LT.EmpiricalLogPDF(x, bw) if x.size else None), int(x.size)
 
 
 def score(run, pdf, rng, window):
@@ -75,11 +78,15 @@ def score(run, pdf, rng, window):
     fin = np.nonzero(np.isfinite(s["posted"]))[0]
     o = np.argsort(s["posted"][fin], kind="stable")
     rs, ru = fin[o], s["posted"][fin][o]
-    lo, hi = pdf.support
+    lo, hi = pdf.support if pdf is not None else (0.0, 0.0)
     correct = np.zeros(m.size, np.int8)
     found = ((target >= 0) & np.isfinite(s["posted"][np.maximum(target, 0)])).astype(np.int8)
     nfeas = np.zeros(m.size, np.int32)
-    for i in range(m.size):
+    nT = AT.T_GRID.size
+    top1, s_true = np.full(m.size, -np.inf), np.full(m.size, -np.inf)
+    lse, ent = np.full((m.size, nT), np.nan), np.full((m.size, nT), np.nan)
+    rank = np.full(m.size, -1, np.int32)
+    for i in range(m.size if pdf is not None else 0):
         if not np.isfinite(a[i]):
             continue
         b0, b1 = np.searchsorted(ru, a[i] + lo, "left"), np.searchsorted(ru, a[i] + hi, "right")
@@ -93,5 +100,18 @@ def score(run, pdf, rng, window):
         best = np.nonzero(sc == sc[ok].max())[0]
         pick = rs[b0:b1][best[rng.integers(0, best.size)]]
         correct[i] = int(target[i] >= 0 and pick == target[i])
+        # the posterior over the candidate records, for the spread metrics (the decision above is unchanged)
+        top1[i] = sc[ok].max()
+        is_t = (rs[b0:b1] == target[i]) & ok
+        if is_t.any():
+            s_true[i] = sc[is_t].max()
+        rank[i] = int((sc[ok] > s_true[i]).sum()) if is_t.any() else nfeas[i]
+        for k, T in enumerate(AT.T_GRID):
+            x = sc[ok] / T
+            lse[i, k] = np.log(np.exp(x - x.max()).sum()) + x.max() - top1[i] / T
+            ent[i, k] = AT._entropy(sc[ok][None, :], T)[0]
+    rand = np.where(np.isfinite(s_true) & (nfeas > 0), 1.0 / np.maximum(nfeas, 1), 0.0)
     return dict(sub=m.astype(np.int32), correct=correct, has_record=found, n_feas=nfeas,
-                path=s["mark_path"][m].astype(np.int8))
+                path=s["mark_path"][m].astype(np.int8), dev_v_correct=correct, dev_v_rand=rand.astype(np.float32),
+                dev_n_feas=nfeas, dev_top1=top1.astype(np.float32), dev_s_true=s_true.astype(np.float32),
+                dev_lse=lse.astype(np.float16), dev_ent=ent.astype(np.float16), dev_rank=rank)

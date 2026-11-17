@@ -47,18 +47,20 @@
    "runs": 2
   }
  },
- "code_commit": "46430928430f1308120a47c3e7d6110a46102b0f",
+ "seed_set": "model (dry run)",
+ "code_commit": "f345c1d47b6bf17322ec6731b78bde52cecd6739",
  "predictions_commit": {
-  "C3": "46430928430f1308120a47c3e7d6110a46102b0f",
-  "C4": "46430928430f1308120a47c3e7d6110a46102b0f",
-  "C5": "9ee7e46d37ecdc84ae18721c6ef20c0b337d94a6"
+  "C3": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5",
+  "C4": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5",
+  "C5": "54897b1432d5b1613f1f0ec3c6298386a0a00cf5"
  },
  "c2_config_hash": "c54e444f07f27a7a",
  "seeds": {
-  "traffic": "sha256 of the volume and run id, as C2",
+  "traffic": "1000300000 + 1000 R + run id (model seeds)",
   "models": 1000000000,
   "rates": 1000050000,
-  "operators": 15000000
+  "operators": 15000000,
+  "coalitions": 18000000
  },
  "versions": {
   "python": "3.11.17",
@@ -66,8 +68,8 @@
   "scipy": "1.17.1",
   "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39"
  },
- "label": "dry run, 2 runs per cell",
+ "label": "dry run: 2 runs per cell",
  "elapsed_min": {
-  "c3_kc,c3_conc,c3_vol,c3_kc_r300": 4.966347312927246
+  "c3_kc,c3_conc,c3_vol,c3_kc_r300": 8.129115172227223
  }
 }

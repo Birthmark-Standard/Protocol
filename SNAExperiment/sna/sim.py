@@ -102,8 +102,15 @@ class World:
         self.post_phase = float(rng_regpost.uniform(0, max(cfg.reg_post_s, 1.0)))
         # streams for the C3 to C5 options, spawned after the fifteen above so those are unchanged: the
         # workloads, the edit chains, and the active attacks with their resubmissions
-        self.rng_work, self.rng_edit, self.rng_mark, _ = (np.random.default_rng(s) for s in ss.spawn(4))
+        self.rng_work, self.rng_edit, self.rng_mark, self.rng_val = (np.random.default_rng(s) for s in ss.spawn(4))
         self.lat_tab = {}
+        self.served = {}
+        self.vkey = {}
+        if cfg.n_validators > 1:
+            # further validators: their latencies to the nodes and their hold-clock phases (the first is C2's)
+            rv = self.rng_val
+            self.vlat = rv.uniform(*P.LAT_INT_MS, size=(cfg.n_validators, P.N_NODES)) / 1000
+            self.vphase = np.r_[0.0, rv.uniform(0, P.TICK_S, cfg.n_validators - 1)]
         r = self.rng_world
         n_int = P.N_NODES + P.N_VALIDATORS
         base = r.uniform(*P.LAT_INT_MS, size=(n_int, n_int)) / 1000
@@ -300,14 +307,23 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
     # C -> V -> C: C holds on its node clock, then sends CV-1; V processes, holds on its own clock,
     # and replies (APPROVED with sigma_V; the reply is padded in the relay class either way)
     cv1_s = LT.hold(r, arr_c, w.phase[C], cfg.c_hold_mean) + _proc(r, S)
-    cv1_a = cv1_s + w.lat_int[C, VAL] + _jit(r, S)
-    ev_cv1 = w.ev.add(cv1_s, cv1_a, C, VAL, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV1, sub)
+    vi = _validator_of(w, src, src0, n_src, decoy)
+    if cfg.n_validators > 1:
+        # several validators: each transaction goes to the validator its key_ref names
+        lat_cv = np.where(vi == 0, w.lat_int[C, VAL], w.vlat[vi, C])
+        vnode, vph = VAL + vi, np.where(vi == 0, w.v_phase, w.vphase[vi])
+    else:
+        lat_cv, vnode, vph = w.lat_int[C, VAL], VAL, w.v_phase
+    cv1_a = cv1_s + lat_cv + _jit(r, S)
+    ev_cv1 = w.ev.add(cv1_s, cv1_a, C, vnode, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV1, sub)
     cv2_s = cv1_a + r.uniform(*P.VALIDATOR_PROC_MS, S) / 1000
-    cv2_s = LT.hold(r, cv2_s, w.v_phase, cfg.v_hold_mean)
+    cv2_s = LT.hold(r, cv2_s, vph, cfg.v_hold_mean)
     if mk["d_v"] is not None:                    # a validator mark: the reply leaves late
         cv2_s = cv2_s + mk["d_v"]
-    cv2_a = cv2_s + w.lat_int[VAL, C] + _jit(r, S)
-    ev_cv2 = w.ev.add(cv2_s, cv2_a, VAL, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
+    if cfg.mark_actor == "validator_withhold":
+        cv2_s = _withhold(w, mk, cv2_s, src, src0, n_src, decoy, vi)
+    cv2_a = cv2_s + lat_cv + _jit(r, S)
+    ev_cv2 = w.ev.add(cv2_s, cv2_a, vnode, C, w.size(r, "relay", S), P.RT_APPDATA, K_BIRTHMARK, CV2, sub)
 
     # fan-out, serialized: from C's receipt of CV-2, the transaction's three legs share one draw per
     # tick of C's node clock; each successful draw sends the next leg in a random order, and the
@@ -347,6 +363,7 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
     # content servers: hold on the node clock; confirm once the hold has released and the board
     # pushes have shown quorum, whichever is later; drop after 30 minutes without quorum
     out = {}
+    dest_drop = np.zeros(S, bool)
     for name, arr, node in (("f", arr_f, F), ("i", arr_i, I)):
         hold = LT.hold(r, arr, w.phase[node], cfg.cs_mean)
         known = _pushed(w, posts, node)
@@ -356,6 +373,10 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
             ok &= det - quorum <= cfg.board_window_s
         if mk["drop"] is not None:               # a dropped packet never confirms
             ok &= ~mk["drop"]
+        hit = (node == cfg.mark_node) if cfg.mark_actor == "destination" else np.zeros(S, bool)
+        if cfg.mark_mode == "drop" and hit.any():        # a dropping destination never submits
+            ok &= ~hit
+            dest_drop |= hit
         det = np.where(ok, det, np.nan)
         ready = det
         if cfg.post_match:
@@ -363,6 +384,8 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
             # confirms quorum
             ready = LT.hold(w.rng_post, np.where(ok, det, 0.0), None, cfg.pm_mean)
             ready = np.where(ok, ready, np.nan)
+        if cfg.mark_mode == "delay" and hit.any():       # a delaying destination holds its submission by mark_delta
+            ready = np.where(hit, ready + cfg.mark_delta, ready)
         dep = ready
         if cfg.reg_bundle_s > 0:
             # registry-level bundling: a confirmed submission waits for the next boundary of one
@@ -383,7 +406,52 @@ def gen_transactions(w: World, r, rate, n_src, src0, sub0, decoy: bool, t0=None,
                 hold_i=out["i"][0], det_i=out["i"][1], reg_i=out["i"][2], ok_i=out["i"][3],
                 ready_f=out["f"][4], ready_i=out["i"][4], known_f=out["f"][5], known_i=out["i"][5],
                 ev_cred=ev_cred, ev_ca=ev_ca, ev_cb=ev_cb, ev_cv1=ev_cv1, ev_cv2=ev_cv2, ev_gk=ev_gk,
-                marked=mk["marked"], mark_path=mk["path"], dropped=mk["drop"] if mk["drop"] is not None else np.zeros(S, bool))
+                marked=mk["marked"], mark_path=mk["path"], dropped=(mk["drop"] if mk["drop"] is not None else np.zeros(S, bool)) | dest_drop,
+                withheld=mk.get("withheld", np.zeros(S, bool)), val=vi)
+
+
+def _validator_of(w, src, src0, n_src, decoy):
+    """The validator (Token Key) of each transaction's credential: drawn once per identity from the split; with one
+    validator, always the first. A user's machine (edits) uses the first."""
+    cfg = w.cfg
+    if cfg.n_validators <= 1:
+        return np.zeros(src.shape[0], np.int64)
+    if src0 not in w.vkey:
+        split = np.asarray(cfg.decoy_val_split if decoy else cfg.real_val_split, float)
+        if split.size != cfg.n_validators:
+            raise ValueError("a validator split needs one share per validator")
+        w.vkey[src0] = w.rng_val.choice(cfg.n_validators, size=max(n_src, 1), p=split / split.sum())
+    k = src - src0
+    own = (k >= 0) & (k < w.vkey[src0].size)
+    return np.where(own, w.vkey[src0][np.clip(k, 0, w.vkey[src0].size - 1)], 0)
+
+
+def _withhold(w, mk, cv2_s, src, src0, n_src, decoy, vi):
+    """Validator withholding: inside each window the validator replies to its target and withholds, or delays to the
+    window's end, its reply to every other credential it serves. A withheld transaction fails. The target's replies
+    inside a window are the marked transactions. With one validator it serves a share of identities, drawn once per
+    run (withhold_share); with several, the withholding validator is the target's own and serves exactly the
+    identities registered with it."""
+    cfg = w.cfg
+    if cfg.n_validators > 1:
+        served = vi == w.vkey[0][cfg.mark_target]
+    else:
+        if src0 not in w.served:
+            w.served[src0] = w.rng_mark.random(max(n_src, 1)) < cfg.withhold_share
+        served = w.served[src0][np.clip(src - src0, 0, max(n_src, 1) - 1)]
+    period = cfg.withhold_len + P.WITHHOLD_GAP_S
+    x = cv2_s - cfg.warmup_s
+    inwin = (x >= 0) & (np.mod(x, period) < cfg.withhold_len)
+    tgt = (src == cfg.mark_target) & (not decoy)
+    hold = served & inwin & ~tgt
+    mk["withheld"] = hold
+    mk["marked"] = tgt & inwin
+    mk["path"] = np.where(mk["marked"], 4, -1).astype(np.int8)
+    if cfg.withhold_mode == "delay":
+        end = cfg.warmup_s + period * np.floor(np.maximum(x, 0) / period) + cfg.withhold_len
+        return np.where(hold, end, cv2_s)
+    mk["drop"] = hold                            # no reply: the transaction never reaches quorum
+    return cv2_s
 
 
 def _marks(w, S, src, decoy, gen):
@@ -392,6 +460,10 @@ def _marks(w, S, src, decoy, gen):
     Only the target's own first transactions are marked; resubmissions and edits are not."""
     cfg = w.cfg
     none = dict(marked=np.zeros(S, bool), path=np.full(S, -1, np.int8), d=[(None, None)] * 3, d_v=None, drop=None)
+    if cfg.mark_actor == "validator_withhold":
+        return dict(none, withheld=np.zeros(S, bool))
+    if cfg.mark_actor == "destination":                # acted on at F and I, every transaction (see gen_transactions)
+        return none
     if not cfg.mark_actor or decoy or gen > 0 or cfg.mark_target == -1:
         return none
     marked = (src == cfg.mark_target) if cfg.mark_target >= 0 else np.ones(S, bool)   # -2: every real device (models)
@@ -519,15 +591,23 @@ def _children(w, subs, lo, hi):
             out.append((decoy, (p_[o], t_[o], src[o], src0, lat[o], e)))
         return out if any(x[1][0].size for x in out) else None
     if cfg.mark_actor and cfg.mark_mode == "drop":
-        par = idx[subs["dropped"][idx] & (subs["gen"][idx] == 0)]
+        # a dropped transaction is resubmitted; a dropping destination drops resubmissions too, so any generation
+        par = idx[subs["dropped"][idx] & ((subs["gen"][idx] == 0) | (cfg.mark_actor == "destination"))]
         if par.size == 0:
             return None
-        t0 = subs["t0"][par] + P.RESUB_WAIT_S + w.rng_mark.exponential(cfg.resub_mean_s, par.size)
+        t0 = subs["t0"][par] + cfg.resub_wait_s + w.rng_mark.exponential(cfg.resub_mean_s, par.size)
         keep = t0 < H
         par, t0 = par[keep], t0[keep]
-        src = subs["src"][par]
-        o = np.argsort(t0, kind="stable")
-        return [(False, (par[o], t0[o], src[o], 0, _latency(w, src, 0)[o], w.rng_mark))] if par.size else None
+        out = []
+        for decoy, src0 in ((False, 0), (True, 100_000)):       # C5 drops only its real target: one stream, as before
+            sel = subs["decoy"][par] == decoy
+            if not sel.any():
+                continue
+            p_, t_ = par[sel], t0[sel]
+            src = subs["src"][p_]
+            o = np.argsort(t_, kind="stable")
+            out.append((decoy, (p_[o], t_[o], src[o], src0, _latency(w, src, src0)[o], w.rng_mark)))
+        return out or None
     return None
 
 
@@ -580,8 +660,9 @@ def _register(w, subs, lo, hi, split, gen):
         posted = intake
     # the midpoint of F's and I's registry submissions (used only by a scoring diagnostic)
     mid = np.where(okf & oki, 0.5 * (rf + ri), np.nan)
+    # when each submission's flood has reached every node: on the wire, the latest arrival of its flood frames
     for k, v in (("ev_reg_f", ev_rf), ("ev_reg_i", ev_ri), ("intake", intake), ("posted", posted), ("final", posted),
-                 ("mid", mid)):
+                 ("mid", mid), ("reach_f", reach[0]), ("reach_i", reach[1])):
         if k not in subs:
             subs[k] = np.full(subs["t0"].shape[0], -1 if k.startswith("ev_") else np.nan, v.dtype)
         elif subs[k].shape[0] < hi:

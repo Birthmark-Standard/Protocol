@@ -67,6 +67,8 @@ def outcome(labels, scores, truth_dev, shuf):
             x = sc / T
             mx = x.max()
             d["lse"][i, k] = np.log(np.exp(x - mx).sum()) + mx - top / T
+            d["ent"][i, k] = AT._entropy(sc[None, :], T)[0]
+        d["rank"][i] = int((sc > d["s_true"][i]).sum()) if t.any() else lab.size
         sl = shuf(lab)
         o2 = np.argsort(sl, kind="stable")
         sl2, sc2 = sl[o2], sc[o2]

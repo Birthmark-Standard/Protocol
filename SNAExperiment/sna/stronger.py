@@ -8,6 +8,7 @@ stopped and resumed. Results depend on the cell, the variant and the run id only
 from __future__ import annotations
 
 import hashlib
+import math
 import json
 import pickle
 import time
@@ -26,6 +27,29 @@ from . import sim as S
 ROOT = Path(__file__).resolve().parent.parent
 C2_INFO = ROOT / "results" / "C2" / "run_info.json"
 RATE_SEED0 = EX.MODEL_SEED0 + 50_000            # model seeds for the discounting attacker's rate model
+EVAL_TAG = "sna-c3-c5-fresh"                   # the evaluation seed set of C3 to C5 (not C2's)
+DRY_SEED0 = EX.MODEL_SEED0 + 300_000             # model seeds of dry runs: DRY_SEED0 + 1000 R + run id
+SEED_SETS = ("evaluation", "model (dry run)")
+
+
+def eval_seed(R, run_id):
+    """The traffic seed of one full run of C3 to C5: SHA-256 of the tag, the cell and the run id."""
+    h = hashlib.sha256(f"{EVAL_TAG}|R={R:g}|run={run_id}".encode()).digest()
+    return int.from_bytes(h[:8], "little") >> 1
+
+
+def dry_seed(R, run_id):
+    """The traffic seed of one dry run: a model seed, disjoint from every model's own seeds."""
+    return DRY_SEED0 + 1000 * int(R) + int(run_id)
+
+
+def traffic(out, R, run_id):
+    """The traffic seed for a run written to out: the seed set its run_info.json names."""
+    key = ("seed_set", str(out))
+    if key not in _C:
+        p = Path(out) / "run_info.json"
+        _C[key] = json.loads(p.read_text()).get("seed_set", SEED_SETS[0]) if p.exists() else SEED_SETS[0]
+    return eval_seed(R, run_id) if _C[key] == SEED_SETS[0] else dry_seed(R, run_id)
 
 
 def c2_info():
@@ -63,6 +87,12 @@ def extra(out):
         _C["extra"] = CO.load_extra(Path(out) / "models" / "extra_main.pkl", P.Config(**EX.CONFIGS[EX.MAIN]), EX.MODEL_SEED0,
                                     models(out).pdf["gV"])
     return _C["extra"]
+
+
+def roles(out):
+    if "roles" not in _C:
+        _C["roles"] = CO.load_roles(Path(out) / "models" / "roles_main.pkl", P.Config(**EX.CONFIGS[EX.MAIN]), models(out).pdf["g"])
+    return _C["roles"]
 
 
 def rate_model(cfg, key):
@@ -111,7 +141,7 @@ def work_c3_kc(out, R, variant, run_id):
     manufacturer that keeps records) and the coalition vantages."""
     cfg = cell_config(R)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     m, ex = models(out), extra(out)
     res = []
@@ -120,10 +150,13 @@ def work_c3_kc(out, R, variant, run_id):
     tab = AT.compute(run, m, _rng(R, run_id), hooks=hk.dict())
     vx = CO.validator_with_node(run, m, ex, tab, hk.nodelr)
     pc = CO.path_coalitions(run, ex, tab)
+    rx = roles(out)
+    same = CO.same_role(run, m, ex, rx, tab, R, run_id)            # item 7
+    nodes = CO.compromised(run, m, ex, rx, tab, R, run_id)          # item 8
     t1 = time.time() - t
     res.append((rec_name("c3_knowledge", "none", R), _record(run_id, run, _public(tab), t_sim, t1)))
-    res.append((rec_name("c3_coalition", "all", R), _record(run_id, run, {"validator_with_node": vx, "first_relay_with_destination": pc},
-                                                            t_sim, 0.0)))
+    res.append((rec_name("c3_coalition", "all", R), _record(run_id, run, {"validator_with_node": vx, "first_relay_with_destination": pc,
+                                                                          **same, **nodes}, t_sim, 0.0)))
     op_a, op_b = DC.operators(run, R, run_id)
     decoy_ids = np.r_[op_a, op_b]
     for v, kw in (("one", dict(drop_dev=op_a, drop_dev_validator=op_a)), ("both", dict(drop_dev=decoy_ids, drop_dev_validator=decoy_ids)),
@@ -140,7 +173,7 @@ def work_c3_conc(out, R, variant, run_id):
     f = float(variant[1:])
     cfg = cell_config(R, decoy_factor=f)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     t = time.time()
     hk = _Hooks()
@@ -150,12 +183,26 @@ def work_c3_conc(out, R, variant, run_id):
     return [(rec_name("c3_concentration", variant, R), _record(run_id, run, _public(tab), t_sim, time.time() - t, rate_model=rm))]
 
 
+VALIDATORS = dict(n_validators=3, real_val_split=(0.5, 0.3, 0.2), decoy_val_split=(0.5, 0.3, 0.2))
+
+
+def work_c3_val(out, R, variant, run_id):
+    """Item 9: three validators; the observer, the validators (all, and each alone), and C with and without key_ref."""
+    cfg = cell_config(R, **VALIDATORS)
+    t = time.time()
+    run = S.simulate(cfg, traffic(out, R, run_id))
+    t_sim = time.time() - t
+    t = time.time()
+    tab = AT.compute(run, models(out), _rng(R, run_id), vantages=("observer", "validator", "cred_processor"))
+    return [(rec_name("c3_validators", variant, R), _record(run_id, run, tab, t_sim, time.time() - t))]
+
+
 def work_c3_vol(out, R, variant, run_id):
     """Item 4: decoy volume; every vantage."""
     v = float(variant[1:])
     cfg = cell_config(R, decoys=v)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     t = time.time()
     tab = AT.compute(run, models(out), _rng(R, run_id))
@@ -183,7 +230,7 @@ def work_c4_obs(out, R, variant, run_id):
     from . import krecord as KR
     cfg = c4_config(R, variant)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     m = models(out)
     t = time.time()
@@ -208,10 +255,225 @@ def work_c4_obs(out, R, variant, run_id):
 CEIL_SEED = 16_000_000
 
 
+# --------------------------------------------------------------------------- C6: the two candidates
+OTC_HOLD_S = 693.0                               # the lengthened-hold variant's device hold: the credential path's latency
+C6_CANDIDATES = {"cp": {}, "otc": dict(candidate=P.CANDIDATES[1]),
+                 "otcL": dict(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S),
+                 "otcR": dict(candidate=P.CANDIDATES[1], otc_refill_rule="random"),
+                 "otcLR": dict(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S, otc_refill_rule="random")}
+C6_VARIANTS = tuple(f"{c}_{w}" for c in C6_CANDIDATES for w in C4_VARIANTS)
+# the second C6 run: the batch sweep (natural, threshold rule, W0; refill at a quarter of the batch)
+C6_BATCHES = (1, 5, 20, 100)
+C6_CANDIDATES.update({f"otcB{b}": dict(candidate=P.CANDIDATES[1], otc_batch=b, otc_refill_at=b // 4) for b in C6_BATCHES})
+C6_BATCH_VARIANTS = tuple(f"otcB{b}_W0" for b in C6_BATCHES)
+# resubmission waits, just past each candidate's longest natural delay
+C6_RESUB_WAIT = {"cp": 2400.0, "otc": 1400.0, "otcL": 3500.0}
+C6_DEST = {f"{c}_{m}": dict(mode=m) for c in C6_RESUB_WAIT
+           for m in ("drop_m1800", "drop_m3600", "drop_m7200", "drop_m21600", "delay600", "delay1800")}
+OTC_MODEL_SEED0 = EX.MODEL_SEED0 + 400_000
+
+
+def c6_config(R, variant):
+    c, w = variant.split("_", 1)
+    cfg = c4_config(R, w).with_(**VALIDATORS, **C6_CANDIDATES[c])
+    return cfg
+
+
+def otc_models(out, lengthened):
+    from . import onetime as OT
+    key = ("otc", lengthened)
+    if key not in _C:
+        p = Path(out) / "models" / f"otc_{'lengthened' if lengthened else 'natural'}.pkl"
+        if p.exists():
+            _C[key] = pickle.loads(p.read_bytes())
+        else:
+            cfg = P.Config(candidate=P.CANDIDATES[1], otc_hold_mean=OTC_HOLD_S if lengthened else 0.0, **VALIDATORS)
+            _C[key] = OT.build_models(cfg, seed0=OTC_MODEL_SEED0 + (10_000 if lengthened else 0))
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(pickle.dumps(_C[key]))
+    return _C[key]
+
+
+C6_ISSUER = {f"iwh_{mode}_L{int(L // 60)}": dict(withhold_mode=mode, withhold_len=float(L))
+             for mode in ("none", "withhold", "delay") for L in (600, 1800, 3600, 7200)}
+C6_ISSUER_LONG = {f"iwh_{mode}_L{int(L // 60)}": dict(withhold_mode=mode, withhold_len=float(L))
+                  for mode in ("none", "withhold", "delay") for L in (6 * 3600, 12 * 3600, 24 * 3600)}
+
+
+def _dest_arrival(run, sub, node):
+    s = run.subs
+    if "arr" in s:
+        return s["arr"][sub]
+    return np.where(s["F"][sub] == node, s["arr_f"][sub], s["arr_i"][sub])
+
+
+def drop_link(run, m, out, node):
+    """Item 17: for each real first transaction the node dropped, captured in the window, whose resubmission posted a
+    record among the scored records: each device scored by its packets' fit to the dropped packet's arrival at the node
+    and to the resubmission's record time."""
+    s, rec, cand = run.subs, out["_rec"], out["_cand"]
+    row_of = {int(x): i for i, x in enumerate(rec["sub"])}
+    kids = {}
+    for c, par in enumerate(s["parent"]):
+        if par >= 0 and s["gen"][c] > 0:
+            kids.setdefault(int(par), []).append(c)
+    cfg = run.cfg
+    d0 = np.nonzero(s["dropped"] & (s["gen"] == 0) & ~s["decoy"] & (s["t0"] >= cfg.warmup_s)
+                    & (s["t0"] < cfg.warmup_s + cfg.measure_s))[0]
+    labs, scs, ri = [], [], []
+    for d in d0:
+        x = int(d)
+        while x in kids and not np.isfinite(s["posted"][x]):
+            x = kids[x][0]
+        if not np.isfinite(s["posted"][x]) or x not in row_of:
+            continue
+        i = row_of[x]
+        a = float(_dest_arrival(run, np.array([d]), node)[0])
+        lab, sc = CO._add([CO._arrival(cand, a, m.pdf["cs_q"]), CO._arrival(cand, rec["u"][i], m.pdf["g"])])
+        labs.append(lab); scs.append(sc); ri.append(i)
+    ri = np.array(ri, np.int64)
+    return DS.table(labs, scs, rec, ri, np.full(ri.size, node), out["_base"], rec["dev"][ri], out["_shuf"])
+
+
+def delaying_destination(run, m, out, node, delta):
+    """Item 18: the delaying node on the records of the packets it was the destination of: its packet's arrival and
+    the record time less its own delay."""
+    s, rec, cand = run.subs, out["_rec"], out["_cand"]
+    if "arr" in s:
+        mine = s["D"][rec["sub"]] == node
+    else:
+        mine = (s["F"][rec["sub"]] == node) | (s["I"][rec["sub"]] == node)
+    ri = np.nonzero(mine)[0]
+    a = _dest_arrival(run, rec["sub"][ri], node)
+    u = rec["u"][ri] - delta
+    cs, csq = m.pdf["cs"], m.pdf["cs_q"]
+    col = DS.Collector(ri.size, cand["dev"])
+
+    def fn(rows, k0, k1):
+        x = a[rows][:, None] - cand["t"][None, k0:k1]
+        return dict(v=cs(x, u[rows][:, None] - cand["t"][None, k0:k1]) + csq(x))
+    AT.score_blocks(a - csq.support[1], a - csq.support[0], cand, fn, dict(sub=rec["sub"][ri], dev=rec["dev"][ri]), ("v",),
+                    extra=lambda nm, rows, lo, hi, W, is_t: col(rows, lo, hi, W))
+    sc = [col.get(i) for i in range(ri.size)]
+    return DS.table([x for x, _ in sc], [y for _, y in sc], rec, ri, np.full(ri.size, node), out["_base"], rec["dev"][ri],
+                    out["_shuf"])
+
+
+def work_c6_dest(out, R, setting, run_id):
+    """Items 17 and 18: one node, drawn among the nodes that can be a destination in both candidates, drops (or
+    delays) every packet it is the destination of; the device resubmits a dropped transaction."""
+    from . import onetime as OT
+    cand, mode = setting.split("_", 1)
+    kw = dict(mark_actor="destination", resub_wait_s=C6_RESUB_WAIT[cand])
+    if mode.startswith("drop"):
+        kw.update(mark_mode="drop", resub_mean_s=float(mode[6:]))
+    else:
+        kw.update(mark_mode="delay", mark_delta=float(mode[5:]))
+    cfg = cell_config(R, window=C5_WINDOW, **VALIDATORS, **C6_CANDIDATES[cand], **kw)
+    cfg = cfg.with_(cooldown_len=cfg.cooldown_len + cfg.resub_wait_s + 4 * cfg.resub_mean_s)
+    seed = traffic(out, R, run_id)
+    gk = S.World(cfg, seed).gk_set
+    node = int(CO._pick(R, run_id, 5, 1, np.setdiff1d(np.arange(P.N_NODES), gk))[0])
+    cfg = cfg.with_(mark_node=node)
+    otc = OT.is_onetime(cfg)
+    t = time.time()
+    run = (OT.simulate if otc else S.simulate)(cfg, seed)
+    t_sim = time.time() - t
+    t = time.time()
+    m = otc_models(out, cfg.otc_hold_mean > 0) if otc else models(out)
+    if otc:
+        tab = OT.compute(run, m, _rng(R, run_id))
+    else:
+        tab = AT.compute(run, m, _rng(R, run_id), vantages=("observer",), hooks=_Hooks().dict())
+    s = run.subs
+    rsub = tab["_rec"]["sub"]
+    delayed = (s["D"][rsub] == node) if otc else ((s["F"][rsub] == node) | (s["I"][rsub] == node))
+    obs = dict(tab["observer"], delayed=delayed.astype(np.int8))
+    tables = {"observer": obs}
+    if cfg.mark_mode == "drop":
+        tables["drop_link"] = drop_link(run, m, tab, node)
+    else:
+        tables["delaying_destination"] = delaying_destination(run, m, tab, node, cfg.mark_delta)
+    g0 = s["gen"] == 0
+    return [(rec_name("c6_dest", setting, R), _record(run_id, run, tables, t_sim, time.time() - t, node=node,
+                                                     latency=_latency(run, rsub), dropped_share=float(s["dropped"][g0].mean())))]
+
+
+def work_c6_issuer(out, R, setting, run_id):
+    """C6 item 8: the target's issuer withholds or delays every other refill of its identities inside each window
+    (mode none: nothing withheld), then finds the record of each target capture whose refill fell in a window."""
+    from . import onetime as OT
+    target = 0 if R == 1 else int(np.random.default_rng([TARGET_SEED, int(R), run_id]).integers(0, cell_config(R).real_devices))
+    base = cell_config(R, window=C5_WINDOW, candidate=P.CANDIDATES[1], mark_actor="issuer_withhold", mark_target=target,
+                       **VALIDATORS, **{**C6_ISSUER, **C6_ISSUER_LONG}[setting])
+    t = time.time()
+    run = OT.simulate(base, traffic(out, R, run_id))
+    t_sim = time.time() - t
+    t = time.time()
+    res = OT.issuer_find(run, otc_models(out, False).pdf["gT"], np.random.default_rng([CEIL_SEED + 2, int(R), run_id]),
+                         (base.warmup_s, base.warmup_s + base.measure_s))
+    s = run.subs
+    mine = (s["src"] == target) & ~s["decoy"]
+    rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=time.time() - t, target=target, marks=res,
+               target_transactions=int(res["sub"].size), target_key=int(s["issuer"][mine][0]) if mine.any() else -1,
+               waited=int((s["ready"] > s["t0"] + 1e-9).sum()))
+    return [(rec_name("c6_issuer", setting, R), rec)]
+
+
+def _latency(run, rec_sub):
+    s = run.subs
+    return float(np.mean(s["posted"][rec_sub] - s["t0"][rec_sub])) if rec_sub.size else float("nan")
+
+
+def work_c6(out, R, variant, run_id):
+    """C6: one candidate under one workload or chain setting: every vantage both candidates have, the second
+    candidate's issuers and coalitions, the observer's device scores for K records and chains, and the latency."""
+    from . import krecord as KR
+    from . import onetime as OT
+    cfg = c6_config(R, variant)
+    otc = OT.is_onetime(cfg)
+    t = time.time()
+    run = (OT.simulate if otc else S.simulate)(cfg, traffic(out, R, run_id))
+    t_sim = time.time() - t
+    t = time.time()
+    hk = _Hooks()
+    if otc:
+        m = otc_models(out, cfg.otc_hold_mean > 0)
+        pick = int(CO._pick(R, run_id, 4, 1, np.arange(P.N_NODES))[0])
+        tab = OT.compute(run, m, _rng(R, run_id), hooks=hk.dict(), pick=pick)
+    else:
+        m = models(out)
+        tab = AT.compute(run, m, _rng(R, run_id), vantages=("observer", "first_hop", "content_server"), hooks=hk.dict())
+        pc = CO.path_coalitions(run, extra(out), tab)
+        content = pc["path"] > 0
+        tab["first_relay_with_destination"] = {k: (v[content] if isinstance(v, np.ndarray) and v.shape[:1] == content.shape else v)
+                                               for k, v in pc.items()}
+    rec, tie = tab["_rec"], tab["_tie"]
+    s = run.subs
+    root = s["root"][rec["sub"]]
+    meta = dict(sub=rec["sub"].astype(np.int32), dev=rec["dev"], u=rec["u"], root=root,
+                root_dev=tie(s["src"][root].astype(np.int64) % P.MACHINE_OFFSET), gen=s["gen"][rec["sub"]])
+    r = dict(vec=KR.vectors(hk.col, rec["sub"].size), meta=meta,
+             ceiling=KR.ceiling(run, rec, np.random.default_rng([CEIL_SEED, int(R), run_id])),
+             latency=_latency(run, rec["sub"]), candidate=cfg.candidate, otc_hold_mean=cfg.otc_hold_mean)
+    if cfg.edit_share > 0:
+        par = s["parent"][rec["sub"]]
+        lb = np.where(par >= 0, s["posted"][np.maximum(par, 0)], -np.inf)
+        r["vec_lb"] = KR.lower_bound_pass(run, m, tab, lb)
+    if otc:
+        r["refills_in_window"] = int(((run.refills["t"] >= cfg.warmup_s) & (run.refills["t"] < cfg.warmup_s + cfg.measure_s)).sum())
+        r["stock_mean"] = float(run.stock_seen.mean()) if run.stock_seen.size else float("nan")
+        r["device_rate"] = cfg.real_rate / (1.0 + cfg.edits_per_capture) / max(cfg.real_devices, 1)
+        r["refill_rule"] = cfg.otc_refill_rule
+    return [(rec_name("c6", variant, R), _record(run_id, run, _public(tab), t_sim, time.time() - t, **r))]
+
+
 # --------------------------------------------------------------------------- C5: active attacks
 C5_WINDOW = 67 * 3600.0                        # about 200 of the target's transactions per run
 C5_DELTAS = (0, 60, 300, 600, 900, 1200, 1500, 1800, 2400, 3600)
 C5_RESUB = (1800, 3600, 7200, 21600)
+C5_WITHHOLD_SHARE = (0.1, 0.25, 0.5, 1.0)
+C5_WITHHOLD_LEN = (600, 1800, 3600, 7200)
 TARGET_SEED, C5_MODEL_SEED0 = 17_000_000, EX.MODEL_SEED0 + 60_000
 
 
@@ -232,6 +494,15 @@ def c5_settings():
     for actor in ("first_relay", "access"):
         for mres in C5_RESUB:
             out[f"{actor}_drop_m{mres}"] = dict(mark_actor=actor, mark_mode="drop", resub_mean_s=float(mres))
+    for mode in ("withhold", "delay"):
+        for L in C5_WITHHOLD_LEN:
+            out[f"vwh3_{mode}_L{int(L // 60)}"] = dict(mark_actor="validator_withhold", withhold_mode=mode,
+                                                       withhold_len=float(L), **VALIDATORS)
+    for mode in ("withhold", "delay"):
+        for share in C5_WITHHOLD_SHARE:
+            for L in C5_WITHHOLD_LEN:
+                out[f"vwh_{mode}_s{int(share * 100)}_L{int(L // 60)}"] = dict(
+                    mark_actor="validator_withhold", withhold_mode=mode, withhold_share=share, withhold_len=float(L))
     return out
 
 
@@ -245,7 +516,10 @@ def c5_config(R, setting, target):
 
 def c5_model(out, setting):
     """The attacker's model of the marked system: record time minus anchor, every real device marked, on the
-    model seeds (R = 100, a 6-hour window)."""
+    model seeds (R = 100, a 6-hour window). Withholding leaves the target's own transactions unchanged, so the
+    withholding validator uses the unmarked validator's model."""
+    if setting.startswith("vwh"):
+        setting = "validator_d0_t1800"
     key = ("c5", setting)
     if key in _C:
         return _C[key]
@@ -277,7 +551,7 @@ def work_c5(out, R, setting, run_id):
     target = 0 if R == 1 else int(np.random.default_rng([TARGET_SEED, int(R), run_id]).integers(0, cell_config(R).real_devices))
     cfg = c5_config(R, setting, target)
     t = time.time()
-    run = S.simulate(cfg, EX.traffic_seed(R, run_id))
+    run = S.simulate(cfg, traffic(out, R, run_id))
     t_sim = time.time() - t
     t = time.time()
     pdf, n_model = c5_model(out, setting)
@@ -286,8 +560,11 @@ def work_c5(out, R, setting, run_id):
     s = run.subs
     mine = (s["src"] == target) & ~s["decoy"] & (s["gen"] == 0) & (s["t0"] >= window[0]) & (s["t0"] < window[1])
     fixed = ((s["A"] == 0) | (s["D"] == 0) | (s["G"] == 0))[mine]
+    held = s["withheld"]
     rec = dict(run=run_id, sim_seconds=t_sim, score_seconds=time.time() - t, target=target, marks=res,
+               withheld=int(held.sum()), withheld_dropped=int((held & ~np.isfinite(s["posted"])).sum()),
                target_transactions=int(mine.sum()), fixed_node_share=float(fixed.mean()) if fixed.size else float("nan"),
+               target_key=int(s["val"][(s["src"] == target) & ~s["decoy"]][0]) if ((s["src"] == target) & ~s["decoy"]).any() else -1,
                model_samples=n_model)
     return [(rec_name("c5", setting, R), rec)]
 
@@ -299,8 +576,18 @@ JOBS = {
     "c3_conc": dict(fn=work_c3_conc, cells=(1, 100), variants=("f5", "f25"), files=("c3_concentration",)),
     "c3_vol": dict(fn=work_c3_vol, cells=(1, 100), variants=("v50", "v10", "v0"), files=("c3_volume",)),
     "c4_obs": dict(fn=work_c4_obs, cells=(1, 100), variants=tuple(C4_VARIANTS), files=("c4_obs",)),
-    "c5_marks": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" not in k), files=("c5",)),
+    "c5_marks": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" not in k and not k.startswith("vwh")),
+                     files=("c5",)),
     "c5_drops": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if "_drop_" in k), files=("c5",)),
+    "c5_withhold": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh_")), files=("c5",)),
+    "c3_val": dict(fn=work_c3_val, cells=(1, 100), variants=("v3",), files=("c3_validators",)),
+    "c6": dict(fn=work_c6, cells=(1, 100), variants=C6_VARIANTS, files=("c6",)),
+    "c6_issuer": dict(fn=work_c6_issuer, cells=(1, 100), variants=tuple(C6_ISSUER), files=("c6_issuer",)),
+    # the second C6 run
+    "c6_batch": dict(fn=work_c6, cells=(1, 100), variants=C6_BATCH_VARIANTS, files=("c6",)),
+    "c6_dest": dict(fn=work_c6_dest, cells=(1, 100), variants=tuple(C6_DEST), files=("c6_dest",)),
+    "c6_issuer_long": dict(fn=work_c6_issuer, cells=(1, 100), variants=tuple(C6_ISSUER_LONG), files=("c6_issuer",)),
+    "c5_withhold3": dict(fn=work_c5, cells=(1, 100), variants=tuple(k for k in C5_SETTINGS if k.startswith("vwh3_")), files=("c5",)),
 }
 
 
@@ -330,7 +617,7 @@ def job_hash(job):
 
 
 # --------------------------------------------------------------------------- running and summarizing
-EXPERIMENT_OF = {"c3": "C3", "c4": "C4", "c5": "C5"}
+EXPERIMENT_OF = {"c3": "C3", "c4": "C4", "c5": "C5", "c6": "C6"}
 
 
 def git_commit(path=None):
@@ -342,8 +629,9 @@ def git_commit(path=None):
         return "unknown"
 
 
-def run(out, jobs, runs, workers="auto", label=None):
-    """Run the given jobs' runs not yet on disk, then write the summary of each experiment present."""
+def run(out, jobs, runs, workers="auto", label=None, dry=False):
+    """Run the given jobs' runs not yet on disk, then write the summary of each experiment present. A dry run uses
+    model seeds (dry_seed) and is labelled as one; a full run uses the evaluation seed set (eval_seed)."""
     from . import runner as RN
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
@@ -357,11 +645,18 @@ def run(out, jobs, runs, workers="auto", label=None):
         info["jobs"][job] = dict(hash=h, cells=list(JOBS[job]["cells"]), variants=list(JOBS[job]["variants"]),
                                  runs=max(runs, (old or {}).get("runs", 0)))
     exp = {EXPERIMENT_OF[j[:2]] for j in jobs}
+    seed_set = SEED_SETS[1] if dry else SEED_SETS[0]
+    if info.get("seed_set", seed_set) != seed_set:
+        raise SystemExit(f"{out} holds runs on the {info['seed_set']} seeds. Use a new folder.")
+    info["seed_set"] = seed_set
+    if dry:
+        label = label if (label or "").startswith("dry") else "dry run" + (f": {label}" if label else "")
     info.setdefault("code_commit", git_commit())
-    info.setdefault("predictions_commit", {e: git_commit(ROOT / f"PREDICTIONS_{e}.md") for e in ("C3", "C4", "C5")})
+    info.setdefault("predictions_commit", {e: git_commit(ROOT / f"PREDICTIONS_{e}.md") for e in ("C3", "C4", "C5", "C6")})
     info.setdefault("c2_config_hash", c2_info()["config_hash"])
-    info.setdefault("seeds", dict(traffic="sha256 of the volume and run id, as C2", models=EX.MODEL_SEED0, rates=RATE_SEED0,
-                                  operators=DC.OPS_SEED))
+    info.setdefault("seeds", dict(traffic=(f"sha256 of '{EVAL_TAG}', the volume and the run id" if not dry else
+                                           f"{DRY_SEED0} + 1000 R + run id (model seeds)"), models=EX.MODEL_SEED0, rates=RATE_SEED0,
+                                  operators=DC.OPS_SEED, coalitions=CO.COALITION_SEED))
     v = EX.versions()
     if "versions" not in info:
         info["versions"] = v
@@ -373,7 +668,7 @@ def run(out, jobs, runs, workers="auto", label=None):
     models(out)
     if any(j.startswith("c3_kc") for j in jobs):
         extra(out)
-    c5 = sorted({v for j in jobs if j.startswith("c5") for v in JOBS[j]["variants"]})
+    c5 = sorted({("validator_d0_t1800" if v.startswith("vwh") else v) for j in jobs if j.startswith("c5") for v in JOBS[j]["variants"]})
     if c5:
         RN.execute([(str(out), v) for v in c5 if not (out / "models" / f"c5_{v}.pkl").exists()], _build_c5_model, out,
                    workers, label="c5 models")
@@ -393,12 +688,36 @@ def summarize(out, dry=False):
     from . import report345 as RP
     out = Path(out)
     names = sorted(p.name[:-len(".pkl.gz")] for p in (out / "raw").glob("*.pkl.gz"))
+    fs6 = [n for n in names if n.startswith("c6__")]
+    fsi = [n for n in names if n.startswith("c6_issuer__")]
+    if fs6 or fsi or any(n.startswith("c6_dest__") for n in names):
+        rows = RP.summarize_c6(out, fs6) if fs6 else []
+        fsd = [n for n in names if n.startswith("c6_dest__")]
+        if fsd:
+            dl = {None: "all records", 1: "records the node delayed", 0: "other records"}
+            for r in RP.summarize(out, fsd, classes={"observer": ("delayed", dl)},
+                                  bound_na={"drop_link", "delaying_destination"}):
+                cand_, mode = r["file"].split("__")[1].split("_", 1)
+                r.update(candidate=RP.C6_LABEL[cand_], workload=mode, cell=r["file"].split("__")[2],
+                         latency=float("nan"), family=f"destination that {'drops' if mode.startswith('drop') else 'delays'}: "
+                                                         + r["vantage"].split(" [")[0])
+                rows.append(r)
+        for r in RP.summarize_c5(out, fsi):
+            r.update(candidate=RP.C6_LABEL["otc"], workload="W0", cell=r["file"].split("__")[2], latency=math.nan,
+                     family="issuer withholding or delaying refills")
+            rows.append(r)
+        RP.write_c6(out, rows, dry, files=fs6)
     for exp in ("c3", "c4", "c5"):
         fs = [n for n in names if n.startswith(exp + "_")]
         if not fs:
             continue
-        rows = RP.summarize(out, fs, **SUMMARY[exp]())
-        RP.write(out, rows, f"TABLES_{exp.upper()}", f"Experiment {exp.upper()}", dry)
+        if exp == "c3":
+            rows = RP.summarize(out, fs, **_c3_summary())
+        elif exp == "c4":
+            rows = RP.summarize_c4(out, fs)
+        else:
+            rows = RP.summarize_c5(out, fs)
+        RP.write(out, rows, f"TABLES_{exp.upper()}", f"Experiment {exp.upper()}", dry, note=RP.C4_NOTE if exp == "c4" else None)
 
 
 def costs(out):
@@ -426,14 +745,23 @@ def _c3_summary():
 
     def decoys_of(job, variant):
         return float(variant[1:]) if job == "c3_volume" else 100.0
-    return dict(classes={"validator_with_node": ("role", roles), "first_relay_with_destination": ("path", paths)},
-                decoys_of=decoys_of,
+    held = {None: "all records", 0: "none held", 1: "one held", 2: "two held", 3: "three held"}
+    ncls = {None: "all records", **{i: c for i, c in enumerate(CO_.NODE_CLASSES)}}
+    classes = {"validator_with_node": ("role", roles), "first_relay_with_destination": ("path", paths)}
+    classes.update({f"{r}_relays_{k}": ("held", held) for r in ("first", "second") for k in CO_.RELAY_SIZES})
+    classes.update({f"nodes_{k}": ("cls", ncls) for k in CO_.NODE_COUNTS})
+    shares = VALIDATORS["real_val_split"]
+    classes.update({f"validator_{k}": ("own", {None: f"share {100 * shares[k]:g}%, all records",
+                                              1: f"share {100 * shares[k]:g}%, its own devices", 0: "other keys' devices"})
+                    for k in range(VALIDATORS["n_validators"])})
+    took = {None: "all records", 1: "C's own transactions"}
+    classes.update({"cred_processor": ("took_part", took), "cred_processor_keyed": ("took_part", took)})
+    return dict(classes=classes, decoys_of=decoys_of,
                 bound_na={"content_server", "content_server_mid", "validator_with_node [F or I]",
                           "first_relay_with_destination [F content path, D with F]",
-                          "first_relay_with_destination [I content path, G with I]"})
+                          "first_relay_with_destination [I content path, G with I]", "f_with_i",
+                          *(f"nodes_{k} [all records]" for k in CO_.NODE_COUNTS)})
 
-
-SUMMARY = {"c3": _c3_summary}
 
 
 def main(argv=None):
@@ -444,8 +772,9 @@ def main(argv=None):
     ap.add_argument("--out", required=True)
     ap.add_argument("--workers", default="auto")
     ap.add_argument("--label", default=None)
+    ap.add_argument("--dry", action="store_true", help="a dry run on model seeds, labelled as one")
     a = ap.parse_args(argv)
-    run(a.out, a.jobs, a.runs, a.workers, a.label)
+    run(a.out, a.jobs, a.runs, a.workers, a.label, a.dry)
 
 
 if __name__ == "__main__":

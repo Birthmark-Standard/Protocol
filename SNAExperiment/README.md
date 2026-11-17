@@ -4,7 +4,7 @@ This experiment tests the Semantic Non-Assembly property of the Birthmark Protoc
 
 The experiment simulates the protocol's full message flow, with real and decoy traffic. It attacks every record from each internal vantage, with every node of the pool compromised in turn.
 
-The Protocol paper reports it in Appendix D. The experiment has been run twice, as experiments C1 and C2 (table below). For each, `PREDICTIONS_C1.md` or `PREDICTIONS_C2.md` has the predictions committed before the run, `RESULTS_C1.md` or `RESULTS_C2.md` has every finding, `results/C1/` or `results/C2/` has the generated tables, data and figures, and `PAPER_TABLE.md` in that folder has the headline tables.
+The Protocol paper reports it in Appendix D. The experiment has been run twice, as experiments C1 and C2 (table below). Three further experiments, C3, C4 and C5, test stronger attackers; their predictions are committed and they have not been run (see "Experiments C3, C4 and C5"). For each, `PREDICTIONS_C1.md` or `PREDICTIONS_C2.md` has the predictions committed before the run, `RESULTS_C1.md` or `RESULTS_C2.md` has every finding, `results/C1/` or `results/C2/` has the generated tables, data and figures, and `PAPER_TABLE.md` in that folder has the headline tables.
 
 ## Experiments
 
@@ -12,6 +12,10 @@ The Protocol paper reports it in Appendix D. The experiment has been run twice, 
 |---|---|---|---|---|---|
 | C1 | R = 1 and 150 | `results/C1/` | `PREDICTIONS_C1.md` | `RESULTS_C1.md` | `5a138228417cdb522f11712c5d2d4309e4c5ba27`, the commit that added the results. Its code is the same as `0187bc1`. At that commit the configuration hash is `3767ea7a7f82e097`, the value in `results/C1/run_info.json`. |
 | C2 | R = 1, 100 and 300, with the packet-type control | `results/C2/` | `PREDICTIONS_C2.md` | `RESULTS_C2.md` | `d70ca20c5d7008a3efd942312127e883ce63af3e`, recorded in `results/C2/code_commit.txt`. At that commit the configuration hash is `c54e444f07f27a7a`, the value in `results/C2/run_info.json`. `git diff d70ca20 HEAD -- sna` shows any change to the code since. |
+| C3 | R = 1 and 100; R = 300 for decoy knowledge and coalitions | `results/C3/` | `PREDICTIONS_C3.md` | not run | recorded in the run's `run_info.json` |
+| C4 | R = 1 and 100 | `results/C4/` | `PREDICTIONS_C4.md` | not run | recorded in the run's `run_info.json` |
+| C5 | R = 1 and 100 | `results/C5/` | `PREDICTIONS_C5.md` | not run | recorded in the run's `run_info.json` |
+| C6 | R = 1 and 100 | `results/C6/` | `PREDICTIONS_C6.md` | not run | recorded in the run's `run_info.json` |
 
 The code writes to `results/C2/` by default. `results/C2/` also holds the run's console output (`run_log.txt`) and the Python packages installed on the machine that ran it (`versions_before_run.txt`).
 
@@ -235,9 +239,100 @@ It is resumable: rerunning the same command skips the runs already on disk. Resu
 - `--workers N` sets the worker processes. The default is half the cores. Workers run at below-normal priority, so the machine stays usable. The run prints the elapsed time and an estimate of the time remaining as it goes.
 - `--out DIR` sets the results directory.
 - `python -m sna run --runs 2 --out results/quick` runs every step on two runs per cell, in about 20 minutes on a four-core machine.
-- Fast tests: `python -m pytest tests -q`, about one minute.
+- Fast tests: `python -m pytest tests -q`, under two minutes. The test of C2's R = 1 decisions runs only where `results/C2/raw/` is and the versions are C2's.
 
 The full run of C2 took 8.7 hours on 8 worker processes.
+
+## Experiments C3, C4 and C5
+
+These use C2's main configuration, its calibrated D, its windows, its traffic seeds and its models (read from `results/C2/run_info.json`), and change only what each item changes. Every new option is off by default, and with every option off the code reproduces C2's R = 1 decisions.
+
+| Experiment | Item | Attacker or variant | Module |
+|---|---|---|---|
+| C3 | Decoy knowledge | A party that knows one decoy operator's decoys, or both, removes their packets and replies from its candidates. A validator of a manufacturer that keeps records of its credentials has real credentials only as candidates. | `sna/decoys.py` |
+| C3 | Coalitions | The validator with each node, classed by the node's role in the record's transaction. A first relay with the destination on its own path: the inner packet (CredP, ContP_F or ContP_I) is byte-identical at both, so the pair links source address to packet exactly; for a content path that names the record's device, for the credential path the record still follows by timing from the transaction's quorum on the match boards. | `sna/coalition.py` |
+| C3 | Same-role coalitions | Several nodes in one role, pooled on top of the observer: first relays (2, 3 or 6 nodes, their own holds), second relays (2, 3 or 6 nodes, when each packet they relayed reached its destination), two or three gatekeepers (the later of two postings, or the quorum), and the record's F with I (both content arrivals). | `sna/coalition.py` |
+| C3 | Compromised nodes | k = 1 to 6 nodes, each in every role it holds. A record is scored by what the coalition holds of it: a content path at both ends is exact; the credential path at both ends links C's transactions through A by the time after quorum; a destination uses its arrival, through its path's second relay when held; otherwise the observer with every relay, C and gatekeeper role pooled. | `sna/coalition.py` |
+| C3 | Decoy concentration | Fewer decoy identities, each at a multiple of a device's rate; the observer with and without a discount for an address's capture rate. | `sna/decoys.py` |
+| C3 | Decoy volume | 100, 50, 10 and 0 decoys in flight; every vantage. | `sna/stronger.py` |
+| C4 | Ceiling attacker | Told each transaction's true posting, it picks one of that posting's records. | `sna/krecord.py` |
+| C4 | K records and edit chains | Told that K records share a device, or told an edit chain, it sums the observer's calibrated log posteriors over the records. | `sna/krecord.py` |
+| C4 | Workloads | W1 (lognormal rates), W2 (W1 with sessions), W-mismatch (real devices W2, decoys one rate). | `sna/sim.py` |
+| C4 | Link-level tracer and Registry Node | A global passive observer following every leg on the wire: relays, destinations, validator, and quorum by the protocol's schedules. Pieces of up to 10 arrivals are counted exactly, larger ones by matrix scaling. It scores every device by the joint likelihood of a transaction's three packets. The Registry Node adds the link from each record to its two submissions. Not in any job: in the main configuration it is still below the observer on model seeds, so C4 runs without a tracer row and its tables say so. | `sna/tracer.py` |
+| C5 | Delay marks and drops | A first relay, the access network or the validator delays its target's packets, or drops one and the device resubmits. Record-finding accuracy: how often the actor picks the marked transaction's record. | `sna/active.py` |
+| C5 | Validator withholding | The validator answers its target and withholds or delays every other credential it serves over a window. | `sna/sim.py`, `sna/active.py` |
+| C3 | Several validators | Three validators, real devices and decoys each split 50/30/20; each validator alone on its own devices' records, and C reading key_ref. | `sna/sim.py`, `sna/attacks.py` |
+| C5 | Withholding under several validators | The target's own validator withholds or delays every other credential under its key. | `sna/sim.py` |
+
+Run a job from this directory:
+
+```
+python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 c3_val --runs 100 --out results/C3
+python -m sna.stronger c4_obs --runs 100 --out results/C4
+python -m sna.stronger c5_marks c5_drops c5_withhold c5_withhold3 --runs 100 --out results/C5
+```
+
+The jobs are:
+
+| Job | Items | Cells |
+|---|---|---|
+| `c3_kc` | C3 decoy knowledge and coalitions | R = 1, 100 |
+| `c3_kc_r300` | the same | R = 300 |
+| `c3_conc` | C3 decoy concentration, factors 5 and 25 | R = 1, 100 |
+| `c3_vol` | C3 decoy volume 50, 10 and 0 | R = 1, 100 |
+| `c4_obs` | C4 ceiling, K records and chains on the observer, workloads | R = 1, 100 (2-hour window at R = 100) |
+| `c5_marks` | C5 delay marks, shorter quorum timeouts, the match board window | R = 1, 100 (67-hour window) |
+| `c5_drops` | C5 drops with resubmission | R = 1, 100 |
+| `c5_withhold` | C5 validator withholding | R = 1, 100 |
+| `c3_val` | C3 several validators | R = 1, 100 |
+| `c5_withhold3` | C5 withholding under several validators | R = 1, 100 |
+
+Each run of a job writes one record per output file in `raw/`, so a job is resumable as C2's is. `--workers` and `--label` work as for `python -m sna run`. After the runs, the job writes `TABLES_C3.md`, `TABLES_C4.md` or `TABLES_C5.md` (each with a `.json`), with three parts:
+
+- **Main table.** Accuracy and its interval over runs, chance, the multiple of chance, the lead over the observer on the same records, `count_p50`, `coverage_p50`, AUC, the stability rule, and the bound from the posting schedule where it applies. C4 adds the ceiling attacker, the K-record attacker per K and the edit-chain attacker per chain length. C5 has one row per setting: how often the attacker finds the target's record.
+- **Spread of the posterior and calibration.** At the calibrated temperature: Shannon entropy and min-entropy in bits, the effective anonymity set (2 to the entropy), and top-1, top-5 and top-10 accuracy. The naming rate over true devices with at least 10 records: the median, the 90th percentile, and the worst-off device (the one named most often) with its records. The calibration error, the error a perfectly calibrated attacker would reach at the 99th percentile by sampling alone at the same confidences, and a flag when the attacker is badly miscalibrated: its calibration error is above that sampling level and exceeds both 2 points and a quarter of the larger of its accuracy and its mean confidence.
+- **Reliability.** For each row, the confidence deciles: mean confidence against hit rate.
+
+**Chance**, in every table: the expected accuracy of naming, for each decision, one candidate drawn uniformly from the candidates the vantage finds feasible for it (a device with a packet the vantage's densities allow, or for C5 a record its density allows), and zero when the truth is not feasible. A variant that changes the candidate set, such as known decoys, gets its chance by the same definition from its own feasible candidates.
+
+`results/C3_dry_run/` to `results/C6_dry_run/` hold dry runs of C3 to C6 on model seeds (2 runs per cell for C3 and C6, 1 for C4 and C5), and `results/C6_second_dry_run/` one of the second C6 run (1 run per cell).
+
+A full run uses the evaluation seed set of C3 to C5 (`eval_seed` in `sna/stronger.py`). Add `--dry` for a dry run on model seeds; its tables are named `_dry_run` and say so on their first line:
+
+```
+python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 --runs 2 --dry --out results/C3_dry_run
+```
+
+## Experiment C6: two candidates
+
+C6 simulates two candidates on the same relay layer and compares them: the **credential path** (C2's main configuration, here with three validators split 50/30/20) and **blind-issued one-time certificates** (`sna/onetime.py`). Neither is a baseline. Both use the same captures from the same devices (one seed gives both the same capture times and sources), the same relay holds and schedules, the registry's 120-second submission and posting schedules, the C4 workloads and edit chains, the evaluation seeds of C3 to C5, the same metrics and the same definition of chance.
+
+In blind-issued one-time certificates, each capture is one packet: through a first relay and a second relay, with the same wrapping as a content packet, to one destination Registry Node, which submits it to the registry. Certificates come from three issuers (split as the validators), 20 at a time, directly from the issuer: when a device's stock falls to 5, or in a variant on a random schedule independent of captures at 1.25 times the device's rate of use; they expire after two weeks. The C6 tables end with each variant's refills, stock and revocation delay. A natural variant has no device hold; a lengthened-hold variant holds the packet on the device 693 s on average, so its latency matches the credential path's.
+
+Vantages in both candidates: the passive observer, each first relay, the destination (F or I in the credential path, the destination Registry Node in the other), and a first relay with the destination on its path. In blind-issued one-time certificates also: the destination told each source address's issuer (`destination_keyed`, an upper bound); each issuer alone, with the observer, with one first relay, and with the destination Registry Node; and the issuer withholding or delaying refills. The K-record, ceiling and edit-chain attackers run on both.
+
+```
+python -m sna.stronger c6 c6_issuer --runs 100 --out results/C6
+```
+
+| Job | What | Cells |
+|---|---|---|
+| `c6` | both candidates (`cp`; `otc` natural and `otcL` lengthened hold, each with threshold refills or, as `otcR` and `otcLR`, the random schedule) under W0, W1, W2, W-mismatch and the two edit-chain settings | R = 1, 100 (2-hour window at R = 100) |
+| `c6_issuer` | the target's issuer withholding, delaying, or not touching refills, windows of 10 to 120 minutes | R = 1, 100 (67-hour window) |
+
+A second C6 run, in its own folder, adds the batch sweep (1, 5, 20 and 100 certificates, natural variant), a destination that drops or delays every packet it receives (the device resubmits a dropped transaction after a wait just past its candidate's longest natural delay), and the issuer's withholding windows of 6, 12 and 24 hours:
+
+```
+python -m sna.stronger c6_batch c6_dest c6_issuer_long --runs 100 --out results/C6_second
+```
+
+| Job | What | Cells |
+|---|---|---|
+| `c6_batch` | the batch sweep: the issuer, the stock and the revocation delay per batch | R = 1, 100 |
+| `c6_dest` | a dropping destination (resubmission means 30 minutes to 6 hours) or a delaying one (600 or 1,800 s), in both candidates | R = 1, 100 (67-hour window) |
+| `c6_issuer_long` | the issuer withholding or delaying refills over 6, 12 or 24 hours | R = 1, 100 (67-hour window) |
+
+The job writes `TABLES_C6.md` (and `.json`): one table per vantage with both candidates in adjacent rows for each cell and workload, and each candidate's measured latency beside it; then the spread, calibration and reliability sections of the C3 to C5 tables. `C6_PARTIES.md` lists what each party holds in each candidate, from the design descriptions only.
 
 ## Scripts
 
@@ -253,7 +348,8 @@ The full run of C2 took 8.7 hours on 8 worker processes.
 | Path | Contents |
 |---|---|
 | `RESULTS_C1.md`, `RESULTS_C2.md` | every finding |
-| `PREDICTIONS_C1.md`, `PREDICTIONS_C2.md` | the predictions, written and committed before the run |
+| `PREDICTIONS_C1.md` to `PREDICTIONS_C6.md` | the predictions, written and committed before the run; each of C3 to C5 lists its changes before the run |
+| `results/C3_dry_run/` to `results/C6_dry_run/` | the dry runs on model seeds: their tables, cost per run and `run_info.json` |
 | `C1_C2_figures.csv` | every reported figure of C1 and C2, one row each, with its value in each experiment and whether it changed |
 | `results/C*/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
 | `results/C*/TABLES.md` | the full tables |
@@ -273,6 +369,11 @@ The full run of C2 took 8.7 hours on 8 worker processes.
 | `sna/experiment.py` | configurations, cells, seeds, calibration, the run worker |
 | `sna/report.py` | every file in `results/C2/` |
 | `sna/runner.py` | resumable parallel execution |
+| `sna/stronger.py` | the C3 to C6 jobs, their cells and variants, the worker, and the tables |
+| `sna/decoys.py`, `sna/coalition.py`, `sna/krecord.py`, `sna/tracer.py`, `sna/active.py`, `sna/devscore.py` | the C3 to C5 attackers |
+| `sna/onetime.py` | blind-issued one-time certificates: its simulator and its attackers |
+| `sna/report345.py` | the C3 to C6 tables |
+| `C6_PARTIES.md` | what each party holds in each candidate of C6 |
 | `tests/` | fast tests |
 
 ## What this experiment does not test
@@ -282,5 +383,5 @@ The simulation uses the 20-node pool and the transaction described above. It doe
 - the jurisdiction filter or the skew in the device's choice of destinations;
 - the grouping of device-table lines by destination pseudonym;
 - a first-hop vantage that is told which destination a routing code leads to;
-- any evidence a second relay holds;
-- active timing attacks (delay, drop or injection of packets). The Protocol paper argues them in Table A.2, row 7 and does not simulate them. Other attacker methods are future work.
+- injection of packets to fill a relay. A device does not choose its second relay, and every hold is drawn per packet, so packets an attacker injects and knows do not change its posterior among the packets it does not know;
+- a validator that chooses verdicts;

@@ -61,7 +61,9 @@ EDIT_MAX = 4               #   at most 4
 EDIT_DELAY_MIN_S = 300.0   # an edit's capture follows its parent's posting by 5 minutes
 EDIT_DELAY_MEAN_S = 1800.0 #   plus an exponential with mean 30 minutes
 MACHINE_OFFSET = 200_000   # source address of a user's machine: the device's address plus this
+CANDIDATES = ("credential path", "blind-issued one-time certificates")
 RESUB_WAIT_S = 2400.0      # a device that sees no record by this long after capture resubmits
+WITHHOLD_GAP_S = 7200.0    # validator withholding: time between one window's end and the next one's start
 
 # --------------------------------------------------------------------------- record types
 RT_APPDATA = 0x17
@@ -105,6 +107,22 @@ class Config:
     mark_delta: float = 0.0            # Δ (s)
     mark_target: int = -1              # the target's real device index; -1 = none; -2 = every real device (the attacker's models)
     resub_mean_s: float = 1800.0       # mean of the exponential resubmission delay after RESUB_WAIT_S
+    withhold_share: float = 0.0        # validator withholding: share of identities the withholding validator serves
+    withhold_len: float = 0.0          # window length (s); one window every withhold_len + WITHHOLD_GAP_S from the warm-up's end
+    withhold_mode: str = "withhold"    # withhold: no reply; delay: the reply leaves at the window's end
+    n_validators: int = 1              # validators, each with its own Token Key
+    real_val_split: tuple = ()         # share of real devices registered with each validator (empty: all with the first)
+    decoy_val_split: tuple = ()        # share of decoy identities registered with each validator
+    # the second candidate (sna/onetime.py); every default leaves the credential path as C2's
+    candidate: str = "credential path" # "credential path" or "blind-issued one-time certificates"
+    otc_hold_mean: float = 0.0         # blind-issued one-time certificates: the device's hold before sending (0 = natural)
+    otc_batch: int = 20                # certificates per refill
+    otc_refill_at: int = 5             # threshold rule: a refill when the stock falls to this many
+    cert_expiry_s: float = 14 * 86400.0  # an unused certificate expires this long after issuance
+    resub_wait_s: float = RESUB_WAIT_S # a device that sees no record this long after capture resubmits (then resub_mean_s)
+    mark_node: int = -1                # mark_actor "destination": the node that drops or delays every packet it is the destination of
+    otc_refill_rule: str = "threshold" # "threshold" (at otc_refill_at) or "random" (a Poisson schedule independent of captures)
+    otc_random_factor: float = 1.25    # random schedule: refills at this factor x the identity's long-run rate / otc_batch
 
     @property
     def max_delay_s(self) -> float:
@@ -163,4 +181,7 @@ class Config:
 
 
 NEW_FIELDS = ("decoy_factor", "workload", "edit_share", "edit_same_source", "quorum_timeout_s", "board_window_s", "grid_off",
-              "mark_actor", "mark_mode", "mark_delta", "mark_target", "resub_mean_s")
+              "mark_actor", "mark_mode", "mark_delta", "mark_target", "resub_mean_s", "withhold_share", "withhold_len",
+              "withhold_mode", "n_validators", "real_val_split", "decoy_val_split", "candidate", "otc_hold_mean",
+              "otc_batch", "otc_refill_at", "cert_expiry_s", "otc_refill_rule", "otc_random_factor",
+              "resub_wait_s", "mark_node")

@@ -119,7 +119,10 @@ def versions():
 # --------------------------------------------------------------------------- in flight
 def leaves(s, cfg=None):
     """When each transaction leaves the system: the registry posting its record, or, for one that never
-    reaches quorum, the content server dropping it 30 minutes after its content arrived."""
+    reaches quorum, the content server dropping it 30 minutes after its content arrived. In the blind-issued one-time
+    certificates candidate every packet that arrives is submitted, so a transaction leaves when its record posts."""
+    if "arr_f" not in s:
+        return np.where(np.isfinite(s["final"]), s["final"], np.inf)
     drop = np.fmax(s["arr_f"], s["arr_i"]) + P.QUORUM_TIMEOUT_S if cfg is None else np.fmax(s["arr_f"], s["arr_i"]) + cfg.quorum_timeout_s
     return np.where(np.isfinite(s["final"]), s["final"], drop)
 
