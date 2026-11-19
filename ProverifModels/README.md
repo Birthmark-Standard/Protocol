@@ -128,7 +128,7 @@ The correspondence queries, numbered as in the files:
 - A compromised validator that withholds replies and watches the registry (selective
   denial). The symbolic adversary sees the order of registry outputs, which separates the
   two scenarios for a timing reason. Holds, bundling and decoys address this; ProVerif
-  cannot show it. Appendix D of the paper evaluates it empirically.
+  cannot show it. Appendix C of the paper evaluates it empirically.
 - The structure of `replay_nonce` (its day count and offline bit) and how long the validator keeps
   its log. `BM_Token_Binding.pv` models the nonce as an atomic name and its claim as one atomic step.
 - `key_ref`, the manufacturer-key identifier, holds, padding.
