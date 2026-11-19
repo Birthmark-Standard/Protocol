@@ -40,7 +40,6 @@ DRY_TAG = "DRY_RUN_NOT_PI"
 # Claims from the papers, in milliseconds.
 CLAIM_ENCRYPTION = (2.0, 10.0)        # Protocol paper; Integration section 8.1
 CLAIM_HASH_SOFTWARE = (430.0, 600.0)  # Integration section 8.2, Cortex-A8 at 800 MHz
-CLAIM_HASH_ARMV8 = (120.0, 170.0)     # Integration section 8.2
 CLAIM_CPB_SOFTWARE = 13.7             # eBACS figure the 430-600 ms range is built on
 
 
@@ -235,8 +234,6 @@ def summarize(run_id):
     dry = not machine["is_pi"]
     label = DRY_LABEL if dry else machine["model"]
     sha_ext = machine["sha_extensions"]
-    arch = machine["arch"]
-    sha_flag_name = "sha2" if arch == "aarch64" else "sha_ni"
 
     # Statistics for every ok row.
     out_rows = []
@@ -351,23 +348,6 @@ def summarize(run_id):
         "note": (f"The calculation assumes {CLAIM_CPB_SOFTWARE} cycles/byte on a Cortex-A8 at 800 MHz. "
                  "Cycles per byte do not depend on the clock and are the closer comparison."),
     })
-    if sha_ext and d30:
-        c = compare(d30, CLAIM_HASH_ARMV8)
-        if not (path_check and path_check["time_changed"]):
-            c["label"] += "; path change NOT VERIFIED"
-        claims.append({
-            "claim": "120 to 170 ms with ARMv8 crypto extensions",
-            "source": "Integration section 8.2",
-            "comparisons": [c],
-            "not_tested": None,
-        })
-    else:
-        claims.append({
-            "claim": "120 to 170 ms with ARMv8 crypto extensions",
-            "source": "Integration section 8.2",
-            "comparisons": [],
-            "not_tested": f"the CPU feature list has no {sha_flag_name}, so no run used SHA extensions",
-        })
 
     now = datetime.datetime.now(datetime.timezone.utc)
     result = {

@@ -14,7 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""List what Part A and Part B need on this machine, and what is missing.
+"""List what Parts A, B and C need on this machine, and what is missing.
 
 Needs no root and installs nothing. Each missing item is printed with the
 Debian / Raspberry Pi OS package that provides it, so that someone with admin
@@ -30,15 +30,16 @@ import subprocess
 
 # (what, how to check, package, needed by)
 COMMANDS = [
-    ("cc", "build-essential", "A"), ("make", "build-essential", "A"), ("pkg-config", "pkg-config", "A"),
-    ("taskset", "util-linux", "A, B"), ("git", "git", "B"), ("cmake", "cmake", "B"),
+    ("cc", "build-essential", "A, C"), ("make", "build-essential", "A, C"), ("pkg-config", "pkg-config", "A, C"),
+    ("taskset", "util-linux", "A, B, C"), ("git", "git", "B, C"), ("cmake", "cmake", "B, C"),
+    ("python3", "python3", "A, B, C"),
     ("clang++", "clang", "B"), ("objdump", "binutils", "B (crypto-instruction check)"),
 ]
 OPTIONAL_COMMANDS = [
     ("time", "/usr/bin/time", "time", "B (peak memory; without it the driver uses wait4)"),
-    ("vcgencmd", None, "raspi-utils or libraspberrypi-bin", "A, B (temperature and throttle readings)"),
+    ("vcgencmd", None, "raspi-utils or libraspberrypi-bin", "A, B, C (temperature and throttle readings)"),
 ]
-PKGCONFIG = [("libsodium", "libsodium-dev", "A"), ("libcrypto", "libssl-dev", "A, B"),
+PKGCONFIG = [("libsodium", "libsodium-dev", "A, C"), ("libcrypto", "libssl-dev", "A, B, C"),
              ("libzstd", "libzstd-dev", "B"), ("zlib", "zlib1g-dev", "B")]
 CMAKE_PACKAGES = [("GTest", "libgtest-dev", "B"), ("benchmark", "libbenchmark-dev", "B")]
 
@@ -82,6 +83,12 @@ def main():
         print(f"  {'ok     ' if ok else 'MISSING'} {name:<12} (Part {who})")
         if not ok:
             missing.append(pkg)
+
+    print("Part C libraries (credential/fetch_and_build.sh):")
+    info = os.path.join(os.path.dirname(os.path.abspath(__file__)), "credential", "build",
+                        "credential_build_info.json")
+    print(f"  {'built  ' if os.path.exists(info) else 'not yet'} AMCL, Xaptum ECDAA and Intel EPID SDK"
+          f"{'' if os.path.exists(info) else ' (needs network access to github.com)'}")
 
     print("Machine:")
     model = ""
