@@ -504,6 +504,7 @@ python3 run_partC.py --partA-json results/partA_<date>_<host>.json
 - It reads `vcgencmd measure_temp`, `vcgencmd get_throttled` and `vcgencmd measure_clock arm` before and after the run, where `vcgencmd` is available.
 - sudo is optional, as in Part A. Run as root, the driver sets the `performance` governor and restores it afterwards.
 - `--partA-json` names the Part A results file from the same machine. The driver and the summarizer refuse a Pi run combined with a dry-run file, and the reverse.
+- The driver and the summarizer also refuse a Part A file whose host differs from the Part C run's host, and write nothing.
 - Without `--partA-json`, no comparison file is written. `python3 summarize_partC.py RUN_ID --partA-json PATH` writes it later.
 - `--rsa-bits`, `--variants`, `--schemes` and the repeat counts are listed by `python3 run_partC.py --help`.
 
@@ -519,7 +520,7 @@ python3 run_partC.py --partA-json results/partA_<date>_<host>.json
 
 On a machine that is not a Pi, the names are `partC_DRY_RUN_NOT_PI_<date>_<host>.json`, `partC_summary_DRY_RUN_NOT_PI.md` and `partC_comparison_DRY_RUN_NOT_PI.md`, and `run_id` ends in `_DRY_RUN_NOT_PI`.
 
-The comparison file opens with the DRY RUN line where it applies, the machine, the DAA or EPID scheme measured and whether it is DAA or EPID, and the line "Baseline wrap count is one, from Table 5: one relay hop." Then, per design, each operation has its median, the row it comes from, and its modulus or curve with the stated security level:
+The comparison file opens with the DRY RUN line where it applies, the machine, the DAA or EPID scheme measured and whether it is DAA or EPID, and the line "Baseline wrap count is one, from Table 5: one relay hop." It then names both runs with their dates. Then, per design, each operation has its median, the row it comes from, and its modulus or curve with the stated security level:
 
 - **This design:** Part A `sha256_file_openssl` at 30,000,000 B, variant `default`; `ecies_seven_layers`, whose AEAD is inside each layer; and the medians of `h_metadata`, `fullpackethash`, `enc_fullpackethash` and `binding_hash`.
 - **Blind-signed tokens:** the same SHA-256 row; `ecies_wrap_one_relay_tokens`; token spend, no operation. Issuance is shown on its own: blind plus finalize for a batch of 20, and per token, not part of the capture.
@@ -532,7 +533,7 @@ The file gives no total for any design. The paper does not fully specify their p
 The program runs these tests before timing anything. If any test fails, it prints the failure, exits with status 2 and times nothing.
 
 - Part A's HKDF-SHA256, X25519 and AES-256-GCM known-answer tests.
-- RFC 9474 Appendix A test vectors for both variants: encoded message, blinded message, inverse, blind signature and signature. The vectors use an RSA-4096 key. The client's test entry point takes the salt and the blinding factor r as inputs; r is the inverse of the vector's `inv`. The timed path draws both from OpenSSL's random number generator. `credential/rfc9474_vectors.h` holds the vectors, taken from Cloudflare CIRCL's copy of Appendix A.
+- RFC 9474 Appendix A test vectors for both variants: encoded message, blinded message, inverse, blind signature and signature. The vectors use an RSA-4096 key. The client's test entry point takes the salt and the blinding factor r as inputs; r is the inverse of the vector's `inv`. The timed path draws both from OpenSSL's random number generator. The vectors come from the copy of RFC 9474 Appendix A in Cloudflare's CIRCL repository, `blindsign/blindrsa/testdata/test_vectors_rfc9474.json.gz` at commit `31be93db4772d9482a06c44eb2ed134fdacd2a2b`. `credential/rfc9474_vectors.h` holds them.
 - For each modulus and variant: blind, the issuer signs, finalize. The signature verifies. A modified signature and a modified message are rejected.
 - ECDAA: a full Join in software. The issuer checks the member's proof and rejects it against a different nonce. The member checks the credential, and a credential for another member key is rejected. ECDAA ships no test vectors. Its own test suite runs in `fetch_and_build.sh`, which exits with an error if any of its tests fails.
 - EPID: the SDK's stored signature `grp_x/member0/sig_sha256_rndbase_msg0` verifies on "msg0" and is rejected on "msg1" and with one byte flipped. The member creates a join request.
@@ -560,6 +561,7 @@ The program runs these tests before timing anything. If any test fails, it print
 - **No issuer round trip, relay path or network time** is measured.
 - **ECIES.** The wrap rows use Part A's ECIES code, with the differences from the specification listed in Part A's Limitations.
 - **Build flags differ by library.** The Part C program is built with `-O2`, AMCL with `-O2`, ecdaa with `-O3` and the EPID SDK with `-Os -fno-strict-aliasing`. Each is the library's default, apart from the EPID change above.
+- **EPID SDK build.** The EPID SDK is built with GCC at its default `-Os`, with `-Werror` removed and `-fno-strict-aliasing` added, and every raw log records the diff.
 - **EPID keys** come from the SDK's test data, because the SDK has no issuer.
 - **Libraries.** The results depend on the installed OpenSSL and libsodium. Both are recorded in every raw log.
 

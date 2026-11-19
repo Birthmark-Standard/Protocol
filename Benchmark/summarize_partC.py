@@ -106,6 +106,10 @@ def summarize(run_id, partA_json=None):
             raise SystemExit(
                 f"refusing to combine: this Part C run is {'a dry run' if dry else 'from a Raspberry Pi'}, "
                 f"and {partA_json} is {'a dry run' if partA_dry else 'from a Raspberry Pi'}")
+        partA_host = (partA.get("machine") or {}).get("hostname")
+        if partA_host != machine["hostname"]:
+            raise SystemExit(f"refusing to combine: this Part C run is from host {machine['hostname']}, "
+                             f"and {partA_json} is from host {partA_host}")
 
     summary = next((s for s in raw["selftests"] if s["type"] == "selftest_summary"), None)
     passed = bool(summary and summary.get("pass"))
@@ -299,6 +303,12 @@ def render_summary(res, json_rel):
     return "\n".join(L)
 
 
+def run_date(run_id):
+    """The UTC date a run started, from its run id (YYYYMMDDTHHMMSSZ_...)."""
+    d = run_id.split("T")[0]
+    return f"{d[:4]}-{d[4:6]}-{d[6:8]}" if len(d) == 8 and d.isdigit() else "unknown"
+
+
 def find_partA(partA, name, nbytes=None):
     for r in partA.get("rows", []):
         if r["variant"] == "default" and r["name"] == name and (nbytes is None or r["bytes"] == nbytes):
@@ -329,12 +339,9 @@ def render_comparison(res, json_rel, partA, partA_path):
     L.append("")
     L.append("# Part C comparison" + (" (dry run)" if dry else ""))
     L.append("")
-    pam = partA.get("machine", {})
-    L.append(f"- Part C: run `{res['run_id']}`, `{json_rel}`.")
-    L.append(f"- Part A: run `{partA.get('run_id')}`, `{pa_rel}`.")
-    if pam.get("hostname") != m["hostname"] or pam.get("model") != m["model"]:
-        L.append(f"- The Part A run is from host `{pam.get('hostname')}` (`{pam.get('model') or pam.get('cpu_model')}`). "
-                 f"Part C is from host `{m['hostname']}`. The two runs are from different machines.")
+    L.append(f"- Part C: run `{res['run_id']}`, dated {run_date(res['run_id'])}, `{json_rel}`.")
+    L.append(f"- Part A: run `{partA.get('run_id')}`, dated {run_date(partA.get('run_id') or '')}, `{pa_rel}`.")
+    L.append(f"- Both runs are from host `{m['hostname']}`.")
     L.append("")
     L.append("Each line is one device operation per capture, with the measured median, the row it comes from, and "
              "the modulus or curve and its stated security level. No total is given for any design. The paper does "

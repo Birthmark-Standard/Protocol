@@ -97,12 +97,17 @@ def main():
     build_info["epid_build_changes_diff"] = read_text(os.path.join(BUILD, "epid_build_changes.diff"))
 
     if args.partA_json:
-        # Refuse a Pi and dry-run mix before the run, not after it.
+        # Refuse a Pi and dry-run mix, or two different hosts, before the run, not after it.
         with open(args.partA_json) as f:
-            partA_dry = json.load(f).get("label") == summarize_partC.DRY_LABEL
+            partA = json.load(f)
+        partA_dry = partA.get("label") == summarize_partC.DRY_LABEL
+        partA_host = (partA.get("machine") or {}).get("hostname")
         if partA_dry == machine["is_pi"]:
             raise SystemExit(f"refusing to combine: this machine is {'a Raspberry Pi' if machine['is_pi'] else 'not a Pi'}"
                              f", and {args.partA_json} is {'a dry run' if partA_dry else 'from a Raspberry Pi'}")
+        if partA_host != machine["hostname"]:
+            raise SystemExit(f"refusing to combine: this machine is host {machine['hostname']}, "
+                             f"and {args.partA_json} is from host {partA_host}")
 
     machine["governor_before"] = A.cpufreq(cpu, "scaling_governor") or "not available"
     previous, gov_status = ({}, "not attempted (--no-governor)") if args.no_governor else A.set_governor("performance")
