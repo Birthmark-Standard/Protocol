@@ -22,7 +22,7 @@ F's output is sent on a private channel here. The registry record itself is publ
 any protocol. The property tested is that A's own view does not contain the ContentHash, not that the record is hidden.
 
 The relay is passive. Every leg is copied to the public channel, which models a passive observer of the whole path, but the adversary cannot drop, delay or
-inject packets, so selective dropping is not tested. Timing and packet sizes are not modeled either; Appendix D of the paper evaluates them.
+inject packets, so selective dropping is not tested. Timing and packet sizes are not modeled either; Appendix C of the paper evaluates them.
 
 The twin (twins/ folder) leaves the payload unwrapped under F's Channel Key. A then reads ContentHash and n. The twin's query must be VIOLATED, or this
 model's "true" proves nothing. *)

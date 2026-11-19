@@ -11,7 +11,7 @@ This repository is the companion repository of the two papers in `Docs/`: "The B
 | `Docs/` | The Protocol paper, the Integration paper and the Messaging Structure specification | |
 | `ProverifModels/` | ProVerif models of the privacy and integrity properties, each with a twin that carries one deliberate fault | Protocol paper, Appendix A and Table A.1 |
 | `RoutingModels/` | Small simulation and enumeration scripts for the device routing table: the validator's tag a first relay can infer, the skew of F and I, and how often roles coincide | Integration paper, Section 3.9; Protocol paper, Section 6.3 |
-| `SNAExperiment/` | A simulation of the protocol's full message flow that measures how often each component, and a passive observer, names the device behind a registry record | Protocol paper, Appendix D; Integration paper, Section 7 |
+| `SNAExperiment/` | A simulation of the protocol's full message flow that measures how often each component, and a passive observer, names the device behind a registry record | Protocol paper, Appendix C; Integration paper, Section 7 |
 | `Benchmark/` | A harness that measures the device-side cost of a capture and the cost of proving a SHA-256 hash in zero knowledge, for a Raspberry Pi 4. The committed results are dry runs on a virtual machine, not Pi measurements. | Protocol paper, Appendix B and Table A.3, and Integration paper, Section 8, which calculate these costs from published benchmarks |
 
 Each folder has a README that says what it holds, how to run it and what the output means.

@@ -5,7 +5,7 @@ Small simulation and enumeration scripts behind the numbers in Section 3.9
 (arXiv 2602.04933). Each script is short, reads top to bottom, and has its
 model and the paper sentence it supports in its docstring.
 
-These are toy models. They are not part of the Protocol paper's Appendix D
+These are toy models. They are not part of the Protocol paper's Appendix C
 experiment (`SNAExperiment/`), which tests different vantages and is run with
 different code.
 
