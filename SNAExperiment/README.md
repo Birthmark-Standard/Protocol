@@ -4,7 +4,7 @@ This experiment tests the Semantic Non-Assembly property of the Birthmark Protoc
 
 The experiment simulates the protocol's full message flow, with real and decoy traffic. It attacks every record from each internal vantage, with every node of the pool compromised in turn.
 
-The Protocol paper reports it in Appendix D. The experiment has been run twice, as experiments C1 and C2 (table below). Three further experiments, C3, C4 and C5, test stronger attackers; their predictions are committed and they have not been run (see "Experiments C3, C4 and C5"). For each, `PREDICTIONS_C1.md` or `PREDICTIONS_C2.md` has the predictions committed before the run, `RESULTS_C1.md` or `RESULTS_C2.md` has every finding, `results/C1/` or `results/C2/` has the generated tables, data and figures, and `PAPER_TABLE.md` in that folder has the headline tables.
+The Protocol paper reports it in Appendix C. The experiment has been run twice, as experiments C1 and C2. Experiments C3, C4 and C5 test stronger attackers. Experiment C6 compares two candidates: the credential path and blind-issued one-time certificates. The table below lists each experiment's cells, files and run status. `PREDICTIONS_C1.md` to `PREDICTIONS_C6.md` hold each experiment's predictions, committed before its run. For C1 and C2, `RESULTS_C1.md` or `RESULTS_C2.md` has every finding, `results/C1/` or `results/C2/` has the generated tables, data and figures, and `PAPER_TABLE.md` in that folder has the headline tables. The sections "Experiments C3, C4 and C5" and "Experiment C6: two candidates" describe C3 to C6.
 
 ## Experiments
 
@@ -297,7 +297,7 @@ Each run of a job writes one record per output file in `raw/`, so a job is resum
 
 `results/C3_dry_run/` to `results/C6_dry_run/` hold dry runs of C3 to C6 on model seeds (2 runs per cell for C3 and C6, 1 for C4 and C5), and `results/C6_second_dry_run/` one of the second C6 run (1 run per cell).
 
-A full run uses the evaluation seed set of C3 to C5 (`eval_seed` in `sna/stronger.py`). Add `--dry` for a dry run on model seeds; its tables are named `_dry_run` and say so on their first line:
+A full run uses the evaluation seed set of C3 to C6 (`eval_seed` in `sna/stronger.py`). Add `--dry` for a dry run on model seeds; its tables are named `_dry_run` and say so on their first line:
 
 ```
 python -m sna.stronger c3_kc c3_conc c3_vol c3_kc_r300 --runs 2 --dry --out results/C3_dry_run
@@ -348,7 +348,7 @@ The job writes `TABLES_C6.md` (and `.json`): one table per vantage with both can
 | Path | Contents |
 |---|---|
 | `RESULTS_C1.md`, `RESULTS_C2.md` | every finding |
-| `PREDICTIONS_C1.md` to `PREDICTIONS_C6.md` | the predictions, written and committed before the run; each of C3 to C5 lists its changes before the run |
+| `PREDICTIONS_C1.md` to `PREDICTIONS_C6.md` | the predictions, written and committed before the run; each of C3 to C6 lists its changes before the run |
 | `results/C3_dry_run/` to `results/C6_dry_run/` | the dry runs on model seeds: their tables, cost per run and `run_info.json` |
 | `C1_C2_figures.csv` | every reported figure of C1 and C2, one row each, with its value in each experiment and whether it changed |
 | `results/C*/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
