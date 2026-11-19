@@ -37,7 +37,7 @@ From `Benchmark/`:
 
 On a Pi, the output files carry no `DRY_RUN_NOT_PI` and land in `results/` beside the dry runs. Parts A, B and C below describe each step and each file.
 
-Section and table numbers refer to the versions in `Docs/`: the Protocol paper v128, the Integration paper v42 and the Messaging Structure v120.
+Section and table numbers refer to the Protocol, Integration and Messaging Structure papers.
 
 ## Part A
 
@@ -96,7 +96,7 @@ The options `--cpu`, `--binary`, `--no-governor` and the repeat counts are liste
 | `results/raw/partA_<run_id>_caps_off.jsonl` | Same, for `caps_off`. |
 | `results/raw/partA_<run_id>_build_failed.txt` | Written only if `make` fails. |
 | `results/partA_<date>_<host>.json` | Statistics for every row, with the machine, the runs, the self-tests and the claim checks. A second run on the same day gets a `_2` suffix. |
-| `results/partA_summary.md` | One table row per measurement, and one line for each of the papers' three claims. Rebuilt on each Pi run. |
+| `results/partA_summary.md` | One table row per measurement, and one line for each of the papers' two claims. Rebuilt on each Pi run. |
 
 On a machine that is not a Pi, the names are `partA_DRY_RUN_NOT_PI_<date>_<host>.json` and `partA_summary_DRY_RUN_NOT_PI.md`, and `run_id` ends in `_DRY_RUN_NOT_PI`.
 
@@ -142,7 +142,7 @@ Each row is timed with `clock_gettime(CLOCK_MONOTONIC_RAW)`, one sample per oper
   - The shared secret is e·pk, which is one variable-base multiplication.
 - ECIESb (layers 2, 3, 4), to a Channel Key (GP, pk):
   - EPK = e·GP and the shared secret e·pk, which are two variable-base multiplications.
-- Key derivation in the specification (Messaging Structure v129):
+- Key derivation in the specification (Messaging Structure):
   - HKDF-SHA256 with an empty salt.
   - Input: the shared secret e·pk.
   - Info string: a layer label, then EPK, then the recipient public key, with the Generator Point GP appended for ECIESb.
@@ -179,7 +179,7 @@ All sizes are named constants in `device/sizes.h`.
 - `binding_hash`: SHA-256(Enc_FullPacketHash), 48 B.
 
 **A5. Whole capture.**
-- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure (v120), "Device-side construction", steps 1 to 9:
+- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure, "Device-side construction", steps 1 to 9:
   - ContentHash;
   - n and h(metadata), then FullPacketHash;
   - replay_nonce, BlindShare_key, Enc_FullPacketHash and binding_hash;
@@ -221,19 +221,16 @@ If the whole capture is lower, the summary prints SANITY FLAG and marks the row.
 
 ### The papers' claims
 
-The summary checks three claims against measured medians. Each claim line names the row, the variant and the code path it uses.
+The summary checks two claims against measured medians. Each claim line names the row, the variant and the code path it uses.
 
 | Claim | Source | Compared rows |
 |---|---|---|
 | "2 to 10 ms for encryption" | Protocol paper, Section 7. Integration §8.1 calculates 6.6 to 9.2 ms, inside this range. | `ecies_seven_layers`, variant `default` |
 | "430 to 600 ms for hashing a 30 MB file without hardware extensions" | Integration §8.2 | At 30,000,000 B: `sha256_file_openssl` in `default` (only if the CPU has no SHA extensions); `sha256_file_openssl` in `caps_off`; `sha256_file_libsodium` in `default` |
-| "120 to 170 ms with ARMv8 crypto extensions" | Integration §8.2 | `sha256_file_openssl` at 30,000,000 B in `default`, only if the CPU has `sha2` |
 
 Each comparison gets one of three labels: "within range", "below range (faster than calculated)" or "above range (slower than calculated)".
 
 The papers' figures are calculated for their slowest hardware class, a Cortex-A8 at 800 MHz. The summary states that the core measured here is faster than that class, so it does not confirm the slowest-class figures.
-
-The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim is reported as not tested, with the reason.
 
 ### What is not measured
 
@@ -249,10 +246,10 @@ The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim i
 - **One machine.** The results describe one Raspberry Pi 4 Model B.
 - **Core class.** The papers' figures are calculated for a Cortex-A8, an in-order core at 800 MHz. The Cortex-A72 is out of order and runs at 1.5 GHz. These results do not show what a Cortex-A8 would measure.
 - **Clock.** The Cortex-A72 is named here at 1.5 GHz. Some Pi 4 boards run at 1.8 GHz. The summary records the maximum frequency the board reports and notes any difference.
-- **No SHA extensions on the Pi 4.** The claim for ARMv8 crypto extensions cannot be tested on this board.
+- **No SHA extensions on the Pi 4.** No row on this board uses ARMv8 SHA instructions.
 - **KDF and AEAD inputs.** The code's HKDF-SHA256 call uses salt = EPK and one fixed info string. The specification uses an empty salt and an info string of a layer label, EPK and the recipient public key, with GP for ECIESb. The code derives the AES-256-GCM nonce and authenticates the version byte and EPK. The specification uses an all-zero nonce and empty associated data. The HKDF call is timed as its own row.
 - **Sizes.** The plaintext sizes match the specification's layer table: T 82 B (131 B encrypted), CredP 203 B (252 B), ContP 49 B (98 B) with 32 B per optional field. Cred_HW, key_ref and claim are estimates in Table A.1. The 300 B ContP is outside the spec.
-- **replay_nonce.** Integration v42 defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
+- **replay_nonce.** The Integration paper defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
 - **Padding.** The code pads with zero bytes to a fixed 460 B plaintext, with no 2-byte length prefix and no drawn size. The specification's wire size is 420 to 460 B, or 820 to 860 B for the gatekeeper fan-out, so the padded rows encrypt more bytes than the specification's largest ordinary wrap.
 - **Subgroup check.** The spec checks ℓ·GP with an unclamped multiplication. This code instead converts GP to Edwards form and calls libsodium's `crypto_core_ed25519_is_valid_point`, which includes the prime-order subgroup check. The check runs at setup and is not timed.
 - **Libraries.** The results depend on the installed libsodium and OpenSSL versions. Both are recorded in every raw log.
