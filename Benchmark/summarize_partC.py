@@ -85,6 +85,23 @@ def read_raw(path):
     return out
 
 
+# Machine fields that Part A's results JSON records and that identify the kind of machine. RAM is
+# compared in whole GiB, because the kernel's MemTotal moves by a few KB between kernel versions.
+# No serial number or other unique hardware identifier is read.
+MACHINE_FIELDS = ("hostname", "model", "arch", "cpu_model", "cpu_count")
+
+
+def machine_differences(partA_machine, partC_machine):
+    """The machine fields in which a Part A and a Part C run differ, as readable strings."""
+    diffs = [f"{k}: Part A {partA_machine.get(k)!r}, Part C {partC_machine.get(k)!r}"
+             for k in MACHINE_FIELDS if partA_machine.get(k) != partC_machine.get(k)]
+    ram = [round(m["mem_total_kb"] / 1048576) if m.get("mem_total_kb") else None
+           for m in (partA_machine, partC_machine)]
+    if ram[0] != ram[1]:
+        diffs.append(f"RAM: Part A {ram[0]} GiB, Part C {ram[1]} GiB")
+    return diffs
+
+
 def summarize(run_id, partA_json=None):
     path = os.path.join(RAW, f"partC_{run_id}_default.jsonl")
     if not os.path.exists(path):
@@ -106,10 +123,10 @@ def summarize(run_id, partA_json=None):
             raise SystemExit(
                 f"refusing to combine: this Part C run is {'a dry run' if dry else 'from a Raspberry Pi'}, "
                 f"and {partA_json} is {'a dry run' if partA_dry else 'from a Raspberry Pi'}")
-        partA_host = (partA.get("machine") or {}).get("hostname")
-        if partA_host != machine["hostname"]:
-            raise SystemExit(f"refusing to combine: this Part C run is from host {machine['hostname']}, "
-                             f"and {partA_json} is from host {partA_host}")
+        diffs = machine_differences(partA.get("machine") or {}, machine)
+        if diffs:
+            raise SystemExit(f"refusing to combine: this Part C run and {partA_json} are from different machines: "
+                             + "; ".join(diffs))
 
     summary = next((s for s in raw["selftests"] if s["type"] == "selftest_summary"), None)
     passed = bool(summary and summary.get("pass"))

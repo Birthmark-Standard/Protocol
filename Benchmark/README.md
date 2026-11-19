@@ -504,7 +504,7 @@ python3 run_partC.py --partA-json results/partA_<date>_<host>.json
 - It reads `vcgencmd measure_temp`, `vcgencmd get_throttled` and `vcgencmd measure_clock arm` before and after the run, where `vcgencmd` is available.
 - sudo is optional, as in Part A. Run as root, the driver sets the `performance` governor and restores it afterwards.
 - `--partA-json` names the Part A results file from the same machine. The driver and the summarizer refuse a Pi run combined with a dry-run file, and the reverse.
-- The driver and the summarizer also refuse a Part A file whose host differs from the Part C run's host, and write nothing.
+- The driver and the summarizer also refuse a Part A file whose host differs from the Part C run's host, or whose board model, architecture, CPU model, core count or RAM in whole GiB differs, and write nothing.
 - Without `--partA-json`, no comparison file is written. `python3 summarize_partC.py RUN_ID --partA-json PATH` writes it later.
 - `--rsa-bits`, `--variants`, `--schemes` and the repeat counts are listed by `python3 run_partC.py --help`.
 
