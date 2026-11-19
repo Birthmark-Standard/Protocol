@@ -21,9 +21,6 @@ Every file in `results/` is a dry run on an x86-64 virtual machine. Every file n
 | `results/partB_DRY_RUN_NOT_PI_2026-10-26_vm.json` | Part B statistics |
 | `results/partB_summary_DRY_RUN_NOT_PI.md` | Part B summary tables |
 | `results/comparison_DRY_RUN_NOT_PI.md` | Hash time against prover time and memory |
-| `results/partC_DRY_RUN_NOT_PI_2026-11-19_vm.json` | Part C statistics for every row |
-| `results/partC_summary_DRY_RUN_NOT_PI.md` | Part C correctness tests and summary tables |
-| `results/partC_comparison_DRY_RUN_NOT_PI.md` | Device operations per capture for this design and the two designs of Table 5 |
 | `results/raw/` | The raw logs behind every number above |
 
 ## On a Raspberry Pi 4
