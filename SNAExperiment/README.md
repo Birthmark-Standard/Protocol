@@ -343,13 +343,13 @@ The job writes `TABLES_C6.md` (and `.json`): one table per vantage with both can
 
 ## Contents
 
-`results/C1/` and `results/C2/` hold the same files.
+`results/C1/` and `results/C2/` hold the same files, except that `code_commit.txt`, `run_log.txt` and `versions_before_run.txt` are in `results/C2/` only.
 
 | Path | Contents |
 |---|---|
 | `RESULTS_C1.md`, `RESULTS_C2.md` | every finding |
 | `PREDICTIONS_C1.md` to `PREDICTIONS_C6.md` | the predictions, written and committed before the run; each of C3 to C6 lists its changes before the run |
-| `results/C3_dry_run/` to `results/C6_dry_run/` | the dry runs on model seeds: their tables, cost per run and `run_info.json` |
+| `results/C3_dry_run/` to `results/C6_dry_run/`, `results/C6_second_dry_run/` | the dry runs on model seeds: their tables, cost per run and `run_info.json` |
 | `C1_C2_figures.csv` | every reported figure of C1 and C2, one row each, with its value in each experiment and whether it changed |
 | `results/C*/summary.json`, `summary.csv` | every row of the main configuration, with the shuffle and the diagnostics |
 | `results/C*/TABLES.md` | the full tables |
@@ -384,4 +384,4 @@ The simulation uses the 20-node pool and the transaction described above. It doe
 - the grouping of device-table lines by destination pseudonym;
 - a first-hop vantage that is told which destination a routing code leads to;
 - injection of packets to fill a relay. A device does not choose its second relay, and every hold is drawn per packet, so packets an attacker injects and knows do not change its posterior among the packets it does not know;
-- a validator that chooses verdicts;
+- a validator that chooses verdicts.

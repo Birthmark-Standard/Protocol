@@ -4,7 +4,7 @@ DRY RUN, NOT PI
 
 This run is not from a Raspberry Pi. The machine reports `Intel(R) Xeon(R) Processor @ 2.80GHz`. These numbers test the code path only and must not be cited as Pi results.
 
-- Run: `20261026T155810Z_vm_DRY_RUN_NOT_PI`. Generated 2026-10-26T16:09:54+00:00 from the raw logs below. Full data: `results/partA_DRY_RUN_NOT_PI_2026-10-26_vm.json`.
+- Run: `20261026T155810Z_vm_DRY_RUN_NOT_PI`. Generated 2026-11-24T16:37:53+00:00 from the raw logs below. Full data: `results/partA_DRY_RUN_NOT_PI_2026-10-26_vm.json`.
 - CPU: Intel(R) Xeon(R) Processor @ 2.80GHz, x86_64, 4 cores. Measured max frequency of the pinned core: not available.
 - CPU features: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves arat umip avx512_vnni md_clear arch_capabilities
 - RAM: 15.71 GiB. OS: Ubuntu 24.04.5 LTS. Kernel: Linux vm 6.18.44-fc-v153 #1 SMP PREEMPT_DYNAMIC @0 x86_64 x86_64.
@@ -95,15 +95,13 @@ The whole capture contains the 30,000,000 B hash plus the other work, so its med
 
 Each comparison uses the median of the named row. The labels are "within range", "below range (faster than calculated)" and "above range (slower than calculated)".
 
-- "2 to 10 ms for encryption" (Protocol paper; Integration section 8.1):
+- "6.6 to 9.2 ms for encryption" (Protocol paper, Section 7 and Appendix B; Integration section 8.1):
   - Row `ecies_seven_layers`, variant `default`, 3 ECIESb + 4 ECIES: median 0.5862 ms. Below range (faster than calculated).
 - "430 to 600 ms for hashing a 30 MB file without hardware extensions" (Integration section 8.2):
   - Row `sha256_file_openssl`, 30,000,000 B, variant `default`, OpenSSL default (SIMD: AVX2, AVX or SSSE3; no SHA-NI): median 79.630 ms, 7.43 cycles/byte. Below range (faster than calculated).
   - Row `sha256_file_openssl`, 30,000,000 B, variant `caps_off`, OpenSSL capabilities off (scalar, OPENSSL_ia32cap=0x0:0x0): median 106.2 ms, 9.91 cycles/byte. Below range (faster than calculated).
   - Row `sha256_file_libsodium`, 30,000,000 B, variant `default`, libsodium crypto_hash_sha256 (portable C): median 113.5 ms, 10.59 cycles/byte. Below range (faster than calculated).
   - The calculation assumes 13.7 cycles/byte on a Cortex-A8 at 800 MHz. Cycles per byte do not depend on the clock and are the closer comparison.
-- "120 to 170 ms with ARMv8 crypto extensions" (Integration section 8.2):
-  - Not tested: the CPU feature list has no sha_ni, so no run used SHA extensions.
 
 The papers' calculated figures are for their slowest hardware class, a Cortex-A8 at 800 MHz. This core (Intel(R) Xeon(R) Processor @ 2.80GHz) is faster than that class, so these results do not confirm the slowest-class figures.
 

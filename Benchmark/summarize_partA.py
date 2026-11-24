@@ -38,7 +38,7 @@ DRY_LABEL = "DRY RUN, NOT PI"
 DRY_TAG = "DRY_RUN_NOT_PI"
 
 # Claims from the papers, in milliseconds.
-CLAIM_ENCRYPTION = (2.0, 10.0)        # Protocol paper; Integration section 8.1
+CLAIM_ENCRYPTION = (6.6, 9.2)         # Protocol paper, Section 7 and Appendix B; Integration section 8.1
 CLAIM_HASH_SOFTWARE = (430.0, 600.0)  # Integration section 8.2, Cortex-A8 at 800 MHz
 CLAIM_CPB_SOFTWARE = 13.7             # eBACS figure the 430-600 ms range is built on
 
@@ -329,8 +329,8 @@ def summarize(run_id):
     claims = []
     seven = find("default", "ecies_seven_layers")
     claims.append({
-        "claim": "2 to 10 ms for encryption",
-        "source": "Protocol paper; Integration section 8.1",
+        "claim": "6.6 to 9.2 ms for encryption",
+        "source": "Protocol paper, Section 7 and Appendix B; Integration section 8.1",
         "comparisons": [compare(seven, CLAIM_ENCRYPTION)] if seven else [],
         "not_tested": None if seven else "the ecies_seven_layers row is missing",
     })

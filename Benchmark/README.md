@@ -10,7 +10,7 @@ The target machine is a **Raspberry Pi 4 Model B, 4 GB, Cortex-A72 at 1.5 GHz**,
 
 ## What the papers use, and what `results/` holds
 
-The papers calculate the device-side cost from published benchmarks: the Protocol paper in Appendix B and Table A.3, the Integration paper in Section 8. They report no measurement from this folder and no measurement on a Raspberry Pi.
+The papers calculate the device-side cost from published benchmarks: the Protocol paper in Appendix B, the Integration paper in Section 8. They report no measurement from this folder and no measurement on a Raspberry Pi.
 
 Every file in `results/` is a dry run on an x86-64 virtual machine. Every file name carries `DRY_RUN_NOT_PI`. These runs show that the scripts build, pass their self-tests and write their output. They are not Raspberry Pi measurements. Every number in `results/` is computed from a raw log in `results/raw/`.
 
@@ -34,7 +34,7 @@ From `Benchmark/`:
 
 On a Pi, the output files carry no `DRY_RUN_NOT_PI` and land in `results/` beside the dry runs. Parts A, B and C below describe each step and each file.
 
-Section and table numbers refer to the Protocol, Integration and Messaging Structure papers.
+Section and table numbers refer to the Protocol and Integration papers. Section names such as "Device-side construction" refer to the Messaging Structure specification.
 
 ## Part A
 
@@ -106,7 +106,7 @@ The C program runs these tests before timing anything. If any test fails, it pri
 - X25519, RFC 7748 section 6.1.
 - AES-256-GCM, GCM specification test cases 13 and 14, a round trip on 203 B, and rejection of a modified ciphertext.
 - Generator Point check. Each GP is accepted. The point u = 0 is rejected, and so is GP plus an order-2 point.
-- ECIES overhead equals 49 B, the figure in Table A.1.
+- ECIES overhead equals 49 B, the figure in Integration paper Table A.1.
 - One full capture, then decryption of all seven layers with the matching secret keys:
   - The first relays open layers 5 to 7 and check the routing code.
   - C, F and I open layers 2 to 4.
@@ -147,7 +147,7 @@ Each row is timed with `clock_gettime(CLOCK_MONOTONIC_RAW)`, one sample per oper
 - Key derivation in this code:
   - HKDF-SHA256, with ikm = the shared secret e·pk, salt = EPK, and one fixed info string for every layer, ECIES and ECIESb alike.
   - It outputs the 32 B AES-256-GCM key and a 12 B nonce. The nonce is not sent.
-- Wire layout: a version byte (1 B), EPK (32 B), the ciphertext, then the AES-256-GCM tag (16 B). The overhead is 49 B, which matches Table A.1.
+- Wire layout: a version byte (1 B), EPK (32 B), the ciphertext, then the AES-256-GCM tag (16 B). The overhead is 49 B, which matches Integration paper Table A.1.
 - AEAD nonce: the specification uses a fixed all-zero 96-bit nonce and empty associated data on every ECIES layer, because each key is single-use (e is fresh). This code uses the HKDF-derived nonce, and the version byte and EPK as associated data.
 - Padding: in the specification, a wrap's plaintext is a 2-byte length prefix, the payload, then padding up to the drawn wire size minus 49 B. The drawn wire size is uniform over 420 to 460 B, or 820 to 860 B for the gatekeeper fan-out. This code has no length prefix and no draw. It pads with zero bytes to a fixed 460 B plaintext, 509 B on the wire.
 
@@ -222,7 +222,7 @@ The summary checks two claims against measured medians. Each claim line names th
 
 | Claim | Source | Compared rows |
 |---|---|---|
-| "2 to 10 ms for encryption" | Protocol paper, Section 7. Integration §8.1 calculates 6.6 to 9.2 ms, inside this range. | `ecies_seven_layers`, variant `default` |
+| "6.6 to 9.2 ms for encryption" | Protocol paper, Section 7 and Appendix B; Integration §8.1 | `ecies_seven_layers`, variant `default` |
 | "430 to 600 ms for hashing a 30 MB file without hardware extensions" | Integration §8.2 | At 30,000,000 B: `sha256_file_openssl` in `default` (only if the CPU has no SHA extensions); `sha256_file_openssl` in `caps_off`; `sha256_file_libsodium` in `default` |
 
 Each comparison gets one of three labels: "within range", "below range (faster than calculated)" or "above range (slower than calculated)".
