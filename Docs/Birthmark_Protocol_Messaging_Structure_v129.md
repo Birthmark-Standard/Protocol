@@ -2,7 +2,7 @@
 
 **Notation.** `||` = concatenation. `ECIES(pk; m)` = randomized IND-CCA2 public-key encryption. `AEAD(k; m)` = AES-256-GCM. `Sign(sk; m)` = Ed25519. `RSign(ring; m)` = unlinkable 1-of-n ring signature over a ring. `ECIESb((GP, pk); m)` = ECIES to a blinded destination key (a Channel Key): the sender picks a random scalar e, sends EPK = e·GP in place of the usual ephemeral public key, and derives the AEAD key from e·pk as set out under Envelope. The holder of the secret scalar sk with pk = sk·GP derives the same value as sk·EPK.
 
-**Terms.** This specification uses the terms of the Protocol paper (v152) and the Integration paper (v52). A **Registry Node** is a consortium member's node, and that member is its **operator**. A Registry Node can serve as a first relay, second relay, C, F, I or gatekeeper, and it takes part in registry consensus. A validator is not a Registry Node.
+**Terms.** This specification uses the terms of the Protocol paper (v166) and the Integration paper (v55). A **Registry Node** is a consortium member's node, and that member is its **operator**. A Registry Node can serve as a first relay, second relay, C, F, I or gatekeeper, and it takes part in registry consensus. A validator is not a Registry Node.
 
 ## Parties and keys
 
