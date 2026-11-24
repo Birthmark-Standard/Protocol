@@ -1,4 +1,4 @@
-(* BM_Validator_Compromise_Content_SameClass.pv   (v105 design, full pipeline)
+(* BM_Validator_Compromise_Content_SameClass.pv   (full pipeline)
 Twin of twins/BM_Validator_Compromise_Content_SameClass_TWIN.pv with the verdict class held constant. Both devices carry the same claim (claim_std), so both transactions receive
 the same verdict. The validator's keys are leaked and the device identities T1 and T2 are public, so the attacker knows which device each token belongs to.
 

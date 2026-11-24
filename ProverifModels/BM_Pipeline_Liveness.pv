@@ -1,4 +1,4 @@
-(* BM_Pipeline_Liveness.pv   (v90, no choice)
+(* BM_Pipeline_Liveness.pv   (no choice)
 Checks that the honest pipeline used by the identity-swap models actually
 runs end to end: V issues a verdict, C accepts it and fans out, each
 gatekeeper posts, a two-board quorum forms, and F and I publish a registry

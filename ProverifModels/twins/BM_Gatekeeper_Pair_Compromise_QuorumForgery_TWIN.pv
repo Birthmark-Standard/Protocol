@@ -1,4 +1,4 @@
-(* BM_Gatekeeper_Pair_Compromise_QuorumForgery_TWIN.pv   (v90 design)
+(* BM_Gatekeeper_Pair_Compromise_QuorumForgery_TWIN.pv
 Property I (two gatekeepers): with gatekeepers 1 and 2 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check.
 
 Leaked keys: g1_sk, g1_sign_sk, g2_sk, g2_sign_sk.

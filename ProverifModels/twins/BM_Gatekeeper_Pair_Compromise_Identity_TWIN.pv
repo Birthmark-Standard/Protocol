@@ -1,4 +1,4 @@
-(* BM_Gatekeeper_Pair_Compromise_Identity_TWIN.pv   (v90 design, identity swap)
+(* BM_Gatekeeper_Pair_Compromise_Identity_TWIN.pv   (identity swap)
 Property J extended to a coalition of two gatekeepers: fully compromised gatekeepers 1 and 2 learn nothing about which device a token belongs to.
 
 Vantage point: gatekeepers 1 and 2 together, with their own keys, plus the public channel, all three match boards and the registry.

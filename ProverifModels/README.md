@@ -41,6 +41,11 @@ proverif twins/BM_Baseline_Identity_TWIN.pv
 | `BM_CredentialChannelServer_Compromise_TokenBinding.pv` | Property L | C compromised: the attacker plays C and may send the validator any token with any wrapped value, or the same token twice. Is a verdict issued for a (replay nonce, wrapped value) pair the device did not commit to? Does each commitment back at most one verdict? | Queries 1 and 2 true; a verdict is reachable |
 | `BM_Pipeline_Liveness.pv` | none | Does the honest pipeline reach every stage? | All 8 events reachable |
 | `BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion.pv` | none (sensitivity check) | Quorum_Forgery with the ring exclusion absent: gatekeeper 1's signing key is also C's, and is leaked. Which check then protects the quorum? | Queries 1 and 2 true; quorum reachable |
+| `BM_Gatekeeper_Pair_Compromise_Identity.pv` | Property J (two gatekeepers compromised) | Gatekeepers 1 and 2 fully compromised together; gatekeeper 3, F and I stay honest. Does that reveal which device holds which token? | Not yet run |
+| `BM_ContentChannelServer_Pair_Compromise_Identity.pv` | Properties C, F (both content channel servers compromised) | F and I fully compromised together. Does that reveal which device holds which token? | Not yet run |
+| `BM_Validator_And_CredentialChannelServer_Compromise_Content.pv` | none (Table 4, row 1) | The validator and C fully compromised together, with the registry idealized. The pair links a device to a FullPacketHash. Can it tell which content the device authenticated? | Not yet run |
+| `BM_Validator_And_CredentialChannelServer_Compromise_Content_ActivePosting.pv` | none (Table 4, row 1) | The same pair with the registry idealization removed: F's records reach the public registry output in the order they are produced. C posts one FullPacketHash and reads which record appears. | Not yet run. Expected: observational equivalence cannot be proved (the active step in Table 4, row 1) |
+| `BM_Validator_And_Gatekeeper_Compromise_Content.pv` | none (Table 4, row 2) | The validator and gatekeeper 1 fully compromised together, with the registry idealized. The pair links a device to a FullPacketHash. Can it tell which content the device authenticated? | Not yet run |
 
 ## Twins
 
@@ -65,6 +70,10 @@ model cannot see the fault, and its "true" proves nothing.
 | `BM_CredentialChannelServer_Compromise_TokenBinding_TWIN.pv` | The validator does not compare the binding hash in the token with the wrapped value it is handed | Queries 1 and 2 are false |
 | `BM_CredentialChannelServer_Compromise_TokenBinding_NoNonceClaim_TWIN.pv` | The validator does not claim the replay nonce | Query 1 is true; query 2 is false |
 | `BM_CredentialChannelServer_Compromise_TokenBinding_NonAtomic_TWIN.pv` | Checking that the nonce is unused and recording it are separate steps | Query 1 is true; query 2 is false |
+| `BM_Gatekeeper_Pair_Compromise_Identity_TWIN.pv` | The validator folds the credential into its verdict | Not yet run |
+| `BM_ContentChannelServer_Pair_Compromise_Identity_TWIN.pv` | The validator folds the credential into its verdict | Not yet run |
+| `BM_Validator_And_CredentialChannelServer_Compromise_Content_TWIN.pv` | The device sends n to C inside the credential bundle | Not yet run |
+| `BM_Validator_And_Gatekeeper_Compromise_Content_TWIN.pv` | The device sends n to C, and C forwards it to gatekeeper 1 | Not yet run |
 
 `twins/BM_Validator_Compromise_Content_SameClass_TWIN.pv` is the twin of `BM_Validator_Compromise_Content_SameClass.pv`. It
 marks the boundary of Property E rather than a property of the protocol: a validator that
@@ -111,12 +120,17 @@ The correspondence queries, numbered as in the files:
 
 ## What "true" means for the equivalence models
 
-- **Identity-swap models** (Baseline, CredentialChannelServer, ContentChannelServer, Gatekeeper):
-  token confidentiality at that party's vantage point. The contents are the same in both
+- **Identity-swap models** (Baseline, CredentialChannelServer, ContentChannelServer, Gatekeeper,
+  Gatekeeper_Pair, ContentChannelServer_Pair): token confidentiality at that party's or that
+  pair's vantage point. The contents are the same in both
   scenarios, so these results say nothing about content.
 - **SameClass:** content stays hidden from a compromised validator, behind the wrapped
   FullPacketHash and the encrypted content channel, when both transactions carry the same
   claim and so the same verdict.
+- **Validator_And content-swap models** (Validator_And_CredentialChannelServer,
+  Validator_And_Gatekeeper): with the registry idealized, nothing visible to the pair
+  separates the two contents. The pair links a device to a FullPacketHash, but FullPacketHash
+  covers n, which only F and I hold.
 - **Public and private names.** Device identities and contents are public names in the
   equivalence models. With private names the two scenarios would differ only by a
   renaming, and the result would hold for any protocol. Nonces and keys are private. In
@@ -131,11 +145,15 @@ The correspondence queries, numbered as in the files:
   covered (Table A.2, row 16).
 - The structure of `replay_nonce` (its day count and offline bit) and how long the validator keeps
   its log. `BM_CredentialChannelServer_Compromise_TokenBinding.pv` models the nonce as an atomic name and its claim as one atomic step.
-- `key_ref`, the manufacturer-key identifier, holds, padding.
+- `key_ref` (the manufacturer-key identifier), holds and padding.
 - The optional fields are modeled as one field. The specification uses a metadata hash and
   a parent hash, with presence flags.
-- Coordinated compromise of several components, such as the validator together with a
-  content channel server.
+- In the two Validator_And content-swap models the registry is idealized: F's record goes to a
+  private sink and the public registry output is the same in both scenarios. This removes
+  the active posting attack of Table 4, and in the validator-and-gatekeeper model it also
+  removes selective denial.
+- `BM_Validator_And_CredentialChannelServer_Compromise_Content_ActivePosting.pv` represents
+  the active posting attack without bundling or decoys, which the paper relies on against it.
 
 ## Naming
 

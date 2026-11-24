@@ -20,7 +20,7 @@ Each folder has a README that says what it holds, how to run it and what the out
 
 | Folder | Needs | Command | Time |
 |---|---|---|---|
-| `ProverifModels/` | ProVerif 2.05 | `proverif BM_Baseline_Noncorrelation.pv`, one model at a time, from `ProverifModels/` | one model per command |
+| `ProverifModels/` | ProVerif 2.05 | `proverif BM_Baseline_Identity.pv`, one model at a time, from `ProverifModels/` | one model per command |
 | `RoutingModels/` | Python 3 and NumPy | `python run_all.py > output.txt`, then compare with `expected_output.txt` | about 1 second |
 | `SNAExperiment/` | Python 3.10 or later, NumPy, SciPy and Matplotlib | `python -m sna run` from `SNAExperiment/` | about 8.7 hours on 8 worker processes |
 | `Benchmark/` | A Raspberry Pi 4 with the packages `python3 check_prereqs.py` lists | `python3 run_partA.py` for Part A; `python3 run_partB.py setup`, `prove` and `hash` for Part B; `python3 run_partC.py --partA-json PATH` for Part C, from `Benchmark/` | not recorded for a Pi |
