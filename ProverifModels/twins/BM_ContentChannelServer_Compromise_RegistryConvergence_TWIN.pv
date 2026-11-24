@@ -1,21 +1,24 @@
-(* BM_Quorum_Collusion.pv   (v90 design)
-Property I (two gatekeepers): with gatekeepers 1 and 2 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check.
+(* BM_ContentChannelServer_Compromise_RegistryConvergence_TWIN.pv   (v90 design)
+Property H: one compromised content channel server F cannot, on its own, make the registry finalise a record I did not sign; and what I signs is bound to what the device sent.
 
-Leaked keys: g1_sk, g1_sign_sk, g2_sk, g2_sign_sk.
-Two of three boards are attacker-controlled, so a quorum of boards 1 and 2 is free. What the attacker cannot do is make that quorum carry a pair C never signed, because the quorum checks C's signature.
+Leaked keys: f_device_sk, f_sign_sk, c_sign_sk (F fully compromised; c_sign_sk stands for F's ring key). I is honest. The full honest pipeline runs behind them (device, C, V, three gatekeepers, quorum). The attacker plays F: it reads content packets, boards and quorum output, and may send I any packet.
 
-Device identity T1 is private here (the attacker cannot forge a token). The
-device takes its claim from the attacker, so every verdict judge(claim) is
-reachable. Boards are public: the attacker can read and write them. Honest
-gatekeepers and the quorum are as in the pipeline of the other models.
+The content packet carries an optional field m (metadata hash), and FullPacketHash covers it. The registry
+accepts a record when it holds two signatures, one under F's registry key and
+one under I's, over the same (ContentHash, verdict, m).
 
 Queries and expected answers.
- 1  quorum_reached(p,v) ==> c_checked(p,v)      expected: true
-    No quorum forms for a (FullPacketHash, verdict) pair C did not check.
- 2  c_checked_w(p,v,w) ==> v_issued(v,w) && c_asked(p,w)      expected: true
-    C accepts only a verdict V issued for a wrapped value C itself sent.
- 3  event(quorum_reached(p,v))      expected: "not event(quorum_reached(p,v)) is false"
-    Sanity: a quorum is reachable, so 1 and 2 are not true because the pipeline is dead. *)
+ a  registry_final(h,v,m) ==> i_signed(h,v,m)      expected: false in this twin (true in the model)
+    The registry cannot finalise a record I did not sign.
+ c  i_signed_n(h,n,v,m) ==> device_sent(h,n,m)      expected: true
+    F knows (h,n) and can send I a packet with a different m. FullPacketHash
+    = hash(h,n,m) covers m, so I computes a different FullPacketHash, finds no
+    quorum and signs nothing. The one-byte presence flags of the spec are not
+    modelled: the model has a single optional field.
+ d  i_signed_n(h,n,v,m) ==> device_sent_hn(h,n)      expected: true
+    ContentHash and the nonce, and so the verdict, are bound to a real device submission.
+ s  event(registry_final(h,v,m))      expected: "not event(...) is false" (sanity)
+THIS FILE IS THE TWIN. Fault: the registry accepts two signatures from the same signer (both under F's key). Expected: query a is false. *)
 
 type skey.
 type pkey.
@@ -55,6 +58,8 @@ free g2_sk: skey [private].
 free g2_sign_sk: skey [private].
 free g3_sk: skey [private].
 free g3_sign_sk: skey [private].
+free f_sign_sk: skey [private].
+free i_sign_sk: skey [private].
 
 free T1: bitstring [private].
 free T2: bitstring [private].
@@ -66,20 +71,30 @@ free v_ok: bitstring.
 free v_no: bitstring.
 free no_sig: bitstring.
 
+free meta_a: bitstring.
+
 event v_issued(bitstring, bitstring).
 event c_asked(bitstring, bitstring).
 event c_checked(bitstring, bitstring).
 event c_checked_w(bitstring, bitstring, bitstring).
 event quorum_reached(bitstring, bitstring).
+event device_sent(bitstring, bitstring, bitstring).
+event device_sent_hn(bitstring, bitstring).
+event i_signed(bitstring, bitstring, bitstring).
+event i_signed_n(bitstring, bitstring, bitstring, bitstring).
+event registry_final(bitstring, bitstring, bitstring).
 
-query p: bitstring, v: bitstring; event(quorum_reached(p, v)) ==> event(c_checked(p, v)).
-query p: bitstring, v: bitstring, w: bitstring; event(c_checked_w(p, v, w)) ==> event(v_issued(v, w)) && event(c_asked(p, w)).
-query p: bitstring, v: bitstring; event(quorum_reached(p, v)).
+query h: bitstring, v: bitstring, m: bitstring; event(registry_final(h, v, m)) ==> event(i_signed(h, v, m)).
+query h: bitstring, n: bitstring, v: bitstring, m: bitstring; event(i_signed_n(h, n, v, m)) ==> event(device_sent(h, n, m)).
+query h: bitstring, n: bitstring, v: bitstring, m: bitstring; event(i_signed_n(h, n, v, m)) ==> event(device_sent_hn(h, n)).
+query h: bitstring, v: bitstring, m: bitstring; event(registry_final(h, v, m)).
 
-let device(token: bitstring, content: bitstring, claim: bitstring) =
+let device_rc(token: bitstring, content: bitstring, claim: bitstring, meta: bitstring) =
     let h = hash(content) in
     new n: bitstring;
-    let fullpackethash = hash((h, n)) in
+    event device_sent(h, n, meta);
+    event device_sent_hn(h, n);
+    let fullpackethash = hash((h, n, meta)) in
     new rnd_token: bitstring;
     new blindshare_key: key;
     let wrapped_dev = senc(fullpackethash, blindshare_key) in
@@ -88,7 +103,10 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
     new rnd_bundle: bitstring;
     let enc_bundle = aenc((enc_token, fullpackethash, blindshare_key), pk(c_device_sk), rnd_bundle) in
     new rnd_f: bitstring;
-    let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
+    let enc_content_f = aenc((h, n, meta), pk(f_device_sk), rnd_f) in
+    new rnd_i: bitstring;
+    let enc_content_i = aenc((h, n, meta), pk(i_device_sk), rnd_i) in
+    out(pub, enc_content_i);
     out(pub, enc_content_f);
     out(pub, enc_bundle).
 
@@ -131,6 +149,38 @@ let validator =
     else
         out(val_to_c, (v_no, no_sig)).
 
+let gatekeeper_1 =
+    !
+    in(pub, pkt_in: bitstring);
+    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g1_sk) in
+    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
+    if verdict_checked = verdict then
+    (
+        let p_confirmed = sdec(wrapped_checked, k) in
+        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
+        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
+        (
+            let g1_signed = sign(c_sig, g1_sign_sk) in
+            ( out(match_board_1, g1_signed) | out(match_board_1, g1_signed) )
+        )
+    ).
+
+let gatekeeper_2 =
+    !
+    in(pub, pkt_in: bitstring);
+    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g2_sk) in
+    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
+    if verdict_checked = verdict then
+    (
+        let p_confirmed = sdec(wrapped_checked, k) in
+        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
+        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
+        (
+            let g2_signed = sign(c_sig, g2_sign_sk) in
+            ( out(match_board_2, g2_signed) | out(match_board_2, g2_signed) )
+        )
+    ).
+
 let gatekeeper_3 =
     !
     in(pub, pkt_in: bitstring);
@@ -156,7 +206,7 @@ let quorum_12 =
     let c2 = checksign(s2, pk(g2_sign_sk)) in
     let (p2: bitstring, v2: bitstring) = checksign(c2, pk(c_sign_sk)) in
     if (p1 = p2) && (v1 = v2) then
-    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(pub, (p1, v1)) ) ).
 
 let quorum_13 =
     !
@@ -167,7 +217,7 @@ let quorum_13 =
     let c3 = checksign(s3, pk(g3_sign_sk)) in
     let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
     if (p1 = p3) && (v1 = v3) then
-    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(pub, (p1, v1)) ) ).
 
 let quorum_23 =
     !
@@ -178,27 +228,55 @@ let quorum_23 =
     let c3 = checksign(s3, pk(g3_sign_sk)) in
     let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
     if (p2 = p3) && (v2 = v3) then
-    ( event quorum_reached(p2, v2); ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
+    ( event quorum_reached(p2, v2); ( out(quorum_out, (p2, v2)) | out(pub, (p2, v2)) ) ).
+
+let content_matcher_i_rc =
+    !
+    in(pub, enc_content_in: bitstring);
+    let (h: bitstring, n: bitstring, m: bitstring) = adec(enc_content_in, i_device_sk) in
+    let candidate = hash((h, n, m)) in
+    in(quorum_out, (posted: bitstring, v_posted: bitstring));
+    if candidate = posted then
+    (
+        event i_signed_n(h, n, v_posted, m);
+        event i_signed(h, v_posted, m);
+        out(pub, sign((h, v_posted, m), i_sign_sk))
+    ).
+
+let registry_rule =
+    !
+    in(pub, (s1: bitstring, s2: bitstring));
+    let (h1: bitstring, v1: bitstring, m1: bitstring) = checksign(s1, pk(f_sign_sk)) in
+    let (h2: bitstring, v2: bitstring, m2: bitstring) = checksign(s2, pk(f_sign_sk)) in
+    if (h1 = h2) && (v1 = v2) && (m1 = m2) then
+        event registry_final(h1, v1, m1);
+        out(registry, (h1, v1, m1)).
 
 process
     out(pub, pk(v_token_sk));
     out(pub, pk(v_sign_sk));
     out(pub, pk(c_device_sk));
-    out(pub, pk(c_sign_sk));
-    out(pub, pk(f_device_sk));
+    out(pub, c_sign_sk);
+    out(pub, f_device_sk);
     out(pub, pk(i_device_sk));
-    out(pub, g1_sk);
-    out(pub, g1_sign_sk);
-    out(pub, g2_sk);
-    out(pub, g2_sign_sk);
+    out(pub, pk(g1_sk));
+    out(pub, pk(g1_sign_sk));
+    out(pub, pk(g2_sk));
+    out(pub, pk(g2_sign_sk));
     out(pub, pk(g3_sk));
     out(pub, pk(g3_sign_sk));
+    out(pub, f_sign_sk);
+    out(pub, pk(i_sign_sk));
     (
-        !(in(pub, claim_a: bitstring); device(T1, imgX, claim_a))
+        !(in(pub, claim_a: bitstring); device_rc(T1, imgX, claim_a, meta_a))
         | credential_channel_server
         | validator
+        | gatekeeper_1
+        | gatekeeper_2
         | gatekeeper_3
         | quorum_12
         | quorum_13
         | quorum_23
+        | content_matcher_i_rc
+        | registry_rule
     )

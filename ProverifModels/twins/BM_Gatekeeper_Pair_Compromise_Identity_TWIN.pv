@@ -1,25 +1,22 @@
-(* BM_ContentChannelServer_Compromise.pv   (v90 design, identity swap)
-Properties C and F: a fully compromised content channel server F learns nothing about which device a token belongs to.
+(* BM_Gatekeeper_Pair_Compromise_Identity_TWIN.pv   (v90 design, identity swap)
+Property J extended to a coalition of two gatekeepers: fully compromised gatekeepers 1 and 2 learn nothing about which device a token belongs to.
 
-Vantage point: the content channel server F, with its own keys, plus the public channel, all three match boards and the registry.
-Leaked keys: f_device_sk.
-F's role in the pipeline (decrypt content packets, read the boards, publish) is played by the attacker, so the honest F matcher is omitted. I stays honest.
+Vantage point: gatekeepers 1 and 2 together, with their own keys, plus the public channel, all three match boards and the registry.
+Leaked keys: g1_sk, g1_sign_sk, g2_sk, g2_sign_sk.
+The roles of gatekeepers 1 and 2 (receive a packet, post to a board) are played by the attacker, so the honest gatekeeper_1 and gatekeeper_2 are omitted.
+Gatekeeper 3, F and I stay honest. Two gatekeepers are the quorum size, so the pair can post anything to boards 1 and 2. BM_Gatekeeper_Pair_Compromise_QuorumForgery.pv asks what
+that does to integrity. This model asks what the pair learns.
 
-What is swapped: the device identity. T1, T2, imgX, imgY are PUBLIC names.
-device(choice[T1,T2], imgX, claimX) | device(choice[T2,T1], imgY, claimY):
-the same contents with the same claims are submitted in both worlds; only the
-credentials trade places. Pipeline outputs (boards, registry) are therefore
-the same in both worlds unless the credential leaks into them.
-With private T1, T2 the two worlds would be one world with two names
-exchanged, and the model would be true for any protocol.
+What is swapped: the device identity, as in BM_Gatekeeper_Compromise_Identity.pv. T1, T2, imgX, imgY are PUBLIC names. The same contents with the same claims are
+submitted in both worlds; only the credentials trade places.
 
-What "true" means: nothing visible from this vantage point separates
-T1-then-T2 from T2-then-T1. It is token confidentiality at this vantage point.
-It says nothing about content, because the contents are the same in both worlds.
+What "true" means: nothing visible to the pair separates T1-then-T2 from T2-then-T1. The credential channel ends at C, so no token reaches a gatekeeper.
 
-The twin (twins/ folder) makes V fold the credential into the verdict. The
-credential then reaches the boards, F and the registry. The twin must come out
-with observational equivalence not proved, or this model's "true" proves nothing. *)
+The twin (twins/ folder) makes V fold the credential into the verdict. The credential then reaches the boards, F and the registry. The twin must come out
+with observational equivalence not proved, or this model's "true" proves nothing.
+
+THIS FILE IS THE TWIN. Fault: V folds the credential into the verdict, judge((claim, token)). Expected: observational equivalence cannot be proved. DRAFT: not yet run. *)
+
 
 type skey.
 type pkey.
@@ -119,42 +116,10 @@ let validator =
     let (token_in: bitstring, claim_in: bitstring, binding_in: bitstring) = adec(enc_token_in, v_token_sk) in
     if ((token_in = T1) || (token_in = T2)) && (binding_in = hash(wrapped_in)) then
     (
-        out(val_to_c, (v_ok, sign((judge(claim_in), wrapped_in), v_sign_sk)))
+        out(val_to_c, (v_ok, sign((judge((claim_in, token_in)), wrapped_in), v_sign_sk)))
     )
     else
         out(val_to_c, (v_no, no_sig)).
-
-let gatekeeper_1 =
-    !
-    in(pub, pkt_in: bitstring);
-    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g1_sk) in
-    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
-    if verdict_checked = verdict then
-    (
-        let p_confirmed = sdec(wrapped_checked, k) in
-        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
-        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
-        (
-            let g1_signed = sign(c_sig, g1_sign_sk) in
-            ( out(match_board_1, g1_signed) | out(match_board_1, g1_signed) )
-        )
-    ).
-
-let gatekeeper_2 =
-    !
-    in(pub, pkt_in: bitstring);
-    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g2_sk) in
-    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
-    if verdict_checked = verdict then
-    (
-        let p_confirmed = sdec(wrapped_checked, k) in
-        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
-        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
-        (
-            let g2_signed = sign(c_sig, g2_sign_sk) in
-            ( out(match_board_2, g2_signed) | out(match_board_2, g2_signed) )
-        )
-    ).
 
 let gatekeeper_3 =
     !
@@ -205,6 +170,17 @@ let quorum_23 =
     if (p2 = p3) && (v2 = v3) then
     ( ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
 
+let content_matcher_f =
+    !
+    in(pub, enc_content_in: bitstring);
+    let (h: bitstring, n: bitstring) = adec(enc_content_in, f_device_sk) in
+    let candidate = hash((h, n)) in
+    in(quorum_out, (posted: bitstring, v_posted: bitstring));
+    if candidate = posted then
+    (
+        out(registry, (h, v_posted))
+    ).
+
 let content_matcher_i =
     !
     in(pub, enc_content_in: bitstring);
@@ -221,12 +197,12 @@ process
     out(pub, pk(v_sign_sk));
     out(pub, pk(c_device_sk));
     out(pub, pk(c_sign_sk));
-    out(pub, f_device_sk);
+    out(pub, pk(f_device_sk));
     out(pub, pk(i_device_sk));
-    out(pub, pk(g1_sk));
-    out(pub, pk(g1_sign_sk));
-    out(pub, pk(g2_sk));
-    out(pub, pk(g2_sign_sk));
+    out(pub, g1_sk);
+    out(pub, g1_sign_sk);
+    out(pub, g2_sk);
+    out(pub, g2_sign_sk);
     out(pub, pk(g3_sk));
     out(pub, pk(g3_sign_sk));
     (
@@ -234,11 +210,10 @@ process
         | device(choice[T2,T1], imgY, claimY)
         | credential_channel_server
         | validator
-        | gatekeeper_1
-        | gatekeeper_2
         | gatekeeper_3
         | quorum_12
         | quorum_13
         | quorum_23
+        | content_matcher_f
         | content_matcher_i
     )

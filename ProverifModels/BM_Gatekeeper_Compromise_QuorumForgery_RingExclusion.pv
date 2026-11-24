@@ -1,8 +1,8 @@
-(* BM_Quorum_Forgery.pv   (v90 design)
-Property I (one gatekeeper): with gatekeeper 1 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check, and C checks only verdicts V issued.
+(* BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion.pv   (v90 design)
+Sensitivity check, not a paper claim: with the ring exclusion absent, gatekeeper 1's signing key is also C's signing key and is leaked. Which check then protects the quorum?
 
 Leaked keys: g1_sk, g1_sign_sk.
-Gatekeeper 1's role is played by the attacker; board 1 is attacker-controlled. Gatekeepers 2 and 3 are honest and check sigma_V (with BlindShare_key) and sigma_C before posting.
+c_sign_sk = g1_sign_sk. The attacker can forge C's signature over any pair. Honest gatekeepers 2 and 3 still check sigma_V, and sigma_V needs V's key and BlindShare_key. Expected: query 1 true. In the twin the honest gatekeepers skip the sigma_V check: query 1 must FAIL, which shows that check carries the result.
 
 Device identity T1 is private here (the attacker cannot forge a token). The
 device takes its claim from the attacker, so every verdict judge(claim) is
@@ -46,7 +46,6 @@ free registry: channel.
 free v_token_sk: skey [private].
 free v_sign_sk: skey [private].
 free c_device_sk: skey [private].
-free c_sign_sk: skey [private].
 free f_device_sk: skey [private].
 free i_device_sk: skey [private].
 free g1_sk: skey [private].
@@ -55,6 +54,9 @@ free g2_sk: skey [private].
 free g2_sign_sk: skey [private].
 free g3_sk: skey [private].
 free g3_sign_sk: skey [private].
+
+(* c_sign_sk is the signing key of gatekeeper 1, which is leaked: the ring exclusion is absent. *)
+letfun c_sign_sk = g1_sign_sk.
 
 free T1: bitstring [private].
 free T2: bitstring [private].
@@ -200,7 +202,6 @@ process
     out(pub, pk(v_token_sk));
     out(pub, pk(v_sign_sk));
     out(pub, pk(c_device_sk));
-    out(pub, pk(c_sign_sk));
     out(pub, pk(f_device_sk));
     out(pub, pk(i_device_sk));
     out(pub, g1_sk);

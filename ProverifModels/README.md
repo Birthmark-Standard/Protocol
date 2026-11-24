@@ -14,33 +14,33 @@ boards, the two content channel servers, and the registry) see the paper.
 Each file is a complete ProVerif specification. With ProVerif 2.05 installed:
 
 ```
-proverif BM_Baseline_Noncorrelation.pv
+proverif BM_Baseline_Identity.pv
 ```
 
 (or `proverif.exe` on Windows). No arguments or build steps beyond that. Twins (below) are run
 the same way:
 
 ```
-proverif twins/BM_Baseline_Noncorrelation_TWIN.pv
+proverif twins/BM_Baseline_Identity_TWIN.pv
 ```
 
 ## What each model tests
 
 | File | Establishes | Tests | Result |
 |---|---|---|---|
-| `BM_Baseline_Noncorrelation.pv` | Property B | No compromise: can an observer of the public channel and the registry tell which device authenticated which content? | Observational equivalence is true |
-| `BM_CredentialChannelServer_Compromise.pv` | Property D | All of C's keys leaked. Does that reveal which device holds which token? The validator stays honest and answers any request. | Observational equivalence is true |
-| `BM_Validator_FullPacketHash_Secrecy.pv` | Properties A, E | All of the validator's keys leaked. Can the validator ever derive a FullPacketHash? | `not attacker(fph_m[])` is true |
-| `BM_Verdict_Boundary_SameClass.pv` | Properties A, E | Validator's keys leaked, device identities public. Can the validator tell which content a device authenticated, when both transactions carry the same claim? | Observational equivalence is true |
-| `BM_ContentChannelServer_Compromise.pv` | Properties C, F | A content channel server's key leaked, with the full honest pipeline running behind it. Does that reveal which device holds which token? | Observational equivalence is true |
-| `BM_Gatekeeper_Compromise.pv` | Property J | One gatekeeper's terminus and signing keys leaked. Same question. | Observational equivalence is true |
-| `BM_Quorum_Forgery.pv` | Properties G, I (one gatekeeper compromised) | Can a quorum form for a (FullPacketHash, verdict) pair that C did not check? Does C accept only verdicts the validator issued? | Queries 1 and 2 true; quorum reachable |
-| `BM_Quorum_Collusion.pv` | Properties G, I (two gatekeepers compromised) | Same questions, with two of the three gatekeepers fully compromised | Queries 1 and 2 true; quorum reachable |
-| `BM_Registry_Convergence.pv` | Property H | One content channel server (F) fully compromised. Can the registry finalize a record that the other server (I) did not sign? Can F change the optional fields of a record? | Queries a, c, d true; s reachable |
-| `BM_FirstRelay_Compromise.pv` | Property K | A first relay's Server Transit Key leaked, with a passive observer of every leg of one content path (device, first relay, second relay, destination). The relay sees each device's address with its packet. Can it derive either device's ContentHash? | `not attacker(hash(secret_img_1[]))` and `not attacker(hash(secret_img_2[]))` are true |
-| `BM_Token_Binding.pv` | Property L | C compromised: the attacker plays C and may send the validator any token with any wrapped value, or the same token twice. Is a verdict issued for a (replay nonce, wrapped value) pair the device did not commit to? Does each commitment back at most one verdict? | Queries 1 and 2 true; a verdict is reachable |
+| `BM_Baseline_Identity.pv` | Property B | No compromise: can an observer of the public channel and the registry tell which device authenticated which content? | Observational equivalence is true |
+| `BM_CredentialChannelServer_Compromise_Identity.pv` | Property D | All of C's keys leaked. Does that reveal which device holds which token? The validator stays honest and answers any request. | Observational equivalence is true |
+| `BM_Validator_Compromise_Secrecy.pv` | Properties A, E | All of the validator's keys leaked. Can the validator ever derive a FullPacketHash? | `not attacker(fph_m[])` is true |
+| `BM_Validator_Compromise_Content_SameClass.pv` | Properties A, E | Validator's keys leaked, device identities public. Can the validator tell which content a device authenticated, when both transactions carry the same claim? | Observational equivalence is true |
+| `BM_ContentChannelServer_Compromise_Identity.pv` | Properties C, F | A content channel server's key leaked, with the full honest pipeline running behind it. Does that reveal which device holds which token? | Observational equivalence is true |
+| `BM_Gatekeeper_Compromise_Identity.pv` | Property J | One gatekeeper's terminus and signing keys leaked. Same question. | Observational equivalence is true |
+| `BM_Gatekeeper_Compromise_QuorumForgery.pv` | Properties G, I (one gatekeeper compromised) | Can a quorum form for a (FullPacketHash, verdict) pair that C did not check? Does C accept only verdicts the validator issued? | Queries 1 and 2 true; quorum reachable |
+| `BM_Gatekeeper_Pair_Compromise_QuorumForgery.pv` | Properties G, I (two gatekeepers compromised) | Same questions, with two of the three gatekeepers fully compromised | Queries 1 and 2 true; quorum reachable |
+| `BM_ContentChannelServer_Compromise_RegistryConvergence.pv` | Property H | One content channel server (F) fully compromised. Can the registry finalize a record that the other server (I) did not sign? Can F change the optional fields of a record? | Queries a, c, d true; s reachable |
+| `BM_FirstRelay_Compromise_Secrecy.pv` | Property K | A first relay's Server Transit Key leaked, with a passive observer of every leg of one content path (device, first relay, second relay, destination). The relay sees each device's address with its packet. Can it derive either device's ContentHash? | `not attacker(hash(secret_img_1[]))` and `not attacker(hash(secret_img_2[]))` are true |
+| `BM_CredentialChannelServer_Compromise_TokenBinding.pv` | Property L | C compromised: the attacker plays C and may send the validator any token with any wrapped value, or the same token twice. Is a verdict issued for a (replay nonce, wrapped value) pair the device did not commit to? Does each commitment back at most one verdict? | Queries 1 and 2 true; a verdict is reachable |
 | `BM_Pipeline_Liveness.pv` | none | Does the honest pipeline reach every stage? | All 8 events reachable |
-| `BM_Quorum_Forgery_RingExclusion.pv` | none (sensitivity check) | Quorum_Forgery with the ring exclusion absent: gatekeeper 1's signing key is also C's, and is leaked. Which check then protects the quorum? | Queries 1 and 2 true; quorum reachable |
+| `BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion.pv` | none (sensitivity check) | Quorum_Forgery with the ring exclusion absent: gatekeeper 1's signing key is also C's, and is leaked. Which check then protects the quorum? | Queries 1 and 2 true; quorum reachable |
 
 ## Twins
 
@@ -51,22 +51,22 @@ model cannot see the fault, and its "true" proves nothing.
 
 | Twin | The fault | Result |
 |---|---|---|
-| `BM_Baseline_Noncorrelation_TWIN.pv` | The validator folds the credential into its verdict | Observational equivalence cannot be proved |
-| `BM_CredentialChannelServer_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
-| `BM_ContentChannelServer_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
-| `BM_Gatekeeper_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
-| `BM_Validator_FullPacketHash_Secrecy_TWIN.pv` | C sends the FullPacketHash to the validator without the BlindShare wrap | `not attacker(fph_m[])` is false |
-| `BM_Verdict_Boundary_SameClass_TWIN.pv` | The two transactions carry different claims, so the verdicts differ | Observational equivalence cannot be proved |
-| `BM_Quorum_Forgery_TWIN.pv` | Gatekeepers 2 and 3 and the quorum verify no signatures | Query 1 is false |
-| `BM_Quorum_Collusion_TWIN.pv` | The quorum of boards 1 and 2 does not verify C's signature | Query 1 is false |
-| `BM_Quorum_Forgery_RingExclusion_TWIN.pv` | The honest gatekeepers skip the validator-signature check | Query 1 is false |
-| `BM_Registry_Convergence_TWIN.pv` | The registry accepts two signatures from the same signer | Query a is false |
-| `BM_FirstRelay_Compromise_TWIN.pv` | The device does not encrypt the payload under the destination's Channel Key | Both queries are false |
-| `BM_Token_Binding_TWIN.pv` | The validator does not compare the binding hash in the token with the wrapped value it is handed | Queries 1 and 2 are false |
-| `BM_Token_Binding_NoNonceClaim_TWIN.pv` | The validator does not claim the replay nonce | Query 1 is true; query 2 is false |
-| `BM_Token_Binding_NonAtomic_TWIN.pv` | Checking that the nonce is unused and recording it are separate steps | Query 1 is true; query 2 is false |
+| `BM_Baseline_Identity_TWIN.pv` | The validator folds the credential into its verdict | Observational equivalence cannot be proved |
+| `BM_CredentialChannelServer_Compromise_Identity_TWIN.pv` | Same | Observational equivalence cannot be proved |
+| `BM_ContentChannelServer_Compromise_Identity_TWIN.pv` | Same | Observational equivalence cannot be proved |
+| `BM_Gatekeeper_Compromise_Identity_TWIN.pv` | Same | Observational equivalence cannot be proved |
+| `BM_Validator_Compromise_Secrecy_TWIN.pv` | C sends the FullPacketHash to the validator without the BlindShare wrap | `not attacker(fph_m[])` is false |
+| `BM_Validator_Compromise_Content_SameClass_TWIN.pv` | The two transactions carry different claims, so the verdicts differ | Observational equivalence cannot be proved |
+| `BM_Gatekeeper_Compromise_QuorumForgery_TWIN.pv` | Gatekeepers 2 and 3 and the quorum verify no signatures | Query 1 is false |
+| `BM_Gatekeeper_Pair_Compromise_QuorumForgery_TWIN.pv` | The quorum of boards 1 and 2 does not verify C's signature | Query 1 is false |
+| `BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion_TWIN.pv` | The honest gatekeepers skip the validator-signature check | Query 1 is false |
+| `BM_ContentChannelServer_Compromise_RegistryConvergence_TWIN.pv` | The registry accepts two signatures from the same signer | Query a is false |
+| `BM_FirstRelay_Compromise_Secrecy_TWIN.pv` | The device does not encrypt the payload under the destination's Channel Key | Both queries are false |
+| `BM_CredentialChannelServer_Compromise_TokenBinding_TWIN.pv` | The validator does not compare the binding hash in the token with the wrapped value it is handed | Queries 1 and 2 are false |
+| `BM_CredentialChannelServer_Compromise_TokenBinding_NoNonceClaim_TWIN.pv` | The validator does not claim the replay nonce | Query 1 is true; query 2 is false |
+| `BM_CredentialChannelServer_Compromise_TokenBinding_NonAtomic_TWIN.pv` | Checking that the nonce is unused and recording it are separate steps | Query 1 is true; query 2 is false |
 
-`twins/BM_Verdict_Boundary_SameClass_TWIN.pv` is the twin of `BM_Verdict_Boundary_SameClass.pv`. It
+`twins/BM_Validator_Compromise_Content_SameClass_TWIN.pv` is the twin of `BM_Validator_Compromise_Content_SameClass.pv`. It
 marks the boundary of Property E rather than a property of the protocol: a validator that
 sees a rare verdict has fewer candidate records, so the proof holds within one verdict
 class.
@@ -130,7 +130,7 @@ The correspondence queries, numbered as in the files:
   two scenarios for a timing reason. ProVerif cannot show it. The paper records it as not
   covered (Table A.2, row 16).
 - The structure of `replay_nonce` (its day count and offline bit) and how long the validator keeps
-  its log. `BM_Token_Binding.pv` models the nonce as an atomic name and its claim as one atomic step.
+  its log. `BM_CredentialChannelServer_Compromise_TokenBinding.pv` models the nonce as an atomic name and its claim as one atomic step.
 - `key_ref`, the manufacturer-key identifier, holds, padding.
 - The optional fields are modeled as one field. The specification uses a metadata hash and
   a parent hash, with presence flags.

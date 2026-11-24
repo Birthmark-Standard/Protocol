@@ -1,6 +1,4 @@
-(* BM_FirstRelay_Compromise_TWIN.pv   (v102 design, secrecy at the first relay)
-TWIN: the device does not encrypt the payload under F's Channel Key. Expected result: the query is violated (the attacker learns the ContentHash).
-
+(* BM_FirstRelay_Compromise_Secrecy.pv   (v102 design, secrecy at the first relay)
 Property K: a compromised first relay, which sees the device's network address, learns nothing about which content that device submitted.
 
 Vantage point: the first relay A, with its own Server Transit Key, plus a passive observer of every leg of the path.
@@ -61,7 +59,8 @@ query attacker(hash(secret_img_2)).
 let device(ip: bitstring, content: bitstring) =
     let h = hash(content) in
     new n: bitstring;
-    let payload = (h, n) in
+    new rnd_p: bitstring;
+    let payload = aenc((h, n), pk(f_chan_sk), rnd_p) in
     new rnd_a: bitstring;
     let leg1 = aenc((rc, payload), pk(a_sk), rnd_a) in
     ( out(dev_to_a, leg1) | out(pub, (ip, leg1)) ).
@@ -92,7 +91,7 @@ let destination_f =
     !
     in(b_to_f, leg_in: bitstring);
     let payload_in = adec(leg_in, f_transit_sk) in
-    let (h: bitstring, n: bitstring) = payload_in in
+    let (h: bitstring, n: bitstring) = adec(payload_in, f_chan_sk) in
     out(registry_private, h).
 
 process
