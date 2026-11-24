@@ -1,0 +1,91 @@
+{
+ "jobs": {
+  "c6_batch": {
+   "hash": "2d5b7813a6a8f470",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "otcB1_W0",
+    "otcB5_W0",
+    "otcB20_W0",
+    "otcB100_W0"
+   ],
+   "runs": 1
+  },
+  "c6_dest": {
+   "hash": "aeb989538a8bca20",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "cp_drop_m1800",
+    "cp_drop_m3600",
+    "cp_drop_m7200",
+    "cp_drop_m21600",
+    "cp_delay600",
+    "cp_delay1800",
+    "otc_drop_m1800",
+    "otc_drop_m3600",
+    "otc_drop_m7200",
+    "otc_drop_m21600",
+    "otc_delay600",
+    "otc_delay1800",
+    "otcL_drop_m1800",
+    "otcL_drop_m3600",
+    "otcL_drop_m7200",
+    "otcL_drop_m21600",
+    "otcL_delay600",
+    "otcL_delay1800"
+   ],
+   "runs": 1
+  },
+  "c6_issuer_long": {
+   "hash": "b44c2d0e0abd20bd",
+   "cells": [
+    1,
+    100
+   ],
+   "variants": [
+    "iwh_none_L360",
+    "iwh_none_L720",
+    "iwh_none_L1440",
+    "iwh_withhold_L360",
+    "iwh_withhold_L720",
+    "iwh_withhold_L1440",
+    "iwh_delay_L360",
+    "iwh_delay_L720",
+    "iwh_delay_L1440"
+   ],
+   "runs": 1
+  }
+ },
+ "seed_set": "model (dry run)",
+ "code_commit": "cf740e29c9d0857c6bf3065f4348464478eb1b04",
+ "predictions_commit": {
+  "C3": "fb61e61ca923ce424976fdaa5497d44daef4c387",
+  "C4": "1ad80a6c239bf641326c9fd968debf85f867d2a8",
+  "C5": "fb61e61ca923ce424976fdaa5497d44daef4c387",
+  "C6": "14be59bf5920ce3b7fd723da0100fb8b7abd3795"
+ },
+ "c2_config_hash": "c54e444f07f27a7a",
+ "seeds": {
+  "traffic": "1000300000 + 1000 R + run id (model seeds)",
+  "models": 1000000000,
+  "rates": 1000050000,
+  "operators": 15000000,
+  "coalitions": 18000000
+ },
+ "versions": {
+  "python": "3.11.17",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39"
+ },
+ "label": "dry run: 1 run per cell, second C6 run",
+ "elapsed_min": {
+  "c6_batch,c6_dest,c6_issuer_long": 11.31448036034902
+ }
+}

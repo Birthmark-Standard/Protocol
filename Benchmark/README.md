@@ -1,21 +1,46 @@
 # Benchmark
 
-This folder measures two things on one machine.
+This folder measures three things on one machine.
 
 - **Part A.** The device-side cost of one Birthmark capture: SHA-256 over a RAW-sized file, seven ECIES encryptions, and the small AES-256-GCM and SHA-256 operations around them.
 - **Part B.** The cost of proving, in zero knowledge, knowledge of a message whose SHA-256 hash is public, at growing message sizes, on the same machine. The prover is Longfellow-zk.
+- **Part C.** The device-side primitives of the two designs in Protocol paper Table 5 that need no online validator: blind-signed tokens, and a DAA or EPID signature. Each is measured with one ECIES wrap to the first relay.
 
 The target machine is a **Raspberry Pi 4 Model B, 4 GB, Cortex-A72 at 1.5 GHz**, running Raspberry Pi OS 64-bit (aarch64). A Raspberry Pi 5 is also recognised. Any other machine is a dry run. Its output files carry `DRY_RUN_NOT_PI` in the file name and `DRY RUN, NOT PI` on the first line.
 
-The papers state device cost as "calculated from published benchmarks". This folder replaces those calculations with measurements. Every number in `results/` is computed from a raw log in `results/raw/`.
+## What the papers use, and what `results/` holds
 
-Section and table numbers refer to the versions in `Docs/`: the Protocol paper v124, the Integration paper v41 and the Messaging Structure v119.
+The papers calculate the device-side cost from published benchmarks: the Protocol paper in Appendix B, the Integration paper in Section 8. They report no measurement from this folder and no measurement on a Raspberry Pi.
+
+Every file in `results/` is a dry run on an x86-64 virtual machine. Every file name carries `DRY_RUN_NOT_PI`. These runs show that the scripts build, pass their self-tests and write their output. They are not Raspberry Pi measurements. Every number in `results/` is computed from a raw log in `results/raw/`.
+
+| File | Content |
+|---|---|
+| `results/partA_DRY_RUN_NOT_PI_2026-10-26_vm.json` | Part A statistics for every row |
+| `results/partA_summary_DRY_RUN_NOT_PI.md` | Part A summary table |
+| `results/partB_DRY_RUN_NOT_PI_2026-10-26_vm.json` | Part B statistics |
+| `results/partB_summary_DRY_RUN_NOT_PI.md` | Part B summary tables |
+| `results/comparison_DRY_RUN_NOT_PI.md` | Hash time against prover time and memory |
+| `results/raw/` | The raw logs behind every number above |
+
+## On a Raspberry Pi 4
+
+From `Benchmark/`:
+
+1. `python3 check_prereqs.py` lists what is missing, with the `apt install` line.
+2. Part A: `cd device && make && cd ..`, then `python3 run_partA.py`.
+3. Part B: `zk/longfellow/fetch_and_build.sh`, then `python3 run_partB.py setup`, `prove` and `hash`, then `python3 summarize_partB.py RUN_ID`, as in "Part B, Run" below.
+4. Part C: `credential/fetch_and_build.sh`, then `python3 run_partC.py --partA-json results/partA_<date>_<host>.json`, with the Part A file from step 2.
+
+On a Pi, the output files carry no `DRY_RUN_NOT_PI` and land in `results/` beside the dry runs. Parts A, B and C below describe each step and each file.
+
+Section and table numbers refer to the Protocol and Integration papers. Section names such as "Device-side construction" refer to the Messaging Structure specification.
 
 ## Part A
 
 ### Build
 
-First check what is installed. `check_prereqs.py` needs no root and installs nothing. It lists every missing command, library and package for Parts A and B, with the `apt install` line that someone with admin rights can run:
+First check what is installed. `check_prereqs.py` needs no root and installs nothing. It lists every missing command, library and package for Parts A, B and C, with the `apt install` line that someone with admin rights can run:
 
 ```
 cd Benchmark
@@ -68,7 +93,7 @@ The options `--cpu`, `--binary`, `--no-governor` and the repeat counts are liste
 | `results/raw/partA_<run_id>_caps_off.jsonl` | Same, for `caps_off`. |
 | `results/raw/partA_<run_id>_build_failed.txt` | Written only if `make` fails. |
 | `results/partA_<date>_<host>.json` | Statistics for every row, with the machine, the runs, the self-tests and the claim checks. A second run on the same day gets a `_2` suffix. |
-| `results/partA_summary.md` | One table row per measurement, and one line for each of the papers' three claims. Rebuilt on each Pi run. |
+| `results/partA_summary.md` | One table row per measurement, and one line for each of the papers' two claims. Rebuilt on each Pi run. |
 
 On a machine that is not a Pi, the names are `partA_DRY_RUN_NOT_PI_<date>_<host>.json` and `partA_summary_DRY_RUN_NOT_PI.md`, and `run_id` ends in `_DRY_RUN_NOT_PI`.
 
@@ -81,7 +106,7 @@ The C program runs these tests before timing anything. If any test fails, it pri
 - X25519, RFC 7748 section 6.1.
 - AES-256-GCM, GCM specification test cases 13 and 14, a round trip on 203 B, and rejection of a modified ciphertext.
 - Generator Point check. Each GP is accepted. The point u = 0 is rejected, and so is GP plus an order-2 point.
-- ECIES overhead equals 49 B, the figure in Table A.1.
+- ECIES overhead equals 49 B, the figure in Integration paper Table A.1.
 - One full capture, then decryption of all seven layers with the matching secret keys:
   - The first relays open layers 5 to 7 and check the routing code.
   - C, F and I open layers 2 to 4.
@@ -114,12 +139,17 @@ Each row is timed with `clock_gettime(CLOCK_MONOTONIC_RAW)`, one sample per oper
   - The shared secret is e·pk, which is one variable-base multiplication.
 - ECIESb (layers 2, 3, 4), to a Channel Key (GP, pk):
   - EPK = e·GP and the shared secret e·pk, which are two variable-base multiplications.
-- Key derivation:
-  - HKDF-SHA256, with ikm = shared secret, salt = EPK, and a fixed info string.
-  - It outputs the 32 B AES-256-GCM key and the 12 B nonce.
-  - The nonce is fresh on every call because e is fresh. It is not sent.
-- Wire layout: version byte (1) ‖ EPK (32) ‖ ciphertext ‖ tag (16). The overhead is 49 B, which matches Table A.1.
-- AAD is the version byte and EPK.
+- Key derivation in the specification (Messaging Structure):
+  - HKDF-SHA256 with an empty salt.
+  - Input: the shared secret e·pk.
+  - Info string: a layer label, then EPK, then the recipient public key, with the Generator Point GP appended for ECIESb.
+  - The specification does not fix the label strings.
+- Key derivation in this code:
+  - HKDF-SHA256, with ikm = the shared secret e·pk, salt = EPK, and one fixed info string for every layer, ECIES and ECIESb alike.
+  - It outputs the 32 B AES-256-GCM key and a 12 B nonce. The nonce is not sent.
+- Wire layout: a version byte (1 B), EPK (32 B), the ciphertext, then the AES-256-GCM tag (16 B). The overhead is 49 B, which matches Integration paper Table A.1.
+- AEAD nonce: the specification uses a fixed all-zero 96-bit nonce and empty associated data on every ECIES layer, because each key is single-use (e is fresh). This code uses the HKDF-derived nonce, and the version byte and EPK as associated data.
+- Padding: in the specification, a wrap's plaintext is a 2-byte length prefix, the payload, then padding up to the drawn wire size minus 49 B. The drawn wire size is uniform over 420 to 460 B, or 820 to 860 B for the gatekeeper fan-out. This code has no length prefix and no draw. It pads with zero bytes to a fixed 460 B plaintext, 509 B on the wire.
 
 | Row | Layer | Plaintext |
 |---|---|---:|
@@ -131,7 +161,7 @@ Each row is timed with `clock_gettime(CLOCK_MONOTONIC_RAW)`, one sample per oper
 | `eciesb_layer3_4_contp_300B_stress` | 3 and 4, a stress case larger than the spec allows | 300 B |
 | `ecies_layer5_wrap_credp` | 5, routing code 16 + CredP (252) | 268 B |
 | `ecies_layer6_7_wrap_contp` | 6 and 7, routing code 16 + ContP (81 + 49) | 146 B |
-| `ecies_layer5_7_wrap_padded_460B` | 5 to 7, padded to the upper end of Table A.2's 420 to 460 B | 460 B |
+| `ecies_layer5_7_wrap_padded_460B` | 5 to 7, zero-padded to a fixed 460 B plaintext | 460 B |
 | `ecies_seven_layers` | All seven layers in spec order, unpadded wraps, ContP at 81 B | |
 | `ecies_seven_layers_padded` | The same, wraps padded to 460 B | |
 
@@ -146,7 +176,7 @@ All sizes are named constants in `device/sizes.h`.
 - `binding_hash`: SHA-256(Enc_FullPacketHash), 48 B.
 
 **A5. Whole capture.**
-- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure (v119), "Device-side construction", steps 1 to 9:
+- Starts from a 30,000,000 B buffer in RAM. Builds every value in the order of the Messaging Structure, "Device-side construction", steps 1 to 9:
   - ContentHash;
   - n and h(metadata), then FullPacketHash;
   - replay_nonce, BlindShare_key, Enc_FullPacketHash and binding_hash;
@@ -188,19 +218,16 @@ If the whole capture is lower, the summary prints SANITY FLAG and marks the row.
 
 ### The papers' claims
 
-The summary checks three claims against measured medians. Each claim line names the row, the variant and the code path it uses.
+The summary checks two claims against measured medians. Each claim line names the row, the variant and the code path it uses.
 
 | Claim | Source | Compared rows |
 |---|---|---|
-| "2 to 10 ms for encryption" | Protocol paper; Integration §8.1 | `ecies_seven_layers`, variant `default` |
+| "6.6 to 9.2 ms for encryption" | Protocol paper, Section 7 and Appendix B; Integration §8.1 | `ecies_seven_layers`, variant `default` |
 | "430 to 600 ms for hashing a 30 MB file without hardware extensions" | Integration §8.2 | At 30,000,000 B: `sha256_file_openssl` in `default` (only if the CPU has no SHA extensions); `sha256_file_openssl` in `caps_off`; `sha256_file_libsodium` in `default` |
-| "120 to 170 ms with ARMv8 crypto extensions" | Integration §8.2 | `sha256_file_openssl` at 30,000,000 B in `default`, only if the CPU has `sha2` |
 
 Each comparison gets one of three labels: "within range", "below range (faster than calculated)" or "above range (slower than calculated)".
 
 The papers' figures are calculated for their slowest hardware class, a Cortex-A8 at 800 MHz. The summary states that the core measured here is faster than that class, so it does not confirm the slowest-class figures.
-
-The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim is reported as not tested, with the reason.
 
 ### What is not measured
 
@@ -216,11 +243,11 @@ The Pi 4's Cortex-A72 has no ARMv8 SHA extensions. On the Pi 4 the third claim i
 - **One machine.** The results describe one Raspberry Pi 4 Model B.
 - **Core class.** The papers' figures are calculated for a Cortex-A8, an in-order core at 800 MHz. The Cortex-A72 is out of order and runs at 1.5 GHz. These results do not show what a Cortex-A8 would measure.
 - **Clock.** The Cortex-A72 is named here at 1.5 GHz. Some Pi 4 boards run at 1.8 GHz. The summary records the maximum frequency the board reports and notes any difference.
-- **No SHA extensions on the Pi 4.** The claim for ARMv8 crypto extensions cannot be tested on this board.
-- **KDF.** HKDF-SHA256 is a placeholder. The papers say the key-derivation function is not yet specified. The HKDF call is timed as its own row.
-- **Sizes.** Several field sizes are estimates in Table A.1 (Cred_HW, key_ref, claim). They are approximate. The 300 B ContP is outside the spec.
-- **replay_nonce.** Integration v41 defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
-- **Padding.** The format is not specified. Padded wraps use zero bytes.
+- **No SHA extensions on the Pi 4.** No row on this board uses ARMv8 SHA instructions.
+- **KDF and AEAD inputs.** The code's HKDF-SHA256 call uses salt = EPK and one fixed info string. The specification uses an empty salt and an info string of a layer label, EPK and the recipient public key, with GP for ECIESb. The code derives the AES-256-GCM nonce and authenticates the version byte and EPK. The specification uses an all-zero nonce and empty associated data. The HKDF call is timed as its own row.
+- **Sizes.** The plaintext sizes match the specification's layer table: T 82 B (131 B encrypted), CredP 203 B (252 B), ContP 49 B (98 B) with 32 B per optional field. Cred_HW, key_ref and claim are estimates in Table A.1. The 300 B ContP is outside the spec.
+- **replay_nonce.** The Integration paper defines it as a 15-bit UTC day count, an offline bit and 14 random bytes. The benchmark fills its 16 bytes with random bytes. The size, and so the encryption cost, is the same.
+- **Padding.** The code pads with zero bytes to a fixed 460 B plaintext, with no 2-byte length prefix and no drawn size. The specification's wire size is 420 to 460 B, or 820 to 860 B for the gatekeeper fan-out, so the padded rows encrypt more bytes than the specification's largest ordinary wrap.
 - **Subgroup check.** The spec checks ℓ·GP with an unclamped multiplication. This code instead converts GP to Edwards form and calls libsodium's `crypto_core_ed25519_is_valid_point`, which includes the prime-order subgroup check. The check runs at setup and is not timed.
 - **Libraries.** The results depend on the installed libsodium and OpenSSL versions. Both are recorded in every raw log.
 
@@ -266,7 +293,7 @@ Afterwards the script counts crypto-extension instructions in the binary (64-bit
 
 ### Swap
 
-Building a circuit needs far more memory than proving with it. In the x86 dry run `20261026T220750Z_vm_DRY_RUN_NOT_PI`, the 4 KiB GF(2^128) circuit peaked at 2,158 MiB to build and 234 MiB to prove. An earlier exploratory dry run, whose output was not kept in raw logs, peaked at about 8.3 GiB to build the 16 KiB circuit.
+Building a circuit needs far more memory than proving with it. In the x86 dry run `20261026T220750Z_vm_DRY_RUN_NOT_PI`, the 4 KiB GF(2^128) circuit peaked at 2,158 MiB to build and 234 MiB to prove.
 
 For every run of every phase, the driver records swap activity: the change in pages swapped in and out (`/proc/vmstat`), and the most swap in use, sampled every 0.5 s.
 
@@ -388,6 +415,155 @@ The summary reports Hekate in its own table, by thread count, and `comparison.md
 - Setup time without swap, for any size whose circuit build needs more memory than the Pi has.
 - Message sizes beyond the stop rules.
 
+## Part C
+
+Protocol paper Section 6.1, Table 5, compares the device cost per capture of this design with two designs that need no online validator: blind-signed tokens, and a DAA or EPID signature. Part C measures the device-side primitives of both on the same machine as Part A, with Part A's method. It does not implement either design over the relay layer. It does not optimize either design: each library runs with its defaults.
+
+### What is measured
+
+**Blind-signed tokens.** RSA blind signatures as RFC 9474 specifies (RSABSSA), the scheme Privacy Pass uses for publicly verifiable tokens (RFC 9576 architecture, RFC 9578 issuance).
+
+- The client is `credential/rsabssa.c`, on OpenSSL BIGNUM. RSASSA-PSS-VERIFY in Finalize is OpenSSL's verifier.
+- Variants: RSABSSA-SHA384-PSS-Deterministic (salt 48 B) and RSABSSA-SHA384-PSSZERO-Deterministic (salt 0 B). Every row names its variant.
+- Deterministic variants add no message prefix. The signed message is the 98 B token input of RFC 9578 (2 + 32 + 32 + 32), with random contents.
+- Moduli: RSA-2048, the size RFC 9578 specifies, and RSA-3072.
+
+| Row | What it times |
+|---|---|
+| `rsabssa_blind` | Blind: EMSA-PSS-ENCODE of the message, the random r and its inverse, r^e mod n, and the product with the encoded message |
+| `rsabssa_finalize` | Finalize: unblinding (blind signature × inverse mod n) and RSASSA-PSS-VERIFY |
+| `rsabssa_blind_finalize_batch20` | Blind for 20 tokens, then finalize for the same 20. The issuer signs in between, outside the timed parts. 20 is the refill size SNAExperiment C6 uses. |
+
+Token spend sends a stored token as data. It is no operation on the device, and the summary says so. The issuer's blind signing is not a device cost and is not measured.
+
+**DAA or EPID signature.** Two libraries, chosen in `credential/CANDIDATES.md`. Both sign in software, in anonymous mode, with no basename, so two signatures by one member cannot be linked.
+
+| Scheme | Library | Curve | Stated security level |
+|---|---|---|---|
+| FIDO ECDAA, which is DAA | Xaptum ecdaa with AMCL | FP256BN, a 256-bit BN curve | About 100 bits, from AMCL's documentation |
+| Intel EPID 2.0, which is EPID | Intel EPID SDK, tiny member | EPID 2.0 parameters, 256-bit prime field | None stated in the SDK documentation |
+
+| Row | What it times |
+|---|---|
+| `member_key_generation` | The member's one-time part of Join. ECDAA: `ecdaa_member_key_pair_FP256BN_generate`, the member key pair and its proof over the issuer's nonce. EPID: `EpidCreateJoinRequest`, a fresh member secret f and the join request. |
+| `sign` | One signature over a 32 B ContentHash, anonymous mode. This is the per-capture cost. |
+
+The signature size in bytes is recorded for each scheme. Verification is not a device cost. It runs only in the correctness tests.
+
+The EPID SDK has no issuer. Its group `grp_x` and that group's `member0` key come from the SDK's own test data. The group's identifier selects SHA-256. No signature revocation list is set, so an EPID signature carries no non-revoked proofs.
+
+**One relay wrap.** Table 5 sends ContentHash through one relay hop in both designs. Part C times one ECIES wrap to the first relay with Part A's ECIES code, called as `ecies_layer5_wrap_credp` calls it. The plaintext is the 16 B routing code, ContentHash (32 B) and the payload.
+
+| Row | Payload | Plaintext |
+|---|---|---:|
+| `ecies_wrap_one_relay_tokens` | A token of 354 B: the 98 B token input and the 256 B authenticator, as RFC 9578 defines the token | 402 B |
+| `ecies_wrap_one_relay_sig` | The signature of each scheme, at its measured size | 48 B + signature |
+
+Each row is timed with `clock_gettime(CLOCK_MONOTONIC_RAW)`, one sample per operation. Three calibration runs give a median, which sets the warm-up (200, 20 or 2 runs) and the repeat count. The repeat minimums follow the row's measured median:
+
+| Median | Minimum repeats |
+|---|---:|
+| Under 5 ms | 2,000 |
+| 5 to 100 ms | 200 |
+| Over 100 ms | 50 |
+
+If the median of the samples falls in a faster class than the calibration, sampling continues up to that class's count. The driver refuses repeat counts below the minimums. The summary reports no row whose n is below the minimum for its median. The statistics are n, min, median, mean, p95 (nearest rank) and sample standard deviation, in milliseconds.
+
+### Build
+
+Part C needs `build-essential cmake git pkg-config python3 libsodium-dev libssl-dev`, and access to github.com. `python3 check_prereqs.py` lists what is missing. The build needs no root:
+
+```
+cd Benchmark
+credential/fetch_and_build.sh
+```
+
+The script clones three libraries at pinned commits into `credential/build/`, which is git-ignored, and starts from the pinned tree on every run. It builds them, runs ECDAA's own test suite, and builds `credential/bench_credential` with Part A's flags (`-O2`). It writes `credential/build/credential_build_info.json`, which every raw log copies.
+
+| Library | Commit | License | Build |
+|---|---|---|---|
+| AMCL (Xaptum fork) | `4bb6af4eb53c219fb4e5b16ef020469425826977`, tag 4.7.3 | Apache-2.0 | AMCL's default build type, Release (`-O2`); curve FP256BN |
+| Xaptum ecdaa | `92f93059dfe23c061a2372c897bdcaad0d917487` | Apache-2.0 | CMake Release (`-O3`), as its build instructions give; curve FP256BN; no TPM support |
+| Intel EPID SDK | `ceb0a9e77b01b5e9c67619aeddae7b42dad71134`, tag v8.0.0 | Apache-2.0 | The SDK's own flags (`-Os`), with two changes below |
+
+The EPID SDK's top-level `CMakeLists.txt` gets two changes. Both are recorded in `credential/build/epid_build_changes.diff`, which every raw log copies:
+
+1. The line that adds `-Werror` is deleted. GCC 12 and later stop the build on warnings in the SDK's code.
+2. `-fno-strict-aliasing` is added after `-Os`. Without it, GCC 13 builds an SDK that rejects the SDK's own test key.
+
+No other library code is changed.
+
+### Run
+
+```
+cd Benchmark
+python3 run_partC.py --partA-json results/partA_<date>_<host>.json
+```
+
+- The driver runs `credential/bench_credential` once, pinned to core 3 with `taskset -c 3`, in variant `default` only.
+- It reads `vcgencmd measure_temp`, `vcgencmd get_throttled` and `vcgencmd measure_clock arm` before and after the run, where `vcgencmd` is available.
+- sudo is optional, as in Part A. Run as root, the driver sets the `performance` governor and restores it afterwards.
+- `--partA-json` names the Part A results file from the same machine. The driver and the summarizer refuse a Pi run combined with a dry-run file, and the reverse.
+- The driver and the summarizer also refuse a Part A file whose host differs from the Part C run's host, or whose board model, architecture, CPU model, core count or RAM in whole GiB differs, and write nothing.
+- Without `--partA-json`, no comparison file is written. `python3 summarize_partC.py RUN_ID --partA-json PATH` writes it later.
+- `--rsa-bits`, `--variants`, `--schemes` and the repeat counts are listed by `python3 run_partC.py --help`.
+
+### Output
+
+| File | Content |
+|---|---|
+| `results/raw/partC_<run_id>_default.jsonl` | Raw log. Line 1 is a header with the machine state before the run, the build info (library commits, licenses, build flags, the EPID diff) and the command. Then come the program's output lines, with every timing sample in nanoseconds. The last line is the machine state after the run. Opened in exclusive-create mode. |
+| `results/raw/partC_<run_id>_build_failed.txt` | Written only if the build fails. |
+| `results/partC_<date>_<host>.json` | Statistics for every row, with the machine, the build, the correctness tests and the signature sizes. |
+| `results/partC_summary.md` | The correctness tests, one table per design, the signature sizes and token spend. |
+| `results/partC_comparison.md` | The device operations per capture of this design and the two designs of Table 5. |
+
+On a machine that is not a Pi, the names are `partC_DRY_RUN_NOT_PI_<date>_<host>.json`, `partC_summary_DRY_RUN_NOT_PI.md` and `partC_comparison_DRY_RUN_NOT_PI.md`, and `run_id` ends in `_DRY_RUN_NOT_PI`.
+
+The comparison file opens with the DRY RUN line where it applies, the machine, the DAA or EPID scheme measured and whether it is DAA or EPID, and the line "Baseline wrap count is one, from Table 5: one relay hop." It then names both runs with their dates. Then, per design, each operation has its median, the row it comes from, and its modulus or curve with the stated security level:
+
+- **This design:** Part A `sha256_file_openssl` at 30,000,000 B, variant `default`; `ecies_seven_layers`, whose AEAD is inside each layer; and the medians of `h_metadata`, `fullpackethash`, `enc_fullpackethash` and `binding_hash`.
+- **Blind-signed tokens:** the same SHA-256 row; `ecies_wrap_one_relay_tokens`; token spend, no operation. Issuance is shown on its own: blind plus finalize for a batch of 20, and per token, not part of the capture.
+- **DAA or EPID signature:** for each scheme, the same SHA-256 row, `ecies_wrap_one_relay_sig` and `sign`.
+
+The file gives no total for any design. The paper does not fully specify their packet structures.
+
+### Correctness tests
+
+The program runs these tests before timing anything. If any test fails, it prints the failure, exits with status 2 and times nothing.
+
+- Part A's HKDF-SHA256, X25519 and AES-256-GCM known-answer tests.
+- RFC 9474 Appendix A test vectors for both variants: encoded message, blinded message, inverse, blind signature and signature. The vectors use an RSA-4096 key. The client's test entry point takes the salt and the blinding factor r as inputs; r is the inverse of the vector's `inv`. The timed path draws both from OpenSSL's random number generator. The vectors come from the copy of RFC 9474 Appendix A in Cloudflare's CIRCL repository, `blindsign/blindrsa/testdata/test_vectors_rfc9474.json.gz` at commit `31be93db4772d9482a06c44eb2ed134fdacd2a2b`. `credential/rfc9474_vectors.h` holds them.
+- For each modulus and variant: blind, the issuer signs, finalize. The signature verifies. A modified signature and a modified message are rejected.
+- ECDAA: a full Join in software. The issuer checks the member's proof and rejects it against a different nonce. The member checks the credential, and a credential for another member key is rejected. ECDAA ships no test vectors. Its own test suite runs in `fetch_and_build.sh`, which exits with an error if any of its tests fails.
+- EPID: the SDK's stored signature `grp_x/member0/sig_sha256_rndbase_msg0` verifies on "msg0" and is rejected on "msg1" and with one byte flipped. The member creates a join request.
+- For each scheme: a signature over a 32 B ContentHash verifies with the library's verifier. A modified message and a modified signature are rejected. Two signatures on the same message differ.
+- Each relay wrap: the first relay opens it and reads the routing code and payload. A wrong key and a modified ciphertext are rejected.
+
+### What is not measured
+
+- The issuer's blind signing, and the issuer round trip at issuance.
+- Token spend, which is no operation.
+- Verification of a token or a signature. It runs only in the correctness tests.
+- Either design over the relay layer: the relay path, holds and network time.
+- A TPM. Signing is software only.
+- EPID non-revoked proofs, which a signature revocation list adds.
+- Energy use.
+
+### Limitations
+
+- **One machine.** The results describe one Raspberry Pi 4 Model B.
+- **Core class.** The paper's calculation is for a Cortex-A8 class core. The Cortex-A72 is out of order and runs at 1.5 GHz.
+- **No TPM.** Signing is software only. A TPM-based DAA splits the work between the chip and the host.
+- **Security levels differ across rows.** RSA-2048: 112 bits. RSA-3072: 128 bits. Both figures are OpenSSL's `EVP_PKEY_get_security_bits`. X25519, in the relay wraps: 128 bits, from the same call. FP256BN: about 100 bits, from AMCL's documentation. EPID 2.0: the SDK states none.
+- **RSA-2048** is the size RFC 9578 specifies. RSA-3072 is measured for comparison.
+- **Baseline wrap count.** The relay wrap rows use a baseline wrap count of one, from Table 5.
+- **No issuer round trip, relay path or network time** is measured.
+- **ECIES.** The wrap rows use Part A's ECIES code, with the differences from the specification listed in Part A's Limitations.
+- **Build flags differ by library.** The Part C program is built with `-O2`, AMCL with `-O2`, ecdaa with `-O3` and the EPID SDK with `-Os -fno-strict-aliasing`. Each is the library's default, apart from the EPID change above.
+- **EPID SDK build.** The EPID SDK is built with GCC at its default `-Os`, with `-Werror` removed and `-fno-strict-aliasing` added, and every raw log records the diff.
+- **EPID keys** come from the SDK's test data, because the SDK has no issuer.
+- **Libraries.** The results depend on the installed OpenSSL and libsodium. Both are recorded in every raw log.
 
 ## Licence
 

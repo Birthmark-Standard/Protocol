@@ -1,8 +1,8 @@
-# Birthmark Protocol Messaging Structure v122
+# Birthmark Protocol Messaging Structure v129
 
-**Notation.** `||` = concatenation. `ECIES(pk; m)` = randomized IND-CCA2 public-key encryption. `AEAD(k; m)` = AES-256-GCM. `Sign(sk; m)` = Ed25519. `RSign(ring; m)` = unlinkable 1-of-n ring signature over a ring. `ECIESb((GP, pk); m)` = ECIES to a blinded destination key (a Channel Key): the sender picks a random scalar e, sends EPK = e·GP in place of the usual ephemeral public key, and derives the AEAD key from e·pk and EPK. The holder of the secret scalar sk with pk = sk·GP derives the same value as sk·EPK.
+**Notation.** `||` = concatenation. `ECIES(pk; m)` = randomized IND-CCA2 public-key encryption. `AEAD(k; m)` = AES-256-GCM. `Sign(sk; m)` = Ed25519. `RSign(ring; m)` = unlinkable 1-of-n ring signature over a ring. `ECIESb((GP, pk); m)` = ECIES to a blinded destination key (a Channel Key): the sender picks a random scalar e, sends EPK = e·GP in place of the usual ephemeral public key, and derives the AEAD key from e·pk as set out under Envelope. The holder of the secret scalar sk with pk = sk·GP derives the same value as sk·EPK.
 
-**Terms.** This specification uses the terms of the Protocol paper (v118) and the Integration paper (v38). A **Registry Node** is a consortium member's node, and that member is its **operator**. A Registry Node can serve as a first relay, second relay, C, F, I or gatekeeper, and it takes part in registry consensus. A validator is not a Registry Node.
+**Terms.** This specification uses the terms of the Protocol paper (v166) and the Integration paper (v55). A **Registry Node** is a consortium member's node, and that member is its **operator**. A Registry Node can serve as a first relay, second relay, C, F, I or gatekeeper, and it takes part in registry consensus. A validator is not a Registry Node.
 
 ## Parties and keys
 
@@ -95,7 +95,7 @@ The device routing table does not name the second relay or the destination serve
 
 **Operator pseudonym.** The builder assigns each operator a short value, one byte at the current pool size. It is fresh each generation and identical on every line and server-list entry of that operator, whatever the node's role. It is unrelated to the operator's identity and to the addresses and keys of its nodes. The device uses it only to check that C, F and I differ and that A, D and G differ. Every holder of the table can see which lines share an operator. Whether that is acceptable depends on consortium membership being public, and this is open.
 
-**Channel Key.** A destination node holds one secret scalar sk. For each line, the builder picks a random scalar r, computes GP = r·B, where B is the X25519 base point, and discards r. GP lies in the prime-order subgroup by construction. The builder sends GP to the node, and the node checks that GP is not the identity and that ℓ·GP is the identity, where ℓ is the order of the prime-order subgroup. The check uses an unclamped scalar multiplication, since X25519 clamps its scalar. The node returns pk = sk · GP only if the check passes, and the line carries (GP, pk), which is the node's Channel Key as the device sees it. The device encrypts with ECIESb: it sends EPK = e·GP and derives the AEAD key from e·pk and EPK. The node derives the same value as sk · EPK. Three properties follow:
+**Channel Key.** A destination node holds one secret scalar sk. For each line, the builder picks a random scalar r, computes GP = r·B, where B is the X25519 base point, and discards r. GP lies in the prime-order subgroup by construction. The builder sends GP to the node, and the node checks that GP is not the identity and that ℓ·GP is the identity, where ℓ is the order of the prime-order subgroup. The check uses an unclamped scalar multiplication, since X25519 clamps its scalar. The node returns pk = sk · GP only if the check passes, and the line carries (GP, pk), which is the node's Channel Key as the device sees it. The device encrypts with ECIESb: it sends EPK = e·GP and derives the AEAD key from e·pk as set out under Envelope. The node derives the same value as sk · EPK. Three properties follow:
 
 - The node holds no per-line state and cannot tell which line a packet used. EPK is a uniformly random point whichever GP produced it.
 - A holder of the device routing table sees GP and pk but cannot tie them to the node without solving a decisional Diffie-Hellman problem in the prime-order subgroup. Key-privacy of ElGamal with a per-key generator follows from the same assumption (Bellare, Boldyreva, Desai and Pointcheval, ASIACRYPT 2001). The AEAD layer, the key-derivation function (HKDF-SHA256 per RFC 5869, with a distinct info string for each layer) and a table holder who probes a candidate node are not analysed.
@@ -136,8 +136,8 @@ There are 19 legs per transaction on the wire, plus match board reads by F and I
 | CV-2 (reject) | V → C | tx\_id, REJECTED | C-transit | Rejection (unregistered credential, binding hash mismatch, or replayed or out-of-range nonce). **No signature.** Padded to the same class as a verdict. | 69 B\* |
 | GK (three legs) | C → each gatekeeper | FullPacketHash, verdict, σ\_V, BlindShare\_key, σ\_C | GK-transit | FullPacketHash; the verdict; that some ring member of V-Ring signed (not which one); that some ring member signed C's ring too; Enc\_FullPacketHash is not sent, since the gatekeeper recomputes it from BlindShare\_key and FullPacketHash | 690 B\* + V-Ring signature size |
 | Post (three legs) | Each gatekeeper → its match board | FullPacketHash, verdict, σ\_C, σ\_GK | Registry Node access only | — | 32 + 1 + 576 + 64 B |
-| Reg-F | F → Registry Node | ContentHash, verdict, flags, [h(metadata)], [parent ContentHash], σ\_F | Registry Node transit | ContentHash and the other submitted fields; F's identity | 98 B\*, plus 32 B per optional field |
-| Reg-I | I → Registry Node | ContentHash, verdict, flags, [h(metadata)], [parent ContentHash], σ\_I | Registry Node transit | ContentHash and the other submitted fields; I's identity | 98 B\*, plus 32 B per optional field |
+| Reg-F | F → Registry Node | ContentHash, verdict, flags, [h(metadata)], [parent ContentHash], σ\_F | Registry Node transit | ContentHash and the other submitted fields; F's identity | 147 B\*, plus 32 B per optional field; not padded |
+| Reg-I | I → Registry Node | ContentHash, verdict, flags, [h(metadata)], [parent ContentHash], σ\_I | Registry Node transit | ContentHash and the other submitted fields; I's identity | 147 B\*, plus 32 B per optional field; not padded |
 
 **Signatures:**
 
@@ -150,13 +150,62 @@ There are 19 legs per transaction on the wire, plus match board reads by F and I
 
 **Public verification** is not part of a transaction: a verifier sends a locally computed ContentHash to the registry and receives the record, if one exists.
 
+## Packet layouts by leg
+
+This section gives the contents of every leg, field by field and in order. Every size follows from the sizes stated elsewhere in this specification. 
+
+### Envelope
+
+Every encrypted layer uses one of three keys: the Token Key layer (T, to V), the Channel Key layer (CredP and the content packets, to C, F and I) and the Server Transit Key layer (every leg between servers, and every first-relay wrap).
+
+| Item | Content |
+| --- | --- |
+| Overhead per layer | 49 bytes. The layer is laid out as a version byte (1 B), then EPK (32 B), then the ciphertext, then the AES-256-GCM tag (16 B). |
+| Layer classes | Token Key (ECIES), Channel Key (ECIESb), Server Transit Key (ECIES). |
+| Cipher | AES-256-GCM. The key is derived with HKDF-SHA256 with an empty salt and the shared secret e·pk as input. The info string is the layer label, then EPK, then the recipient public key, with GP appended for ECIESb. |
+| Fixed nonce | `Enc_FullPacketHash` uses a fixed AEAD nonce, which is safe because BlindShare\_key is single-use. Every ECIES layer uses a fixed all-zero 96-bit nonce and empty associated data on the same ground: each key is single-use, because e is fresh. This depends on the device random number generator. |
+| Padding | Every leg except the match board postings and the registry submissions is padded inside its transit encryption. The plaintext is a 2-byte length prefix, then the payload, then padding up to the drawn wire size minus 49 B. The drawn wire size is uniform over 420–460 B, or 820–860 B for the gatekeeper fan-out. The class sizes count the wire size. A relay strips nothing: the destination reads the length prefix. |
+| Relays | A relay decrypts its transit layer, reads the routing code where the leg carries one, and forwards the rest. It does not validate the payload, and it does not reject. |
+| Destinations | C, F and I discard a packet they cannot decrypt or parse. |
+| Failed input | A server discards without replying any packet it cannot decrypt or parse. V is the exception: it replies REJECTED to C for any credential-level failure, including a token that does not decrypt. A gatekeeper or Registry Node that fails a check discards the input. |
+
+### Layer contents
+
+| Layer | Fields in order (bytes) | Plaintext | Encrypted |
+| --- | --- | --- | --- |
+| T, to V | Cred\_HW 32, replay\_nonce 16, claim 2, binding\_hash 32 | 82 B | 131 B |
+| CredP, to C | T 131, key\_ref 8, FullPacketHash 32, BlindShare\_key 32 | 203 B | 252 B |
+| ContP\_F or ContP\_I | flags 1, ContentHash 32, n 16, [h(metadata) 32], [parent ContentHash 32] | 49, 81 or 113 B | 98, 130 or 162 B |
+| Enc\_FullPacketHash | `AEAD(BlindShare_key; FullPacketHash)` with the fixed nonce: FullPacketHash 32 and the tag 16 | 32 B | 48 B |
+
+### Legs
+
+"On the wire" is the plaintext plus the 49-byte envelope, before the length prefix and padding. The content packet rows show the packet with no optional fields; each optional field adds 32 B.
+
+| Leg | Fields in order (bytes) | Plaintext | On the wire | Padded to | Must not contain |
+| --- | --- | --- | --- | --- | --- |
+| CredP-1 Device → A | rc\_C 16, CredP 252 | 268 B | 317 B | 420–460 B | ContentHash, n, optional fields, verdict |
+| CredP-2 A → B | rc\_C 16, CredP 252 | 268 B | 317 B | 420–460 B | As CredP-1 |
+| CredP-3 B → C | CredP 252 | 252 B | 301 B | 420–460 B | As CredP-1, and the routing code |
+| ContP-1 Device → D (G) | rc\_F (rc\_I) 16, ContP 98 | 114 B | 163 B | 420–460 B | Cred\_HW, key\_ref, T, BlindShare\_key, FullPacketHash, verdict |
+| ContP-2 D → E (G → H) | rc\_F (rc\_I) 16, ContP 98 | 114 B | 163 B | 420–460 B | As ContP-1 |
+| ContP-3 E → F (H → I) | ContP 98 | 98 B | 147 B | 420–460 B | As ContP-1, and the routing code |
+| CV-1 C → V | tx\_id 16, T 131, key\_ref 8, Enc\_FullPacketHash 48 | 203 B | 252 B | 420–460 B | FullPacketHash, BlindShare\_key, ContentHash, n |
+| CV-2 (verdict) V → C | tx\_id 16, verdict 1, σ\_V 64 | 81 B | 130 B | 420–460 B | Enc\_FullPacketHash, Cred\_HW, claim |
+| CV-2 (reject) V → C | tx\_id 16, status 4 (one fixed constant for every reason) | 20 B | 69 B | 420–460 B | Any signature |
+| GK C → each gatekeeper | FullPacketHash 32, verdict 1, σ\_V 64, BlindShare\_key 32, σ\_C 576 | 705 B | 754 B | 820–860 B | Enc\_FullPacketHash, tx\_id, key\_ref, T, Cred\_HW |
+| Post gatekeeper → match board | FullPacketHash 32, verdict 1, σ\_C 576, σ\_GK 64 | 673 B | 673 B (no transit encryption) | None | BlindShare\_key, σ\_V, Enc\_FullPacketHash |
+| Reg-F, Reg-I → Registry Node | ContentHash 32, verdict 1, flags 1, [h(metadata) 32], [parent ContentHash 32], σ\_F or σ\_I 64 | 98 B | 147 B | None | FullPacketHash, n, σ\_V, σ\_C, σ\_GK, any credential value |
+
+The GK leg is sized for one registered validator. Each further validator adds 32 B to σ\_V, so the leg is 786 B with two validators and 818 B with three. It fits the 820 B floor of its class up to three validators. With a fourth it is 850 B, and the class must widen.
+
 ## Decoy traffic
 
 The system injects decoy transactions to enlarge the candidate pool available to a single compromised component beyond whatever real traffic volume happens to be, and to prevent an observer from estimating real traffic volume from total traffic volume.
 
 A decoy transaction is a genuine transaction from a genuinely registered device credential, not a distinguishable, invalid, or specially marked one. The credentials belong to a pool of identities operated by the same infrastructure that generates decoy traffic and distributes the device routing table, registered with a validator the same way any other device is. Nothing about a decoy transaction differs structurally from a real one at any stage: V approves it normally, C fans it out normally, every signature is genuinely valid, gatekeeper verification and match board quorum proceed normally, and F and I finalize a registry record for it exactly as they would for real content. No party, including V, C, and the gatekeepers, has any way to distinguish a decoy transaction from a real one, because there is nothing structurally different to distinguish. A decoy is an ordinary submission with arbitrary content. Its claim, and therefore its verdict, follows the mix of claims in real traffic, so a decoy record carries a verdict as a real one does and no verdict marks a record as real. The decoy-identity pool must be large enough that no single identity's submission rate looks statistically different from a plausible device's. The pool size is expected to vary with the deployment's own phase and scale, and is not meant to be fixed to a single documented number; it is an operating parameter the deploying infrastructure adjusts as needed, using as many rotating identities as the deployment's own scale calls for.
 
-Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: about 100 decoy transactions in flight at any given time, regardless of how much real traffic exists. Decoys are added on top of real traffic and do not fall as real traffic rises. Each decoy identity captures at the rate of one real device, so the count in flight varies around the target the way real traffic does. That variation, rather than a single exact constant, keeps the target from being a precisely known value an observer could characterize and subtract out exactly; it does not eliminate the risk that enough observed windows could statistically narrow the underlying distribution.
+Decoy traffic follows the same per-transaction construction as real traffic in every respect, including the 2:1 content-to-credential ratio real traffic already produces on its own, so the aggregate ratio stays uninformative about what fraction of traffic is decoy. The injection target is fixed, not scaled to real traffic volume: about 100 decoy transactions in flight at any given time, regardless of how much real traffic exists. Decoys are added on top of real traffic and do not fall as real traffic rises. The target is a floor that holds at all times, including when real traffic is low. Each decoy identity captures at the rate of one real device, so the count in flight varies around the target the way real traffic does. That variation, rather than a single exact constant, keeps the target from being a precisely known value an observer could characterize and subtract out exactly; it does not eliminate the risk that enough observed windows could statistically narrow the underlying distribution.
 
 Every decoy-produced registry record is permanent, exactly like a real one; none are ever removed. Whether and how to prune decoy records to manage hot-storage growth is an open implementation question, deferred rather than specified here.
 
@@ -222,9 +271,38 @@ quarters of the time.
 
 Each server draws its own, independent delay after quorum is confirmed — mean 30 seconds (see Hold timing) — timed from the moment quorum is actually confirmed rather than from its own, earlier pre-match hold. This keeps F's and I's relative submission timing independent of quorum-formation speed even in the worst case (slow credential-side processing, where both pre-match holds get overtaken by the wait for quorum), and adds further separation on top of the pre-match hold's own randomness in the common, faster case. Keeping the pre-match hold and adding this lottery therefore performs at least as well as the lottery alone everywhere, and strictly better wherever the pre-match hold still matters.
 
+## Validator continuity
+
+A validator can disappear. This section keeps its devices working with no change on the device. A planned move to another validator is a different case: it issues a new Token Key and reprovisions the devices.
+
+**Aggregate server.** A validator that inherits the Token Key Tables of departed validators. It also serves small manufacturers and developers. C reaches it through the Validator Address Table, which lists the Token Keys it serves. key\_ref selects the row, so C's routing does not change.
+
+**Backups.** Each validator's Token Key Table is backed up in encrypted form. The backup includes the Token Key private keys. A coalition of volunteer node operators holds the backups. A contracted legal services organization holds the decryption keys. Neither can read a backup alone.
+
+**Release.** Suspicion triggers release, and there is no heartbeat. The coalition starts a verification by contacting the validator. If 48 hours pass with no contact, the decryption key is released to the aggregate server.
+
+**States.**
+
+| State | Meaning | Effect on routing |
+| --- | --- | --- |
+| Active | The validator serves its Token Keys. | key\_ref routes to the validator. |
+| Suspected | Compromise is suspected. | The validator is pulled from rotation, and C stops sending to it. |
+| Confirmed dark | The backup is decrypted at the aggregate server. | The old key\_ref routes to the aggregate server permanently. |
+| Returned | The operator returns under a new manufacturer ID and new keys. | New keys route to the operator. Devices it served before stay with the aggregate server. |
+
+**Verdict signing.** The aggregate server signs verdicts on migrated Token Keys under its own ring key. The departed validator's key is retired.
+
+**Separation.** After the handover the aggregate server holds the migrated tables as blobs, kept apart from its production records. This is a stated commitment that an audit can check.
+
+**Open decisions.**
+
+1. What happens to a Token Key's private keys if the backup itself is compromised before release.
+2. Whether the 48-hour window is the right length, and whether a validator that is only offline can be mistaken for dark.
+3. How the aggregate server's concentration is bounded as it inherits more tables (Integration paper, Section 4.7).
+
 ## Checks and actions at each party
 
-Any failed check drops the transaction and triggers that party's discard obligations. No party signs, posts or forwards after a failed check.
+Any failed check drops the transaction and triggers that party's discard obligations. No party signs, posts or forwards after a failed check. A server discards a packet it cannot decrypt or parse without replying; V replies REJECTED to C for any credential-level failure, including a token that does not decrypt.
 
 ### Relays
 
@@ -261,7 +339,7 @@ Any failed check drops the transaction and triggers that party's discard obligat
 1. Decrypt the last content leg, then ContP\_F (or ContP\_I) with their Channel Key scalar sk. Obtain flags, ContentHash, n and any optional fields.
 2. Compute `FullPacketHash′ = SHA-256(ContentHash || n || flags || [h(metadata)] || [parent ContentHash])` from the fields in the packet, using the `flags` byte the packet carries.
 3. Holds on its own node clock before checking the match boards (see Hold timing).
-4. Proceed once FullPacketHash′ appears with the same verdict on at least two distinct match boards, each posting with a valid σ\_GK and a valid σ\_C against the current C-Ring. The verdict F and I record is the one the quorum agrees on. Match match boards that disagree on the verdict do not form a quorum for either pair. If quorum does not form within 30 minutes, drop.
+4. Proceed once FullPacketHash′ appears with the same verdict on at least two distinct match boards, each posting with a valid σ\_GK and a valid σ\_C against the current C-Ring. The verdict F and I record is the one the quorum agrees on. Match boards that disagree on the verdict do not form a quorum for either pair. F and I read the boards directly, as Registry Nodes, by FullPacketHash′. If quorum does not form within 30 minutes, drop.
 5. Holds again, per Post-match lottery.
 6. Waits for the next registry-level departure bundle per Registry-level bundling.
 7. Submit Reg-F (or Reg-I), carrying the quorum's verdict, together with every other submission in the same registry-level bundle.
@@ -286,6 +364,9 @@ No party keeps any value that would let it, or a later inspector, pair one leg o
 | Gatekeeper | BlindShare_key, Enc_FullPacketHash, σ\_V | After posting, or at once on failure | Its own posting on its match board | FullPacketHash / BlindShare_key / Enc_FullPacketHash sweep |
 | Match board | — | — | Postings, for 30 minutes | — |
 | F, I | n, FullPacketHash′, and ContentHash if not submitted | After submitting, or on quorum timeout | Nothing per transaction | Regular n sweep |
+| Table builder | r for each line, at once on computing GP. Routes of a drained generation, once the drain period ends. | After computing GP. After the drain period (**open**: the period and the retention rule are proposals). | The current routing table, which it must hold to build the next one. | Governance rule, not yet defined |
+| Backup holders (coalition, legal services organization) | — | — | The coalition holds the encrypted backups. The legal services organization holds the decryption keys. Neither holds both. | Verification before release |
+| Aggregate server (migrated tables) | — | — | Migrated Token Key Tables as blobs, kept apart from its production records. | Separation audit |
 | Registry | — | — | Finalized record, permanently | Public |
 
 **Audit method:** a submitter supplies ContentHash, n and any optional fields from their own past transaction. The governance body recomputes FullPacketHash and searches the named parties' logs for any residual copy. The sweep covers gatekeepers and content channel servers as well as C and the match boards, since all four hold values it can recognize.
@@ -302,7 +383,7 @@ No single party holds both a device identity (Cred\_HW) and anything that leads 
 | C | T (opaque), key\_ref (names the Token Key), FullPacketHash, BlindShare_key, Enc_FullPacketHash, verdict, σ\_V, tx\_id | Cred\_HW; ContentHash | Property D |
 | V | Cred\_HW, replay\_nonce, claim, binding\_hash, verdict, Enc_FullPacketHash (opaque), tx\_id, C's network address | FullPacketHash; ContentHash | Property E, within one verdict class (see below) |
 | Gatekeeper | FullPacketHash, verdict, Enc_FullPacketHash, BlindShare_key, σ\_V, σ\_C, C's network address | Cred\_HW; ContentHash; which validator signed | Property J |
-| Match match board reader | FullPacketHash, verdict, σ\_C, σ\_GK | Device; manufacturer; ContentHash | Access is restricted to Registry Nodes by policy, not formally verified |
+| Match board reader | FullPacketHash, verdict, σ\_C, σ\_GK | Device; manufacturer; ContentHash | Access is restricted to Registry Nodes by policy, not formally verified |
 | F or I | ContentHash, n, FullPacketHash′, verdict, any optional fields, E's (or H's) address, match board postings | Credential; manufacturer | Property F |
 | Global passive observer | Sizes and timing only | Everything readable | Properties A–F, J (content); empirical timing evaluation separately |
 

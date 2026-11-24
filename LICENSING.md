@@ -8,6 +8,6 @@ AGPL-3.0-or-later covers the Birthmark Media Registry, the blockchain node and t
 
 Apache-2.0 covers the device, validator and verifier code, the shared utilities, the documentation and the specifications.
 
-This repository holds the specification, the papers, the ProVerif models, the routing models and the simulation code. All of it is licensed under Apache-2.0. The full text is in LICENSE. This repository holds no registry code.
+This repository holds the specification, the papers, the ProVerif models, the routing models, the simulation code and the benchmarks in `Benchmark/`. All of it is licensed under Apache-2.0. The full text is in LICENSE. This repository holds no registry code.
 
 SPDX-License-Identifier: Apache-2.0

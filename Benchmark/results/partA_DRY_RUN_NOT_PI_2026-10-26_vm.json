@@ -1,6 +1,6 @@
 {"label": "DRY RUN, NOT PI",
   "run_id": "20261026T155810Z_vm_DRY_RUN_NOT_PI",
-  "generated_utc": "2026-10-26T16:09:54+00:00",
+  "generated_utc": "2026-11-24T16:37:53+00:00",
   "machine": {
     "hostname": "vm",
     "model": "",
@@ -1290,8 +1290,8 @@
   ],
   "claims": [
     {
-      "claim": "2 to 10 ms for encryption",
-      "source": "Protocol paper; Integration section 8.1",
+      "claim": "6.6 to 9.2 ms for encryption",
+      "source": "Protocol paper, Section 7 and Appendix B; Integration section 8.1",
       "comparisons": [
         {
           "row": "ecies_seven_layers",
@@ -1343,12 +1343,6 @@
       ],
       "not_tested": null,
       "note": "The calculation assumes 13.7 cycles/byte on a Cortex-A8 at 800 MHz. Cycles per byte do not depend on the clock and are the closer comparison."
-    },
-    {
-      "claim": "120 to 170 ms with ARMv8 crypto extensions",
-      "source": "Integration section 8.2",
-      "comparisons": [],
-      "not_tested": "the CPU feature list has no sha_ni, so no run used SHA extensions"
     }
   ]
 }
