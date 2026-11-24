@@ -1,25 +1,26 @@
-(* BM_CredentialChannelServer_Compromise.pv   (v105 design, identity swap, full pipeline)
-Property D: a fully compromised credential channel server C learns nothing about which device holds which token.
+(* BM_Validator_Compromise_Content_SameClass_TWIN.pv   (v105 design, full pipeline)
+Twin of BM_Validator_Compromise_Content_SameClass.pv. Not one of the proved properties. It marks the boundary of the proof. The two contents carry different
+claims (claimX with imgX, claimY with imgY), so they receive different verdicts. The claim inside the token of device 1 is choice[claimX,claimY] and in the token of device 2 it is
+choice[claimY,claimX], because the contents are swapped between the worlds. Everything else is as in SameClass. The validator's keys are leaked and the device identities T1 and T2 are public, so the attacker knows which device each token belongs to.
 
-What is leaked: c_device_sk and c_sign_sk, all of C's keys. The attacker plays C: it opens every bundle, so it holds each device's FullPacketHash and
-BlindShare_key, and it can send the validator any (token, wrapped) pair and read the answer, so V is an oracle on pub. It can also build and send the
-gatekeeper packets, signed with c_sign_sk, so it can trigger postings. Every other key stays private.
+What runs: the device, the honest C, the three gatekeepers, the three quorums and content channel server F run behind the attacker, who plays V. The
+boards and the quorum output are private. The relay layer is not modeled, and the device writes to the public channel.
 
-What runs behind C: the honest validator, the three gatekeepers with their match boards, the three quorums, content channel servers F and I, and the
-registry. The boards and the quorum output are private (Registry Node access only). The registry output is public. A compromised C can therefore force a
-posting for any FullPacketHash whose wrapped value V has signed, and read the record that results. The relay layer is not modeled: the device writes to the
-public channel, which gives every observer every ciphertext.
+How the scenarios differ. The contents are swapped, not the tokens. With public tokens the token swap cannot work: ProVerif matches the two worlds step by
+step, so the attacker reads T1 or T2 off a bundle at a fixed position and the worlds differ. The token a device carries is the same in both worlds. What
+differs is which content the device authenticates, and that is hidden inside the wrapped FullPacketHash and the encrypted content channel.
 
-What is swapped: the device identity. Device identities T1, T2 and contents imgX, imgY are PUBLIC names, so the attacker can name a candidate identity.
-device(choice[T1,T2], imgX, ...) | device(choice[T2,T1], imgY, ...): the same contents are authenticated in both worlds, the credentials trade places.
-With private T1, T2 the two worlds are the same world with two names exchanged, and the model would be true for any protocol; with public names it is not.
+The registry is idealized, and this is the one abstraction in the model. F's record goes to a private sink. The public registry output is fixed outside the
+device processes: (hash(imgX), verdict) then (hash(imgY), verdict), the same in both worlds. This stands for a registry that publishes records in bundles, so
+that the order and the timing of publication carry nothing. Without it the model would be false for a reason the paper states and does not model: a validator
+that answers one request and watches the registry sees which record follows (Appendix A, selective denial). Because the sink is private and the
+pipeline's other outputs are ciphertexts to keys the attacker does not hold, the processes behind V add only ciphertexts under keys the attacker does not hold
+(C's gatekeeper packets). What the upgrade adds is that the whole pipeline runs under the attacker's control of V's answers: V may answer, delay or alter
+any reply.
 
-What "true" means: nothing C can see, ask V, or learn from the registry (token blob, FullPacketHash, verdict, V's signature, the records that its own
-postings produce) distinguishes T1-then-T2 from T2-then-T1. This is token confidentiality at C's vantage point. It does not by itself say anything about
-content, because the contents are the same in both worlds.
-
-What would make it false: the twin in twins/ makes V fold the credential into the verdict, judge((claim, token)). C then reads the credential in V's reply
-and the worlds differ. That twin must come out NOT equivalent, or this model's "true" proves nothing. *)
+Expected: observational equivalence cannot be proved. The compromised validator opens the token of device 1 and reads claimX (left) or claimY (right).
+The public registry output pairs hash(imgX) with judge(claimX), so the claim ties the device to the record. This is the limit the paper states: the
+verdict is a public attribute that partitions the population, and the proof holds within one verdict class. *)
 
 type skey.
 type pkey.
@@ -39,11 +40,13 @@ fun hash(bitstring): bitstring.
 fun judge(bitstring): bitstring.
 
 free pub: channel.
+free c_to_val: channel.
+free val_to_c: channel.
 free match_board_1: channel [private].
 free match_board_2: channel [private].
 free match_board_3: channel [private].
 free quorum_out: channel [private].
-free registry: channel.
+free reg_sink: channel [private].
 
 free v_token_sk: skey [private].
 free v_sign_sk: skey [private].
@@ -81,22 +84,32 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
     let enc_bundle = aenc((enc_token, fullpackethash, blindshare_key), pk(c_device_sk), rnd_bundle) in
     new rnd_f: bitstring;
     let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
-    new rnd_i: bitstring;
-    let enc_content_i = aenc((h, n), pk(i_device_sk), rnd_i) in
-    out(pub, enc_content_i);
     out(pub, enc_content_f);
     out(pub, enc_bundle).
 
-let validator =
+let credential_channel_server =
     !
-    in(pub, (enc_token_in: bitstring, wrapped_in: bitstring));
-    let (token_in: bitstring, claim_in: bitstring, binding_in: bitstring) = adec(enc_token_in, v_token_sk) in
-    if ((token_in = T1) || (token_in = T2)) && (binding_in = hash(wrapped_in)) then
+    in(pub, enc_bundle_in: bitstring);
+    let (enc_token_in: bitstring, fullpackethash_in: bitstring, blindshare_key: key) = adec(enc_bundle_in, c_device_sk) in
+    let wrapped = senc(fullpackethash_in, blindshare_key) in
+    out(c_to_val, (enc_token_in, wrapped));
+    in(val_to_c, (decision: bitstring, sig_in: bitstring));
+    if decision = v_ok then
     (
-        out(pub, (v_ok, sign((judge(claim_in), wrapped_in), v_sign_sk)))
-    )
-    else
-        out(pub, (v_no, no_sig)).
+        let (verdict_in: bitstring, wrapped_checked: bitstring) = checksign(sig_in, pk(v_sign_sk)) in
+        let fullpackethash_confirmed = sdec(wrapped_checked, blindshare_key) in
+        if fullpackethash_confirmed = fullpackethash_in then
+        (
+            let c_signed = sign((fullpackethash_in, verdict_in), c_sign_sk) in
+            new rnd_g1: bitstring;
+            let pkt_g1 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+            new rnd_g2: bitstring;
+            let pkt_g2 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
+            new rnd_g3: bitstring;
+            let pkt_g3 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g3_sk), rnd_g3) in
+            ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
+        )
+    ).
 
 let gatekeeper_1 =
     !
@@ -187,26 +200,15 @@ let content_matcher_f =
     in(quorum_out, (posted: bitstring, v_posted: bitstring));
     if candidate = posted then
     (
-        out(registry, (h, v_posted))
-    ).
-
-let content_matcher_i =
-    !
-    in(pub, enc_content_in: bitstring);
-    let (h: bitstring, n: bitstring) = adec(enc_content_in, i_device_sk) in
-    let candidate = hash((h, n)) in
-    in(quorum_out, (posted: bitstring, v_posted: bitstring));
-    if candidate = posted then
-    (
-        out(registry, (h, v_posted))
+        out(reg_sink, (h, v_posted))
     ).
 
 
 process
-    out(pub, pk(v_token_sk));
-    out(pub, pk(v_sign_sk));
-    out(pub, c_device_sk);
-    out(pub, c_sign_sk);
+    out(pub, v_token_sk);
+    out(pub, v_sign_sk);
+    out(pub, pk(c_device_sk));
+    out(pub, pk(c_sign_sk));
     out(pub, pk(f_device_sk));
     out(pub, pk(i_device_sk));
     out(pub, pk(g1_sk));
@@ -215,10 +217,12 @@ process
     out(pub, pk(g2_sign_sk));
     out(pub, pk(g3_sk));
     out(pub, pk(g3_sign_sk));
+    out(pub, (hash(imgX), judge(claimX)));
+    out(pub, (hash(imgY), judge(claimY)));
     (
-        device(choice[T1,T2], imgX, claimX)
-        | device(choice[T2,T1], imgY, claimY)
-        | validator
+        device(T1, choice[imgX,imgY], choice[claimX,claimY])
+        | device(T2, choice[imgY,imgX], choice[claimY,claimX])
+        | credential_channel_server
         | gatekeeper_1
         | gatekeeper_2
         | gatekeeper_3
@@ -226,5 +230,4 @@ process
         | quorum_13
         | quorum_23
         | content_matcher_f
-        | content_matcher_i
     )

@@ -14,31 +14,33 @@ boards, the two content channel servers, and the registry) see the paper.
 Each file is a complete ProVerif specification. With ProVerif 2.05 installed:
 
 ```
-proverif BM_Baseline_Noncorrelation.pv
+proverif BM_Baseline_Identity.pv
 ```
 
 (or `proverif.exe` on Windows). No arguments or build steps beyond that. Twins (below) are run
 the same way:
 
 ```
-proverif twins/BM_Baseline_Noncorrelation_TWIN.pv
+proverif twins/BM_Baseline_Identity_TWIN.pv
 ```
 
 ## What each model tests
 
 | File | Establishes | Tests | Result |
 |---|---|---|---|
-| `BM_Baseline_Noncorrelation.pv` | Property B | No compromise: can an observer of the public channel and the registry tell which device authenticated which content? | Observational equivalence is true |
-| `BM_CredentialChannelServer_Compromise.pv` | Property D | All of C's keys leaked. Does that reveal which device holds which token? The validator stays honest and answers any request. | Observational equivalence is true |
-| `BM_Validator_FullPacketHash_Secrecy.pv` | Properties A, E | All of the validator's keys leaked. Can the validator ever derive a FullPacketHash? | `not attacker(fph_m[])` is true |
-| `BM_Verdict_Boundary_SameClass.pv` | Properties A, E | Validator's keys leaked, device identities public. Can the validator tell which content a device authenticated, when both transactions carry the same claim? | Observational equivalence is true |
-| `BM_ContentChannelServer_Compromise.pv` | Properties C, F | A content channel server's key leaked, with the full honest pipeline running behind it. Does that reveal which device holds which token? | Observational equivalence is true |
-| `BM_Gatekeeper_Compromise.pv` | Property J | One gatekeeper's terminus and signing keys leaked. Same question. | Observational equivalence is true |
-| `BM_Quorum_Forgery.pv` | Properties G, I (one gatekeeper compromised) | Can a quorum form for a (FullPacketHash, verdict) pair that C did not check? Does C accept only verdicts the validator issued? | Queries 1 and 2 true; quorum reachable |
-| `BM_Quorum_Collusion.pv` | Properties G, I (two gatekeepers compromised) | Same questions, with two of the three gatekeepers fully compromised | Queries 1 and 2 true; quorum reachable |
-| `BM_Registry_Convergence.pv` | Property H | One content channel server (F) fully compromised. Can the registry finalize a record that the other server (I) did not sign? Can F change the optional fields of a record? | Queries a, c, d true; s reachable |
+| `BM_Baseline_Identity.pv` | Property B | No compromise: can an observer of the public channel and the registry tell which device authenticated which content? | Observational equivalence is true |
+| `BM_CredentialChannelServer_Compromise_Identity.pv` | Property D | All of C's keys leaked. Does that reveal which device holds which token? The validator stays honest and answers any request. | Observational equivalence is true |
+| `BM_Validator_Compromise_Secrecy.pv` | Properties A, E | All of the validator's keys leaked. Can the validator ever derive a FullPacketHash? | `not attacker(fph_m[])` is true |
+| `BM_Validator_Compromise_Content_SameClass.pv` | Properties A, E | Validator's keys leaked, device identities public. Can the validator tell which content a device authenticated, when both transactions carry the same claim? | Observational equivalence is true |
+| `BM_ContentChannelServer_Compromise_Identity.pv` | Properties C, F | A content channel server's key leaked, with the full honest pipeline running behind it. Does that reveal which device holds which token? | Observational equivalence is true |
+| `BM_Gatekeeper_Compromise_Identity.pv` | Property J | One gatekeeper's terminus and signing keys leaked. Same question. | Observational equivalence is true |
+| `BM_Gatekeeper_Compromise_QuorumForgery.pv` | Properties G, I (one gatekeeper compromised) | Can a quorum form for a (FullPacketHash, verdict) pair that C did not check? Does C accept only verdicts the validator issued? | Queries 1 and 2 true; quorum reachable |
+| `BM_Gatekeeper_Pair_Compromise_QuorumForgery.pv` | Properties G, I (two gatekeepers compromised) | Same questions, with two of the three gatekeepers fully compromised | Queries 1 and 2 true; quorum reachable |
+| `BM_ContentChannelServer_Compromise_RegistryConvergence.pv` | Property H | One content channel server (F) fully compromised. Can the registry finalize a record that the other server (I) did not sign? Can F change the optional fields of a record? | Queries a, c, d true; s reachable |
+| `BM_FirstRelay_Compromise_Secrecy.pv` | Property K | A first relay's Server Transit Key leaked, with a passive observer of every leg of one content path (device, first relay, second relay, destination). The relay sees each device's address with its packet. Can it derive either device's ContentHash? | `not attacker(hash(secret_img_1[]))` and `not attacker(hash(secret_img_2[]))` are true |
+| `BM_CredentialChannelServer_Compromise_TokenBinding.pv` | Property L | C compromised: the attacker plays C and may send the validator any token with any wrapped value, or the same token twice. Is a verdict issued for a (replay nonce, wrapped value) pair the device did not commit to? Does each commitment back at most one verdict? | Queries 1 and 2 true; a verdict is reachable |
 | `BM_Pipeline_Liveness.pv` | none | Does the honest pipeline reach every stage? | All 8 events reachable |
-| `BM_Quorum_Forgery_RingExclusion.pv` | none (sensitivity check) | Quorum_Forgery with the ring exclusion absent: gatekeeper 1's signing key is also C's, and is leaked. Which check then protects the quorum? | Queries 1 and 2 true; quorum reachable |
+| `BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion.pv` | none (sensitivity check) | Quorum_Forgery with the ring exclusion absent: gatekeeper 1's signing key is also C's, and is leaked. Which check then protects the quorum? | Queries 1 and 2 true; quorum reachable |
 
 ## Twins
 
@@ -49,18 +51,22 @@ model cannot see the fault, and its "true" proves nothing.
 
 | Twin | The fault | Result |
 |---|---|---|
-| `BM_Baseline_Noncorrelation_TWIN.pv` | The validator folds the credential into its verdict | Observational equivalence cannot be proved |
-| `BM_CredentialChannelServer_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
-| `BM_ContentChannelServer_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
-| `BM_Gatekeeper_Compromise_TWIN.pv` | Same | Observational equivalence cannot be proved |
-| `BM_Validator_FullPacketHash_Secrecy_TWIN.pv` | C sends the FullPacketHash to the validator without the BlindShare wrap | `not attacker(fph_m[])` is false |
-| `BM_Verdict_Boundary_SameClass_TWIN.pv` | The two transactions carry different claims, so the verdicts differ | Observational equivalence cannot be proved |
-| `BM_Quorum_Forgery_TWIN.pv` | Gatekeepers 2 and 3 and the quorum verify no signatures | Query 1 is false |
-| `BM_Quorum_Collusion_TWIN.pv` | The quorum of boards 1 and 2 does not verify C's signature | Query 1 is false |
-| `BM_Quorum_Forgery_RingExclusion_TWIN.pv` | The honest gatekeepers skip the validator-signature check | Query 1 is false |
-| `BM_Registry_Convergence_TWIN.pv` | The registry accepts two signatures from the same signer | Query a is false |
+| `BM_Baseline_Identity_TWIN.pv` | The validator folds the credential into its verdict | Observational equivalence cannot be proved |
+| `BM_CredentialChannelServer_Compromise_Identity_TWIN.pv` | Same | Observational equivalence cannot be proved |
+| `BM_ContentChannelServer_Compromise_Identity_TWIN.pv` | Same | Observational equivalence cannot be proved |
+| `BM_Gatekeeper_Compromise_Identity_TWIN.pv` | Same | Observational equivalence cannot be proved |
+| `BM_Validator_Compromise_Secrecy_TWIN.pv` | C sends the FullPacketHash to the validator without the BlindShare wrap | `not attacker(fph_m[])` is false |
+| `BM_Validator_Compromise_Content_SameClass_TWIN.pv` | The two transactions carry different claims, so the verdicts differ | Observational equivalence cannot be proved |
+| `BM_Gatekeeper_Compromise_QuorumForgery_TWIN.pv` | Gatekeepers 2 and 3 and the quorum verify no signatures | Query 1 is false |
+| `BM_Gatekeeper_Pair_Compromise_QuorumForgery_TWIN.pv` | The quorum of boards 1 and 2 does not verify C's signature | Query 1 is false |
+| `BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion_TWIN.pv` | The honest gatekeepers skip the validator-signature check | Query 1 is false |
+| `BM_ContentChannelServer_Compromise_RegistryConvergence_TWIN.pv` | The registry accepts two signatures from the same signer | Query a is false |
+| `BM_FirstRelay_Compromise_Secrecy_TWIN.pv` | The device does not encrypt the payload under the destination's Channel Key | Both queries are false |
+| `BM_CredentialChannelServer_Compromise_TokenBinding_TWIN.pv` | The validator does not compare the binding hash in the token with the wrapped value it is handed | Queries 1 and 2 are false |
+| `BM_CredentialChannelServer_Compromise_TokenBinding_NoNonceClaim_TWIN.pv` | The validator does not claim the replay nonce | Query 1 is true; query 2 is false |
+| `BM_CredentialChannelServer_Compromise_TokenBinding_NonAtomic_TWIN.pv` | Checking that the nonce is unused and recording it are separate steps | Query 1 is true; query 2 is false |
 
-`BM_Verdict_Boundary_Control.pv` is the twin of `BM_Verdict_Boundary_SameClass.pv`. It
+`twins/BM_Validator_Compromise_Content_SameClass_TWIN.pv` is the twin of `BM_Validator_Compromise_Content_SameClass.pv`. It
 marks the boundary of Property E rather than a property of the protocol: a validator that
 sees a rare verdict has fewer candidate records, so the proof holds within one verdict
 class.
@@ -73,9 +79,9 @@ Three proof techniques are used:
   side and asks whether any adversary, given everything it is allowed to observe or leak in
   that model, can tell which scenario it is in. "True" means it cannot: the property holds.
   `cannot be proved` or `is false` means it can, or ProVerif could not show it.
-- **Secrecy query, `not attacker(X)`** (Properties A, E): asks whether a value ever
+- **Secrecy query, `not attacker(X)`** (Properties A, E, K): asks whether a value ever
   becomes derivable by the adversary. "True" means it never does.
-- **Correspondence query** (Properties G, H, I): asks whether one event can occur only
+- **Correspondence query** (Properties G, H, I, L): asks whether one event can occur only
   after another has occurred. "True" means it cannot. The models also ask whether the
   final event is reachable. There `not event(X) is false` means X can happen, so the other
   queries are not true merely because nothing happens.
@@ -96,6 +102,12 @@ The correspondence queries, numbered as in the files:
   d. `i_signed_n(h,n,v,m) ==> device_sent_hn(h,n)`: the ContentHash and nonce, and so the
      verdict, belong to a real device submission.
   s. `registry_final(h,v,m)` is reachable.
+- **Token binding model:**
+  1. `v_issued(rn,e) ==> dev_committed(rn,e)`: the validator issues a verdict only for a (replay nonce,
+     wrapped value) pair the device committed to.
+  2. `inj-event(v_issued(rn,e)) ==> inj-event(dev_committed(rn,e))`: each device commitment backs at
+     most one verdict.
+  3. `v_issued(rn,e)` is reachable.
 
 ## What "true" means for the equivalence models
 
@@ -115,9 +127,11 @@ The correspondence queries, numbered as in the files:
 
 - A compromised validator that withholds replies and watches the registry (selective
   denial). The symbolic adversary sees the order of registry outputs, which separates the
-  two scenarios for a timing reason. Holds, bundling and decoys address this; ProVerif
-  cannot show it. Appendix D of the paper evaluates it empirically.
-- Replay logging (`replay_nonce`), `key_ref`, the manufacturer-key identifier, holds, padding.
+  two scenarios for a timing reason. ProVerif cannot show it. The paper records it as not
+  covered (Table A.2, row 16).
+- The structure of `replay_nonce` (its day count and offline bit) and how long the validator keeps
+  its log. `BM_CredentialChannelServer_Compromise_TokenBinding.pv` models the nonce as an atomic name and its claim as one atomic step.
+- `key_ref`, the manufacturer-key identifier, holds, padding.
 - The optional fields are modeled as one field. The specification uses a metadata hash and
   a parent hash, with presence flags.
 - Coordinated compromise of several components, such as the validator together with a
@@ -135,8 +149,3 @@ registry-signing keys, and `g1_sk`/`g1_sign_sk`, `g2_sk`/`g2_sign_sk`, `g3_sk`/`
 for the three gatekeepers' terminus and signing keys respectively. `fullpackethash` is
 FullPacketHash and `blindshare_key` is BlindShare_key. `fph_m` is a private marker standing
 for one device's FullPacketHash.
-
-## Files
-
-`generator/gen_models.py` builds every model except SameClass and its twin from shared
-blocks.

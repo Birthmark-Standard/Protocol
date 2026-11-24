@@ -1,4 +1,4 @@
-(* BM_FirstRelay_Compromise_TWIN.pv   (v102 design, secrecy at the first relay)
+(* BM_FirstRelay_Compromise_Secrecy_TWIN.pv   (v102 design, secrecy at the first relay)
 TWIN: the device does not encrypt the payload under F's Channel Key. Expected result: the query is violated (the attacker learns the ContentHash).
 
 Property K: a compromised first relay, which sees the device's network address, learns nothing about which content that device submitted.
@@ -24,7 +24,7 @@ F's output is sent on a private channel here. The registry record itself is publ
 any protocol. The property tested is that A's own view does not contain the ContentHash, not that the record is hidden.
 
 The relay is passive. Every leg is copied to the public channel, which models a passive observer of the whole path, but the adversary cannot drop, delay or
-inject packets, so selective dropping is not tested. Timing and packet sizes are not modeled either; Appendix D of the paper evaluates them.
+inject packets, so selective dropping is not tested. Timing and packet sizes are not modeled either; Appendix C of the paper evaluates them.
 
 The twin (twins/ folder) leaves the payload unwrapped under F's Channel Key. A then reads ContentHash and n. The twin's query must be VIOLATED, or this
 model's "true" proves nothing. *)

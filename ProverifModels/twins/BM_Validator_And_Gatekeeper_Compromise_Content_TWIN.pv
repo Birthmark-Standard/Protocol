@@ -1,21 +1,25 @@
-(* BM_Quorum_Forgery.pv   (v90 design)
-Property I (one gatekeeper): with gatekeeper 1 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check, and C checks only verdicts V issued.
+(* BM_Validator_And_Gatekeeper_Compromise_Content_TWIN.pv   (v105 design, full pipeline, content swap)
+Cross-role coalition of the credential validator and one gatekeeper (Table 4, second row). Does the pair learn which content a device authenticated?
 
-Leaked keys: g1_sk, g1_sign_sk.
-Gatekeeper 1's role is played by the attacker; board 1 is attacker-controlled. Gatekeepers 2 and 3 are honest and check sigma_V (with BlindShare_key) and sigma_C before posting.
+Vantage point: V and gatekeeper 1 together, with their own keys, plus the public channel and all three match boards.
+Leaked keys: v_token_sk, v_sign_sk, g1_sk, g1_sign_sk.
+The attacker plays V and gatekeeper 1, so the honest validator and gatekeeper_1 are omitted. C, gatekeepers 2 and 3, the quorums and F run behind it.
+The attacker reads the token (device identity) and the wrapped FullPacketHash from V's input, and FullPacketHash and BlindShare_key from gatekeeper 1's packet.
+Recomputing the wrap ties the two, so the pair links a device to FullPacketHash for every transaction. Table 4 says so. This model asks whether that reaches the content item.
 
-Device identity T1 is private here (the attacker cannot forge a token). The
-device takes its claim from the attacker, so every verdict judge(claim) is
-reachable. Boards are public: the attacker can read and write them. Honest
-gatekeepers and the quorum are as in the pipeline of the other models.
+How the scenarios differ. The contents are swapped, not the tokens, as in BM_Validator_Compromise_Content_SameClass.pv. Both devices carry claim_std. T1 and T2 are public.
 
-Queries and expected answers.
- 1  quorum_reached(p,v) ==> c_checked(p,v)      expected: true
-    No quorum forms for a (FullPacketHash, verdict) pair C did not check.
- 2  c_checked_w(p,v,w) ==> v_issued(v,w) && c_asked(p,w)      expected: true
-    C accepts only a verdict V issued for a wrapped value C itself sent.
- 3  event(quorum_reached(p,v))      expected: "not event(quorum_reached(p,v)) is false"
-    Sanity: a quorum is reachable, so 1 and 2 are not true because the pipeline is dead. *)
+The registry is idealized, as in BM_Validator_Compromise_Content_SameClass.pv: F's record goes to a private sink and the public registry output is fixed, the same in both worlds.
+Because the attacker plays V, it can answer one request and withhold the others. That is selective denial (Table A.2, row 16), which the idealization removes
+and which does not need a gatekeeper.
+
+What "true" means: with the registry idealized, nothing visible to V and a gatekeeper separates the two contents. FullPacketHash covers n, which only F and I hold.
+
+The twin (twins/ folder) sends n to C and from C to gatekeeper 1. The pair can then recompute hash((hash(img), n)). The twin must come out with observational
+equivalence not proved, or this model's "true" proves nothing.
+
+THIS FILE IS THE TWIN. Fault: the device sends n to C, and C forwards it to gatekeeper 1. Expected: observational equivalence cannot be proved. DRAFT: not yet run. *)
+
 
 type skey.
 type pkey.
@@ -35,13 +39,13 @@ fun hash(bitstring): bitstring.
 fun judge(bitstring): bitstring.
 
 free pub: channel.
-free c_to_val: channel [private].
-free val_to_c: channel [private].
+free c_to_val: channel.
+free val_to_c: channel.
 free match_board_1: channel.
 free match_board_2: channel.
 free match_board_3: channel.
 free quorum_out: channel [private].
-free registry: channel.
+free reg_sink: channel [private].
 
 free v_token_sk: skey [private].
 free v_sign_sk: skey [private].
@@ -56,25 +60,14 @@ free g2_sign_sk: skey [private].
 free g3_sk: skey [private].
 free g3_sign_sk: skey [private].
 
-free T1: bitstring [private].
-free T2: bitstring [private].
+free T1: bitstring.
+free T2: bitstring.
 free imgX: bitstring.
 free imgY: bitstring.
-free claimX: bitstring.
-free claimY: bitstring.
+free claim_std: bitstring.
 free v_ok: bitstring.
 free v_no: bitstring.
 free no_sig: bitstring.
-
-event v_issued(bitstring, bitstring).
-event c_asked(bitstring, bitstring).
-event c_checked(bitstring, bitstring).
-event c_checked_w(bitstring, bitstring, bitstring).
-event quorum_reached(bitstring, bitstring).
-
-query p: bitstring, v: bitstring; event(quorum_reached(p, v)) ==> event(c_checked(p, v)).
-query p: bitstring, v: bitstring, w: bitstring; event(c_checked_w(p, v, w)) ==> event(v_issued(v, w)) && event(c_asked(p, w)).
-query p: bitstring, v: bitstring; event(quorum_reached(p, v)).
 
 let device(token: bitstring, content: bitstring, claim: bitstring) =
     let h = hash(content) in
@@ -86,7 +79,7 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
     let binding = hash(wrapped_dev) in
     let enc_token = aenc((token, claim, binding), pk(v_token_sk), rnd_token) in
     new rnd_bundle: bitstring;
-    let enc_bundle = aenc((enc_token, fullpackethash, blindshare_key), pk(c_device_sk), rnd_bundle) in
+    let enc_bundle = aenc((enc_token, fullpackethash, blindshare_key, n), pk(c_device_sk), rnd_bundle) in
     new rnd_f: bitstring;
     let enc_content_f = aenc((h, n), pk(f_device_sk), rnd_f) in
     out(pub, enc_content_f);
@@ -95,9 +88,8 @@ let device(token: bitstring, content: bitstring, claim: bitstring) =
 let credential_channel_server =
     !
     in(pub, enc_bundle_in: bitstring);
-    let (enc_token_in: bitstring, fullpackethash_in: bitstring, blindshare_key: key) = adec(enc_bundle_in, c_device_sk) in
+    let (enc_token_in: bitstring, fullpackethash_in: bitstring, blindshare_key: key, n_in: bitstring) = adec(enc_bundle_in, c_device_sk) in
     let wrapped = senc(fullpackethash_in, blindshare_key) in
-    event c_asked(fullpackethash_in, wrapped);
     out(c_to_val, (enc_token_in, wrapped));
     in(val_to_c, (decision: bitstring, sig_in: bitstring));
     if decision = v_ok then
@@ -106,11 +98,9 @@ let credential_channel_server =
         let fullpackethash_confirmed = sdec(wrapped_checked, blindshare_key) in
         if fullpackethash_confirmed = fullpackethash_in then
         (
-            event c_checked(fullpackethash_in, verdict_in);
-            event c_checked_w(fullpackethash_in, verdict_in, wrapped_checked);
             let c_signed = sign((fullpackethash_in, verdict_in), c_sign_sk) in
             new rnd_g1: bitstring;
-            let pkt_g1 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g1_sk), rnd_g1) in
+            let pkt_g1 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed, n_in), pk(g1_sk), rnd_g1) in
             new rnd_g2: bitstring;
             let pkt_g2 = aenc((fullpackethash_in, verdict_in, sig_in, blindshare_key, c_signed), pk(g2_sk), rnd_g2) in
             new rnd_g3: bitstring;
@@ -118,18 +108,6 @@ let credential_channel_server =
             ( out(pub, pkt_g1) | out(pub, pkt_g2) | out(pub, pkt_g3) )
         )
     ).
-
-let validator =
-    !
-    in(c_to_val, (enc_token_in: bitstring, wrapped_in: bitstring));
-    let (token_in: bitstring, claim_in: bitstring, binding_in: bitstring) = adec(enc_token_in, v_token_sk) in
-    if ((token_in = T1) || (token_in = T2)) && (binding_in = hash(wrapped_in)) then
-    (
-        event v_issued(judge(claim_in), wrapped_in);
-        out(val_to_c, (v_ok, sign((judge(claim_in), wrapped_in), v_sign_sk)))
-    )
-    else
-        out(val_to_c, (v_no, no_sig)).
 
 let gatekeeper_2 =
     !
@@ -172,7 +150,7 @@ let quorum_12 =
     let c2 = checksign(s2, pk(g2_sign_sk)) in
     let (p2: bitstring, v2: bitstring) = checksign(c2, pk(c_sign_sk)) in
     if (p1 = p2) && (v1 = v2) then
-    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+    ( ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
 
 let quorum_13 =
     !
@@ -183,7 +161,7 @@ let quorum_13 =
     let c3 = checksign(s3, pk(g3_sign_sk)) in
     let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
     if (p1 = p3) && (v1 = v3) then
-    ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
+    ( ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
 
 let quorum_23 =
     !
@@ -194,11 +172,23 @@ let quorum_23 =
     let c3 = checksign(s3, pk(g3_sign_sk)) in
     let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
     if (p2 = p3) && (v2 = v3) then
-    ( event quorum_reached(p2, v2); ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
+    ( ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
+
+let content_matcher_f =
+    !
+    in(pub, enc_content_in: bitstring);
+    let (h: bitstring, n: bitstring) = adec(enc_content_in, f_device_sk) in
+    let candidate = hash((h, n)) in
+    in(quorum_out, (posted: bitstring, v_posted: bitstring));
+    if candidate = posted then
+    (
+        out(reg_sink, (h, v_posted))
+    ).
+
 
 process
-    out(pub, pk(v_token_sk));
-    out(pub, pk(v_sign_sk));
+    out(pub, v_token_sk);
+    out(pub, v_sign_sk);
     out(pub, pk(c_device_sk));
     out(pub, pk(c_sign_sk));
     out(pub, pk(f_device_sk));
@@ -209,13 +199,16 @@ process
     out(pub, pk(g2_sign_sk));
     out(pub, pk(g3_sk));
     out(pub, pk(g3_sign_sk));
+    out(pub, (hash(imgX), judge(claim_std)));
+    out(pub, (hash(imgY), judge(claim_std)));
     (
-        !(in(pub, claim_a: bitstring); device(T1, imgX, claim_a))
+        device(T1, choice[imgX,imgY], claim_std)
+        | device(T2, choice[imgY,imgX], claim_std)
         | credential_channel_server
-        | validator
         | gatekeeper_2
         | gatekeeper_3
         | quorum_12
         | quorum_13
         | quorum_23
+        | content_matcher_f
     )

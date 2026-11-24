@@ -1,8 +1,8 @@
-(* BM_Quorum_Collusion.pv   (v90 design)
-Property I (two gatekeepers): with gatekeepers 1 and 2 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check.
+(* BM_Gatekeeper_Compromise_QuorumForgery_TWIN.pv   (v90 design)
+Property I (one gatekeeper): with gatekeeper 1 fully compromised, no quorum forms for a (FullPacketHash, verdict) pair that C did not check, and C checks only verdicts V issued.
 
-Leaked keys: g1_sk, g1_sign_sk, g2_sk, g2_sign_sk.
-Two of three boards are attacker-controlled, so a quorum of boards 1 and 2 is free. What the attacker cannot do is make that quorum carry a pair C never signed, because the quorum checks C's signature.
+Leaked keys: g1_sk, g1_sign_sk.
+Gatekeeper 1's role is played by the attacker; board 1 is attacker-controlled. Gatekeepers 2 and 3 are honest and check sigma_V (with BlindShare_key) and sigma_C before posting.
 
 Device identity T1 is private here (the attacker cannot forge a token). The
 device takes its claim from the attacker, so every verdict judge(claim) is
@@ -10,12 +10,13 @@ reachable. Boards are public: the attacker can read and write them. Honest
 gatekeepers and the quorum are as in the pipeline of the other models.
 
 Queries and expected answers.
- 1  quorum_reached(p,v) ==> c_checked(p,v)      expected: true
+ 1  quorum_reached(p,v) ==> c_checked(p,v)      expected: false in this twin (true in the model)
     No quorum forms for a (FullPacketHash, verdict) pair C did not check.
  2  c_checked_w(p,v,w) ==> v_issued(v,w) && c_asked(p,w)      expected: true
     C accepts only a verdict V issued for a wrapped value C itself sent.
  3  event(quorum_reached(p,v))      expected: "not event(quorum_reached(p,v)) is false"
-    Sanity: a quorum is reachable, so 1 and 2 are not true because the pipeline is dead. *)
+    Sanity: a quorum is reachable, so 1 and 2 are not true because the pipeline is dead.
+THIS FILE IS THE TWIN. Fault: honest gatekeepers 2 and 3 verify nothing and the quorum does not verify C's inner signature. Expected: query 1 is false. *)
 
 type skey.
 type pkey.
@@ -131,30 +132,26 @@ let validator =
     else
         out(val_to_c, (v_no, no_sig)).
 
+let gatekeeper_2 =
+    !
+    in(pub, pkt_in: bitstring);
+    let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g2_sk) in
+    let g2_signed = sign((p, verdict), g2_sign_sk) in
+    ( out(match_board_2, g2_signed) | out(match_board_2, g2_signed) ).
+
 let gatekeeper_3 =
     !
     in(pub, pkt_in: bitstring);
     let (p: bitstring, verdict: bitstring, sig: bitstring, k: key, c_sig: bitstring) = adec(pkt_in, g3_sk) in
-    let (verdict_checked: bitstring, wrapped_checked: bitstring) = checksign(sig, pk(v_sign_sk)) in
-    if verdict_checked = verdict then
-    (
-        let p_confirmed = sdec(wrapped_checked, k) in
-        let (c_p: bitstring, c_verdict: bitstring) = checksign(c_sig, pk(c_sign_sk)) in
-        if (p_confirmed = p) && (c_p = p) && (c_verdict = verdict) then
-        (
-            let g3_signed = sign(c_sig, g3_sign_sk) in
-            ( out(match_board_3, g3_signed) | out(match_board_3, g3_signed) )
-        )
-    ).
+    let g3_signed = sign((p, verdict), g3_sign_sk) in
+    ( out(match_board_3, g3_signed) | out(match_board_3, g3_signed) ).
 
 let quorum_12 =
     !
     in(match_board_1, s1: bitstring);
     in(match_board_2, s2: bitstring);
-    let c1 = checksign(s1, pk(g1_sign_sk)) in
-    let (p1: bitstring, v1: bitstring) = checksign(c1, pk(c_sign_sk)) in
-    let c2 = checksign(s2, pk(g2_sign_sk)) in
-    let (p2: bitstring, v2: bitstring) = checksign(c2, pk(c_sign_sk)) in
+    let (p1: bitstring, v1: bitstring) = checksign(s1, pk(g1_sign_sk)) in
+    let (p2: bitstring, v2: bitstring) = checksign(s2, pk(g2_sign_sk)) in
     if (p1 = p2) && (v1 = v2) then
     ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
 
@@ -162,10 +159,8 @@ let quorum_13 =
     !
     in(match_board_1, s1: bitstring);
     in(match_board_3, s3: bitstring);
-    let c1 = checksign(s1, pk(g1_sign_sk)) in
-    let (p1: bitstring, v1: bitstring) = checksign(c1, pk(c_sign_sk)) in
-    let c3 = checksign(s3, pk(g3_sign_sk)) in
-    let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
+    let (p1: bitstring, v1: bitstring) = checksign(s1, pk(g1_sign_sk)) in
+    let (p3: bitstring, v3: bitstring) = checksign(s3, pk(g3_sign_sk)) in
     if (p1 = p3) && (v1 = v3) then
     ( event quorum_reached(p1, v1); ( out(quorum_out, (p1, v1)) | out(quorum_out, (p1, v1)) ) ).
 
@@ -173,10 +168,8 @@ let quorum_23 =
     !
     in(match_board_2, s2: bitstring);
     in(match_board_3, s3: bitstring);
-    let c2 = checksign(s2, pk(g2_sign_sk)) in
-    let (p2: bitstring, v2: bitstring) = checksign(c2, pk(c_sign_sk)) in
-    let c3 = checksign(s3, pk(g3_sign_sk)) in
-    let (p3: bitstring, v3: bitstring) = checksign(c3, pk(c_sign_sk)) in
+    let (p2: bitstring, v2: bitstring) = checksign(s2, pk(g2_sign_sk)) in
+    let (p3: bitstring, v3: bitstring) = checksign(s3, pk(g3_sign_sk)) in
     if (p2 = p3) && (v2 = v3) then
     ( event quorum_reached(p2, v2); ( out(quorum_out, (p2, v2)) | out(quorum_out, (p2, v2)) ) ).
 
@@ -189,14 +182,15 @@ process
     out(pub, pk(i_device_sk));
     out(pub, g1_sk);
     out(pub, g1_sign_sk);
-    out(pub, g2_sk);
-    out(pub, g2_sign_sk);
+    out(pub, pk(g2_sk));
+    out(pub, pk(g2_sign_sk));
     out(pub, pk(g3_sk));
     out(pub, pk(g3_sign_sk));
     (
         !(in(pub, claim_a: bitstring); device(T1, imgX, claim_a))
         | credential_channel_server
         | validator
+        | gatekeeper_2
         | gatekeeper_3
         | quorum_12
         | quorum_13

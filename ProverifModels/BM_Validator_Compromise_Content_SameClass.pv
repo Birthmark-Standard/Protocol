@@ -1,7 +1,6 @@
-(* BM_Verdict_Boundary_SameClass_TWIN.pv   (v105 design, full pipeline)
-Twin of BM_Verdict_Boundary_SameClass.pv. Not one of the proved properties. It marks the boundary of the proof. The two contents carry different
-claims (claimX with imgX, claimY with imgY), so they receive different verdicts. The claim inside the token of device 1 is choice[claimX,claimY] and in the token of device 2 it is
-choice[claimY,claimX], because the contents are swapped between the worlds. Everything else is as in SameClass. The validator's keys are leaked and the device identities T1 and T2 are public, so the attacker knows which device each token belongs to.
+(* BM_Validator_Compromise_Content_SameClass.pv   (v105 design, full pipeline)
+Twin of twins/BM_Validator_Compromise_Content_SameClass_TWIN.pv with the verdict class held constant. Both devices carry the same claim (claim_std), so both transactions receive
+the same verdict. The validator's keys are leaked and the device identities T1 and T2 are public, so the attacker knows which device each token belongs to.
 
 What runs: the device, the honest C, the three gatekeepers, the three quorums and content channel server F run behind the attacker, who plays V. The
 boards and the quorum output are private. The relay layer is not modeled, and the device writes to the public channel.
@@ -18,9 +17,7 @@ pipeline's other outputs are ciphertexts to keys the attacker does not hold, the
 (C's gatekeeper packets). What the upgrade adds is that the whole pipeline runs under the attacker's control of V's answers: V may answer, delay or alter
 any reply.
 
-Result (expected, not yet run): equivalence is NOT proved. The compromised validator opens the token of device 1 and reads claimX (left) or claimY (right).
-The public registry output pairs hash(imgX) with judge(claimX), so the claim ties the device to the record. This is the limit the paper states: the
-verdict is a public attribute that partitions the population, and the proof holds within one verdict class. *)
+Expected: observational equivalence is true. *)
 
 type skey.
 type pkey.
@@ -65,8 +62,7 @@ free T1: bitstring.
 free T2: bitstring.
 free imgX: bitstring.
 free imgY: bitstring.
-free claimX: bitstring.
-free claimY: bitstring.
+free claim_std: bitstring.
 free v_ok: bitstring.
 free v_no: bitstring.
 free no_sig: bitstring.
@@ -217,11 +213,11 @@ process
     out(pub, pk(g2_sign_sk));
     out(pub, pk(g3_sk));
     out(pub, pk(g3_sign_sk));
-    out(pub, (hash(imgX), judge(claimX)));
-    out(pub, (hash(imgY), judge(claimY)));
+    out(pub, (hash(imgX), judge(claim_std)));
+    out(pub, (hash(imgY), judge(claim_std)));
     (
-        device(T1, choice[imgX,imgY], choice[claimX,claimY])
-        | device(T2, choice[imgY,imgX], choice[claimY,claimX])
+        device(T1, choice[imgX,imgY], claim_std)
+        | device(T2, choice[imgY,imgX], claim_std)
         | credential_channel_server
         | gatekeeper_1
         | gatekeeper_2
