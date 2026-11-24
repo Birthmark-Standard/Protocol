@@ -1,4 +1,4 @@
-(* BM_FirstRelay_Compromise_Secrecy_TWIN.pv   (v102 design, secrecy at the first relay)
+(* BM_FirstRelay_Compromise_Secrecy_TWIN.pv   (secrecy at the first relay)
 TWIN: the device does not encrypt the payload under F's Channel Key. Expected result: the query is violated (the attacker learns the ContentHash).
 
 Property K: a compromised first relay, which sees the device's network address, learns nothing about which content that device submitted.

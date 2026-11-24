@@ -1,4 +1,4 @@
-(* BM_ContentChannelServer_Compromise_RegistryConvergence.pv   (v90 design)
+(* BM_ContentChannelServer_Compromise_RegistryConvergence.pv
 FullPacketHash = hash(ContentHash, n, optional fields).
 Expected: query c true.
 

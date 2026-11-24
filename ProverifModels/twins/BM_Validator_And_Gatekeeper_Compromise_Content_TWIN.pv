@@ -1,4 +1,4 @@
-(* BM_Validator_And_Gatekeeper_Compromise_Content_TWIN.pv   (v105 design, full pipeline, content swap)
+(* BM_Validator_And_Gatekeeper_Compromise_Content_TWIN.pv   (full pipeline, content swap)
 Cross-role coalition of the credential validator and one gatekeeper (Table 4, second row). Does the pair learn which content a device authenticated?
 
 Vantage point: V and gatekeeper 1 together, with their own keys, plus the public channel and all three match boards.

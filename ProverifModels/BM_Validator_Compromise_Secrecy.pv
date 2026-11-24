@@ -1,4 +1,4 @@
-(* BM_Validator_Compromise_Secrecy.pv   (v105 design, full pipeline)
+(* BM_Validator_Compromise_Secrecy.pv   (full pipeline)
 Properties A and E: a fully compromised validator V does not learn FullPacketHash.
 
 What is leaked: v_token_sk and v_sign_sk, all of V's keys. The attacker plays V: it reads every (token, wrapped) request C sends and may answer with any

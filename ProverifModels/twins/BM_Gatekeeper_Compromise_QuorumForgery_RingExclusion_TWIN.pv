@@ -1,4 +1,4 @@
-(* BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion_TWIN.pv   (v90 design)
+(* BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion_TWIN.pv
 Sensitivity check, not a paper claim: with the ring exclusion absent, gatekeeper 1's signing key is also C's signing key and is leaked. Which check then protects the quorum?
 
 Leaked keys: g1_sk, g1_sign_sk.

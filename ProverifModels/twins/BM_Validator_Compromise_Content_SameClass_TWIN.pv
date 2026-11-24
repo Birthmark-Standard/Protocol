@@ -1,4 +1,4 @@
-(* BM_Validator_Compromise_Content_SameClass_TWIN.pv   (v105 design, full pipeline)
+(* BM_Validator_Compromise_Content_SameClass_TWIN.pv   (full pipeline)
 Twin of BM_Validator_Compromise_Content_SameClass.pv. Not one of the proved properties. It marks the boundary of the proof. The two contents carry different
 claims (claimX with imgX, claimY with imgY), so they receive different verdicts. The claim inside the token of device 1 is choice[claimX,claimY] and in the token of device 2 it is
 choice[claimY,claimX], because the contents are swapped between the worlds. Everything else is as in SameClass. The validator's keys are leaked and the device identities T1 and T2 are public, so the attacker knows which device each token belongs to.

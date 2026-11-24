@@ -1,4 +1,4 @@
-(* BM_Baseline_Identity_TWIN.pv   (v90 design, identity swap)
+(* BM_Baseline_Identity_TWIN.pv   (identity swap)
 Property B: with no party compromised, an observer of the network and the registry cannot tell which device submitted which content.
 
 Vantage point: a passive observer of the public channel and the public registry.

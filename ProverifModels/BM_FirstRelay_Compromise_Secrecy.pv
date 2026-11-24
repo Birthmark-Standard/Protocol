@@ -1,4 +1,4 @@
-(* BM_FirstRelay_Compromise_Secrecy.pv   (v102 design, secrecy at the first relay)
+(* BM_FirstRelay_Compromise_Secrecy.pv   (secrecy at the first relay)
 Property K: a compromised first relay, which sees the device's network address, learns nothing about which content that device submitted.
 
 Vantage point: the first relay A, with its own Server Transit Key, plus a passive observer of every leg of the path.

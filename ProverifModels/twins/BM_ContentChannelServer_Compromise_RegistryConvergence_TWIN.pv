@@ -1,4 +1,4 @@
-(* BM_ContentChannelServer_Compromise_RegistryConvergence_TWIN.pv   (v90 design)
+(* BM_ContentChannelServer_Compromise_RegistryConvergence_TWIN.pv
 Property H: one compromised content channel server F cannot, on its own, make the registry finalise a record I did not sign; and what I signs is bound to what the device sent.
 
 Leaked keys: f_device_sk, f_sign_sk, c_sign_sk (F fully compromised; c_sign_sk stands for F's ring key). I is honest. The full honest pipeline runs behind them (device, C, V, three gatekeepers, quorum). The attacker plays F: it reads content packets, boards and quorum output, and may send I any packet.
