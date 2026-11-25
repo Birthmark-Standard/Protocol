@@ -15,7 +15,7 @@ What "true" means: nothing visible to the pair separates T1-then-T2 from T2-then
 The twin (twins/ folder) makes V fold the credential into the verdict. The credential then reaches the boards, F and the registry. The twin must come out
 with observational equivalence not proved, or this model's "true" proves nothing.
 
-THIS FILE IS THE TWIN. Fault: V folds the credential into the verdict, judge((claim, token)). Expected: observational equivalence cannot be proved. DRAFT: not yet run. *)
+THIS FILE IS THE TWIN. Fault: V folds the credential into the verdict, judge((claim, token)). Expected: observational equivalence cannot be proved. Run 2026-11-24: observational equivalence cannot be proved, as required. *)
 
 
 type skey.
