@@ -18,7 +18,7 @@ What "true" means: with the registry idealized, nothing visible to V and a gatek
 The twin (twins/ folder) sends n to C and from C to gatekeeper 1. The pair can then recompute hash((hash(img), n)). The twin must come out with observational
 equivalence not proved, or this model's "true" proves nothing.
 
-THIS FILE IS THE TWIN. Fault: the device sends n to C, and C forwards it to gatekeeper 1. Expected: observational equivalence cannot be proved. DRAFT: not yet run. *)
+THIS FILE IS THE TWIN. Fault: the device sends n to C, and C forwards it to gatekeeper 1. Expected: observational equivalence cannot be proved. Run 2026-11-24: observational equivalence cannot be proved, as required. *)
 
 
 type skey.

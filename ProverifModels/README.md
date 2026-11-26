@@ -24,6 +24,40 @@ the same way:
 proverif twins/BM_Baseline_Identity_TWIN.pv
 ```
 
+## How the models fit together
+
+Each model fixes who is compromised and asks one question. File names follow
+`BM_<compromised parties>_Compromise_<question>.pv`. `_Pair_` means two parties in the same
+role. `_And_` means two parties in different roles. The question is one of:
+
+- **Identity.** Which device holds which token?
+- **Content.** Which content did a device authenticate?
+- **Secrecy.** Does a value ever become derivable?
+- **An integrity property**, named for it: QuorumForgery, RegistryConvergence, TokenBinding.
+
+The grid shows file names without the `BM_` prefix and the `.pv` extension. An empty cell
+means there is no model for that pair. It does not necessarily mark a gap.
+
+| Compromised | Identity | Content | Secrecy | Integrity |
+|---|---|---|---|---|
+| none | Baseline_Identity | | | |
+| C | CredentialChannelServer_Compromise_Identity | | | CredentialChannelServer_Compromise_TokenBinding |
+| validator | | Validator_Compromise_Content_SameClass | Validator_Compromise_Secrecy | |
+| one gatekeeper | Gatekeeper_Compromise_Identity | | | Gatekeeper_Compromise_QuorumForgery; Gatekeeper_Compromise_QuorumForgery_RingExclusion (sensitivity check) |
+| two gatekeepers (same role) | Gatekeeper_Pair_Compromise_Identity | | | Gatekeeper_Pair_Compromise_QuorumForgery |
+| one content channel server (F) | ContentChannelServer_Compromise_Identity | | | ContentChannelServer_Compromise_RegistryConvergence |
+| both content channel servers (same role) | ContentChannelServer_Pair_Compromise_Identity | | | |
+| first relay | | | FirstRelay_Compromise_Secrecy | |
+| validator and C (different roles) | | Validator_And_CredentialChannelServer_Compromise_Content; Validator_And_CredentialChannelServer_Compromise_Content_ActivePosting (boundary) | | |
+| validator and one gatekeeper (different roles) | | Validator_And_Gatekeeper_Compromise_Content | | |
+
+`BM_Pipeline_Liveness.pv` has no compromised party. It checks that the honest pipeline
+reaches every stage.
+
+The models cover two coalitions within one role (two of the three gatekeepers; the two
+content channel servers) and two across roles (the validator with C; the validator with one
+gatekeeper). Coalitions with no model are listed under "Not modeled".
+
 ## What each model tests
 
 | File | Establishes | Tests | Result |
@@ -41,11 +75,11 @@ proverif twins/BM_Baseline_Identity_TWIN.pv
 | `BM_CredentialChannelServer_Compromise_TokenBinding.pv` | Property L | C compromised: the attacker plays C and may send the validator any token with any wrapped value, or the same token twice. Is a verdict issued for a (replay nonce, wrapped value) pair the device did not commit to? Does each commitment back at most one verdict? | Queries 1 and 2 true; a verdict is reachable |
 | `BM_Pipeline_Liveness.pv` | none | Does the honest pipeline reach every stage? | All 8 events reachable |
 | `BM_Gatekeeper_Compromise_QuorumForgery_RingExclusion.pv` | none (sensitivity check) | Quorum_Forgery with the ring exclusion absent: gatekeeper 1's signing key is also C's, and is leaked. Which check then protects the quorum? | Queries 1 and 2 true; quorum reachable |
-| `BM_Gatekeeper_Pair_Compromise_Identity.pv` | Property J (two gatekeepers compromised) | Gatekeepers 1 and 2 fully compromised together; gatekeeper 3, F and I stay honest. Does that reveal which device holds which token? | Not yet run |
-| `BM_ContentChannelServer_Pair_Compromise_Identity.pv` | Properties C, F (both content channel servers compromised) | F and I fully compromised together. Does that reveal which device holds which token? | Not yet run |
-| `BM_Validator_And_CredentialChannelServer_Compromise_Content.pv` | none (Table 4, row 1) | The validator and C fully compromised together, with the registry idealized. The pair links a device to a FullPacketHash. Can it tell which content the device authenticated? | Not yet run |
-| `BM_Validator_And_CredentialChannelServer_Compromise_Content_ActivePosting.pv` | none (Table 4, row 1) | The same pair with the registry idealization removed: F's records reach the public registry output in the order they are produced. C posts one FullPacketHash and reads which record appears. | Not yet run. Expected: observational equivalence cannot be proved (the active step in Table 4, row 1) |
-| `BM_Validator_And_Gatekeeper_Compromise_Content.pv` | none (Table 4, row 2) | The validator and gatekeeper 1 fully compromised together, with the registry idealized. The pair links a device to a FullPacketHash. Can it tell which content the device authenticated? | Not yet run |
+| `BM_Gatekeeper_Pair_Compromise_Identity.pv` | Property J (two gatekeepers compromised) | Gatekeepers 1 and 2 fully compromised together; gatekeeper 3, F and I stay honest. Does that reveal which device holds which token? | Observational equivalence is true |
+| `BM_ContentChannelServer_Pair_Compromise_Identity.pv` | Properties C, F (both content channel servers compromised) | F and I fully compromised together. Does that reveal which device holds which token? | Observational equivalence is true |
+| `BM_Validator_And_CredentialChannelServer_Compromise_Content.pv` | none (Table 4, row 1) | The validator and C fully compromised together, with the registry idealized. The pair links a device to a FullPacketHash. Can it tell which content the device authenticated? | Observational equivalence is true |
+| `BM_Validator_And_CredentialChannelServer_Compromise_Content_ActivePosting.pv` | none (Table 4, row 1) | The same pair with the registry idealization removed: F's records reach the public registry output in the order they are produced. C posts one FullPacketHash and reads which record appears. | Observational equivalence cannot be proved. This is the intended result (see Boundary models). |
+| `BM_Validator_And_Gatekeeper_Compromise_Content.pv` | none (Table 4, row 2) | The validator and gatekeeper 1 fully compromised together, with the registry idealized. The pair links a device to a FullPacketHash. Can it tell which content the device authenticated? | Observational equivalence is true |
 
 ## Twins
 
@@ -70,15 +104,31 @@ model cannot see the fault, and its "true" proves nothing.
 | `BM_CredentialChannelServer_Compromise_TokenBinding_TWIN.pv` | The validator does not compare the binding hash in the token with the wrapped value it is handed | Queries 1 and 2 are false |
 | `BM_CredentialChannelServer_Compromise_TokenBinding_NoNonceClaim_TWIN.pv` | The validator does not claim the replay nonce | Query 1 is true; query 2 is false |
 | `BM_CredentialChannelServer_Compromise_TokenBinding_NonAtomic_TWIN.pv` | Checking that the nonce is unused and recording it are separate steps | Query 1 is true; query 2 is false |
-| `BM_Gatekeeper_Pair_Compromise_Identity_TWIN.pv` | The validator folds the credential into its verdict | Not yet run |
-| `BM_ContentChannelServer_Pair_Compromise_Identity_TWIN.pv` | The validator folds the credential into its verdict | Not yet run |
-| `BM_Validator_And_CredentialChannelServer_Compromise_Content_TWIN.pv` | The device sends n to C inside the credential bundle | Not yet run |
-| `BM_Validator_And_Gatekeeper_Compromise_Content_TWIN.pv` | The device sends n to C, and C forwards it to gatekeeper 1 | Not yet run |
+| `BM_Gatekeeper_Pair_Compromise_Identity_TWIN.pv` | The validator folds the credential into its verdict | Observational equivalence cannot be proved |
+| `BM_ContentChannelServer_Pair_Compromise_Identity_TWIN.pv` | The validator folds the credential into its verdict | Observational equivalence cannot be proved |
+| `BM_Validator_And_CredentialChannelServer_Compromise_Content_TWIN.pv` | The device sends n to C inside the credential bundle | Observational equivalence cannot be proved |
+| `BM_Validator_And_Gatekeeper_Compromise_Content_TWIN.pv` | The device sends n to C, and C forwards it to gatekeeper 1 | Observational equivalence cannot be proved |
 
-`twins/BM_Validator_Compromise_Content_SameClass_TWIN.pv` is the twin of `BM_Validator_Compromise_Content_SameClass.pv`. It
-marks the boundary of Property E rather than a property of the protocol: a validator that
-sees a rare verdict has fewer candidate records, so the proof holds within one verdict
-class.
+The last five rows of the model table and the last four rows of the Twins table were run on 2026-11-24.
+
+## Boundary models
+
+Two files do not prove a property of the protocol. Each marks where a property stops, and
+"cannot be proved" is the result each is meant to show.
+
+- `twins/BM_Validator_Compromise_Content_SameClass_TWIN.pv` is the twin of
+  `BM_Validator_Compromise_Content_SameClass.pv`. It gives the two transactions different
+  claims, so the verdicts differ. It marks the boundary of Property E: a validator that sees
+  a rare verdict has fewer candidate records, so the proof holds within one verdict class.
+- `BM_Validator_And_CredentialChannelServer_Compromise_Content_ActivePosting.pv` removes
+  the registry idealization from the validator-and-C model. C posts one FullPacketHash,
+  delivers the matching content packet to F and reads which record appears. The record
+  carries hash(img), which separates the two scenarios. This is the active step Table 4,
+  row 1 lists for the coalition, so "cannot be proved" confirms that row. It does not show
+  how often the attack succeeds: Table 4 limits its reach to the transactions C handles,
+  which include decoys that C cannot tell from real transactions, and the model represents
+  neither. This file has no twin, because its result is a failure to prove and not a "true"
+  that a twin has to back.
 
 ## Reading the results
 
@@ -152,8 +202,16 @@ The correspondence queries, numbered as in the files:
   private sink and the public registry output is the same in both scenarios. This removes
   the active posting attack of Table 4, and in the validator-and-gatekeeper model it also
   removes selective denial.
-- `BM_Validator_And_CredentialChannelServer_Compromise_Content_ActivePosting.pv` represents
-  the active posting attack without bundling or decoys, which the paper relies on against it.
+- The reach limits on active posting. The ActivePosting model shows that the validator and C
+  can name a device's content by posting one FullPacketHash (Table 4, row 1). Table 4 limits
+  that attack to the transactions C handles, which include decoys that C cannot tell from real
+  transactions. Neither is represented.
+- Coalitions with no model: the validator with a content channel server; the other rows of
+  Table 4 (a first relay with the destination on its path; a table builder with a colluding
+  node; both decoy operators); all three gatekeepers together; and same-role coalitions in any
+  role other than the gatekeepers and the content channel servers.
+- Time. No model carries time. The route from the validator-and-gatekeeper pair to the
+  content item by timing across the gatekeepers' holds (Table 4, row 2) is not evaluated.
 
 ## Naming
 

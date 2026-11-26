@@ -15,7 +15,7 @@ What "true" means: nothing visible to the pair separates T1-then-T2 from T2-then
 The twin (twins/ folder) makes V fold the credential into the verdict. The credential then reaches the boards, F and the registry. The twin must come out
 with observational equivalence not proved, or this model's "true" proves nothing.
 
-Expected: observational equivalence is true. DRAFT: not yet run. *)
+Expected: observational equivalence is true. Run 2026-11-24: observational equivalence is true. *)
 
 
 type skey.
